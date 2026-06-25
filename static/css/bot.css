@@ -1,4 +1,4 @@
-/* AI Bot Animations and Overrides */
+/* AI Bot Animations and Overrides — PitchSignal Dark Glass Theme */
 
 #ai-bot-panel.active {
   opacity: 1 !important;
@@ -16,8 +16,7 @@
 .typing-dot {
   width: 6px;
   height: 6px;
-  background: currentColor;
-  opacity: 0.6;
+  background: rgba(148, 163, 184, 0.6);
   border-radius: 50%;
   animation: botTyping 1.4s infinite ease-in-out both;
 }
@@ -30,7 +29,7 @@
   40% { transform: scale(1); }
 }
 
-/* Custom Scrollbar for Bot Messages */
+/* Custom Scrollbar for Bot Messages — matches PitchSignal global scrollbar */
 #bot-messages::-webkit-scrollbar {
   width: 6px;
 }
@@ -38,6 +37,6 @@
   background: transparent;
 }
 #bot-messages::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: 20px;
 }

@@ -31,13 +31,14 @@ function bkTeamLabel(raw) {
   return raw;
 }
 
-/** Build a round label string */
+/** Build a round label string (i18n-aware via window.uiLang) */
 function bkRoundLabel(id) {
-  if (id.startsWith('R32')) return '32强';
-  if (id.startsWith('R16')) return '16强';
-  if (id.startsWith('QF'))  return '四分之一决赛';
-  if (id.startsWith('SF'))  return '半决赛';
-  if (id === 'FINAL')       return '决赛';
+  const en = (window.uiLang === 'en');
+  if (id.startsWith('R32')) return en ? 'Round of 32' : '32强';
+  if (id.startsWith('R16')) return en ? 'Round of 16' : '16强';
+  if (id.startsWith('QF'))  return en ? 'Quarter-Final' : '四分之一决赛';
+  if (id.startsWith('SF'))  return en ? 'Semi-Final' : '半决赛';
+  if (id === 'FINAL')       return en ? 'Final' : '决赛';
   return id;
 }
 
@@ -105,7 +106,8 @@ function bkCardPos(colIndex, itemIndex, count, totalSlots, totalHeight, isLeft, 
 
 function renderBracket(data, container) {
   if (!data || !data.matches || !data.tree) {
-    container.innerHTML = `<div class="text-gray-500 py-10 text-center text-sm">淘汰赛对阵图数据加载失败</div>`;
+    const en = (window.uiLang === 'en');
+    container.innerHTML = `<div class="text-gray-500 py-10 text-center text-sm">${en ? 'Failed to load bracket data' : '淘汰赛对阵图数据加载失败'}</div>`;
     return;
   }
 

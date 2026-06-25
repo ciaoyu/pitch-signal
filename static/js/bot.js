@@ -1,5 +1,6 @@
 /**
  * AI 智能反馈与问答 Bot 客户端逻辑
+ * 重设计 — PitchSignal 暗色玻璃态设计语言
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,24 +17,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   root.innerHTML = `
-    <div id="ai-bot-fab" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300 cursor-pointer z-[9999] text-2xl" title="${tx('提问与反馈', 'Ask & Feedback')}">
+    <div id="ai-bot-fab" class="fixed bottom-6 right-4 sm:right-6 w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 cursor-pointer z-[9999] text-2xl" title="${tx('提问与反馈', 'Ask & Feedback')}">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
     </div>
-    <div id="ai-bot-panel" class="fixed bottom-24 right-6 w-[350px] max-w-[calc(100vw-3rem)] h-[520px] max-h-[calc(100vh-7.5rem)] bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-2xl shadow-2xl flex flex-col z-[9998] opacity-0 pointer-events-none translate-y-5 transition-all duration-300 overflow-hidden">
-      <div class="bot-header flex justify-between items-center px-5 py-4 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 text-white shadow-sm flex-shrink-0">
+    <div id="ai-bot-panel" class="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[380px] h-[70vh] max-h-[calc(100vh-7.5rem)] bg-[#12121a]/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col z-[9998] opacity-0 pointer-events-none translate-y-5 transition-all duration-300 overflow-hidden">
+      <div class="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex-shrink-0">
         <span id="ai-bot-title" class="font-semibold tracking-wide">${tx('AI 智能助理', 'AI Assistant')}</span>
-        <span class="cursor-pointer text-2xl leading-none hover:text-blue-200 transition-colors" id="ai-bot-close">&times;</span>
+        <span class="cursor-pointer text-2xl leading-none hover:text-white/70 transition-colors" id="ai-bot-close">&times;</span>
       </div>
-      <div class="flex border-b border-slate-200/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 flex-shrink-0">
-        <button id="bot-tab-ask" class="bot-tab flex-1 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 border-blue-500 text-blue-600 dark:text-blue-400">${tx('问问题', 'Ask')}</button>
-        <button id="bot-tab-msg" class="bot-tab flex-1 py-2.5 text-xs font-medium transition-all duration-200 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">${tx('留言 / 意见', 'Leave a note')}</button>
+      <div class="flex gap-1 px-3 pt-3 pb-2 flex-shrink-0">
+        <button id="bot-tab-ask" class="flex-1 py-2 text-xs font-medium transition-all duration-200 rounded-lg">${tx('问问题', 'Ask')}</button>
+        <button id="bot-tab-msg" class="flex-1 py-2 text-xs font-medium transition-all duration-200 rounded-lg">${tx('留言 / 意见', 'Leave a note')}</button>
       </div>
       <div class="bot-messages flex-1 p-5 overflow-y-auto flex flex-col gap-4 scroll-smooth" id="bot-messages">
-        <div class="bot-msg ai self-start max-w-[85%] px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm leading-relaxed bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm border border-slate-100 dark:border-slate-700/50" id="ai-bot-greeting"></div>
+        <div class="bot-msg ai self-start max-w-[85%] px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm leading-relaxed bg-white/5 text-gray-200 border border-white/5" id="ai-bot-greeting"></div>
       </div>
-      <div class="p-4 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/50 flex gap-3 items-end flex-shrink-0">
-        <textarea id="bot-input-el" rows="1" class="flex-1 px-4 py-2.5 bg-white/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-600 rounded-2xl text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-inner resize-none overflow-hidden leading-snug" style="min-height:40px;max-height:120px" autocomplete="off"></textarea>
-        <button id="bot-send-btn" class="bg-blue-600 hover:bg-blue-700 text-white border-none rounded-full w-10 h-10 flex-shrink-0 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+      <div class="p-4 border-t border-white/10 flex gap-3 items-end flex-shrink-0">
+        <textarea id="bot-input-el" rows="1" class="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500/40 transition-all placeholder:text-gray-500 resize-none overflow-hidden leading-snug" style="min-height:40px;max-height:120px" autocomplete="off"></textarea>
+        <button id="bot-send-btn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white border-none rounded-full w-10 h-10 flex-shrink-0 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-md shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
           <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
         </button>
       </div>
@@ -69,10 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setTabActive(activeTab, inactiveTab) {
-    activeTab.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
-    activeTab.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400', 'hover:text-slate-700', 'dark:hover:text-slate-200');
-    inactiveTab.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
-    inactiveTab.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400', 'hover:text-slate-700', 'dark:hover:text-slate-200');
+    activeTab.className = 'flex-1 py-2 text-xs font-medium transition-all duration-200 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md';
+    inactiveTab.className = 'flex-1 py-2 text-xs font-medium transition-all duration-200 rounded-lg text-gray-500 hover:text-gray-300';
   }
 
   function switchMode(newMode) {
@@ -138,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function addMessage(text, role) {
     const div = document.createElement('div');
     div.className = role === 'user'
-      ? 'bot-msg user self-end max-w-[85%] px-4 py-2.5 rounded-2xl rounded-br-sm text-sm leading-relaxed bg-blue-600 text-white shadow-sm'
-      : 'bot-msg ai self-start max-w-[85%] px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm leading-relaxed bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm border border-slate-100 dark:border-slate-700/50';
+      ? 'bot-msg user self-end max-w-[85%] px-4 py-2.5 rounded-2xl rounded-br-sm text-sm leading-relaxed bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-sm'
+      : 'bot-msg ai self-start max-w-[85%] px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm leading-relaxed bg-white/5 text-gray-200 border border-white/5';
     div.textContent = text;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
@@ -149,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = 'typing-' + Date.now();
     const div = document.createElement('div');
     div.id = id;
-    div.className = 'bot-msg ai typing-indicator self-start px-4 py-3.5 rounded-2xl rounded-bl-sm bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50 flex items-center gap-1';
+    div.className = 'bot-msg ai typing-indicator self-start px-4 py-3.5 rounded-2xl rounded-bl-sm bg-white/5 border border-white/5 flex items-center gap-1';
     div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
@@ -238,7 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Init
+  // Init — 设置初始 tab 激活态
+  setTabActive(tabAsk, tabMsg);
   setGreeting();
   updatePlaceholder();
   window.addEventListener('storage', syncBotLanguage);

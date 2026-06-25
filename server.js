@@ -100,11 +100,12 @@ function parseEvent(ev) {
   for (const c of cs) {
     const teamId = c.team?.id || '';
     const zhName = TEAM_NAMES_ZH[teamId];
-    const nameI18n = getTeamNameI18n(teamId, c.team?.displayName || c.team?.shortDisplayName || '?');
-    const displayName = zhName ? `${zhName.zh} ${c.team?.shortDisplayName || c.team?.displayName || '?'}` : (c.team?.shortDisplayName || c.team?.displayName || '?');
+    const teamDisplayName = c.team?.shortDisplayName || c.team?.displayName || c.team?.name || '';
+    const nameI18n = getTeamNameI18n(teamId, teamDisplayName);
+    const displayName = zhName ? `${zhName.zh} ${teamDisplayName}` : (teamDisplayName || String(teamId));
     const t = {
       name: displayName,
-      fullName: zhName ? `${zhName.zh} ${zhName.en}` : (c.team?.displayName || '?'),
+      fullName: zhName ? `${zhName.zh} ${zhName.en}` : (teamDisplayName || String(teamId)),
       nameI18n,
       abbr: c.team?.abbreviation || '',
       logo: c.team?.logos?.[0]?.href || TEAM_LOGOS[teamId] || '',
@@ -685,6 +686,111 @@ const routes = {
     } catch (e) {
       console.warn(`⚠️ Recent matches fetch failed for team ${teamId}:`, e.message || e);
       return { teamId, matches: [], error: 'Fetch failed' };
+    }
+  },
+
+  // Recent-match aggregated stats for pre-match display
+  'GET /api/team/:id/recent-stats': async (params) => {
+    const teamId = String(params.id);
+    const sampleSize = Math.min(Math.max(parseInt(params.n || '3', 10) || 3, 2), 5);
+    const cacheKey = `team_recent_stats_${teamId}_${sampleSize}`;
+    const cached = getCached(cacheKey, 1800000);
+    if (cached) return cached;
+
+    try {
+      const schedule = loader.getSchedule();
+      const nowMs = Date.now();
+      const teamSchedule = (schedule.matches || [])
+        .filter(m => String(m.teams?.home?.id) === teamId || String(m.teams?.away?.id) === teamId)
+        .sort((a, b) => new Date(b.kickoffUtc) - new Date(a.kickoffUtc));
+
+      const isPast = m => new Date(m.kickoffUtc).getTime() + 2 * 3600 * 1000 < nowMs;
+      const pastMatches = teamSchedule.filter(isPast).slice(0, sampleSize);
+
+      if (pastMatches.length === 0) {
+        return { teamId, sampleSize, matches: 0, stats: null, source: 'no-completed-matches', note: '无已完赛记录' };
+      }
+
+      const toESPNDateKey = utcStr =>
+        new Date(utcStr).toLocaleDateString('sv-SE', { timeZone: 'America/New_York' }).replace(/-/g, '');
+      const espnDates = [...new Set(pastMatches.map(m => toESPNDateKey(m.kickoffUtc)))];
+
+      // Collect boxscore stats for each match
+      const espnByMatchId = {};
+      for (const dateKey of espnDates) {
+        try {
+          const data = await espn(`/scoreboard?dates=${dateKey}`, `s_${dateKey}`, 600000);
+          for (const ev of (data.events || [])) {
+            let teamStats = null;
+            try {
+              const summary = await espn(`/summary?event=${ev.id}`, `sum_${ev.id}`, 120000);
+              const teams = (summary?.boxscore?.teams || []);
+              if (teams.length === 2) {
+                const categories = teams[0].statistics || [];
+                teamStats = [];
+                for (let i = 0; i < categories.length; i++) {
+                  teamStats.push({
+                    name: categories[i].name || categories[i].abbreviation || '',
+                    home: categories[i].displayValue || '0',
+                    away: teams[1].statistics?.[i]?.displayValue || '0',
+                  });
+                }
+              }
+            } catch { /* boxscore unavailable */ }
+            espnByMatchId[String(ev.id)] = { teamStats };
+          }
+        } catch (e) { console.warn('Recent-stats scoreboard fetch failed:', e.message); }
+      }
+
+      const matchStatsList = [];
+      for (const m of pastMatches) {
+        const entry = espnByMatchId[String(m.matchId)];
+        if (!entry || !entry.teamStats) continue;
+        const isHome = String(m.teams?.home?.id) === teamId;
+        const side = isHome ? 'home' : 'away';
+        const statRow = {};
+        for (const s of entry.teamStats) {
+          const raw = s[side] || '0';
+          const numMatch = String(raw).match(/(\d+(?:\.\d+)?)/);
+          statRow[s.name] = numMatch ? Number(numMatch[1]) : 0;
+        }
+        statRow._matchId = m.matchId;
+        statRow._date = m.kickoffUtc;
+        matchStatsList.push(statRow);
+      }
+
+      if (matchStatsList.length === 0) {
+        return { teamId, sampleSize, matches: pastMatches.length, stats: null, source: 'no-boxscore-available', note: '已赛无boxscore数据' };
+      }
+
+      const aggregated = {};
+      const allKeys = new Set();
+      for (const row of matchStatsList) {
+        for (const key of Object.keys(row)) { if (!key.startsWith('_')) allKeys.add(key); }
+      }
+      for (const key of allKeys) {
+        const values = matchStatsList.map(r => r[key] ?? null).filter(v => v !== null && !isNaN(v));
+        if (values.length > 0) {
+          aggregated[key] = {
+            avg: +(values.reduce((a, b) => a + b, 0) / values.length).toFixed(1),
+            count: values.length,
+          };
+        }
+      }
+
+      const result = {
+        teamId,
+        sampleSize,
+        matches: matchStatsList.length,
+        stats: aggregated,
+        source: `ESPN boxscore avg`,
+        lastUpdated: new Date().toISOString(),
+      };
+      setCache(cacheKey, result);
+      return result;
+    } catch (e) {
+      console.warn(`⚠️ Recent stats fetch failed for team ${teamId}:`, e.message || e);
+      return { teamId, sampleSize, matches: 0, stats: null, error: 'Fetch failed' };
     }
   },
 };

@@ -34,6 +34,7 @@ const I18N = {
         goalDifference: '净',
         points: '分',
         matchesSuffix: '场',
+        matchSuffix: '场',
         updatePrefix: '更新 ',
         pointsLabel: '积分',
         teamsLoading: '球队数据加载中...',
@@ -45,6 +46,12 @@ const I18N = {
         '进球期望值 (λ)': '进球期望值 (λ)',
         场均进球: '场均进球',
         预测数据加载失败: '预测数据加载失败',
+        preMatchStatsTitle: '近期场均统计',
+        postMatchStatsTitle: '本场统计',
+        postMatchNoStats: '赛后统计暂未同步',
+        postMatchNoStatsDesc: 'ESPN 暂未提供本场技术统计，页面不会用赛前均值填充。',
+        preMatchNoStats: '赛前暂无可用统计',
+        preMatchNoStatsDesc: '缺乏近期完赛记录，无法生成场均统计。',
         dataQualityTitle: '📊 数据质量说明',
         dataQualityRealtimeTitle: '✓ 实时数据',
         dataQualityRealtimeDesc: '比赛进程、即时比分（ESPN 延迟 ~5 分钟）',
@@ -56,6 +63,12 @@ const I18N = {
         dataQualityPendingDesc: '历史天气、完整 H2H 库',
         dataQualityFooter: '缺失数据不会被推测填充；页面会清晰注明"暂无"或"尚未同步"。',
         dataQualityBtn: '数据质量说明',
+        headerSubtitle: '美加墨 · 赛事分析',
+        footerDisclaimer: '实验性概率模型 · 非投注建议 · ESPN 数据',
+        scrollLeft: '向左滚动日期',
+        scrollRight: '向右滚动日期',
+        tzSuffix: '北京时间',
+        teamsError: '球队数据加载失败',
     },
     en: {
         navLive: 'Live',
@@ -75,6 +88,7 @@ const I18N = {
         goalDifference: 'GD',
         points: 'Pts',
         matchesSuffix: 'matches',
+        matchSuffix: 'match',
         updatePrefix: 'Updated ',
         pointsLabel: 'Pts',
         teamsLoading: 'Loading teams...',
@@ -86,6 +100,12 @@ const I18N = {
         '进球期望值 (λ)': 'Expected Goals (λ)',
         '场均进球': 'Avg Goals',
         '预测数据加载失败': 'Prediction data unavailable',
+        preMatchStatsTitle: 'Recent Avg Stats',
+        postMatchStatsTitle: 'Match Stats',
+        postMatchNoStats: 'Post-match stats not synced',
+        postMatchNoStatsDesc: 'ESPN has not provided match statistics yet.',
+        preMatchNoStats: 'No pre-match stats',
+        preMatchNoStatsDesc: 'Insufficient completed matches to generate averages.',
         dataQualityTitle: '📊 Data Quality Notice',
         dataQualityRealtimeTitle: '✓ Live Data',
         dataQualityRealtimeDesc: 'Match progress, live scores (ESPN delay ~5 mins)',
@@ -97,6 +117,12 @@ const I18N = {
         dataQualityPendingDesc: 'Historical weather, complete H2H database',
         dataQualityFooter: 'Missing data will not be speculatively filled; pages will clearly indicate "N/A" or "Not Synced".',
         dataQualityBtn: 'Data Quality Notice',
+        headerSubtitle: 'USA · CAN · MEX · Match Analysis',
+        footerDisclaimer: 'Experimental probability model · Not betting advice · ESPN data',
+        scrollLeft: 'Scroll dates left',
+        scrollRight: 'Scroll dates right',
+        tzSuffix: 'CST (UTC+8)',
+        teamsError: 'Failed to load teams',
     },
 };
 
@@ -218,6 +244,91 @@ function renderMatchStats(teamStats) {
     }).join('');
 
     return groups || `<div class="text-gray-600 text-sm py-2">${tx('暂无技术统计', 'No match statistics')}</div>`;
+}
+
+// Render a side-by-side comparison of recent-avg stats for two teams
+// hs/as: { stats: { "passCompletionPct": { avg: 82.5, count: 3 }, ... }, matches: N, teamId }
+function renderRecentAvgComparison(hs, as, hName, aName) {
+    if (!hs && !as) return `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`;
+
+    // Known stat categories to extract
+    const statDefs = [
+        { key: 'possessionPct', label: { zh: '控球率%', en: 'Possession%' }, postfix: '%' },
+        { key: 'totalShots', label: { zh: '总射门', en: 'Total Shots' } },
+        { key: 'shotsOnTarget', label: { zh: '射正', en: 'Shots on Target' } },
+        { key: 'passCompletionPct', label: { zh: '传球成功率%', en: 'Pass Acc%' }, postfix: '%' },
+        { key: 'foulsCommitted', label: { zh: '犯规', en: 'Fouls' }, lowerIsBetter: true },
+        { key: 'yellowCards', label: { zh: '黄牌', en: 'Yellow Cards' }, lowerIsBetter: true },
+        { key: 'redCards', label: { zh: '红牌', en: 'Red Cards' }, lowerIsBetter: true },
+        { key: 'offsides', label: { zh: '越位', en: 'Offsides' }, lowerIsBetter: true },
+        { key: 'corners', label: { zh: '角球', en: 'Corners' } },
+        { key: 'saves', label: { zh: '扑救', en: 'Saves' } },
+        { key: 'tacklesWon', label: { zh: '成功抢断', en: 'Tackles Won' } },
+        { key: 'crosses', label: { zh: '传中', en: 'Crosses' } },
+        { key: 'goalsAgainst', label: { zh: '失球', en: 'Goals Against' }, lowerIsBetter: true },
+    ];
+
+    const fmtVal = (key, sideData) => {
+        const entry = (sideData?.stats || {})[key];
+        if (!entry) return null;
+        return { avg: entry.avg, count: entry.count };
+    };
+
+    // Only render rows where at least one side has data
+    const rows = statDefs.map(def => {
+        const hv = fmtVal(def.key, hs);
+        const av = fmtVal(def.key, as);
+        return { def, hv, av };
+    }).filter(r => r.hv || r.av);
+
+    if (!rows.length) {
+        return `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`;
+    }
+
+    // Sample-size subtitles
+    const hSample = hs?.matches || 0;
+    const aSample = as?.matches || 0;
+
+    let html = '';
+
+    // Subtitle bar: team name + sample size
+    html += `<div class="flex items-center gap-2 mb-3 text-[10px] text-gray-500">
+        <span class="flex-1 truncate text-left font-medium text-gray-300">${esc(hName)} <span class="text-gray-500">(n=${hSample})</span></span>
+        <span class="w-24 shrink-0 text-center font-bold text-gray-400">${tx('统计项', 'Stat')}</span>
+        <span class="flex-1 truncate text-right font-medium text-gray-300">${esc(aName)} <span class="text-gray-500">(n=${aSample})</span></span>
+    </div>`;
+
+    for (const { def, hv, av } of rows) {
+        const label = i18nText(def.label);
+        const pfx = def.postfix || '';
+        const hStr = hv ? (hv.avg + pfx) : '-';
+        const aStr = av ? (av.avg + pfx) : '-';
+        const hNum = hv ? hv.avg : 0;
+        const aNum = av ? av.avg : 0;
+        const total = hNum + aNum || 1;
+        const hPct = Math.round((hNum / total) * 100);
+        const aPct = 100 - hPct;
+        const lib = def.lowerIsBetter;
+
+        html += `<div class="py-2.5 border-b border-white/5 last:border-b-0">
+            <div class="flex items-center gap-2 mb-1.5">
+                <span class="flex-1 text-xs font-mono font-bold tabular-nums text-left ${lib && hStr !== '-' ? 'text-amber-300' : ''}">${esc(hStr)}</span>
+                <span class="w-24 shrink-0 text-center text-[10px] text-gray-500">${esc(label)}</span>
+                <span class="flex-1 text-right text-xs font-mono font-bold tabular-nums ${lib && aStr !== '-' ? 'text-amber-300' : ''}">${esc(aStr)}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500/70 rounded-full" style="width:${hPct}%"></div>
+                </div>
+                <div class="w-24 shrink-0"></div>
+                <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-400/70 rounded-full ml-auto" style="width:${aPct}%"></div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    return html;
 }
 
 function i18nText(i18nObj, fallback = '') {
@@ -520,6 +631,11 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         el.textContent = t(el.dataset.i18n);
     });
+    // S2: Update aria-labels on date scroll buttons
+    const scrollLeft = document.getElementById('date-scroll-left');
+    if (scrollLeft) scrollLeft.setAttribute('aria-label', t('scrollLeft'));
+    const scrollRight = document.getElementById('date-scroll-right');
+    if (scrollRight) scrollRight.setAttribute('aria-label', t('scrollRight'));
     document.querySelectorAll('.lang-btn').forEach(btn => {
         const active = btn.dataset.lang === uiLang;
         btn.classList.toggle('bg-white/15', active);
@@ -729,8 +845,8 @@ window.addEventListener('popstate', () => {
 
 // ========== Clock ==========
 function tick() {
-    document.getElementById('clock').textContent =
-        new Date().toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
+    const time = new Date().toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
+    document.getElementById('clock').textContent = time + (uiLang === 'en' ? ' CST' : '');
 }
 tick(); setInterval(tick, 1000);
 applyLanguage();
@@ -780,11 +896,9 @@ async function loadScores() {
         el.innerHTML = `<div class="text-center py-20"><div class="text-5xl mb-3">⚠️</div><p class="text-gray-500">${res.isFailure ? tx('加载失败，请稍后重试', 'Failed to load, please retry') : esc(res.error || '')}</p></div>`;
         return;
     }
-    // This tab may include upcoming fixtures for today, but completed matches
-    // belong in Schedule / match review rather than the Live view.
-    const visibleMatches = (d.matches || []).filter(m =>
-        m.state !== 'post' && m.sClass !== 'finished'
-    );
+    // Show today's matches including finished ones — ESPN scoreboard already
+    // scoped to today, so include post matches with final scores.
+    const visibleMatches = d.matches || [];
 
     if (!visibleMatches.length) {
         el.innerHTML = `<div class="text-center py-20"><div class="text-5xl mb-3">😴</div><p class="text-gray-500">${esc(t('noMatchesToday'))}</p></div>`;
@@ -812,7 +926,7 @@ function card(m) {
 
     return `
     <div class="schedule-row" data-action="${action}" data-match-id="${attr(m.id)}" data-home-id="${attr(m.home.id || '')}" data-away-id="${attr(m.away.id || '')}" data-home-name="${attr(m.home.name)}" data-away-name="${attr(m.away.name)}" data-venue-name="${attr(m.venue || '')}">
-        <div class="schedule-time">${esc(m.timeBJT?.split(' ')[1]?.substring(0,5) || '')}</div>
+        <div class="schedule-time">${esc(m.timeBJT?.split(' ')[1]?.substring(0,5) || '')} <span class="text-[9px] text-gray-600">${tx('北京时间', 'CST')}</span></div>
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
             ${logo(m.home)}
             <span class="font-bold text-xs truncate">${esc(displayMaybeTeamName(m.home))}</span>
@@ -886,7 +1000,7 @@ async function loadSchedule() {
         return `<button data-d="${attr(d)}" data-action="filter-date" data-date="${attr(d)}"
             class="date-btn snap-center shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-bold transition
             ${extraCls}">
-            ${specialIcon} ${label} <span class="opacity-50 text-[10px] ml-1">${n}${uiLang === 'zh' ? '' : ' '}${esc(t('matchesSuffix'))}</span></button>`;
+            ${specialIcon} ${label} <span class="opacity-50 text-[10px] ml-1">${n}${uiLang === 'zh' ? '' : ' '}${esc(t(n === 1 ? 'matchSuffix' : 'matchesSuffix'))}</span></button>`;
     }).join('');
 
     if (dates.length) {
@@ -1008,13 +1122,12 @@ async function loadStandings() {
 
     el.innerHTML = html;
     
-    // Load bracket
-    fetch('/static/bracket-data.json').then(r=>r.json()).then(data => {
+    // Load bracket from dynamic API (resolves group positions → team names)
+    api('/api/bracket').then(data => {
         const container = document.getElementById('bracket-container-standings');
-        if (container) {
+        if (container && data && !data.error) {
             container.innerHTML = '';
             renderBracket(data, container);
-            // Auto-scroll to center (Final match) after render
             setTimeout(() => {
                 const wrap = container.querySelector('#bk-wrap');
                 if (wrap) container.scrollLeft = (wrap.scrollWidth - container.clientWidth) / 2;
@@ -1153,26 +1266,12 @@ async function openMatch(id) {
                 <span class="text-xs text-gray-500">${tx('加载比赛回顾...', 'Loading match review...')}</span>
             </div>
         </div>
-        <div id="detail-content-stats" class="detail-content">`;
-
-    // Stats tab — 进球 + 技术统计
-    if (matchData.goals?.length) {
-        html += `<h4 class="text-xs font-bold text-gray-500 mb-2">⚽ ${tx('进球', 'Goals')}</h4>`;
-        html += matchData.goals.map(g => `
-            <div class="flex items-center gap-2 text-xs py-1">
-                <span class="text-gray-500 w-10">${esc(g.minute)}</span>
-                <span class="font-medium">${esc(g.player)}</span>
-                <span class="text-gray-600">(${esc(g.team)})</span>
+        <div id="detail-content-stats" class="detail-content">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+                <span class="text-xs text-gray-500">${tx('加载统计数据...', 'Loading stats...')}</span>
             </div>
-        `).join('');
-    } else { html += `<div class="text-gray-600 text-sm mb-2">${tx('暂无进球数据', 'No goal data')}</div>`; }
-
-    if (matchData.teamStats?.length) {
-        html += `<h4 class="text-xs font-bold text-gray-500 mb-2 mt-3">📊 ${tx('技术统计', 'Match Stats')}</h4>`;
-        html += renderMatchStats(matchData.teamStats);
-    }
-
-    html += `</div>`;  // close stats
+        </div>`;
 
     // Corners tab
     html += `<div id="detail-content-corners" class="detail-content hidden">
@@ -1182,15 +1281,84 @@ async function openMatch(id) {
         </div>
     </div>`;
 
-    // Coach tab
+    // Coach tab — placeholder until team IDs are available for real loading
     html += `<div id="detail-content-coach" class="detail-content hidden">
-        <div class="text-gray-500 text-xs py-4 text-center">${tx('教练数据加载中...', 'Loading coach data...')}</div>
+        ${window.WorldCup.MatchRenderers.renderCoachPanel(matchData, isFinishedMatch)}
     </div>`;
 
     html += '</div>'; // close detail tabs
 
     content.innerHTML = html;
     loadVenue();
+
+    // Load stats asynchronously: boxscore for finished matches, recent-avg for pre-match
+    // P0: Declare match identity vars BEFORE stats branching to avoid TDZ
+    const schedMatch = scheduledMatch;
+    const isFinished = schedMatch.state === 'post' || matchData.state === 'post' || matchData.status?.type === 'STATUS_FINAL';
+    const mHomeId = schedMatch.home?.id || matchData.home?.id || matchData.homeId;
+    const mAwayId = schedMatch.away?.id || matchData.away?.id || matchData.awayId;
+    const mHomeScore = parseInt(schedMatch.home?.score ?? matchData.home?.score ?? matchData.homeScore ?? '0');
+    const mAwayScore = parseInt(schedMatch.away?.score ?? matchData.away?.score ?? matchData.awayScore ?? '0');
+    const isFin = isFinishedMatch;
+    const statsEl = document.getElementById('detail-content-stats');
+    if (!statsEl) { /* detail tab may be missing in some contexts */ }
+    else if (isFin && matchData.teamStats?.length) {
+        // Finished match with boxscore: render real match stats
+        let statsHtml = '';
+        if (matchData.goals?.length) {
+            statsHtml += `<h4 class="text-xs font-bold text-gray-500 mb-2">⚽ ${tx('进球', 'Goals')}</h4>`;
+            statsHtml += matchData.goals.map(g => `
+                <div class="flex items-center gap-2 text-xs py-1">
+                    <span class="text-gray-500 w-10">${esc(g.minute)}</span>
+                    <span class="font-medium">${esc(g.player)}</span>
+                    <span class="text-gray-600">(${esc(g.team)})</span>
+                </div>
+            `).join('');
+        }
+        statsHtml += `<h4 class="text-xs font-bold text-gray-500 mb-2 mt-3">📊 ${tx('技术统计', 'Match Stats')}</h4>`;
+        statsHtml += renderMatchStats(matchData.teamStats);
+        statsEl.innerHTML = statsHtml;
+    } else if (isFin) {
+        // Finished match but no boxscore yet (ESPN delay)
+        statsEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">
+            <p>⏳ ${tx('赛后统计暂未同步', 'Post-match stats not synced')}</p>
+            <p class="text-gray-600 mt-1 text-[10px]">${tx('ESPN 暂未提供本场技术统计，页面不会用赛前均值填充。', 'ESPN has not provided match statistics yet.')}</p>
+        </div>`;
+    } else {
+        // Pre-match: fetch recent-avg stats for both teams
+        const hId = mHomeId || matchData.home?.id;
+        const aId = mAwayId || matchData.away?.id;
+        if (hId && aId) {
+            Promise.allSettled([
+                hId ? api('/api/team/' + hId + '/recent-stats') : Promise.resolve(null),
+                aId ? api('/api/team/' + aId + '/recent-stats') : Promise.resolve(null),
+            ]).then(([h, a]) => {
+                const el = document.getElementById('detail-content-stats');
+                if (!el) return;
+                const hs = (h.status === 'fulfilled' && h.value?.stats) ? h.value : null;
+                const as = (a.status === 'fulfilled' && a.value?.stats) ? a.value : null;
+                if (!hs && !as) {
+                    el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">
+                        <p>📊 ${tx('赛前暂无可用统计', 'No pre-match stats')}</p>
+                        <p class="text-gray-600 mt-1 text-[10px]">${tx('缺乏近期完赛记录，无法生成场均统计。', 'Insufficient completed matches to generate averages.')}</p>
+                    </div>`;
+                    return;
+                }
+                const mn = lcl => (lcl === 'zh' ? '近期场均' : 'Recent Avg');
+                const hName = displayMaybeTeamName(matchData.home?.nameI18n || matchData.home?.name || '');
+                const aName = displayMaybeTeamName(matchData.away?.nameI18n || matchData.away?.name || '');
+                let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">📊 ${tx('近期场均统计', 'Recent Avg Stats')}</h4>`;
+                statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx('基于近期完赛记录生成，非预测。', 'Based on recent completed matches, not predictions.')}</p>`;
+                statsHtml += renderRecentAvgComparison(hs, as, hName, aName);
+                el.innerHTML = statsHtml;
+            }).catch(() => {
+                const el = document.getElementById('detail-content-stats');
+                if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('统计数据加载失败', 'Failed to load stats')}</div>`;
+            });
+        } else {
+            statsEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('统计数据加载失败', 'Failed to load stats')}</div>`;
+        }
+    }
 
     // Load pre-match prediction async (only for pre/scheduled matches)
     if (showPreMatch) {
@@ -1216,12 +1384,6 @@ async function openMatch(id) {
 
     // Load match review (for finished/post matches) async
     // Use schedule data for team IDs and scores (more reliable than /api/match/:id)
-    const schedMatch = scheduledMatch;
-    const isFinished = schedMatch.state === 'post' || matchData.state === 'post' || matchData.status?.type === 'STATUS_FINAL';
-    const mHomeId = schedMatch.home?.id || matchData.home?.id || matchData.homeId;
-    const mAwayId = schedMatch.away?.id || matchData.away?.id || matchData.awayId;
-    const mHomeScore = parseInt(schedMatch.home?.score ?? matchData.home?.score ?? matchData.homeScore ?? '0');
-    const mAwayScore = parseInt(schedMatch.away?.score ?? matchData.away?.score ?? matchData.awayScore ?? '0');
     if (isFinished && mHomeId && mAwayId && mHomeScore >= 0 && mAwayScore >= 0) {
         // T05: 只读取review，不自动生成。如果不存在，显示诚实的空状态。
         fetch('/api/post-match-review/' + id)
@@ -1268,7 +1430,36 @@ async function openMatch(id) {
         if (el) el.innerHTML = '<div class="text-gray-500 text-xs py-4 text-center">⏳ 比赛结束后自动生成回顾</div>';
     }
     // Load coach data async
-    // Will be populated when team IDs are available
+    if (mHomeId && mAwayId) {
+        withClientTimeout(API.get('/api/coach-compare/' + mHomeId + '/' + mAwayId, { timeout: API.TIMEOUT_LONG }), 8000).then(res => {
+            const el = document.getElementById('detail-content-coach');
+            const coachData = res?.data;
+            if (el && coachData && !coachData.error) {
+                el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(coachData, isFinishedMatch);
+            } else if (el) {
+                // Fallback: load individual coaches
+                Promise.allSettled([
+                    API.get('/api/coach/' + mHomeId, { timeout: 5000 }),
+                    API.get('/api/coach/' + mAwayId, { timeout: 5000 })
+                ]).then(([homeR, awayR]) => {
+                    if (el) {
+                        const homeC = homeR.status === 'fulfilled' && homeR.value?.data && !homeR.value.data.error ? homeR.value.data : null;
+                        const awayC = awayR.status === 'fulfilled' && awayR.value?.data && !awayR.value.data.error ? awayR.value.data : null;
+                        el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel({ coachA: homeC, coachB: awayC, comparison: null, _fallback: true }, isFinishedMatch);
+                    }
+                }).catch(() => {
+                    if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch);
+                });
+            }
+        }).catch(() => {
+            const el = document.getElementById('detail-content-coach');
+            if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch);
+        });
+    } else {
+        // No team IDs available — show placeholder
+        const el = document.getElementById('detail-content-coach');
+        if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch);
+    }
 }
 
 function switchDetailTab(tab, btn) {
@@ -1769,7 +1960,7 @@ function renderNewsList(data) {
                 </div>
             </div>
             <div class="text-[11px] text-gray-600">
-                ${tx('来源', 'Source')}: ${source === 'tavily' ? 'Tavily AI' : tx('模拟数据', 'Mock data')}
+                ${tx('来源', 'Source')}: ${source === 'tavily' ? 'Tavily AI' : tx('暂无同步', 'Not synced')}
             </div>
         </div>
         
@@ -1811,8 +2002,8 @@ function renderNewsList(data) {
         </div>
         `).join('') : `
         <div class="glass-light rounded-lg p-4 text-center">
-            <div class="text-gray-500 text-xs">${tx('暂无相关新闻', 'No related news')}</div>
-            <div class="text-[11px] text-gray-600 mt-1">${tx('配置 Tavily API Key 以获取实时新闻', 'Configure a Tavily API key for live news')}</div>
+            <div class="text-gray-500 text-xs">${tx('暂无新闻同步', 'No synced news yet')}</div>
+            <div class="text-[11px] text-gray-600 mt-1">${tx('未获取到可信新闻来源，页面不会用模拟新闻填充。', 'No trusted news source was returned; mock news is not shown.')}</div>
         </div>
         `}
         
@@ -1972,8 +2163,17 @@ function groupRecordFromStanding(team) {
 }
 
 async function loadTeams() {
-    if (!allTeams.length) await refreshTeamsFromStandings();
     const el = document.getElementById('teams-grid');
+    // T3: Show loading state immediately so /#teams is never blank
+    if (!allTeams.length) {
+        el.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">⚽ ${t('teamsLoading')}</div>`;
+        try {
+            await refreshTeamsFromStandings();
+        } catch (e) {
+            el.innerHTML = `<div class="col-span-full text-center py-10 text-red-400">⚠️ ${t('teamsError')}</div>`;
+            return;
+        }
+    }
     el.innerHTML = allTeams.map(team => `
         <div class="card glass rounded-xl p-3 cursor-pointer" data-action="open-team-detail" data-team-id="${attr(team.id)}" data-team-name="${attr(team.name)}" data-group="${attr(team.group)}">
             <div class="flex items-center gap-2 mb-2">
@@ -2641,7 +2841,7 @@ async function loadPrediction() {
         '/api/qualification-probabilities',
     ]);
 
-    let html = `<div class="border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100">
+    let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100">
         ⚠️ ${tx('本页面为实验性足球概率模型，仅供产品体验参考，不构成任何投注建议。预测基于 Elo 评分与 Poisson 进球预期模型，不接入实时市场赔率。', 'This page provides an experimental football probability model for product evaluation only. It is not betting advice. Predictions are based on Elo ratings and Poisson goal expectations, without live market odds.')}
     </div>`;
 
@@ -2675,8 +2875,10 @@ async function loadPrediction() {
                 changeHtml = `<span class="rank-change rank-down">▼${Math.abs(t.change)}</span>`;
             }
 
+            const eloFlag = t.flag || getFlagEmoji(t.teamId) || '🏳️';
             html += `<div class="elo-card flex items-center gap-3">
-                <div class="elo-rank-badge ${rankCls}">${t.rank}</div>
+                <div class="elo-rank-badge ${rankCls}">#${t.rank}</div>
+                <div class="team-flag">${eloFlag}</div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between mb-1">
                         <span class="text-xs font-bold truncate">${displayMaybeTeamName(t)}</span>
@@ -2857,10 +3059,10 @@ async function loadPrediction() {
                         <div class="text-[9px] text-gray-500 mt-2">
                             ${tx('权重', 'Weights')}: Elo ${(weights.elo*100).toFixed(0)}% · Poisson ${(weights.poisson*100).toFixed(0)}% · ${tx('赔率', 'Odds')} ${(weights.odds*100).toFixed(0)}% · ${tx('教练', 'Coach')} ${(weights.coach*100).toFixed(0)}% · ${tx('场馆', 'Venue')} ${(weights.venue*100).toFixed(0)}%
                         </div>
-                        <div class="text-[9px] text-gray-600 mt-1.5 border-t border-white/5 pt-1.5 leading-relaxed">
+                        <div class="pred-fusion-text text-[9px] text-gray-600 mt-1.5 border-t border-white/5 pt-1.5 leading-relaxed">
                             ${tx(
-                                '五路融合说明：Elo 评分（30%）衡量球队实力与历史胜率；Poisson 模型（25%）基于预期进球模拟比赛结果；赛前赔率（20%）反映市场共识；教练能力（15%）评估战术部署与临场调整；场馆因素（10%）考虑主客场与场地影响。各权重乘以对应数据置信度后动态重新归一，确保预测结果综合反映多方信息。',
-                                'Fusion: Elo (30%) measures team strength; Poisson (25%) simulates expected goals; Pre-match odds (20%) reflect market consensus; Coach rating (15%) evaluates tactics; Venue factor (10%) accounts for home/away advantage. Each weight is multiplied by its data confidence and dynamically re-normalized.'
+                                `五路融合说明：Elo 评分（${(weights.elo*100).toFixed(0)}%）衡量球队实力与历史胜率；Poisson 模型（${(weights.poisson*100).toFixed(0)}%）基于预期进球模拟比赛结果；赛前赔率（${(weights.odds*100).toFixed(0)}%）反映市场共识；教练能力（${(weights.coach*100).toFixed(0)}%）评估战术部署与临场调整；场馆因素（${(weights.venue*100).toFixed(0)}%）考虑主客场与场地影响。各权重乘以对应数据置信度后动态重新归一，确保预测结果综合反映多方信息。`,
+                                `Fusion: Elo (${(weights.elo*100).toFixed(0)}%) measures team strength; Poisson (${(weights.poisson*100).toFixed(0)}%) simulates expected goals; Pre-match odds (${(weights.odds*100).toFixed(0)}%) reflects market consensus; Coach rating (${(weights.coach*100).toFixed(0)}%) evaluates tactics; Venue factor (${(weights.venue*100).toFixed(0)}%) accounts for home/away advantage. Each weight is multiplied by its data confidence and dynamically re-normalized.`
                             )}
                         </div>
                     </div>
@@ -2887,13 +3089,12 @@ async function loadPrediction() {
 
     el.innerHTML = html || `<div class="text-gray-500 text-center py-10">${tx('暂无预测数据', 'No prediction data available')}</div>`;
     
-    // Load bracket
-    fetch('/static/bracket-data.json').then(r=>r.json()).then(data => {
+    // Load bracket from dynamic API
+    api('/api/bracket').then(data => {
         const container = document.getElementById('bracket-container-pred');
-        if (container) {
+        if (container && data && !data.error) {
             container.innerHTML = '';
             renderBracket(data, container);
-            // Auto-scroll to center (Final match) after render
             setTimeout(() => {
                 const wrap = container.querySelector('#bk-wrap');
                 if (wrap) container.scrollLeft = (wrap.scrollWidth - container.clientWidth) / 2;
@@ -3037,18 +3238,69 @@ async function openPreMatch(matchId, homeId, awayId, homeName, awayName, venueNa
     // === 📊 数据 Tab 区 ===
     html += `<div class="mt-4">
         <div class="flex gap-1.5 mb-3 overflow-x-auto">
-            <button data-action="switch-detail-tab" data-detail-tab="corners" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white">📐 ${tx('角球', 'Corners')}</button>
+            <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white">📊 ${tx('统计', 'Stats')}</button>
+            <button data-action="switch-detail-tab" data-detail-tab="corners" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400">📐 ${tx('角球', 'Corners')}</button>
             <button data-action="switch-detail-tab" data-detail-tab="coach" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400">🧠 ${tx('教练', 'Coach')}</button>
         </div>
-        <div id="detail-content-corners" class="detail-content">
+        <div id="detail-content-stats" class="detail-content">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+                <span class="text-xs text-gray-500">${tx('加载统计数据...', 'Loading stats...')}</span>
+            </div>
+        </div>
+        <div id="detail-content-corners" class="detail-content hidden">
             <div class="text-gray-500 text-xs py-4 text-center">${tx('加载角球数据...', 'Loading corner data...')}</div>
         </div>
         <div id="detail-content-coach" class="detail-content hidden">
-            <div class="text-gray-500 text-xs py-4 text-center">${tx('教练数据加载中...', 'Loading coach data...')}</div>
+            <div class="flex items-center gap-2 mb-3">
+                <div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+                <span class="text-xs text-gray-500">${tx('加载教练数据...', 'Loading coach data...')}</span>
+            </div>
         </div>
     </div>`;
 
     content.innerHTML = html;
+
+    // Load recent-avg stats for pre-match
+    Promise.allSettled([
+        homeId ? API.get(`/api/team/${homeId}/recent-stats`) : Promise.resolve({ data: null }),
+        awayId ? API.get(`/api/team/${awayId}/recent-stats`) : Promise.resolve({ data: null }),
+    ]).then(([hRes, aRes]) => {
+        const el = document.getElementById('detail-content-stats');
+        if (!el) return;
+        const hs = (hRes.status === 'fulfilled' && hRes.value?.data?.stats) ? hRes.value.data : null;
+        const as = (aRes.status === 'fulfilled' && aRes.value?.data?.stats) ? aRes.value.data : null;
+        if (!hs && !as) {
+            el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">
+                <p>📊 ${tx('赛前暂无可用统计', 'No pre-match stats')}</p>
+                <p class="text-gray-600 mt-1 text-[10px]">${tx('缺乏近期完赛记录，无法生成场均统计。', 'Insufficient completed matches to generate averages.')}</p>
+            </div>`;
+            return;
+        }
+        const hName = homeName || (hs?.teamId || '');
+        const aName = awayName || (as?.teamId || '');
+        let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">📊 ${tx('近期场均统计', 'Recent Avg Stats')}</h4>`;
+        statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx('基于近期完赛记录生成，非预测。', 'Based on recent completed matches, not predictions.')}</p>`;
+        statsHtml += renderRecentAvgComparison(hs, as, hName, aName);
+        el.innerHTML = statsHtml;
+    }).catch(() => {
+        const el = document.getElementById('detail-content-stats');
+        if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('统计数据加载失败', 'Failed to load stats')}</div>`;
+    });
+
+    // Load coach comparison async
+    withClientTimeout(API.get('/api/coach-compare/' + homeId + '/' + awayId, { timeout: API.TIMEOUT_LONG }), 8000).then(res => {
+        const el = document.getElementById('detail-content-coach');
+        const coachData = res?.data;
+        if (el && coachData && !coachData.error) {
+            el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(coachData, false);
+        } else if (el) {
+            el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, false);
+        }
+    }).catch(() => {
+        const el = document.getElementById('detail-content-coach');
+        if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, false);
+    });
 
     const venueRequest = scheduledVenue
         ? API.get('/api/venue/' + encodeURIComponent(scheduledVenue), { timeout: API.TIMEOUT_LONG }).then(r => r.data)
@@ -3073,12 +3325,6 @@ async function openPreMatch(matchId, homeId, awayId, homeName, awayName, venueNa
         const el = document.getElementById('detail-content-corners');
         if (el && res.ok && res.data) el.innerHTML = renderCornerAnalysis(res.data);
         else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('角球数据暂无', 'No corner data')}</div>`;
-    });
-
-    API.get(`/api/coach-compare/${homeId}/${awayId}`).then(res => {
-        const el = document.getElementById('detail-content-coach');
-        if (el && res.ok && res.data) el.innerHTML = renderCoachComparison(res.data);
-        else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('教练数据暂无', 'No coach data')}</div>`;
     });
 }
 
@@ -3611,6 +3857,7 @@ function getFlagEmoji(teamId) {
         '209': '🇪🇨', // Ecuador
         '210': '🇵🇾', // Paraguay
         '212': '🇺🇾', // Uruguay
+        '214': '🇨🇷', // Costa Rica
         '4375': '🇮🇶', // Iraq
         '4398': '🇶🇦', // Qatar
         '4469': '🇬🇭', // Ghana

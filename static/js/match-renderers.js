@@ -38,10 +38,37 @@ window.WorldCup.MatchRenderers = (() => {
     // Formation positions mapping (will be populated later)
     const FORMATION_POSITIONS = {};
     
-    // Safe helper: get team label with fallback chain
+    // Safe helper: get team label with i18n + fallback chain
     const teamLabel = (teamObj) => {
-        if (!teamObj) return '?';
-        return teamObj.team || teamObj.name || teamObj.shortName || teamObj.teamName || '?';
+        if (!teamObj) return tx('未知球队', 'Unknown Team');
+        // Try i18n name first
+        const i18n = teamObj.nameI18n;
+        if (i18n && (i18n.zh || i18n.en)) {
+            return getLang() === 'en' ? (i18n.en || i18n.zh || '') : (i18n.zh || i18n.en || '');
+        }
+        // Bilingual string: split and pick correct language
+        const raw = teamObj.team || teamObj.name || teamObj.shortName || teamObj.teamName || '';
+        if (raw) {
+            const bilingual = raw.match(/^([\u3400-\u9fff（）()·\s]+)\s+(.+)$/u);
+            if (bilingual) return getLang() === 'en' ? bilingual[2].trim() : bilingual[1].trim();
+            return raw;
+        }
+        // Extended fallback: fullName, displayName, label, or id
+        const alt = teamObj.fullName || teamObj.displayName || teamObj.label || teamObj.id || '';
+        if (alt) return alt;
+        return tx('未知球队', 'Unknown Team');
+    };
+    
+    // Flag helper: show flag emoji, or fallback to team initial avatar
+    const teamFlagHtml = (teamObj, bgClass) => {
+        const flag = teamObj && teamObj.flag;
+        if (flag && flag !== '🏳️' && flag !== '') {
+            return `<span class="text-lg shrink-0">${esc(flag)}</span>`;
+        }
+        // Fallback: circular avatar with first letter of team name
+        const name = teamLabel(teamObj);
+        const initial = name ? name.charAt(0).toUpperCase() : '?';
+        return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${bgClass} text-white text-xs font-bold shrink-0">${esc(initial)}</span>`;
     };
     
     // Safe helper: get player coordinates with fallback chain
@@ -70,13 +97,13 @@ window.WorldCup.MatchRenderers = (() => {
         
         let html = `
         <div class="flex items-center justify-between mb-2">
-            <div class="text-xs font-bold text-blue-300">🔵 ${teamLabel(home)} (${home.formation || '?'})</div>
+            <div class="text-xs font-bold text-blue-300 flex items-center gap-1.5">🔵 ${teamFlagHtml(home, 'bg-blue-600')} ${teamLabel(home)} (${home.formation || '4-3-3'})</div>
             <div class="flex gap-1">
                 <button data-action="set-pitch-view" data-view="both" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/10 text-white font-bold">${tx('全部', 'All')}</button>
                 <button data-action="set-pitch-view" data-view="home" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx('主队', 'Home')}</button>
                 <button data-action="set-pitch-view" data-view="away" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx('客队', 'Away')}</button>
             </div>
-            <div class="text-xs font-bold text-red-300">${teamLabel(away)} (${away.formation || '?'}) 🔴</div>
+            <div class="text-xs font-bold text-red-300 flex items-center gap-1.5 justify-end">${teamLabel(away)} (${away.formation || '4-3-3'}) ${teamFlagHtml(away, 'bg-red-600')} 🔴</div>
         </div>
         
         <!-- Composite Score Bar -->
@@ -166,7 +193,7 @@ window.WorldCup.MatchRenderers = (() => {
 
         // Home team — top half
         html += '<div class="absolute top-0 left-0 right-0 h-[49%]" style="z-index:2;">';
-        if (home.players) {
+        if (home.players && home.players.length > 0) {
             for (const p of home.players) {
                 if (!p) continue;
                 const r = p.rating || 70;
@@ -188,6 +215,14 @@ window.WorldCup.MatchRenderers = (() => {
                     <div class="name text-blue-200">${p.name.split(' ').pop()}</div>
                 </div>`;
             }
+        } else {
+            html += `<div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-gray-400 text-[11px] text-center px-4 py-2 glass-light rounded-lg">
+                    ${isFinishedMatch
+                        ? tx('官方首发尚未同步，不以推测阵容替代实际首发。', 'Official lineups not synced; estimates are not shown as actual starters.')
+                        : tx('推测阵容未生成，请等待官方首发公布。', 'Projected lineup not yet generated; please wait for official announcement.')}
+                </div>
+            </div>`;
         }
         html += '</div>';
 
@@ -198,7 +233,7 @@ window.WorldCup.MatchRenderers = (() => {
 
         // Away team — bottom half
         html += '<div class="absolute bottom-0 left-0 right-0 h-[49%]" style="z-index:2;">';
-        if (away.players) {
+        if (away.players && away.players.length > 0) {
             for (const p of away.players) {
                 if (!p) continue;
                 const r = p.rating || 70;
@@ -220,6 +255,14 @@ window.WorldCup.MatchRenderers = (() => {
                     <div class="name text-red-200">${p.name.split(' ').pop()}</div>
                 </div>`;
             }
+        } else {
+            html += `<div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-gray-400 text-[11px] text-center px-4 py-2 glass-light rounded-lg">
+                    ${isFinishedMatch
+                        ? tx('官方首发尚未同步，不以推测阵容替代实际首发。', 'Official lineups not synced; estimates are not shown as actual starters.')
+                        : tx('推测阵容未生成，请等待官方首发公布。', 'Projected lineup not yet generated; please wait for official announcement.')}
+                </div>
+            </div>`;
         }
         html += '</div>';
 
@@ -349,7 +392,7 @@ window.WorldCup.MatchRenderers = (() => {
                 
                 <div class="flex items-center gap-3">
                     <div class="flex-1">
-                        <div class="text-sm font-bold ${getStrengthColor(comparison.homeStrength)}">🔵 ${esc(home.teamName) || '主队'}</div>
+                        <div class="text-sm font-bold ${getStrengthColor(comparison.homeStrength)}">🔵 ${teamLabel(home)}</div>
                         <div class="text-lg font-bold ${getStrengthColor(comparison.homeStrength)}">${comparison.homeStrength || '-'}</div>
                     </div>
                     
@@ -359,7 +402,7 @@ window.WorldCup.MatchRenderers = (() => {
                     </div>
                     
                     <div class="flex-1 text-right">
-                        <div class="text-sm font-bold ${getStrengthColor(comparison.awayStrength)}">${esc(away.teamName) || '客队'} 🔴</div>
+                        <div class="text-sm font-bold ${getStrengthColor(comparison.awayStrength)}">${teamLabel(away)} 🔴</div>
                         <div class="text-lg font-bold ${getStrengthColor(comparison.awayStrength)}">${comparison.awayStrength || '-'}</div>
                     </div>
                 </div>
@@ -394,20 +437,20 @@ window.WorldCup.MatchRenderers = (() => {
             
             <!-- Home Bench -->
             <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-blue-400 mb-2">🔵 ${esc(home.teamName) || '主队'} 替补席</div>
-                ${home.bench?.map(p => renderBenchPlayer(p, 'text-blue-400', home.teamName)).join('') || '<div class="text-gray-500 text-xs">暂无替补数据</div>'}
+                <div class="text-xs font-bold text-blue-400 mb-2">🔵 ${esc(teamLabel(home))} ${tx('替补席', 'Bench')}</div>
+                ${home.bench?.map(p => renderBenchPlayer(p, 'text-blue-400', teamLabel(home))).join('') || `<div class="text-gray-500 text-xs">${tx('暂无替补数据', 'No bench data')}</div>`}
             </div>
             
             <!-- Away Bench -->
             <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-red-400 mb-2">🔴 ${esc(away.teamName) || '客队'} 替补席</div>
-                ${away.bench?.map(p => renderBenchPlayer(p, 'text-red-400', away.teamName)).join('') || '<div class="text-gray-500 text-xs">暂无替补数据</div>'}
+                <div class="text-xs font-bold text-red-400 mb-2">🔴 ${esc(teamLabel(away))} ${tx('替补席', 'Bench')}</div>
+                ${away.bench?.map(p => renderBenchPlayer(p, 'text-red-400', teamLabel(away))).join('') || `<div class="text-gray-500 text-xs">${tx('暂无替补数据', 'No bench data')}</div>`}
             </div>
             
             <!-- Substitution Matrix -->
             ${home.substitutionMatrix && Object.keys(home.substitutionMatrix).length > 0 ? `
             <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-gray-400 mb-2">🔄 ${esc(home.teamName) || '主队'} 替代关系</div>
+                <div class="text-xs font-bold text-gray-400 mb-2">🔄 ${teamLabel(home)} ${tx('替代关系', 'Substitution Relations')}</div>
                 ${Object.entries(home.substitutionMatrix).map(([starter, subs]) => `
                 <div class="flex items-center justify-between text-[11px] py-1 border-b border-white/5">
                     <span class="font-bold">${esc(starter)}</span>
@@ -423,7 +466,7 @@ window.WorldCup.MatchRenderers = (() => {
             
             ${away.substitutionMatrix && Object.keys(away.substitutionMatrix).length > 0 ? `
             <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-gray-400 mb-2">🔄 ${esc(away.teamName) || '客队'} 替代关系</div>
+                <div class="text-xs font-bold text-gray-400 mb-2">🔄 ${teamLabel(away)} ${tx('替代关系', 'Substitution Relations')}</div>
                 ${Object.entries(away.substitutionMatrix).map(([starter, subs]) => `
                 <div class="flex items-center justify-between text-[11px] py-1 border-b border-white/5">
                     <span class="font-bold">${esc(starter)}</span>
@@ -469,10 +512,123 @@ window.WorldCup.MatchRenderers = (() => {
         });
     }
     
+    // renderCoachPanel function
+    function renderCoachPanel(coachData, isFinishedMatch) {
+        // No data at all → placeholder
+        if (!coachData || (!coachData.coachA && !coachData.coachB)) {
+            return `<div class="glass-light rounded-lg p-6 text-center">
+                <div class="text-4xl mb-3">🧠</div>
+                <div class="text-sm font-bold text-gray-300 mb-2">${tx('教练数据', 'Coach Data')}</div>
+                <div class="text-xs text-gray-500">${tx('教练数据将在后续版本中开放，敬请期待。', 'Coach data will be available in a future release. Stay tuned.')}</div>
+            </div>`;
+        }
+
+        // Both coaches available (with or without comparison)
+        const coachA = coachData.coachA;
+        const coachB = coachData.coachB;
+        const comp = coachData.comparison;
+
+        const renderCoachCard = (coach, side) => {
+            if (!coach || coach.error) {
+                return `<div class="glass-light rounded-lg p-4 text-center">
+                    <div class="text-2xl mb-1">🤷</div>
+                    <div class="text-xs text-gray-500">${tx('教练数据暂未同步', 'Coach data not synced')}</div>
+                </div>`;
+            }
+            const name = coach.name || '?';
+            const style = coach.style || tx('未知', 'Unknown');
+            const winRate = coach.winRate || '?';
+            const tenure = coach.tenure || '?';
+            const nationality = coach.nationality || '';
+            const flag = coach.flag || '';
+            const sideColor = side === 'home' ? 'border-l-blue-500' : 'border-l-red-500';
+            return `<div class="glass-light rounded-lg p-4 border-l-2 ${sideColor}">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg">${esc(flag || '')}</span>
+                    <span class="text-sm font-bold text-gray-200">${esc(name)}</span>
+                </div>
+                ${nationality ? `<div class="text-[11px] text-gray-500 mb-1">${esc(nationality)}</div>` : ''}
+                <div class="grid grid-cols-3 gap-2 text-[11px]">
+                    <div><span class="text-gray-600">${tx('风格', 'Style')}</span><br><span class="text-gray-300">${esc(style)}</span></div>
+                    <div><span class="text-gray-600">${tx('胜率', 'Win %')}</span><br><span class="text-gray-300 font-mono">${esc(winRate)}</span></div>
+                    <div><span class="text-gray-600">${tx('执教', 'Tenure')}</span><br><span class="text-gray-300 font-mono">${esc(tenure)}</span></div>
+                </div>
+            </div>`;
+        };
+
+        let html = '<div class="grid grid-cols-2 gap-3 mb-3">';
+        html += renderCoachCard(coachA, 'home');
+        html += renderCoachCard(coachB, 'away');
+        html += '</div>';
+
+        // Style comparison analysis
+        if (comp) {
+            html += `<div class="glass-light rounded-lg p-4">
+                <div class="text-xs font-bold text-gray-400 mb-2">⚔️ ${tx('战术对位分析', 'Tactical Matchup')}</div>
+                <div class="space-y-2 text-xs">`;
+
+            if (comp.styleMatchupI18n) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">📋</span>
+                    <span class="text-gray-300">${esc(i18nText(comp.styleMatchupI18n))}</span>
+                </div>`;
+            } else if (comp.styleMatchup) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">📋</span>
+                    <span class="text-gray-300">${esc(comp.styleMatchup)}</span>
+                </div>`;
+            }
+
+            if (comp.experienceGapI18n) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">⏳</span>
+                    <span class="text-gray-300">${esc(i18nText(comp.experienceGapI18n))}</span>
+                </div>`;
+            } else if (comp.experienceGap) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">⏳</span>
+                    <span class="text-gray-300">${esc(comp.experienceGap)}</span>
+                </div>`;
+            }
+
+            if (comp.adjustmentEdgeI18n) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">🎯</span>
+                    <span class="text-gray-300">${esc(i18nText(comp.adjustmentEdgeI18n))}</span>
+                </div>`;
+            } else if (comp.adjustmentEdge) {
+                html += `<div class="flex items-start gap-2">
+                    <span class="text-gray-500">🎯</span>
+                    <span class="text-gray-300">${esc(comp.adjustmentEdge)}</span>
+                </div>`;
+            }
+
+            // Overall scores
+            if (comp.overallScore) {
+                const scores = comp.overallScore;
+                html += `<div class="flex items-center gap-3 mt-3 pt-3 border-t border-white/5">
+                    <span class="text-gray-500 text-[11px]">${tx('综合评分', 'Overall')}</span>`;
+                for (const [name, score] of Object.entries(scores)) {
+                    html += `<span class="text-[11px] font-mono font-bold text-gray-200">${esc(name)}: ${esc(String(score))}</span>`;
+                }
+                html += `</div>`;
+            }
+
+            html += `</div></div>`;
+        } else if (coachA && coachB && !coachData._fallback) {
+            html += `<div class="glass-light rounded-lg p-4 text-center">
+                <div class="text-xs text-gray-500">${tx('教练对阵分析暂未生成', 'Coach matchup analysis not yet generated')}</div>
+            </div>`;
+        }
+
+        return html;
+    }
+    
     // Export functions
     return {
         renderFormation,
         renderBenchAnalysis,
         applySubstitutionsToFormation,
+        renderCoachPanel,
     };
 })();

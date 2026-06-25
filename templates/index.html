@@ -8,19 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="/manifest.json">
     <title>PitchSignal · 2026 世界杯</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/tailwind-output.css?v=20260627">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a25' }
-                }
-            }
-        }
-    }
-    </script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
     * { font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -91,6 +80,8 @@
     .elo-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #7c3aed, #3b82f6); transition: width 0.8s ease; }
     .pred-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; transition: all 0.2s; }
     .pred-card:hover { border-color: rgba(59,130,246,0.2); }
+    .pred-fusion-text { word-break: break-word; overflow-wrap: break-word; white-space: normal; }
+    .pred-disclaimer { word-break: break-word; overflow-wrap: break-word; white-space: normal; }
     .prob-bar { height: 28px; border-radius: 8px; overflow: hidden; display: flex; position: relative; background: rgba(255,255,255,0.04); }
     .prob-bar-home { background: linear-gradient(90deg, #22c55e, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; transition: width 0.8s ease; min-width: 0; }
     .prob-bar-draw { background: linear-gradient(90deg, #eab308, #ca8a04); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000; transition: width 0.8s ease; min-width: 0; }
@@ -136,7 +127,7 @@
                 <h1 class="text-base font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                     2026 世界杯
                 </h1>
-                <p class="text-[11px] text-gray-600 leading-none">美加墨 · 赛事分析</p>
+                <p class="text-[11px] text-gray-600 leading-none" data-i18n="headerSubtitle">美加墨 · 赛事分析</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
@@ -160,7 +151,7 @@
             <span class="text-sm">📅</span><span class="hidden sm:inline" data-i18n="navSchedule">赛程</span><span class="sm:hidden">Schedule</span>
         </button>
         <button data-tab="prediction" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
-            <span class="text-sm">🧠</span><span class="hidden sm:inline" data-i18n="navPrediction">预测</span><span class="sm:hidden">Predict</span>
+            <span class="text-sm">🧠</span><span class="hidden sm:inline" data-i18n="navPrediction">预测</span><span class="sm:hidden">Prediction</span>
         </button>
         <button data-tab="standings" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
             <span class="text-sm">📊</span><span class="hidden sm:inline" data-i18n="navStandings">积分</span><span class="sm:hidden">Table</span>
@@ -220,11 +211,11 @@
     <!-- SCHEDULE -->
     <section id="tab-schedule" class="tab-content hidden relative">
         <div class="relative flex items-center mb-3">
-            <button id="date-scroll-left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#121212] via-[#121212] to-transparent pr-4 hover:text-white text-gray-400">
+            <button id="date-scroll-left" aria-label="Scroll dates left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#121212] via-[#121212] to-transparent pr-4 hover:text-white text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
             <div id="date-bar" class="flex gap-1.5 overflow-x-auto px-6 scrollbar-hide scroll-smooth w-full hide-scrollbar snap-x snap-mandatory"></div>
-            <button id="date-scroll-right" class="absolute right-0 z-10 h-full bg-gradient-to-l from-[#121212] via-[#121212] to-transparent pl-4 hover:text-white text-gray-400">
+            <button id="date-scroll-right" aria-label="Scroll dates right" class="absolute right-0 z-10 h-full bg-gradient-to-l from-[#121212] via-[#121212] to-transparent pl-4 hover:text-white text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>
@@ -271,15 +262,15 @@
 <!-- Bottom bar -->
 <div class="fixed bottom-0 w-full glass border-t border-white/5 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
     <div class="max-w-5xl mx-auto px-4 py-1.5 flex items-center justify-between text-[11px] text-gray-700">
-        <span>实验性概率模型 · 非投注建议 · ESPN 数据</span>
+        <span data-i18n="footerDisclaimer">实验性概率模型 · 非投注建议 · ESPN 数据</span>
         <span id="update-time">--</span>
     </div>
 </div>
 
 <!-- AI Bot -->
 <div id="ai-bot-root"></div>
-<link rel="stylesheet" href="/static/css/bot.css?v=20260627">
-<script src="/static/js/bot.js?v=20260627"></script>
+<link rel="stylesheet" href="/static/css/bot.css?v=20260628">
+<script src="/static/js/bot.js?v=20260628"></script>
 
 <!-- Knockout Bracket Renderer -->
 <link rel="stylesheet" href="/static/css/bracket.css?v=20260627">
