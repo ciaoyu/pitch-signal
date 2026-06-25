@@ -40,7 +40,7 @@ Runs the test suites for Prediction Models, Elo rating, and Poisson distribution
 - `/templates` - Single Page Application HTML.
 - `/data` - Static JSON files (brackets, base ratings, offline scrape data).
 - `/scripts` - Utilities for data scraping (e.g., Transfermarkt values).
-- `/docs/archive` - Historical planning and architecture documents.
+- `/middleware`, `/services` - HTTP middleware and domain services.
 
 ## 🚢 Deployment
 
@@ -101,17 +101,18 @@ Quick overview:
 
 ## 📚 Documentation
 
-### Current Docs
-- **[README.md](README.md)** - This file
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture overview
-- **[BACKLOG.md](BACKLOG.md)** - Current backlog and known issues
+- **[ENVIRONMENT.md](ENVIRONMENT.md)** - Environment variables and key hygiene
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history
-- **[PROJECT.md](PROJECT.md)** - Project documentation
-- **[DEVELOPMENT_LOG.md](DEVELOPMENT_LOG.md)** - Development log
-
-### Detailed Documentation
 - **[docs/API.md](docs/API.md)** - Full API reference
-- **[docs/operations/](docs/operations/)** - Operations guides and runbooks
-- **[docs/archive/](docs/archive/)** - Historical planning and architecture documents
+- **[docs/VERSIONING.md](docs/VERSIONING.md)** - Static asset / cache versioning strategy
+- **[docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)** - How the prediction model works
+- **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway deployment guide
+- **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - Public beta safety & gates
 
-> **Note**: Stale planning documents, conflict files, and outdated reports have been moved to `docs/archive/` to keep the root directory clean.
+## ⚠️ Disclaimer
+
+- **Experimental probability model.** Predictions come from a custom Dixon-Coles-adjusted Poisson + Elo model. Outputs are statistical estimates for analysis and entertainment only — they are **not guarantees** of any result.
+- **Not betting advice.** Nothing in PitchSignal is gambling or investment advice. Do not use it to place bets.
+- **Third-party data dependency.** Live fixtures, scores, standings, and squads are fetched from the **ESPN API** (plus optional OpenWeatherMap / odds providers). PitchSignal does not own this data; availability, accuracy, and coverage depend entirely on those upstream sources and may break or lag without notice.
+- **Single-instance deployment.** Persistence uses **SQLite** (single-writer). Run exactly **one** instance — do not horizontally scale — and keep the data directory on a persistent volume.

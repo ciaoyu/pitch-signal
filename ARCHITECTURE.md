@@ -42,9 +42,8 @@ ESPN scoreboard → Elo Calculator → Poisson λ Estimator → Probability Fusi
 
 - API Reference: [docs/API.md](docs/API.md) (42+ endpoints)
 - Beta Safety: [docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)
-- Release Gate: [docs/BETA-RELEASE-GATE-2026-06-21.md](docs/BETA-RELEASE-GATE-2026-06-21.md)
 - Deployment: [docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)
-- Backlog: [BACKLOG.md](BACKLOG.md)
+- Prediction Model: [docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Tech Stack
