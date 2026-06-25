@@ -1,0 +1,587 @@
+{
+  "version": "3.0",
+  "lastUpdated": "2026-06-14",
+  "description": "Elo ratings from 2018+2022 World Cup results",
+  "teams": {
+    "Russia": {
+      "id": "Russia",
+      "name": "Russia",
+      "attack_strength": 1.024,
+      "defense_strength": 1.023,
+      "rating": 1539,
+      "matches": 5,
+      "avgGF": 2.2,
+      "avgGA": 1.4
+    },
+    "Saudi Arabia": {
+      "id": "Saudi Arabia",
+      "name": "Saudi Arabia",
+      "attack_strength": 0.987,
+      "defense_strength": 1.054,
+      "rating": 1454,
+      "matches": 6,
+      "avgGF": 0.83,
+      "avgGA": 2
+    },
+    "Egypt": {
+      "id": "Egypt",
+      "name": "Egypt",
+      "attack_strength": 0.984,
+      "defense_strength": 1.057,
+      "rating": 1447,
+      "matches": 3,
+      "avgGF": 0.67,
+      "avgGA": 2
+    },
+    "Uruguay": {
+      "id": "Uruguay",
+      "name": "Uruguay",
+      "attack_strength": 1.114,
+      "defense_strength": 0.945,
+      "rating": 1746,
+      "matches": 8,
+      "avgGF": 1.13,
+      "avgGA": 0.63
+    },
+    "Morocco": {
+      "id": "Morocco",
+      "name": "Morocco",
+      "attack_strength": 1.091,
+      "defense_strength": 0.965,
+      "rating": 1692,
+      "matches": 10,
+      "avgGF": 0.8,
+      "avgGA": 0.9
+    },
+    "Iran": {
+      "id": "Iran",
+      "name": "Iran",
+      "attack_strength": 1.028,
+      "defense_strength": 1.019,
+      "rating": 1549,
+      "matches": 6,
+      "avgGF": 1,
+      "avgGA": 1.5
+    },
+    "Portugal": {
+      "id": "Portugal",
+      "name": "Portugal",
+      "attack_strength": 1.125,
+      "defense_strength": 0.936,
+      "rating": 1770,
+      "matches": 9,
+      "avgGF": 2,
+      "avgGA": 1.33
+    },
+    "Spain": {
+      "id": "Spain",
+      "name": "Spain",
+      "attack_strength": 1.122,
+      "defense_strength": 0.938,
+      "rating": 1763,
+      "matches": 8,
+      "avgGF": 2,
+      "avgGA": 1.13
+    },
+    "France": {
+      "id": "France",
+      "name": "France",
+      "attack_strength": 1.205,
+      "defense_strength": 0.867,
+      "rating": 1953,
+      "matches": 14,
+      "avgGF": 2.14,
+      "avgGA": 1
+    },
+    "Australia": {
+      "id": "Australia",
+      "name": "Australia",
+      "attack_strength": 1.041,
+      "defense_strength": 1.007,
+      "rating": 1579,
+      "matches": 7,
+      "avgGF": 0.86,
+      "avgGA": 1.57
+    },
+    "Peru": {
+      "id": "Peru",
+      "name": "Peru",
+      "attack_strength": 1.058,
+      "defense_strength": 0.993,
+      "rating": 1617,
+      "matches": 3,
+      "avgGF": 0.67,
+      "avgGA": 0.67
+    },
+    "Denmark": {
+      "id": "Denmark",
+      "name": "Denmark",
+      "attack_strength": 1.064,
+      "defense_strength": 0.988,
+      "rating": 1631,
+      "matches": 7,
+      "avgGF": 0.57,
+      "avgGA": 0.71
+    },
+    "Argentina": {
+      "id": "Argentina",
+      "name": "Argentina",
+      "attack_strength": 1.163,
+      "defense_strength": 0.903,
+      "rating": 1857,
+      "matches": 11,
+      "avgGF": 1.91,
+      "avgGA": 1.55
+    },
+    "Iceland": {
+      "id": "Iceland",
+      "name": "Iceland",
+      "attack_strength": 1.009,
+      "defense_strength": 1.035,
+      "rating": 1505,
+      "matches": 3,
+      "avgGF": 0.67,
+      "avgGA": 1.67
+    },
+    "Croatia": {
+      "id": "Croatia",
+      "name": "Croatia",
+      "attack_strength": 1.131,
+      "defense_strength": 0.93,
+      "rating": 1785,
+      "matches": 14,
+      "avgGF": 1.57,
+      "avgGA": 1.14
+    },
+    "Nigeria": {
+      "id": "Nigeria",
+      "name": "Nigeria",
+      "attack_strength": 1.039,
+      "defense_strength": 1.009,
+      "rating": 1575,
+      "matches": 3,
+      "avgGF": 1,
+      "avgGA": 1.33
+    },
+    "Costa Rica": {
+      "id": "Costa Rica",
+      "name": "Costa Rica",
+      "attack_strength": 1.009,
+      "defense_strength": 1.036,
+      "rating": 1504,
+      "matches": 6,
+      "avgGF": 0.83,
+      "avgGA": 2.67
+    },
+    "Serbia": {
+      "id": "Serbia",
+      "name": "Serbia",
+      "attack_strength": 1.032,
+      "defense_strength": 1.016,
+      "rating": 1557,
+      "matches": 6,
+      "avgGF": 1.17,
+      "avgGA": 2
+    },
+    "Brazil": {
+      "id": "Brazil",
+      "name": "Brazil",
+      "attack_strength": 1.149,
+      "defense_strength": 0.916,
+      "rating": 1824,
+      "matches": 10,
+      "avgGF": 1.6,
+      "avgGA": 0.6
+    },
+    "Switzerland": {
+      "id": "Switzerland",
+      "name": "Switzerland",
+      "attack_strength": 1.09,
+      "defense_strength": 0.966,
+      "rating": 1690,
+      "matches": 8,
+      "avgGF": 1.25,
+      "avgGA": 1.75
+    },
+    "Germany": {
+      "id": "Germany",
+      "name": "Germany",
+      "attack_strength": 1.107,
+      "defense_strength": 0.951,
+      "rating": 1729,
+      "matches": 6,
+      "avgGF": 1.33,
+      "avgGA": 1.5
+    },
+    "Mexico": {
+      "id": "Mexico",
+      "name": "Mexico",
+      "attack_strength": 1.082,
+      "defense_strength": 0.973,
+      "rating": 1671,
+      "matches": 7,
+      "avgGF": 0.71,
+      "avgGA": 1.29
+    },
+    "Sweden": {
+      "id": "Sweden",
+      "name": "Sweden",
+      "attack_strength": 1.074,
+      "defense_strength": 0.98,
+      "rating": 1653,
+      "matches": 5,
+      "avgGF": 1.2,
+      "avgGA": 0.8
+    },
+    "South Korea": {
+      "id": "South Korea",
+      "name": "South Korea",
+      "attack_strength": 1.061,
+      "defense_strength": 0.99,
+      "rating": 1624,
+      "matches": 7,
+      "avgGF": 1.14,
+      "avgGA": 1.57
+    },
+    "Belgium": {
+      "id": "Belgium",
+      "name": "Belgium",
+      "attack_strength": 1.167,
+      "defense_strength": 0.9,
+      "rating": 1865,
+      "matches": 10,
+      "avgGF": 1.7,
+      "avgGA": 0.8
+    },
+    "Panama": {
+      "id": "Panama",
+      "name": "Panama",
+      "attack_strength": 0.965,
+      "defense_strength": 1.073,
+      "rating": 1405,
+      "matches": 3,
+      "avgGF": 0.67,
+      "avgGA": 3.67
+    },
+    "Tunisia": {
+      "id": "Tunisia",
+      "name": "Tunisia",
+      "attack_strength": 1.035,
+      "defense_strength": 1.013,
+      "rating": 1565,
+      "matches": 6,
+      "avgGF": 1,
+      "avgGA": 1.5
+    },
+    "England": {
+      "id": "England",
+      "name": "England",
+      "attack_strength": 1.14,
+      "defense_strength": 0.922,
+      "rating": 1805,
+      "matches": 12,
+      "avgGF": 2.08,
+      "avgGA": 1
+    },
+    "Colombia": {
+      "id": "Colombia",
+      "name": "Colombia",
+      "attack_strength": 1.113,
+      "defense_strength": 0.946,
+      "rating": 1742,
+      "matches": 4,
+      "avgGF": 1.5,
+      "avgGA": 0.75
+    },
+    "Japan": {
+      "id": "Japan",
+      "name": "Japan",
+      "attack_strength": 1.08,
+      "defense_strength": 0.974,
+      "rating": 1668,
+      "matches": 8,
+      "avgGF": 1.38,
+      "avgGA": 1.38
+    },
+    "Poland": {
+      "id": "Poland",
+      "name": "Poland",
+      "attack_strength": 1.045,
+      "defense_strength": 1.004,
+      "rating": 1588,
+      "matches": 7,
+      "avgGF": 0.71,
+      "avgGA": 1.43
+    },
+    "Senegal": {
+      "id": "Senegal",
+      "name": "Senegal",
+      "attack_strength": 1.093,
+      "defense_strength": 0.963,
+      "rating": 1698,
+      "matches": 7,
+      "avgGF": 1.29,
+      "avgGA": 1.57
+    },
+    "Qatar": {
+      "id": "Qatar",
+      "name": "Qatar",
+      "attack_strength": 0.959,
+      "defense_strength": 1.078,
+      "rating": 1390,
+      "matches": 3,
+      "avgGF": 0.33,
+      "avgGA": 2.33
+    },
+    "Ecuador": {
+      "id": "Ecuador",
+      "name": "Ecuador",
+      "attack_strength": 1.043,
+      "defense_strength": 1.006,
+      "rating": 1582,
+      "matches": 3,
+      "avgGF": 1.33,
+      "avgGA": 1
+    },
+    "Netherlands": {
+      "id": "Netherlands",
+      "name": "Netherlands",
+      "attack_strength": 1.15,
+      "defense_strength": 0.914,
+      "rating": 1827,
+      "matches": 5,
+      "avgGF": 2,
+      "avgGA": 0.8
+    },
+    "USA": {
+      "id": "USA",
+      "name": "USA",
+      "attack_strength": 1.09,
+      "defense_strength": 0.966,
+      "rating": 1690,
+      "matches": 4,
+      "avgGF": 0.75,
+      "avgGA": 1
+    },
+    "Wales": {
+      "id": "Wales",
+      "name": "Wales",
+      "attack_strength": 0.997,
+      "defense_strength": 1.046,
+      "rating": 1477,
+      "matches": 3,
+      "avgGF": 0.33,
+      "avgGA": 2
+    },
+    "Canada": {
+      "id": "Canada",
+      "name": "Canada",
+      "attack_strength": 1.017,
+      "defense_strength": 1.029,
+      "rating": 1523,
+      "matches": 3,
+      "avgGF": 0.67,
+      "avgGA": 2.33
+    },
+    "Cameroon": {
+      "id": "Cameroon",
+      "name": "Cameroon",
+      "attack_strength": 1.029,
+      "defense_strength": 1.018,
+      "rating": 1551,
+      "matches": 3,
+      "avgGF": 1.33,
+      "avgGA": 1.33
+    },
+    "Ghana": {
+      "id": "Ghana",
+      "name": "Ghana",
+      "attack_strength": 1.032,
+      "defense_strength": 1.015,
+      "rating": 1558,
+      "matches": 3,
+      "avgGF": 1.67,
+      "avgGA": 2.33
+    },
+    "Bosnia-Herzegovina": {
+      "id": "Bosnia-Herzegovina",
+      "name": "Bosnia-Herzegovina",
+      "attack_strength": 1.024,
+      "defense_strength": 1.022,
+      "rating": 1540,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Haiti": {
+      "id": "Haiti",
+      "name": "Haiti",
+      "attack_strength": 0.954,
+      "defense_strength": 1.082,
+      "rating": 1380,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Scotland": {
+      "id": "Scotland",
+      "name": "Scotland",
+      "attack_strength": 1.033,
+      "defense_strength": 1.015,
+      "rating": 1560,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Paraguay": {
+      "id": "Paraguay",
+      "name": "Paraguay",
+      "attack_strength": 1.037,
+      "defense_strength": 1.011,
+      "rating": 1570,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Curaçao": {
+      "id": "Curaçao",
+      "name": "Curaçao",
+      "attack_strength": 0.941,
+      "defense_strength": 1.093,
+      "rating": 1350,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Ivory Coast": {
+      "id": "Ivory Coast",
+      "name": "Ivory Coast",
+      "attack_strength": 1.007,
+      "defense_strength": 1.037,
+      "rating": 1500,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Cape Verde": {
+      "id": "Cape Verde",
+      "name": "Cape Verde",
+      "attack_strength": 0.98,
+      "defense_strength": 1.06,
+      "rating": 1440,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Iraq": {
+      "id": "Iraq",
+      "name": "Iraq",
+      "attack_strength": 0.998,
+      "defense_strength": 1.045,
+      "rating": 1480,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Norway": {
+      "id": "Norway",
+      "name": "Norway",
+      "attack_strength": 1.059,
+      "defense_strength": 0.992,
+      "rating": 1620,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Algeria": {
+      "id": "Algeria",
+      "name": "Algeria",
+      "attack_strength": 1.011,
+      "defense_strength": 1.033,
+      "rating": 1510,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Austria": {
+      "id": "Austria",
+      "name": "Austria",
+      "attack_strength": 1.051,
+      "defense_strength": 1,
+      "rating": 1600,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Jordan": {
+      "id": "Jordan",
+      "name": "Jordan",
+      "attack_strength": 0.989,
+      "defense_strength": 1.052,
+      "rating": 1460,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Congo DR": {
+      "id": "Congo DR",
+      "name": "Congo DR",
+      "attack_strength": 0.985,
+      "defense_strength": 1.056,
+      "rating": 1450,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Uzbekistan": {
+      "id": "Uzbekistan",
+      "name": "Uzbekistan",
+      "attack_strength": 0.998,
+      "defense_strength": 1.045,
+      "rating": 1480,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Czechia": {
+      "id": "Czechia",
+      "name": "Czechia",
+      "attack_strength": 1.059,
+      "defense_strength": 0.992,
+      "rating": 1620,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "New Zealand": {
+      "id": "New Zealand",
+      "name": "New Zealand",
+      "attack_strength": 0.998,
+      "defense_strength": 1.045,
+      "rating": 1480,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "South Africa": {
+      "id": "South Africa",
+      "name": "South Africa",
+      "attack_strength": 0.989,
+      "defense_strength": 1.052,
+      "rating": 1460,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    },
+    "Türkiye": {
+      "id": "Türkiye",
+      "name": "Türkiye",
+      "attack_strength": 1.042,
+      "defense_strength": 1.007,
+      "rating": 1580,
+      "matches": 0,
+      "avgGF": null,
+      "avgGA": null
+    }
+  }
+}

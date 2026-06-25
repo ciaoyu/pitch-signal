@@ -1,0 +1,915 @@
+{
+  "164": {
+    "name": "路易斯·德拉富恩特",
+    "nationality": "西班牙",
+    "age": 63,
+    "style": "控球+高位压迫",
+    "styleDetail": "延续西班牙tiki-taka传统，但加入更多直接进攻元素",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2022",
+    "tenure": "4年",
+    "winRate": "70%",
+    "bigTournament": "2024欧洲杯冠军",
+    "adjustment": "积极，敢于使用年轻球员",
+    "vsOpponent": "欧洲杯冠军教练",
+    "flexibility": "高，战术灵活",
+    "notes": "2024欧洲杯冠军教练，亚马尔、佩德里等年轻核心是其法宝"
+  },
+  "202": {
+    "name": "利昂内尔·斯卡洛尼",
+    "nationality": "阿根廷",
+    "age": 48,
+    "style": "控球+高位逼抢",
+    "styleDetail": "以梅西为核心的传控体系，团队凝聚力极强",
+    "formation": [
+      "4-3-3",
+      "4-4-2"
+    ],
+    "since": "2018",
+    "tenure": "8年",
+    "winRate": "72%",
+    "bigTournament": "2022世界杯冠军, 2021美洲杯冠军, 2024美洲杯冠军",
+    "adjustment": "灵活，善于根据对手调整，换人果断",
+    "vsOpponent": "卫冕冠军，经验丰富",
+    "flexibility": "高，战术多变",
+    "notes": "带领阿根廷夺得世界杯+两届美洲杯，团队凝聚力是最大武器"
+  },
+  "203": {
+    "name": "哈维尔·阿吉雷",
+    "nationality": "墨西哥",
+    "age": 66,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "墨西哥足球风格，防守组织好，反击速度快",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "55%",
+    "bigTournament": "多次世界杯经验",
+    "adjustment": "保守，注重防守",
+    "vsOpponent": "世界杯经验丰富的老帅",
+    "flexibility": "中等",
+    "notes": "墨西哥老帅，曾执教多支国家队，世界杯经验丰富"
+  },
+  "205": {
+    "name": "多里瓦尔·儒尼奥尔",
+    "nationality": "巴西",
+    "age": 62,
+    "style": "技术流+进攻足球",
+    "styleDetail": "巴西传统进攻足球，强调个人技术和团队配合",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "65%",
+    "bigTournament": "2024美洲杯",
+    "adjustment": "中等，进攻端调整积极",
+    "vsOpponent": "南美区经验丰富",
+    "flexibility": "中等，坚持技术流风格",
+    "notes": "巴西队传统进攻足球的代表，维尼修斯和罗德里戈是核心"
+  },
+  "206": {
+    "name": "杰西·马什",
+    "nationality": "美国",
+    "age": 52,
+    "style": "高位逼抢+快速传导",
+    "styleDetail": "美式高压风格，前利兹联主帅，强度大但风险也大",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "55%",
+    "bigTournament": "2024上任, 2026世界杯(东道主)",
+    "adjustment": "激进，敢于冒险，换人果断",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等，核心阵型稳定",
+    "notes": "前利兹联主帅，执教加拿大后注入美式高压风格，阿方索·戴维斯是核心"
+  },
+  "208": {
+    "name": "尤尔根·克林斯曼",
+    "nationality": "德国",
+    "age": 62,
+    "style": "进攻足球+高位逼抢",
+    "styleDetail": "德式进攻足球，强调跑动和逼抢",
+    "formation": [
+      "4-2-3-1",
+      "4-3-3"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "52%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "曾执教美国、德国",
+    "flexibility": "中等",
+    "notes": "韩国队换帅，克林斯曼带来德式进攻理念，孙兴慜是核心"
+  },
+  "209": {
+    "name": "菲利克斯·桑切斯",
+    "nationality": "厄瓜多尔",
+    "age": 49,
+    "style": "控球+高位逼抢",
+    "styleDetail": "西班牙风格教练，强调控球和逼抢",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2023",
+    "tenure": "3年",
+    "winRate": "52%",
+    "bigTournament": "2022世界杯(卡塔尔), 2024美洲杯",
+    "adjustment": "中等",
+    "vsOpponent": "有世界杯经验",
+    "flexibility": "中等",
+    "notes": "曾执教卡塔尔，转投厄瓜多尔，凯塞多是核心"
+  },
+  "210": {
+    "name": "古斯塔沃·阿尔法罗",
+    "nationality": "阿根廷",
+    "age": 62,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "南美老帅，强调防守纪律，反击犀利，阵型偏保守",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守，领先后倾向收缩防守",
+    "vsOpponent": "南美区预选赛经验丰富",
+    "flexibility": "低，阵型变化少",
+    "notes": "南美老帅，防守反击是看家本领，巴拉圭球员身体素质好是其战术基础"
+  },
+  "212": {
+    "name": "马塞洛·贝尔萨",
+    "nationality": "乌拉圭",
+    "age": 70,
+    "style": "高位逼抢+疯狂进攻",
+    "styleDetail": "疯子教练，全场紧逼，体能要求极高",
+    "formation": [
+      "4-3-3",
+      "3-3-1-3"
+    ],
+    "since": "2023",
+    "tenure": "3年",
+    "winRate": "55%",
+    "bigTournament": "2024美洲杯",
+    "adjustment": "激进，从不保守",
+    "vsOpponent": "执教经验极丰富",
+    "flexibility": "低，坚持自己的风格",
+    "notes": "足坛传奇教练，疯狂逼抢风格独树一帜，努涅斯和巴尔韦德是核心"
+  },
+  "448": {
+    "name": "托马斯·图赫尔",
+    "nationality": "德国",
+    "age": 52,
+    "style": "高压逼抢+战术多变",
+    "styleDetail": "德国战术大师，善用三后卫体系，针对性极强",
+    "formation": [
+      "3-4-3",
+      "4-2-3-1",
+      "3-5-2"
+    ],
+    "since": "2025",
+    "tenure": "1年",
+    "winRate": "70%",
+    "bigTournament": "2021欧冠冠军(切尔西), 2025上任英格兰",
+    "adjustment": "顶级，半场调整能力是其最大优势，换人果断",
+    "vsOpponent": "俱乐部层面交手经验极丰富",
+    "flexibility": "极高，几乎每场比赛都有阵型微调",
+    "notes": "前切尔西/拜仁主帅，战术大师，善用三后卫，是本届杯赛战术素养最高的教练之一"
+  },
+  "449": {
+    "name": "罗纳德·科曼",
+    "nationality": "荷兰",
+    "age": 63,
+    "style": "控球+进攻足球",
+    "styleDetail": "荷兰传统全攻全守理念，强调边路进攻",
+    "formation": [
+      "4-3-3",
+      "3-4-3"
+    ],
+    "since": "2023",
+    "tenure": "3年",
+    "winRate": "58%",
+    "bigTournament": "2024欧洲杯4强",
+    "adjustment": "中等，偏好进攻",
+    "vsOpponent": "经验丰富",
+    "flexibility": "中等",
+    "notes": "荷兰足球名宿回归执教，德容和加克波是核心"
+  },
+  "450": {
+    "name": "伊万·哈谢克",
+    "nationality": "捷克",
+    "age": 58,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "东欧足球风格，防守硬朗，反击速度快",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "捷克队新帅，绍切克是核心"
+  },
+  "451": {
+    "name": "蒂埃里·亨利",
+    "nationality": "卡塔尔",
+    "age": 49,
+    "style": "控球+进攻足球",
+    "styleDetail": "法国传奇执教卡塔尔，强调进攻和技术",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "积极，善于激发球员",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "高",
+    "notes": "法国传奇亨利执教卡塔尔，阿费夫是核心"
+  },
+  "452": {
+    "name": "谢尔盖·巴尔巴雷兹",
+    "nationality": "波黑",
+    "age": 54,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "巴尔干足球风格，防守硬朗，反击犀利",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯",
+    "flexibility": "中等",
+    "notes": "波黑足球名宿，哲科和皮亚尼奇是核心"
+  },
+  "459": {
+    "name": "兹拉科·达利奇",
+    "nationality": "克罗地亚",
+    "age": 59,
+    "style": "控球+中场组织",
+    "styleDetail": "以莫德里奇为核心的中场传控体系，耐心倒脚寻找空间",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2017",
+    "tenure": "9年",
+    "winRate": "55%",
+    "bigTournament": "2018世界杯亚军, 2022世界杯季军, 2024欧洲杯小组出局",
+    "adjustment": "临场调整能力强，善于针对对手弱点部署，半场逆转率高(35%)",
+    "vsOpponent": "经验丰富，交手过几乎所有强队",
+    "flexibility": "高，能根据对手切换3后卫/4后卫",
+    "notes": "执教克罗地亚9年，是本届世界杯最稳定的国家队教练之一，核心球员关系深厚"
+  },
+  "464": {
+    "name": "贾勒·卡德里",
+    "nationality": "突尼斯",
+    "age": 52,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "北非足球风格，防守组织严密，反击速度快",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2022世界杯",
+    "adjustment": "保守，防守为主",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "中等",
+    "notes": "突尼斯足球稳定教练，哈兹里是核心"
+  },
+  "465": {
+    "name": "罗伯托·曼奇尼",
+    "nationality": "沙特阿拉伯",
+    "age": 61,
+    "style": "控球+进攻足球",
+    "styleDetail": "意大利名帅执教沙特，强调控球和进攻",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2023",
+    "tenure": "3年",
+    "winRate": "55%",
+    "bigTournament": "2020欧洲杯冠军(意大利), 2024上任沙特",
+    "adjustment": "积极，善于调整",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "高",
+    "notes": "意大利名帅执教沙特，2022世界杯曾击败阿根廷"
+  },
+  "466": {
+    "name": "阿米尔·加莱诺埃",
+    "nationality": "伊朗",
+    "age": 52,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "伊朗足球风格，防守组织严密，反击犀利",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "52%",
+    "bigTournament": "2022世界杯, 2024亚洲杯",
+    "adjustment": "保守，防守为主",
+    "vsOpponent": "亚洲区经验丰富",
+    "flexibility": "中等",
+    "notes": "伊朗足球稳定教练，塔雷米是核心"
+  },
+  "467": {
+    "name": "雨果·布鲁斯",
+    "nationality": "南非",
+    "age": 56,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "非洲足球风格，身体素质好，防守组织严密",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "南非队重返世界杯，防守纪律是重点"
+  },
+  "469": {
+    "name": "蒂埃里·亨利",
+    "nationality": "卡塔尔",
+    "age": 49,
+    "style": "控球+进攻足球",
+    "styleDetail": "法国传奇执教卡塔尔，强调进攻和技术",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "积极，善于激发球员",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "高",
+    "notes": "法国传奇亨利执教卡塔尔，阿费夫是核心"
+  },
+  "474": {
+    "name": "伊万·哈谢克",
+    "nationality": "捷克",
+    "age": 58,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "东欧足球风格，防守硬朗，反击速度快",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "捷克队新帅，绍切克是核心"
+  },
+  "475": {
+    "name": "穆拉特·雅金",
+    "nationality": "瑞士",
+    "age": 52,
+    "style": "防守反击+纪律性强",
+    "styleDetail": "瑞士队稳定性极高，防守组织严密，定位球威胁大",
+    "formation": [
+      "4-2-3-1",
+      "3-4-2-1"
+    ],
+    "since": "2021",
+    "tenure": "5年",
+    "winRate": "58%",
+    "bigTournament": "2022世界杯16强, 2024欧洲杯8强",
+    "adjustment": "稳健，不轻易变阵，换人有章法",
+    "vsOpponent": "对阵强队经验丰富",
+    "flexibility": "中等，但执行力极高",
+    "notes": "瑞士队连续大赛出线的保证，防守纪律是其最大标签"
+  },
+  "477": {
+    "name": "兹拉特科·达利奇",
+    "nationality": "克罗地亚",
+    "age": 58,
+    "style": "防守反击+韧性",
+    "styleDetail": "克罗地亚风格，中场控制力强，大赛经验丰富",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2017",
+    "tenure": "9年",
+    "winRate": "58%",
+    "bigTournament": "2018世界杯亚军，2022世界杯季军",
+    "adjustment": "稳健，注重中场",
+    "vsOpponent": "大赛经验丰富，淘汰赛擅长",
+    "flexibility": "高",
+    "notes": "执教克罗地亚最成功教练，莫德里奇核心"
+  },
+  "478": {
+    "name": "迪迪埃·德尚",
+    "nationality": "法国",
+    "age": 57,
+    "style": "实用主义+防守反击",
+    "styleDetail": "法国人才济济，德尚偏重防守稳固和快速反击",
+    "formation": [
+      "4-2-3-1",
+      "4-3-3"
+    ],
+    "since": "2012",
+    "tenure": "14年",
+    "winRate": "65%",
+    "bigTournament": "2018世界杯冠军, 2022世界杯亚军, 2016欧洲杯亚军",
+    "adjustment": "保守但有效，善于管理大牌球员",
+    "vsOpponent": "大赛经验极其丰富",
+    "flexibility": "中等，但执行力极高",
+    "notes": "法国队史上最成功的教练，更衣室管理是其最大优势"
+  },
+  "481": {
+    "name": "朱利安·纳格尔斯曼",
+    "nationality": "德国",
+    "age": 38,
+    "style": "高位压迫+快速转换",
+    "styleDetail": "少帅，战术前卫，高位逼抢强度大，进攻节奏快",
+    "formation": [
+      "4-2-3-1",
+      "3-4-3"
+    ],
+    "since": "2023",
+    "tenure": "3年",
+    "winRate": "65%",
+    "bigTournament": "2024欧洲杯8强(东道主)",
+    "adjustment": "积极，喜欢用年轻球员冲击，半场逆转率25%",
+    "vsOpponent": "2024欧洲杯积累大赛经验",
+    "flexibility": "高，敢于变阵和使用新人",
+    "notes": "38岁少帅，德国足球新希望，战术前卫大胆，维尔茨和穆西亚拉是他的核心武器"
+  },
+  "482": {
+    "name": "路易斯·德拉富恩特",
+    "nationality": "西班牙",
+    "age": 63,
+    "style": "控球+高位压迫",
+    "styleDetail": "延续西班牙tiki-taka传统，但加入更多直接进攻元素",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2022",
+    "tenure": "4年",
+    "winRate": "70%",
+    "bigTournament": "2024欧洲杯冠军",
+    "adjustment": "积极，敢于使用年轻球员",
+    "vsOpponent": "欧洲杯冠军教练",
+    "flexibility": "高，战术灵活",
+    "notes": "2024欧洲杯冠军教练，亚马尔、佩德里等年轻核心是其法宝"
+  },
+  "580": {
+    "name": "史蒂夫·克拉克",
+    "nationality": "苏格兰",
+    "age": 62,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "苏格兰足球风格，防守硬朗，定位球威胁大",
+    "formation": [
+      "4-2-3-1",
+      "3-4-2-1"
+    ],
+    "since": "2019",
+    "tenure": "7年",
+    "winRate": "50%",
+    "bigTournament": "2020欧洲杯, 2024欧洲杯",
+    "adjustment": "稳健，防守为主",
+    "vsOpponent": "经验丰富",
+    "flexibility": "中等",
+    "notes": "苏格兰足球稳定教练，罗伯逊是核心"
+  },
+  "624": {
+    "name": "鲁伊·维多利亚",
+    "nationality": "埃及",
+    "age": 55,
+    "style": "控球+进攻足球",
+    "styleDetail": "葡萄牙教练执教埃及，强调控球和进攻",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "55%",
+    "bigTournament": "2024上任",
+    "adjustment": "积极",
+    "vsOpponent": "非洲区经验丰富",
+    "flexibility": "中等",
+    "notes": "埃及足球名宿执教，萨拉赫是核心"
+  },
+  "627": {
+    "name": "森保一",
+    "nationality": "日本",
+    "age": 58,
+    "style": "高位逼抢+快速反击",
+    "styleDetail": "日本足球风格，团队配合好，跑动积极",
+    "formation": [
+      "4-2-3-1",
+      "3-4-2-1"
+    ],
+    "since": "2018",
+    "tenure": "8年",
+    "winRate": "58%",
+    "bigTournament": "2022世界杯16强, 2024亚洲杯",
+    "adjustment": "灵活，善于调整",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "高，能切换多种阵型",
+    "notes": "日本队稳定教练，久保建英、三�的薫是核心"
+  },
+  "628": {
+    "name": "格雷厄姆·阿诺德",
+    "nationality": "澳大利亚",
+    "age": 62,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "澳式足球风格，身体素质好，防守组织严密",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2018",
+    "tenure": "8年",
+    "winRate": "52%",
+    "bigTournament": "2022世界杯16强, 2023亚洲杯",
+    "adjustment": "稳健，防守为主",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "中等",
+    "notes": "澳大利亚足球稳定教练，赫鲁斯蒂奇是核心"
+  },
+  "654": {
+    "name": "奥托·阿多",
+    "nationality": "加纳",
+    "age": 49,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "非洲足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "加纳队重返世界杯，托马斯·帕尔特是核心"
+  },
+  "655": {
+    "name": "马克·布莱斯",
+    "nationality": "喀麦隆",
+    "age": 52,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "非洲足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2022世界杯",
+    "adjustment": "保守",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "低",
+    "notes": "喀麦隆足球经验丰富，舒波-莫廷是核心"
+  },
+  "659": {
+    "name": "何塞·佩塞罗",
+    "nationality": "尼日利亚",
+    "age": 62,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "非洲足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "尼日利亚足球重返世界杯，奥西梅恩是核心"
+  },
+  "660": {
+    "name": "格雷格·贝哈尔特",
+    "nationality": "美国",
+    "age": 52,
+    "style": "高位逼抢+快攻",
+    "styleDetail": "强调前场逼抢和快速转换，边路进攻为主",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "62%",
+    "bigTournament": "2022世界杯16强, 2024美洲杯4强",
+    "adjustment": "换人偏保守，70分钟后才动，半场逆转率低(15%)",
+    "vsOpponent": "首次交手",
+    "flexibility": "中等，阵型变化少但执行力强",
+    "notes": "二次执教，更成熟稳健，善用普利西奇+雷纳两翼齐飞，主场作战压力下能否保持冷静是关键"
+  },
+  "2570": {
+    "name": "达伦·贝泽利",
+    "nationality": "新西兰",
+    "age": 52,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "大洋洲足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "45%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "新西兰队实力有限，克里斯·伍德是核心"
+  },
+  "2597": {
+    "name": "布兰科·伊万科维奇",
+    "nationality": "中国",
+    "age": 71,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "经验丰富的防守型教练，强调纪律和组织",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2022世界杯(阿曼), 多次亚洲杯",
+    "adjustment": "保守，防守为主",
+    "vsOpponent": "亚洲区经验丰富",
+    "flexibility": "低",
+    "notes": "中国足球冲击世界杯，武磊是核心"
+  },
+  "2620": {
+    "name": "侯赛因·阿穆塔",
+    "nationality": "约旦",
+    "age": 52,
+    "style": "防守反击+团队作战",
+    "styleDetail": "中东足球风格，防守组织好，反击速度快",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024亚洲杯亚军",
+    "adjustment": "中等",
+    "vsOpponent": "亚洲区经验丰富",
+    "flexibility": "中等",
+    "notes": "约旦足球历史性突破，穆萨·塔马里是核心"
+  },
+  "2654": {
+    "name": "让-马克·诺埃尔",
+    "nationality": "海地",
+    "age": 50,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "加勒比足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "42%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "海地队首次世界杯，实力有限"
+  },
+  "2659": {
+    "name": "塞尔达尔·穆西耶夫",
+    "nationality": "乌兹别克斯坦",
+    "age": 50,
+    "style": "控球+高位逼抢",
+    "styleDetail": "中亚足球风格，技术流，强调控球",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "52%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "乌兹别克斯坦足球崛起，肖穆罗多夫是核心"
+  },
+  "2666": {
+    "name": "赫苏斯·卡萨斯",
+    "nationality": "伊拉克",
+    "age": 52,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "西班牙教练执教伊拉克，强调防守纪律",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "50%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "伊拉克队重返世界杯，阿里·贾西姆是核心"
+  },
+  "2850": {
+    "name": "古斯塔沃·阿尔法罗",
+    "nationality": "哥斯达黎加",
+    "age": 62,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "南美老帅，强调防守纪律，反击犀利",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2022世界杯(厄瓜多尔), 多次世界杯经验",
+    "adjustment": "保守，防守为主",
+    "vsOpponent": "世界杯经验丰富",
+    "flexibility": "低",
+    "notes": "哥斯达黎加足球经验丰富，纳瓦斯是核心"
+  },
+  "2869": {
+    "name": "瓦利德·雷格拉吉",
+    "nationality": "摩洛哥",
+    "age": 48,
+    "style": "防守反击+团队作战",
+    "styleDetail": "摩洛哥历史性教练，2022世界杯4强功臣",
+    "formation": [
+      "4-3-3",
+      "4-1-4-1"
+    ],
+    "since": "2022",
+    "tenure": "4年",
+    "winRate": "58%",
+    "bigTournament": "2022世界杯4强(历史最佳)",
+    "adjustment": "灵活，善于激发球员斗志",
+    "vsOpponent": "2022世界杯经验",
+    "flexibility": "高，能根据对手调整战术",
+    "notes": "2022世界杯带领摩洛哥杀入4强，创造非洲球队历史"
+  },
+  "2917": {
+    "name": "海梅·洛萨达",
+    "nationality": "牙买加",
+    "age": 48,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "加勒比足球风格，身体素质好，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "45%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "牙买加队重返世界杯，利昂·贝利是核心"
+  },
+  "4375": {
+    "name": "雷纳尔多·鲁eda",
+    "nationality": "洪都拉斯",
+    "age": 55,
+    "style": "防守反击+身体对抗",
+    "styleDetail": "中美洲足球风格，防守硬朗，反击速度快",
+    "formation": [
+      "4-4-2",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "45%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "洪都拉斯队重返世界杯，实力有限"
+  },
+  "4398": {
+    "name": "卡洛斯·奎罗斯",
+    "nationality": "葡萄牙",
+    "age": 71,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "经验丰富的防守型教练，强调纪律和组织",
+    "formation": [
+      "4-2-3-1",
+      "4-4-2"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "52%",
+    "bigTournament": "2022世界杯伊朗, 多次世界杯经验",
+    "adjustment": "保守，擅长1-0主义",
+    "vsOpponent": "世界杯经验最丰富的教练之一",
+    "flexibility": "中等，防守体系稳固",
+    "notes": "曾执教皇马、葡萄牙、伊朗，世界杯经验极其丰富"
+  },
+  "4469": {
+    "name": "雨果·佩雷斯",
+    "nationality": "萨尔瓦多",
+    "age": 52,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "中美洲足球风格，防守为主",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "42%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "萨尔瓦多队首次世界杯，实力有限"
+  },
+  "4789": {
+    "name": "帕特里克·克luivert",
+    "nationality": "库拉索",
+    "age": 50,
+    "style": "控球+进攻足球",
+    "styleDetail": "荷兰足球风格，强调控球和进攻",
+    "formation": [
+      "4-3-3",
+      "4-2-3-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "48%",
+    "bigTournament": "2024上任",
+    "adjustment": "中等",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "中等",
+    "notes": "库拉索足球历史性突破，荷兰传奇执教"
+  },
+  "11678": {
+    "name": "佩德罗·布里托",
+    "nationality": "佛得角",
+    "age": 52,
+    "style": "防守反击+纪律严明",
+    "styleDetail": "非洲小国足球风格，防守为主，团队作战",
+    "formation": [
+      "4-4-2",
+      "4-5-1"
+    ],
+    "since": "2024",
+    "tenure": "2年",
+    "winRate": "45%",
+    "bigTournament": "2024上任",
+    "adjustment": "保守",
+    "vsOpponent": "首次世界杯执教",
+    "flexibility": "低",
+    "notes": "佛得角足球历史性突破，首次世界杯"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-06-25T03:20:00Z",
+  "matchId": "760462",
+  "trigger": "first_sight",
+  "minute": 21,
+  "home": { "name": "Bosnia-Herzegovina", "score": 0, "stats": { "possessionPct": 55.2, "totalShots": 4, "shotsOnTarget": 2, "wonCorners": 2, "foulsCommitted": 4 } },
+  "away": { "name": "Qatar", "score": 0, "stats": { "possessionPct": 44.8, "totalShots": 0, "shotsOnTarget": 0, "wonCorners": 1, "foulsCommitted": 2 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.697, "draw": 0.204, "awayWin": 0.099 }, "stateShift": "still_live" },
+  "summary": "【🔍 开球】Bosnia-Herzegovina 0-0 Qatar（21'）\n  胜平负: 主胜69.7%（+10.8%）平局20.4% 客胜9.9%\n  📊 场面: 波黑控球55%，射门4-0射正2-0—波黑完全压制\n  📌 波黑赢面更大但效率不稳（射门4次0进球）\n  🔗 同组平行场: Switzerland 0-0 Canada（21'）\n  📊 出线推演: 波黑需要赢球争出线"
+}

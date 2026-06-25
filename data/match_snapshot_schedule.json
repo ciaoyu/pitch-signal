@@ -1,0 +1,3971 @@
+{
+  "generatedAt": "2026-06-18T16:23:35.591Z",
+  "source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world",
+  "timezone": "Asia/Shanghai",
+  "window": {
+    "start": "2026-06-10",
+    "end": "2026-07-20"
+  },
+  "policy": {
+    "preSnapshotMinutesBeforeKickoff": 60,
+    "groupPostSnapshotMinutesAfterKickoff": 135,
+    "knockoutPostSnapshotMinutesAfterKickoff": 225,
+    "analysisDelayMinutesAfterPostSnapshot": 15,
+    "noBackfillAfterKickoff": true
+  },
+  "matchCount": 104,
+  "matches": [
+    {
+      "matchId": "760415",
+      "name": "South Africa at Mexico",
+      "shortName": "RSA @ MEX",
+      "stage": "group",
+      "kickoffUtc": "2026-06-11T19:00:00.000Z",
+      "kickoffBjt": "2026/06/12 03:00",
+      "preSnapshotAtUtc": "2026-06-11T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/12 02:00",
+      "postSnapshotAtUtc": "2026-06-11T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/12 05:15",
+      "analysisAtUtc": "2026-06-11T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/12 05:30",
+      "teams": {
+        "home": {
+          "id": "203",
+          "name": "Mexico",
+          "abbreviation": "MEX"
+        },
+        "away": {
+          "id": "467",
+          "name": "South Africa",
+          "abbreviation": "RSA"
+        }
+      },
+      "venue": "Estadio Banorte",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760415 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760415 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760414",
+      "name": "Czechia at South Korea",
+      "shortName": "CZE @ KOR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-12T02:00:00.000Z",
+      "kickoffBjt": "2026/06/12 10:00",
+      "preSnapshotAtUtc": "2026-06-12T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/12 09:00",
+      "postSnapshotAtUtc": "2026-06-12T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/12 12:15",
+      "analysisAtUtc": "2026-06-12T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/12 12:30",
+      "teams": {
+        "home": {
+          "id": "451",
+          "name": "South Korea",
+          "abbreviation": "KOR"
+        },
+        "away": {
+          "id": "450",
+          "name": "Czechia",
+          "abbreviation": "CZE"
+        }
+      },
+      "venue": "Estadio Akron",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760414 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760414 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760416",
+      "name": "Bosnia-Herzegovina at Canada",
+      "shortName": "BIH @ CAN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-12T19:00:00.000Z",
+      "kickoffBjt": "2026/06/13 03:00",
+      "preSnapshotAtUtc": "2026-06-12T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/13 02:00",
+      "postSnapshotAtUtc": "2026-06-12T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/13 05:15",
+      "analysisAtUtc": "2026-06-12T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/13 05:30",
+      "teams": {
+        "home": {
+          "id": "206",
+          "name": "Canada",
+          "abbreviation": "CAN"
+        },
+        "away": {
+          "id": "452",
+          "name": "Bosnia-Herzegovina",
+          "abbreviation": "BIH"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760416 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760416 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760417",
+      "name": "Paraguay at United States",
+      "shortName": "PAR @ USA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-13T01:00:00.000Z",
+      "kickoffBjt": "2026/06/13 09:00",
+      "preSnapshotAtUtc": "2026-06-13T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/13 08:00",
+      "postSnapshotAtUtc": "2026-06-13T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/13 11:15",
+      "analysisAtUtc": "2026-06-13T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/13 11:30",
+      "teams": {
+        "home": {
+          "id": "660",
+          "name": "United States",
+          "abbreviation": "USA"
+        },
+        "away": {
+          "id": "210",
+          "name": "Paraguay",
+          "abbreviation": "PAR"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760417 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760417 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760420",
+      "name": "Switzerland at Qatar",
+      "shortName": "SUI @ QAT",
+      "stage": "group",
+      "kickoffUtc": "2026-06-13T19:00:00.000Z",
+      "kickoffBjt": "2026/06/14 03:00",
+      "preSnapshotAtUtc": "2026-06-13T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/14 02:00",
+      "postSnapshotAtUtc": "2026-06-13T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/14 05:15",
+      "analysisAtUtc": "2026-06-13T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/14 05:30",
+      "teams": {
+        "home": {
+          "id": "4398",
+          "name": "Qatar",
+          "abbreviation": "QAT"
+        },
+        "away": {
+          "id": "475",
+          "name": "Switzerland",
+          "abbreviation": "SUI"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760420 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760420 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760419",
+      "name": "Morocco at Brazil",
+      "shortName": "MAR @ BRA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-13T22:00:00.000Z",
+      "kickoffBjt": "2026/06/14 06:00",
+      "preSnapshotAtUtc": "2026-06-13T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/14 05:00",
+      "postSnapshotAtUtc": "2026-06-14T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/14 08:15",
+      "analysisAtUtc": "2026-06-14T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/14 08:30",
+      "teams": {
+        "home": {
+          "id": "205",
+          "name": "Brazil",
+          "abbreviation": "BRA"
+        },
+        "away": {
+          "id": "2869",
+          "name": "Morocco",
+          "abbreviation": "MAR"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760419 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760419 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760418",
+      "name": "Scotland at Haiti",
+      "shortName": "SCO @ HAI",
+      "stage": "group",
+      "kickoffUtc": "2026-06-14T01:00:00.000Z",
+      "kickoffBjt": "2026/06/14 09:00",
+      "preSnapshotAtUtc": "2026-06-14T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/14 08:00",
+      "postSnapshotAtUtc": "2026-06-14T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/14 11:15",
+      "analysisAtUtc": "2026-06-14T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/14 11:30",
+      "teams": {
+        "home": {
+          "id": "2654",
+          "name": "Haiti",
+          "abbreviation": "HAI"
+        },
+        "away": {
+          "id": "580",
+          "name": "Scotland",
+          "abbreviation": "SCO"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760418 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760418 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760421",
+      "name": "Türkiye at Australia",
+      "shortName": "TUR @ AUS",
+      "stage": "group",
+      "kickoffUtc": "2026-06-14T04:00:00.000Z",
+      "kickoffBjt": "2026/06/14 12:00",
+      "preSnapshotAtUtc": "2026-06-14T03:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/14 11:00",
+      "postSnapshotAtUtc": "2026-06-14T06:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/14 14:15",
+      "analysisAtUtc": "2026-06-14T06:30:00.000Z",
+      "analysisAtBjt": "2026/06/14 14:30",
+      "teams": {
+        "home": {
+          "id": "628",
+          "name": "Australia",
+          "abbreviation": "AUS"
+        },
+        "away": {
+          "id": "465",
+          "name": "Türkiye",
+          "abbreviation": "TUR"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760421 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760421 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760422",
+      "name": "Curaçao at Germany",
+      "shortName": "CUW @ GER",
+      "stage": "group",
+      "kickoffUtc": "2026-06-14T17:00:00.000Z",
+      "kickoffBjt": "2026/06/15 01:00",
+      "preSnapshotAtUtc": "2026-06-14T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/15 00:00",
+      "postSnapshotAtUtc": "2026-06-14T19:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/15 03:15",
+      "analysisAtUtc": "2026-06-14T19:30:00.000Z",
+      "analysisAtBjt": "2026/06/15 03:30",
+      "teams": {
+        "home": {
+          "id": "481",
+          "name": "Germany",
+          "abbreviation": "GER"
+        },
+        "away": {
+          "id": "11678",
+          "name": "Curaçao",
+          "abbreviation": "CUW"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760422 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760422 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760425",
+      "name": "Japan at Netherlands",
+      "shortName": "JPN @ NED",
+      "stage": "group",
+      "kickoffUtc": "2026-06-14T20:00:00.000Z",
+      "kickoffBjt": "2026/06/15 04:00",
+      "preSnapshotAtUtc": "2026-06-14T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/15 03:00",
+      "postSnapshotAtUtc": "2026-06-14T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/15 06:15",
+      "analysisAtUtc": "2026-06-14T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/15 06:30",
+      "teams": {
+        "home": {
+          "id": "449",
+          "name": "Netherlands",
+          "abbreviation": "NED"
+        },
+        "away": {
+          "id": "627",
+          "name": "Japan",
+          "abbreviation": "JPN"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760425 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760425 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760423",
+      "name": "Ecuador at Ivory Coast",
+      "shortName": "ECU @ CIV",
+      "stage": "group",
+      "kickoffUtc": "2026-06-14T23:00:00.000Z",
+      "kickoffBjt": "2026/06/15 07:00",
+      "preSnapshotAtUtc": "2026-06-14T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/15 06:00",
+      "postSnapshotAtUtc": "2026-06-15T01:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/15 09:15",
+      "analysisAtUtc": "2026-06-15T01:30:00.000Z",
+      "analysisAtBjt": "2026/06/15 09:30",
+      "teams": {
+        "home": {
+          "id": "4789",
+          "name": "Ivory Coast",
+          "abbreviation": "CIV"
+        },
+        "away": {
+          "id": "209",
+          "name": "Ecuador",
+          "abbreviation": "ECU"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760423 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760423 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760424",
+      "name": "Tunisia at Sweden",
+      "shortName": "TUN @ SWE",
+      "stage": "group",
+      "kickoffUtc": "2026-06-15T02:00:00.000Z",
+      "kickoffBjt": "2026/06/15 10:00",
+      "preSnapshotAtUtc": "2026-06-15T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/15 09:00",
+      "postSnapshotAtUtc": "2026-06-15T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/15 12:15",
+      "analysisAtUtc": "2026-06-15T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/15 12:30",
+      "teams": {
+        "home": {
+          "id": "466",
+          "name": "Sweden",
+          "abbreviation": "SWE"
+        },
+        "away": {
+          "id": "659",
+          "name": "Tunisia",
+          "abbreviation": "TUN"
+        }
+      },
+      "venue": "Estadio BBVA",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760424 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760424 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760428",
+      "name": "Cape Verde at Spain",
+      "shortName": "CPV @ ESP",
+      "stage": "group",
+      "kickoffUtc": "2026-06-15T16:00:00.000Z",
+      "kickoffBjt": "2026/06/16 00:00",
+      "preSnapshotAtUtc": "2026-06-15T15:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/15 23:00",
+      "postSnapshotAtUtc": "2026-06-15T18:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/16 02:15",
+      "analysisAtUtc": "2026-06-15T18:30:00.000Z",
+      "analysisAtBjt": "2026/06/16 02:30",
+      "teams": {
+        "home": {
+          "id": "164",
+          "name": "Spain",
+          "abbreviation": "ESP"
+        },
+        "away": {
+          "id": "2597",
+          "name": "Cape Verde",
+          "abbreviation": "CPV"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760428 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760428 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760426",
+      "name": "Egypt at Belgium",
+      "shortName": "EGY @ BEL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-15T19:00:00.000Z",
+      "kickoffBjt": "2026/06/16 03:00",
+      "preSnapshotAtUtc": "2026-06-15T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/16 02:00",
+      "postSnapshotAtUtc": "2026-06-15T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/16 05:15",
+      "analysisAtUtc": "2026-06-15T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/16 05:30",
+      "teams": {
+        "home": {
+          "id": "459",
+          "name": "Belgium",
+          "abbreviation": "BEL"
+        },
+        "away": {
+          "id": "2620",
+          "name": "Egypt",
+          "abbreviation": "EGY"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760426 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760426 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760429",
+      "name": "Uruguay at Saudi Arabia",
+      "shortName": "URU @ KSA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-15T22:00:00.000Z",
+      "kickoffBjt": "2026/06/16 06:00",
+      "preSnapshotAtUtc": "2026-06-15T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/16 05:00",
+      "postSnapshotAtUtc": "2026-06-16T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/16 08:15",
+      "analysisAtUtc": "2026-06-16T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/16 08:30",
+      "teams": {
+        "home": {
+          "id": "655",
+          "name": "Saudi Arabia",
+          "abbreviation": "KSA"
+        },
+        "away": {
+          "id": "212",
+          "name": "Uruguay",
+          "abbreviation": "URU"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760429 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760429 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760427",
+      "name": "New Zealand at Iran",
+      "shortName": "NZL @ IRN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-16T01:00:00.000Z",
+      "kickoffBjt": "2026/06/16 09:00",
+      "preSnapshotAtUtc": "2026-06-16T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/16 08:00",
+      "postSnapshotAtUtc": "2026-06-16T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/16 11:15",
+      "analysisAtUtc": "2026-06-16T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/16 11:30",
+      "teams": {
+        "home": {
+          "id": "469",
+          "name": "Iran",
+          "abbreviation": "IRN"
+        },
+        "away": {
+          "id": "2666",
+          "name": "New Zealand",
+          "abbreviation": "NZL"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760427 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760427 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760432",
+      "name": "Senegal at France",
+      "shortName": "SEN @ FRA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-16T19:00:00.000Z",
+      "kickoffBjt": "2026/06/17 03:00",
+      "preSnapshotAtUtc": "2026-06-16T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/17 02:00",
+      "postSnapshotAtUtc": "2026-06-16T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/17 05:15",
+      "analysisAtUtc": "2026-06-16T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/17 05:30",
+      "teams": {
+        "home": {
+          "id": "478",
+          "name": "France",
+          "abbreviation": "FRA"
+        },
+        "away": {
+          "id": "654",
+          "name": "Senegal",
+          "abbreviation": "SEN"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760432 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760432 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760430",
+      "name": "Norway at Iraq",
+      "shortName": "NOR @ IRQ",
+      "stage": "group",
+      "kickoffUtc": "2026-06-16T22:00:00.000Z",
+      "kickoffBjt": "2026/06/17 06:00",
+      "preSnapshotAtUtc": "2026-06-16T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/17 05:00",
+      "postSnapshotAtUtc": "2026-06-17T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/17 08:15",
+      "analysisAtUtc": "2026-06-17T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/17 08:30",
+      "teams": {
+        "home": {
+          "id": "4375",
+          "name": "Iraq",
+          "abbreviation": "IRQ"
+        },
+        "away": {
+          "id": "464",
+          "name": "Norway",
+          "abbreviation": "NOR"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760430 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760430 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760433",
+      "name": "Algeria at Argentina",
+      "shortName": "ALG @ ARG",
+      "stage": "group",
+      "kickoffUtc": "2026-06-17T01:00:00.000Z",
+      "kickoffBjt": "2026/06/17 09:00",
+      "preSnapshotAtUtc": "2026-06-17T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/17 08:00",
+      "postSnapshotAtUtc": "2026-06-17T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/17 11:15",
+      "analysisAtUtc": "2026-06-17T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/17 11:30",
+      "teams": {
+        "home": {
+          "id": "202",
+          "name": "Argentina",
+          "abbreviation": "ARG"
+        },
+        "away": {
+          "id": "624",
+          "name": "Algeria",
+          "abbreviation": "ALG"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760433 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760433 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760431",
+      "name": "Jordan at Austria",
+      "shortName": "JOR @ AUT",
+      "stage": "group",
+      "kickoffUtc": "2026-06-17T04:00:00.000Z",
+      "kickoffBjt": "2026/06/17 12:00",
+      "preSnapshotAtUtc": "2026-06-17T03:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/17 11:00",
+      "postSnapshotAtUtc": "2026-06-17T06:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/17 14:15",
+      "analysisAtUtc": "2026-06-17T06:30:00.000Z",
+      "analysisAtBjt": "2026/06/17 14:30",
+      "teams": {
+        "home": {
+          "id": "474",
+          "name": "Austria",
+          "abbreviation": "AUT"
+        },
+        "away": {
+          "id": "2917",
+          "name": "Jordan",
+          "abbreviation": "JOR"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760431 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760431 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760435",
+      "name": "Congo DR at Portugal",
+      "shortName": "COD @ POR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-17T17:00:00.000Z",
+      "kickoffBjt": "2026/06/18 01:00",
+      "preSnapshotAtUtc": "2026-06-17T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/18 00:00",
+      "postSnapshotAtUtc": "2026-06-17T19:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/18 03:15",
+      "analysisAtUtc": "2026-06-17T19:30:00.000Z",
+      "analysisAtBjt": "2026/06/18 03:30",
+      "teams": {
+        "home": {
+          "id": "482",
+          "name": "Portugal",
+          "abbreviation": "POR"
+        },
+        "away": {
+          "id": "2850",
+          "name": "Congo DR",
+          "abbreviation": "COD"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760435 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760435 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760437",
+      "name": "Croatia at England",
+      "shortName": "CRO @ ENG",
+      "stage": "group",
+      "kickoffUtc": "2026-06-17T20:00:00.000Z",
+      "kickoffBjt": "2026/06/18 04:00",
+      "preSnapshotAtUtc": "2026-06-17T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/18 03:00",
+      "postSnapshotAtUtc": "2026-06-17T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/18 06:15",
+      "analysisAtUtc": "2026-06-17T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/18 06:30",
+      "teams": {
+        "home": {
+          "id": "448",
+          "name": "England",
+          "abbreviation": "ENG"
+        },
+        "away": {
+          "id": "477",
+          "name": "Croatia",
+          "abbreviation": "CRO"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760437 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760437 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760434",
+      "name": "Panama at Ghana",
+      "shortName": "PAN @ GHA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-17T23:00:00.000Z",
+      "kickoffBjt": "2026/06/18 07:00",
+      "preSnapshotAtUtc": "2026-06-17T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/18 06:00",
+      "postSnapshotAtUtc": "2026-06-18T01:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/18 09:15",
+      "analysisAtUtc": "2026-06-18T01:30:00.000Z",
+      "analysisAtBjt": "2026/06/18 09:30",
+      "teams": {
+        "home": {
+          "id": "4469",
+          "name": "Ghana",
+          "abbreviation": "GHA"
+        },
+        "away": {
+          "id": "2659",
+          "name": "Panama",
+          "abbreviation": "PAN"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760434 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760434 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760436",
+      "name": "Colombia at Uzbekistan",
+      "shortName": "COL @ UZB",
+      "stage": "group",
+      "kickoffUtc": "2026-06-18T02:00:00.000Z",
+      "kickoffBjt": "2026/06/18 10:00",
+      "preSnapshotAtUtc": "2026-06-18T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/18 09:00",
+      "postSnapshotAtUtc": "2026-06-18T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/18 12:15",
+      "analysisAtUtc": "2026-06-18T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/18 12:30",
+      "teams": {
+        "home": {
+          "id": "2570",
+          "name": "Uzbekistan",
+          "abbreviation": "UZB"
+        },
+        "away": {
+          "id": "208",
+          "name": "Colombia",
+          "abbreviation": "COL"
+        }
+      },
+      "venue": "Estadio Banorte",
+      "status": {
+        "state": "post",
+        "name": "STATUS_FULL_TIME",
+        "completed": true,
+        "detail": "FT",
+        "shortDetail": "FT"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760436 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760436 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760438",
+      "name": "South Africa at Czechia",
+      "shortName": "RSA @ CZE",
+      "stage": "group",
+      "kickoffUtc": "2026-06-18T16:00:00.000Z",
+      "kickoffBjt": "2026/06/19 00:00",
+      "preSnapshotAtUtc": "2026-06-18T15:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/18 23:00",
+      "postSnapshotAtUtc": "2026-06-18T18:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/19 02:15",
+      "analysisAtUtc": "2026-06-18T18:30:00.000Z",
+      "analysisAtBjt": "2026/06/19 02:30",
+      "teams": {
+        "home": {
+          "id": "450",
+          "name": "Czechia",
+          "abbreviation": "CZE"
+        },
+        "away": {
+          "id": "467",
+          "name": "South Africa",
+          "abbreviation": "RSA"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "in",
+        "name": "STATUS_FIRST_HALF",
+        "completed": false,
+        "detail": "22'",
+        "shortDetail": "22'"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760438 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760438 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760439",
+      "name": "Bosnia-Herzegovina at Switzerland",
+      "shortName": "BIH @ SUI",
+      "stage": "group",
+      "kickoffUtc": "2026-06-18T19:00:00.000Z",
+      "kickoffBjt": "2026/06/19 03:00",
+      "preSnapshotAtUtc": "2026-06-18T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/19 02:00",
+      "postSnapshotAtUtc": "2026-06-18T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/19 05:15",
+      "analysisAtUtc": "2026-06-18T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/19 05:30",
+      "teams": {
+        "home": {
+          "id": "475",
+          "name": "Switzerland",
+          "abbreviation": "SUI"
+        },
+        "away": {
+          "id": "452",
+          "name": "Bosnia-Herzegovina",
+          "abbreviation": "BIH"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 18th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760439 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760439 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760440",
+      "name": "Qatar at Canada",
+      "shortName": "QAT @ CAN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-18T22:00:00.000Z",
+      "kickoffBjt": "2026/06/19 06:00",
+      "preSnapshotAtUtc": "2026-06-18T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/19 05:00",
+      "postSnapshotAtUtc": "2026-06-19T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/19 08:15",
+      "analysisAtUtc": "2026-06-19T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/19 08:30",
+      "teams": {
+        "home": {
+          "id": "206",
+          "name": "Canada",
+          "abbreviation": "CAN"
+        },
+        "away": {
+          "id": "4398",
+          "name": "Qatar",
+          "abbreviation": "QAT"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 18th at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760440 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760440 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760441",
+      "name": "South Korea at Mexico",
+      "shortName": "KOR @ MEX",
+      "stage": "group",
+      "kickoffUtc": "2026-06-19T01:00:00.000Z",
+      "kickoffBjt": "2026/06/19 09:00",
+      "preSnapshotAtUtc": "2026-06-19T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/19 08:00",
+      "postSnapshotAtUtc": "2026-06-19T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/19 11:15",
+      "analysisAtUtc": "2026-06-19T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/19 11:30",
+      "teams": {
+        "home": {
+          "id": "203",
+          "name": "Mexico",
+          "abbreviation": "MEX"
+        },
+        "away": {
+          "id": "451",
+          "name": "South Korea",
+          "abbreviation": "KOR"
+        }
+      },
+      "venue": "Estadio Akron",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 18th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760441 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760441 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760442",
+      "name": "Australia at United States",
+      "shortName": "AUS @ USA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-19T19:00:00.000Z",
+      "kickoffBjt": "2026/06/20 03:00",
+      "preSnapshotAtUtc": "2026-06-19T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/20 02:00",
+      "postSnapshotAtUtc": "2026-06-19T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/20 05:15",
+      "analysisAtUtc": "2026-06-19T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/20 05:30",
+      "teams": {
+        "home": {
+          "id": "660",
+          "name": "United States",
+          "abbreviation": "USA"
+        },
+        "away": {
+          "id": "628",
+          "name": "Australia",
+          "abbreviation": "AUS"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 19th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760442 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760442 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760445",
+      "name": "Morocco at Scotland",
+      "shortName": "MAR @ SCO",
+      "stage": "group",
+      "kickoffUtc": "2026-06-19T22:00:00.000Z",
+      "kickoffBjt": "2026/06/20 06:00",
+      "preSnapshotAtUtc": "2026-06-19T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/20 05:00",
+      "postSnapshotAtUtc": "2026-06-20T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/20 08:15",
+      "analysisAtUtc": "2026-06-20T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/20 08:30",
+      "teams": {
+        "home": {
+          "id": "580",
+          "name": "Scotland",
+          "abbreviation": "SCO"
+        },
+        "away": {
+          "id": "2869",
+          "name": "Morocco",
+          "abbreviation": "MAR"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 19th at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760445 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760445 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760444",
+      "name": "Haiti at Brazil",
+      "shortName": "HAI @ BRA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-20T00:30:00.000Z",
+      "kickoffBjt": "2026/06/20 08:30",
+      "preSnapshotAtUtc": "2026-06-19T23:30:00.000Z",
+      "preSnapshotAtBjt": "2026/06/20 07:30",
+      "postSnapshotAtUtc": "2026-06-20T02:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/20 10:45",
+      "analysisAtUtc": "2026-06-20T03:00:00.000Z",
+      "analysisAtBjt": "2026/06/20 11:00",
+      "teams": {
+        "home": {
+          "id": "205",
+          "name": "Brazil",
+          "abbreviation": "BRA"
+        },
+        "away": {
+          "id": "2654",
+          "name": "Haiti",
+          "abbreviation": "HAI"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 19th at 8:30 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760444 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760444 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760443",
+      "name": "Paraguay at Türkiye",
+      "shortName": "PAR @ TUR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-20T03:00:00.000Z",
+      "kickoffBjt": "2026/06/20 11:00",
+      "preSnapshotAtUtc": "2026-06-20T02:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/20 10:00",
+      "postSnapshotAtUtc": "2026-06-20T05:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/20 13:15",
+      "analysisAtUtc": "2026-06-20T05:30:00.000Z",
+      "analysisAtBjt": "2026/06/20 13:30",
+      "teams": {
+        "home": {
+          "id": "465",
+          "name": "Türkiye",
+          "abbreviation": "TUR"
+        },
+        "away": {
+          "id": "210",
+          "name": "Paraguay",
+          "abbreviation": "PAR"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 19th at 11:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760443 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760443 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760447",
+      "name": "Sweden at Netherlands",
+      "shortName": "SWE @ NED",
+      "stage": "group",
+      "kickoffUtc": "2026-06-20T17:00:00.000Z",
+      "kickoffBjt": "2026/06/21 01:00",
+      "preSnapshotAtUtc": "2026-06-20T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/21 00:00",
+      "postSnapshotAtUtc": "2026-06-20T19:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/21 03:15",
+      "analysisAtUtc": "2026-06-20T19:30:00.000Z",
+      "analysisAtBjt": "2026/06/21 03:30",
+      "teams": {
+        "home": {
+          "id": "449",
+          "name": "Netherlands",
+          "abbreviation": "NED"
+        },
+        "away": {
+          "id": "466",
+          "name": "Sweden",
+          "abbreviation": "SWE"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 20th at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760447 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760447 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760448",
+      "name": "Ivory Coast at Germany",
+      "shortName": "CIV @ GER",
+      "stage": "group",
+      "kickoffUtc": "2026-06-20T20:00:00.000Z",
+      "kickoffBjt": "2026/06/21 04:00",
+      "preSnapshotAtUtc": "2026-06-20T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/21 03:00",
+      "postSnapshotAtUtc": "2026-06-20T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/21 06:15",
+      "analysisAtUtc": "2026-06-20T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/21 06:30",
+      "teams": {
+        "home": {
+          "id": "481",
+          "name": "Germany",
+          "abbreviation": "GER"
+        },
+        "away": {
+          "id": "4789",
+          "name": "Ivory Coast",
+          "abbreviation": "CIV"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 20th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760448 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760448 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760446",
+      "name": "Curaçao at Ecuador",
+      "shortName": "CUW @ ECU",
+      "stage": "group",
+      "kickoffUtc": "2026-06-21T00:00:00.000Z",
+      "kickoffBjt": "2026/06/21 08:00",
+      "preSnapshotAtUtc": "2026-06-20T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/21 07:00",
+      "postSnapshotAtUtc": "2026-06-21T02:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/21 10:15",
+      "analysisAtUtc": "2026-06-21T02:30:00.000Z",
+      "analysisAtBjt": "2026/06/21 10:30",
+      "teams": {
+        "home": {
+          "id": "209",
+          "name": "Ecuador",
+          "abbreviation": "ECU"
+        },
+        "away": {
+          "id": "11678",
+          "name": "Curaçao",
+          "abbreviation": "CUW"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 20th at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760446 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760446 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760449",
+      "name": "Japan at Tunisia",
+      "shortName": "JPN @ TUN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-21T04:00:00.000Z",
+      "kickoffBjt": "2026/06/21 12:00",
+      "preSnapshotAtUtc": "2026-06-21T03:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/21 11:00",
+      "postSnapshotAtUtc": "2026-06-21T06:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/21 14:15",
+      "analysisAtUtc": "2026-06-21T06:30:00.000Z",
+      "analysisAtBjt": "2026/06/21 14:30",
+      "teams": {
+        "home": {
+          "id": "659",
+          "name": "Tunisia",
+          "abbreviation": "TUN"
+        },
+        "away": {
+          "id": "627",
+          "name": "Japan",
+          "abbreviation": "JPN"
+        }
+      },
+      "venue": "Estadio BBVA",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 20th at 12:00 AM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760449 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760449 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760453",
+      "name": "Saudi Arabia at Spain",
+      "shortName": "KSA @ ESP",
+      "stage": "group",
+      "kickoffUtc": "2026-06-21T16:00:00.000Z",
+      "kickoffBjt": "2026/06/22 00:00",
+      "preSnapshotAtUtc": "2026-06-21T15:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/21 23:00",
+      "postSnapshotAtUtc": "2026-06-21T18:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/22 02:15",
+      "analysisAtUtc": "2026-06-21T18:30:00.000Z",
+      "analysisAtBjt": "2026/06/22 02:30",
+      "teams": {
+        "home": {
+          "id": "164",
+          "name": "Spain",
+          "abbreviation": "ESP"
+        },
+        "away": {
+          "id": "655",
+          "name": "Saudi Arabia",
+          "abbreviation": "KSA"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 21st at 12:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760453 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760453 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760451",
+      "name": "Iran at Belgium",
+      "shortName": "IRN @ BEL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-21T19:00:00.000Z",
+      "kickoffBjt": "2026/06/22 03:00",
+      "preSnapshotAtUtc": "2026-06-21T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/22 02:00",
+      "postSnapshotAtUtc": "2026-06-21T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/22 05:15",
+      "analysisAtUtc": "2026-06-21T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/22 05:30",
+      "teams": {
+        "home": {
+          "id": "459",
+          "name": "Belgium",
+          "abbreviation": "BEL"
+        },
+        "away": {
+          "id": "469",
+          "name": "Iran",
+          "abbreviation": "IRN"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 21st at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760451 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760451 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760450",
+      "name": "Cape Verde at Uruguay",
+      "shortName": "CPV @ URU",
+      "stage": "group",
+      "kickoffUtc": "2026-06-21T22:00:00.000Z",
+      "kickoffBjt": "2026/06/22 06:00",
+      "preSnapshotAtUtc": "2026-06-21T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/22 05:00",
+      "postSnapshotAtUtc": "2026-06-22T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/22 08:15",
+      "analysisAtUtc": "2026-06-22T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/22 08:30",
+      "teams": {
+        "home": {
+          "id": "212",
+          "name": "Uruguay",
+          "abbreviation": "URU"
+        },
+        "away": {
+          "id": "2597",
+          "name": "Cape Verde",
+          "abbreviation": "CPV"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 21st at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760450 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760450 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760452",
+      "name": "Egypt at New Zealand",
+      "shortName": "EGY @ NZL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-22T01:00:00.000Z",
+      "kickoffBjt": "2026/06/22 09:00",
+      "preSnapshotAtUtc": "2026-06-22T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/22 08:00",
+      "postSnapshotAtUtc": "2026-06-22T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/22 11:15",
+      "analysisAtUtc": "2026-06-22T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/22 11:30",
+      "teams": {
+        "home": {
+          "id": "2666",
+          "name": "New Zealand",
+          "abbreviation": "NZL"
+        },
+        "away": {
+          "id": "2620",
+          "name": "Egypt",
+          "abbreviation": "EGY"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 21st at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760452 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760452 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760456",
+      "name": "Austria at Argentina",
+      "shortName": "AUT @ ARG",
+      "stage": "group",
+      "kickoffUtc": "2026-06-22T17:00:00.000Z",
+      "kickoffBjt": "2026/06/23 01:00",
+      "preSnapshotAtUtc": "2026-06-22T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/23 00:00",
+      "postSnapshotAtUtc": "2026-06-22T19:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/23 03:15",
+      "analysisAtUtc": "2026-06-22T19:30:00.000Z",
+      "analysisAtBjt": "2026/06/23 03:30",
+      "teams": {
+        "home": {
+          "id": "202",
+          "name": "Argentina",
+          "abbreviation": "ARG"
+        },
+        "away": {
+          "id": "474",
+          "name": "Austria",
+          "abbreviation": "AUT"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 22nd at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760456 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760456 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760457",
+      "name": "Iraq at France",
+      "shortName": "IRQ @ FRA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-22T21:00:00.000Z",
+      "kickoffBjt": "2026/06/23 05:00",
+      "preSnapshotAtUtc": "2026-06-22T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/23 04:00",
+      "postSnapshotAtUtc": "2026-06-22T23:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/23 07:15",
+      "analysisAtUtc": "2026-06-22T23:30:00.000Z",
+      "analysisAtBjt": "2026/06/23 07:30",
+      "teams": {
+        "home": {
+          "id": "478",
+          "name": "France",
+          "abbreviation": "FRA"
+        },
+        "away": {
+          "id": "4375",
+          "name": "Iraq",
+          "abbreviation": "IRQ"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 22nd at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760457 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760457 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760454",
+      "name": "Senegal at Norway",
+      "shortName": "SEN @ NOR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-23T00:00:00.000Z",
+      "kickoffBjt": "2026/06/23 08:00",
+      "preSnapshotAtUtc": "2026-06-22T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/23 07:00",
+      "postSnapshotAtUtc": "2026-06-23T02:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/23 10:15",
+      "analysisAtUtc": "2026-06-23T02:30:00.000Z",
+      "analysisAtBjt": "2026/06/23 10:30",
+      "teams": {
+        "home": {
+          "id": "464",
+          "name": "Norway",
+          "abbreviation": "NOR"
+        },
+        "away": {
+          "id": "654",
+          "name": "Senegal",
+          "abbreviation": "SEN"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 22nd at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760454 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760454 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760455",
+      "name": "Algeria at Jordan",
+      "shortName": "ALG @ JOR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-23T03:00:00.000Z",
+      "kickoffBjt": "2026/06/23 11:00",
+      "preSnapshotAtUtc": "2026-06-23T02:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/23 10:00",
+      "postSnapshotAtUtc": "2026-06-23T05:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/23 13:15",
+      "analysisAtUtc": "2026-06-23T05:30:00.000Z",
+      "analysisAtBjt": "2026/06/23 13:30",
+      "teams": {
+        "home": {
+          "id": "2917",
+          "name": "Jordan",
+          "abbreviation": "JOR"
+        },
+        "away": {
+          "id": "624",
+          "name": "Algeria",
+          "abbreviation": "ALG"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 22nd at 11:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760455 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760455 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760461",
+      "name": "Uzbekistan at Portugal",
+      "shortName": "UZB @ POR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-23T17:00:00.000Z",
+      "kickoffBjt": "2026/06/24 01:00",
+      "preSnapshotAtUtc": "2026-06-23T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/24 00:00",
+      "postSnapshotAtUtc": "2026-06-23T19:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/24 03:15",
+      "analysisAtUtc": "2026-06-23T19:30:00.000Z",
+      "analysisAtBjt": "2026/06/24 03:30",
+      "teams": {
+        "home": {
+          "id": "482",
+          "name": "Portugal",
+          "abbreviation": "POR"
+        },
+        "away": {
+          "id": "2570",
+          "name": "Uzbekistan",
+          "abbreviation": "UZB"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 23rd at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760461 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760461 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760458",
+      "name": "Ghana at England",
+      "shortName": "GHA @ ENG",
+      "stage": "group",
+      "kickoffUtc": "2026-06-23T20:00:00.000Z",
+      "kickoffBjt": "2026/06/24 04:00",
+      "preSnapshotAtUtc": "2026-06-23T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/24 03:00",
+      "postSnapshotAtUtc": "2026-06-23T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/24 06:15",
+      "analysisAtUtc": "2026-06-23T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/24 06:30",
+      "teams": {
+        "home": {
+          "id": "448",
+          "name": "England",
+          "abbreviation": "ENG"
+        },
+        "away": {
+          "id": "4469",
+          "name": "Ghana",
+          "abbreviation": "GHA"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 23rd at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760458 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760458 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760460",
+      "name": "Croatia at Panama",
+      "shortName": "CRO @ PAN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-23T23:00:00.000Z",
+      "kickoffBjt": "2026/06/24 07:00",
+      "preSnapshotAtUtc": "2026-06-23T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/24 06:00",
+      "postSnapshotAtUtc": "2026-06-24T01:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/24 09:15",
+      "analysisAtUtc": "2026-06-24T01:30:00.000Z",
+      "analysisAtBjt": "2026/06/24 09:30",
+      "teams": {
+        "home": {
+          "id": "2659",
+          "name": "Panama",
+          "abbreviation": "PAN"
+        },
+        "away": {
+          "id": "477",
+          "name": "Croatia",
+          "abbreviation": "CRO"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 23rd at 7:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760460 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760460 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760459",
+      "name": "Congo DR at Colombia",
+      "shortName": "COD @ COL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-24T02:00:00.000Z",
+      "kickoffBjt": "2026/06/24 10:00",
+      "preSnapshotAtUtc": "2026-06-24T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/24 09:00",
+      "postSnapshotAtUtc": "2026-06-24T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/24 12:15",
+      "analysisAtUtc": "2026-06-24T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/24 12:30",
+      "teams": {
+        "home": {
+          "id": "208",
+          "name": "Colombia",
+          "abbreviation": "COL"
+        },
+        "away": {
+          "id": "2850",
+          "name": "Congo DR",
+          "abbreviation": "COD"
+        }
+      },
+      "venue": "Estadio Akron",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 23rd at 10:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760459 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760459 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760462",
+      "name": "Qatar at Bosnia-Herzegovina",
+      "shortName": "QAT @ BIH",
+      "stage": "group",
+      "kickoffUtc": "2026-06-24T19:00:00.000Z",
+      "kickoffBjt": "2026/06/25 03:00",
+      "preSnapshotAtUtc": "2026-06-24T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 02:00",
+      "postSnapshotAtUtc": "2026-06-24T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 05:15",
+      "analysisAtUtc": "2026-06-24T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 05:30",
+      "teams": {
+        "home": {
+          "id": "452",
+          "name": "Bosnia-Herzegovina",
+          "abbreviation": "BIH"
+        },
+        "away": {
+          "id": "4398",
+          "name": "Qatar",
+          "abbreviation": "QAT"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760462 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760462 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760463",
+      "name": "Canada at Switzerland",
+      "shortName": "CAN @ SUI",
+      "stage": "group",
+      "kickoffUtc": "2026-06-24T19:00:00.000Z",
+      "kickoffBjt": "2026/06/25 03:00",
+      "preSnapshotAtUtc": "2026-06-24T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 02:00",
+      "postSnapshotAtUtc": "2026-06-24T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 05:15",
+      "analysisAtUtc": "2026-06-24T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 05:30",
+      "teams": {
+        "home": {
+          "id": "475",
+          "name": "Switzerland",
+          "abbreviation": "SUI"
+        },
+        "away": {
+          "id": "206",
+          "name": "Canada",
+          "abbreviation": "CAN"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760463 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760463 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760464",
+      "name": "Haiti at Morocco",
+      "shortName": "HAI @ MAR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-24T22:00:00.000Z",
+      "kickoffBjt": "2026/06/25 06:00",
+      "preSnapshotAtUtc": "2026-06-24T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 05:00",
+      "postSnapshotAtUtc": "2026-06-25T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 08:15",
+      "analysisAtUtc": "2026-06-25T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 08:30",
+      "teams": {
+        "home": {
+          "id": "2869",
+          "name": "Morocco",
+          "abbreviation": "MAR"
+        },
+        "away": {
+          "id": "2654",
+          "name": "Haiti",
+          "abbreviation": "HAI"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760464 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760464 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760465",
+      "name": "Brazil at Scotland",
+      "shortName": "BRA @ SCO",
+      "stage": "group",
+      "kickoffUtc": "2026-06-24T22:00:00.000Z",
+      "kickoffBjt": "2026/06/25 06:00",
+      "preSnapshotAtUtc": "2026-06-24T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 05:00",
+      "postSnapshotAtUtc": "2026-06-25T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 08:15",
+      "analysisAtUtc": "2026-06-25T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 08:30",
+      "teams": {
+        "home": {
+          "id": "580",
+          "name": "Scotland",
+          "abbreviation": "SCO"
+        },
+        "away": {
+          "id": "205",
+          "name": "Brazil",
+          "abbreviation": "BRA"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760465 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760465 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760467",
+      "name": "Mexico at Czechia",
+      "shortName": "MEX @ CZE",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T01:00:00.000Z",
+      "kickoffBjt": "2026/06/25 09:00",
+      "preSnapshotAtUtc": "2026-06-25T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 08:00",
+      "postSnapshotAtUtc": "2026-06-25T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 11:15",
+      "analysisAtUtc": "2026-06-25T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 11:30",
+      "teams": {
+        "home": {
+          "id": "450",
+          "name": "Czechia",
+          "abbreviation": "CZE"
+        },
+        "away": {
+          "id": "203",
+          "name": "Mexico",
+          "abbreviation": "MEX"
+        }
+      },
+      "venue": "Estadio Banorte",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760467 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760467 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760466",
+      "name": "South Korea at South Africa",
+      "shortName": "KOR @ RSA",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T01:00:00.000Z",
+      "kickoffBjt": "2026/06/25 09:00",
+      "preSnapshotAtUtc": "2026-06-25T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/25 08:00",
+      "postSnapshotAtUtc": "2026-06-25T03:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/25 11:15",
+      "analysisAtUtc": "2026-06-25T03:30:00.000Z",
+      "analysisAtBjt": "2026/06/25 11:30",
+      "teams": {
+        "home": {
+          "id": "467",
+          "name": "South Africa",
+          "abbreviation": "RSA"
+        },
+        "away": {
+          "id": "451",
+          "name": "South Korea",
+          "abbreviation": "KOR"
+        }
+      },
+      "venue": "Estadio BBVA",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, June 24th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760466 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760466 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760473",
+      "name": "Ivory Coast at Curaçao",
+      "shortName": "CIV @ CUW",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T20:00:00.000Z",
+      "kickoffBjt": "2026/06/26 04:00",
+      "preSnapshotAtUtc": "2026-06-25T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 03:00",
+      "postSnapshotAtUtc": "2026-06-25T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 06:15",
+      "analysisAtUtc": "2026-06-25T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 06:30",
+      "teams": {
+        "home": {
+          "id": "11678",
+          "name": "Curaçao",
+          "abbreviation": "CUW"
+        },
+        "away": {
+          "id": "4789",
+          "name": "Ivory Coast",
+          "abbreviation": "CIV"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760473 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760473 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760468",
+      "name": "Germany at Ecuador",
+      "shortName": "GER @ ECU",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T20:00:00.000Z",
+      "kickoffBjt": "2026/06/26 04:00",
+      "preSnapshotAtUtc": "2026-06-25T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 03:00",
+      "postSnapshotAtUtc": "2026-06-25T22:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 06:15",
+      "analysisAtUtc": "2026-06-25T22:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 06:30",
+      "teams": {
+        "home": {
+          "id": "209",
+          "name": "Ecuador",
+          "abbreviation": "ECU"
+        },
+        "away": {
+          "id": "481",
+          "name": "Germany",
+          "abbreviation": "GER"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760468 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760468 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760471",
+      "name": "Sweden at Japan",
+      "shortName": "SWE @ JPN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T23:00:00.000Z",
+      "kickoffBjt": "2026/06/26 07:00",
+      "preSnapshotAtUtc": "2026-06-25T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 06:00",
+      "postSnapshotAtUtc": "2026-06-26T01:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 09:15",
+      "analysisAtUtc": "2026-06-26T01:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 09:30",
+      "teams": {
+        "home": {
+          "id": "627",
+          "name": "Japan",
+          "abbreviation": "JPN"
+        },
+        "away": {
+          "id": "466",
+          "name": "Sweden",
+          "abbreviation": "SWE"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 7:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760471 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760471 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760472",
+      "name": "Netherlands at Tunisia",
+      "shortName": "NED @ TUN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-25T23:00:00.000Z",
+      "kickoffBjt": "2026/06/26 07:00",
+      "preSnapshotAtUtc": "2026-06-25T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 06:00",
+      "postSnapshotAtUtc": "2026-06-26T01:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 09:15",
+      "analysisAtUtc": "2026-06-26T01:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 09:30",
+      "teams": {
+        "home": {
+          "id": "659",
+          "name": "Tunisia",
+          "abbreviation": "TUN"
+        },
+        "away": {
+          "id": "449",
+          "name": "Netherlands",
+          "abbreviation": "NED"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 7:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760472 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760472 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760469",
+      "name": "Australia at Paraguay",
+      "shortName": "AUS @ PAR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-26T02:00:00.000Z",
+      "kickoffBjt": "2026/06/26 10:00",
+      "preSnapshotAtUtc": "2026-06-26T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 09:00",
+      "postSnapshotAtUtc": "2026-06-26T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 12:15",
+      "analysisAtUtc": "2026-06-26T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 12:30",
+      "teams": {
+        "home": {
+          "id": "210",
+          "name": "Paraguay",
+          "abbreviation": "PAR"
+        },
+        "away": {
+          "id": "628",
+          "name": "Australia",
+          "abbreviation": "AUS"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 10:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760469 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760469 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760470",
+      "name": "United States at Türkiye",
+      "shortName": "USA @ TUR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-26T02:00:00.000Z",
+      "kickoffBjt": "2026/06/26 10:00",
+      "preSnapshotAtUtc": "2026-06-26T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/26 09:00",
+      "postSnapshotAtUtc": "2026-06-26T04:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/26 12:15",
+      "analysisAtUtc": "2026-06-26T04:30:00.000Z",
+      "analysisAtBjt": "2026/06/26 12:30",
+      "teams": {
+        "home": {
+          "id": "465",
+          "name": "Türkiye",
+          "abbreviation": "TUR"
+        },
+        "away": {
+          "id": "660",
+          "name": "United States",
+          "abbreviation": "USA"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, June 25th at 10:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760470 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760470 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760475",
+      "name": "France at Norway",
+      "shortName": "FRA @ NOR",
+      "stage": "group",
+      "kickoffUtc": "2026-06-26T19:00:00.000Z",
+      "kickoffBjt": "2026/06/27 03:00",
+      "preSnapshotAtUtc": "2026-06-26T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 02:00",
+      "postSnapshotAtUtc": "2026-06-26T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 05:15",
+      "analysisAtUtc": "2026-06-26T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 05:30",
+      "teams": {
+        "home": {
+          "id": "464",
+          "name": "Norway",
+          "abbreviation": "NOR"
+        },
+        "away": {
+          "id": "478",
+          "name": "France",
+          "abbreviation": "FRA"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760475 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760475 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760474",
+      "name": "Iraq at Senegal",
+      "shortName": "IRQ @ SEN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-26T19:00:00.000Z",
+      "kickoffBjt": "2026/06/27 03:00",
+      "preSnapshotAtUtc": "2026-06-26T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 02:00",
+      "postSnapshotAtUtc": "2026-06-26T21:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 05:15",
+      "analysisAtUtc": "2026-06-26T21:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 05:30",
+      "teams": {
+        "home": {
+          "id": "654",
+          "name": "Senegal",
+          "abbreviation": "SEN"
+        },
+        "away": {
+          "id": "4375",
+          "name": "Iraq",
+          "abbreviation": "IRQ"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760474 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760474 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760478",
+      "name": "Saudi Arabia at Cape Verde",
+      "shortName": "KSA @ CPV",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T00:00:00.000Z",
+      "kickoffBjt": "2026/06/27 08:00",
+      "preSnapshotAtUtc": "2026-06-26T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 07:00",
+      "postSnapshotAtUtc": "2026-06-27T02:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 10:15",
+      "analysisAtUtc": "2026-06-27T02:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 10:30",
+      "teams": {
+        "home": {
+          "id": "2597",
+          "name": "Cape Verde",
+          "abbreviation": "CPV"
+        },
+        "away": {
+          "id": "655",
+          "name": "Saudi Arabia",
+          "abbreviation": "KSA"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760478 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760478 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760479",
+      "name": "Spain at Uruguay",
+      "shortName": "ESP @ URU",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T00:00:00.000Z",
+      "kickoffBjt": "2026/06/27 08:00",
+      "preSnapshotAtUtc": "2026-06-26T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 07:00",
+      "postSnapshotAtUtc": "2026-06-27T02:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 10:15",
+      "analysisAtUtc": "2026-06-27T02:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 10:30",
+      "teams": {
+        "home": {
+          "id": "212",
+          "name": "Uruguay",
+          "abbreviation": "URU"
+        },
+        "away": {
+          "id": "164",
+          "name": "Spain",
+          "abbreviation": "ESP"
+        }
+      },
+      "venue": "Estadio Akron",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760479 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760479 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760476",
+      "name": "Iran at Egypt",
+      "shortName": "IRN @ EGY",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T03:00:00.000Z",
+      "kickoffBjt": "2026/06/27 11:00",
+      "preSnapshotAtUtc": "2026-06-27T02:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 10:00",
+      "postSnapshotAtUtc": "2026-06-27T05:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 13:15",
+      "analysisAtUtc": "2026-06-27T05:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 13:30",
+      "teams": {
+        "home": {
+          "id": "2620",
+          "name": "Egypt",
+          "abbreviation": "EGY"
+        },
+        "away": {
+          "id": "469",
+          "name": "Iran",
+          "abbreviation": "IRN"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 11:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760476 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760476 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760477",
+      "name": "Belgium at New Zealand",
+      "shortName": "BEL @ NZL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T03:00:00.000Z",
+      "kickoffBjt": "2026/06/27 11:00",
+      "preSnapshotAtUtc": "2026-06-27T02:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/27 10:00",
+      "postSnapshotAtUtc": "2026-06-27T05:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/27 13:15",
+      "analysisAtUtc": "2026-06-27T05:30:00.000Z",
+      "analysisAtBjt": "2026/06/27 13:30",
+      "teams": {
+        "home": {
+          "id": "2666",
+          "name": "New Zealand",
+          "abbreviation": "NZL"
+        },
+        "away": {
+          "id": "459",
+          "name": "Belgium",
+          "abbreviation": "BEL"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, June 26th at 11:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760477 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760477 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760480",
+      "name": "Ghana at Croatia",
+      "shortName": "GHA @ CRO",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T21:00:00.000Z",
+      "kickoffBjt": "2026/06/28 05:00",
+      "preSnapshotAtUtc": "2026-06-27T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 04:00",
+      "postSnapshotAtUtc": "2026-06-27T23:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 07:15",
+      "analysisAtUtc": "2026-06-27T23:30:00.000Z",
+      "analysisAtBjt": "2026/06/28 07:30",
+      "teams": {
+        "home": {
+          "id": "477",
+          "name": "Croatia",
+          "abbreviation": "CRO"
+        },
+        "away": {
+          "id": "4469",
+          "name": "Ghana",
+          "abbreviation": "GHA"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760480 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760480 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760485",
+      "name": "England at Panama",
+      "shortName": "ENG @ PAN",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T21:00:00.000Z",
+      "kickoffBjt": "2026/06/28 05:00",
+      "preSnapshotAtUtc": "2026-06-27T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 04:00",
+      "postSnapshotAtUtc": "2026-06-27T23:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 07:15",
+      "analysisAtUtc": "2026-06-27T23:30:00.000Z",
+      "analysisAtBjt": "2026/06/28 07:30",
+      "teams": {
+        "home": {
+          "id": "2659",
+          "name": "Panama",
+          "abbreviation": "PAN"
+        },
+        "away": {
+          "id": "448",
+          "name": "England",
+          "abbreviation": "ENG"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760485 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760485 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760481",
+      "name": "Portugal at Colombia",
+      "shortName": "POR @ COL",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T23:30:00.000Z",
+      "kickoffBjt": "2026/06/28 07:30",
+      "preSnapshotAtUtc": "2026-06-27T22:30:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 06:30",
+      "postSnapshotAtUtc": "2026-06-28T01:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 09:45",
+      "analysisAtUtc": "2026-06-28T02:00:00.000Z",
+      "analysisAtBjt": "2026/06/28 10:00",
+      "teams": {
+        "home": {
+          "id": "208",
+          "name": "Colombia",
+          "abbreviation": "COL"
+        },
+        "away": {
+          "id": "482",
+          "name": "Portugal",
+          "abbreviation": "POR"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 7:30 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760481 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760481 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760482",
+      "name": "Uzbekistan at Congo DR",
+      "shortName": "UZB @ COD",
+      "stage": "group",
+      "kickoffUtc": "2026-06-27T23:30:00.000Z",
+      "kickoffBjt": "2026/06/28 07:30",
+      "preSnapshotAtUtc": "2026-06-27T22:30:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 06:30",
+      "postSnapshotAtUtc": "2026-06-28T01:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 09:45",
+      "analysisAtUtc": "2026-06-28T02:00:00.000Z",
+      "analysisAtBjt": "2026/06/28 10:00",
+      "teams": {
+        "home": {
+          "id": "2850",
+          "name": "Congo DR",
+          "abbreviation": "COD"
+        },
+        "away": {
+          "id": "2570",
+          "name": "Uzbekistan",
+          "abbreviation": "UZB"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 7:30 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760482 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760482 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760484",
+      "name": "Austria at Algeria",
+      "shortName": "AUT @ ALG",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-28T02:00:00.000Z",
+      "kickoffBjt": "2026/06/28 10:00",
+      "preSnapshotAtUtc": "2026-06-28T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 09:00",
+      "postSnapshotAtUtc": "2026-06-28T05:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 13:45",
+      "analysisAtUtc": "2026-06-28T06:00:00.000Z",
+      "analysisAtBjt": "2026/06/28 14:00",
+      "teams": {
+        "home": {
+          "id": "624",
+          "name": "Algeria",
+          "abbreviation": "ALG"
+        },
+        "away": {
+          "id": "474",
+          "name": "Austria",
+          "abbreviation": "AUT"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 10:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760484 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760484 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760483",
+      "name": "Argentina at Jordan",
+      "shortName": "ARG @ JOR",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-28T02:00:00.000Z",
+      "kickoffBjt": "2026/06/28 10:00",
+      "preSnapshotAtUtc": "2026-06-28T01:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/28 09:00",
+      "postSnapshotAtUtc": "2026-06-28T05:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/28 13:45",
+      "analysisAtUtc": "2026-06-28T06:00:00.000Z",
+      "analysisAtBjt": "2026/06/28 14:00",
+      "teams": {
+        "home": {
+          "id": "2917",
+          "name": "Jordan",
+          "abbreviation": "JOR"
+        },
+        "away": {
+          "id": "202",
+          "name": "Argentina",
+          "abbreviation": "ARG"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, June 27th at 10:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760483 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760483 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760486",
+      "name": "Group B 2nd Place at Group A 2nd Place",
+      "shortName": "2B @ 2A",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-28T19:00:00.000Z",
+      "kickoffBjt": "2026/06/29 03:00",
+      "preSnapshotAtUtc": "2026-06-28T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/29 02:00",
+      "postSnapshotAtUtc": "2026-06-28T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/29 06:45",
+      "analysisAtUtc": "2026-06-28T23:00:00.000Z",
+      "analysisAtBjt": "2026/06/29 07:00",
+      "teams": {
+        "home": {
+          "id": "5926",
+          "name": "Group A 2nd Place",
+          "abbreviation": "2A"
+        },
+        "away": {
+          "id": "5924",
+          "name": "Group B 2nd Place",
+          "abbreviation": "2B"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, June 28th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760486 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760486 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760487",
+      "name": "Group F 2nd Place at Group C Winner",
+      "shortName": "2F @ 1C",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-29T17:00:00.000Z",
+      "kickoffBjt": "2026/06/30 01:00",
+      "preSnapshotAtUtc": "2026-06-29T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/30 00:00",
+      "postSnapshotAtUtc": "2026-06-29T20:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/30 04:45",
+      "analysisAtUtc": "2026-06-29T21:00:00.000Z",
+      "analysisAtBjt": "2026/06/30 05:00",
+      "teams": {
+        "home": {
+          "id": "5927",
+          "name": "Group C Winner",
+          "abbreviation": "1C"
+        },
+        "away": {
+          "id": "5934",
+          "name": "Group F 2nd Place",
+          "abbreviation": "2F"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 29th at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760487 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760487 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760489",
+      "name": "Third Place Group A/B/C/D/F at Group E Winner",
+      "shortName": "3RD @ 1E",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-29T20:30:00.000Z",
+      "kickoffBjt": "2026/06/30 04:30",
+      "preSnapshotAtUtc": "2026-06-29T19:30:00.000Z",
+      "preSnapshotAtBjt": "2026/06/30 03:30",
+      "postSnapshotAtUtc": "2026-06-30T00:15:00.000Z",
+      "postSnapshotAtBjt": "2026/06/30 08:15",
+      "analysisAtUtc": "2026-06-30T00:30:00.000Z",
+      "analysisAtBjt": "2026/06/30 08:30",
+      "teams": {
+        "home": {
+          "id": "5931",
+          "name": "Group E Winner",
+          "abbreviation": "1E"
+        },
+        "away": {
+          "id": "131541",
+          "name": "Third Place Group A/B/C/D/F",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 29th at 4:30 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760489 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760489 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760488",
+      "name": "Group C 2nd Place at Group F Winner",
+      "shortName": "2C @ 1F",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-30T01:00:00.000Z",
+      "kickoffBjt": "2026/06/30 09:00",
+      "preSnapshotAtUtc": "2026-06-30T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/06/30 08:00",
+      "postSnapshotAtUtc": "2026-06-30T04:45:00.000Z",
+      "postSnapshotAtBjt": "2026/06/30 12:45",
+      "analysisAtUtc": "2026-06-30T05:00:00.000Z",
+      "analysisAtBjt": "2026/06/30 13:00",
+      "teams": {
+        "home": {
+          "id": "5933",
+          "name": "Group F Winner",
+          "abbreviation": "1F"
+        },
+        "away": {
+          "id": "5930",
+          "name": "Group C 2nd Place",
+          "abbreviation": "2C"
+        }
+      },
+      "venue": "Estadio BBVA",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, June 29th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760488 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760488 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760490",
+      "name": "Group I 2nd Place at Group E 2nd Place",
+      "shortName": "2I @ 2E",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-30T17:00:00.000Z",
+      "kickoffBjt": "2026/07/01 01:00",
+      "preSnapshotAtUtc": "2026-06-30T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/01 00:00",
+      "postSnapshotAtUtc": "2026-06-30T20:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/01 04:45",
+      "analysisAtUtc": "2026-06-30T21:00:00.000Z",
+      "analysisAtBjt": "2026/07/01 05:00",
+      "teams": {
+        "home": {
+          "id": "5932",
+          "name": "Group E 2nd Place",
+          "abbreviation": "2E"
+        },
+        "away": {
+          "id": "131501",
+          "name": "Group I 2nd Place",
+          "abbreviation": "2I"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 30th at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760490 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760490 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760492",
+      "name": "Third Place Group C/D/F/G/H at Group I Winner",
+      "shortName": "3RD @ 1I",
+      "stage": "knockout",
+      "kickoffUtc": "2026-06-30T21:00:00.000Z",
+      "kickoffBjt": "2026/07/01 05:00",
+      "preSnapshotAtUtc": "2026-06-30T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/01 04:00",
+      "postSnapshotAtUtc": "2026-07-01T00:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/01 08:45",
+      "analysisAtUtc": "2026-07-01T01:00:00.000Z",
+      "analysisAtBjt": "2026/07/01 09:00",
+      "teams": {
+        "home": {
+          "id": "131505",
+          "name": "Group I Winner",
+          "abbreviation": "1I"
+        },
+        "away": {
+          "id": "131544",
+          "name": "Third Place Group C/D/F/G/H",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 30th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760492 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760492 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760491",
+      "name": "Third Place Group C/E/F/H/I at Group A Winner",
+      "shortName": "3RD @ 1A",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-01T01:00:00.000Z",
+      "kickoffBjt": "2026/07/01 09:00",
+      "preSnapshotAtUtc": "2026-07-01T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/01 08:00",
+      "postSnapshotAtUtc": "2026-07-01T04:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/01 12:45",
+      "analysisAtUtc": "2026-07-01T05:00:00.000Z",
+      "analysisAtBjt": "2026/07/01 13:00",
+      "teams": {
+        "home": {
+          "id": "5923",
+          "name": "Group A Winner",
+          "abbreviation": "1A"
+        },
+        "away": {
+          "id": "131545",
+          "name": "Third Place Group C/E/F/H/I",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "Estadio Banorte",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, June 30th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760491 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760491 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760495",
+      "name": "Third Place Group E/H/I/J/K at Group L Winner",
+      "shortName": "3RD @ 1L",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-01T16:00:00.000Z",
+      "kickoffBjt": "2026/07/02 00:00",
+      "preSnapshotAtUtc": "2026-07-01T15:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/01 23:00",
+      "postSnapshotAtUtc": "2026-07-01T19:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/02 03:45",
+      "analysisAtUtc": "2026-07-01T20:00:00.000Z",
+      "analysisAtBjt": "2026/07/02 04:00",
+      "teams": {
+        "home": {
+          "id": "131508",
+          "name": "Group L Winner",
+          "abbreviation": "1L"
+        },
+        "away": {
+          "id": "131548",
+          "name": "Third Place Group E/H/I/J/K",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, July 1st at 12:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760495 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760495 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760493",
+      "name": "Third Place Group A/E/H/I/J at Group G Winner",
+      "shortName": "3RD @ 1G",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-01T20:00:00.000Z",
+      "kickoffBjt": "2026/07/02 04:00",
+      "preSnapshotAtUtc": "2026-07-01T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/02 03:00",
+      "postSnapshotAtUtc": "2026-07-01T23:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/02 07:45",
+      "analysisAtUtc": "2026-07-02T00:00:00.000Z",
+      "analysisAtBjt": "2026/07/02 08:00",
+      "teams": {
+        "home": {
+          "id": "5935",
+          "name": "Group G Winner",
+          "abbreviation": "1G"
+        },
+        "away": {
+          "id": "131542",
+          "name": "Third Place Group A/E/H/I/J",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, July 1st at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760493 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760493 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760494",
+      "name": "Third Place Group B/E/F/I/J at Group D Winner",
+      "shortName": "3RD @ 1D",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-02T00:00:00.000Z",
+      "kickoffBjt": "2026/07/02 08:00",
+      "preSnapshotAtUtc": "2026-07-01T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/02 07:00",
+      "postSnapshotAtUtc": "2026-07-02T03:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/02 11:45",
+      "analysisAtUtc": "2026-07-02T04:00:00.000Z",
+      "analysisAtBjt": "2026/07/02 12:00",
+      "teams": {
+        "home": {
+          "id": "5929",
+          "name": "Group D Winner",
+          "abbreviation": "1D"
+        },
+        "away": {
+          "id": "131543",
+          "name": "Third Place Group B/E/F/I/J",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "Levi's Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, July 1st at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760494 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760494 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760497",
+      "name": "Group J 2nd Place at Group H Winner",
+      "shortName": "2J @ 1H",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-02T19:00:00.000Z",
+      "kickoffBjt": "2026/07/03 03:00",
+      "preSnapshotAtUtc": "2026-07-02T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/03 02:00",
+      "postSnapshotAtUtc": "2026-07-02T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/03 06:45",
+      "analysisAtUtc": "2026-07-02T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/03 07:00",
+      "teams": {
+        "home": {
+          "id": "5937",
+          "name": "Group H Winner",
+          "abbreviation": "1H"
+        },
+        "away": {
+          "id": "131502",
+          "name": "Group J 2nd Place",
+          "abbreviation": "2J"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, July 2nd at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760497 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760497 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760496",
+      "name": "Group L 2nd Place at Group K 2nd Place",
+      "shortName": "2L @ 2K",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-02T23:00:00.000Z",
+      "kickoffBjt": "2026/07/03 07:00",
+      "preSnapshotAtUtc": "2026-07-02T22:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/03 06:00",
+      "postSnapshotAtUtc": "2026-07-03T02:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/03 10:45",
+      "analysisAtUtc": "2026-07-03T03:00:00.000Z",
+      "analysisAtBjt": "2026/07/03 11:00",
+      "teams": {
+        "home": {
+          "id": "131503",
+          "name": "Group K 2nd Place",
+          "abbreviation": "2K"
+        },
+        "away": {
+          "id": "131504",
+          "name": "Group L 2nd Place",
+          "abbreviation": "2L"
+        }
+      },
+      "venue": "BMO Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, July 2nd at 7:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760496 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760496 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760498",
+      "name": "Third Place Group E/F/G/I/J at Group B Winner",
+      "shortName": "3RD @ 1B",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-03T03:00:00.000Z",
+      "kickoffBjt": "2026/07/03 11:00",
+      "preSnapshotAtUtc": "2026-07-03T02:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/03 10:00",
+      "postSnapshotAtUtc": "2026-07-03T06:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/03 14:45",
+      "analysisAtUtc": "2026-07-03T07:00:00.000Z",
+      "analysisAtBjt": "2026/07/03 15:00",
+      "teams": {
+        "home": {
+          "id": "5925",
+          "name": "Group B Winner",
+          "abbreviation": "1B"
+        },
+        "away": {
+          "id": "131547",
+          "name": "Third Place Group E/F/G/I/J",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, July 2nd at 11:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760498 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760498 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760499",
+      "name": "Group G 2nd Place at Group D 2nd Place",
+      "shortName": "2G @ 2D",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-03T18:00:00.000Z",
+      "kickoffBjt": "2026/07/04 02:00",
+      "preSnapshotAtUtc": "2026-07-03T17:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/04 01:00",
+      "postSnapshotAtUtc": "2026-07-03T21:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/04 05:45",
+      "analysisAtUtc": "2026-07-03T22:00:00.000Z",
+      "analysisAtBjt": "2026/07/04 06:00",
+      "teams": {
+        "home": {
+          "id": "5928",
+          "name": "Group D 2nd Place",
+          "abbreviation": "2D"
+        },
+        "away": {
+          "id": "5936",
+          "name": "Group G 2nd Place",
+          "abbreviation": "2G"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, July 3rd at 2:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760499 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760499 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760500",
+      "name": "Group H 2nd Place at Group J Winner",
+      "shortName": "2H @ 1J",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-03T22:00:00.000Z",
+      "kickoffBjt": "2026/07/04 06:00",
+      "preSnapshotAtUtc": "2026-07-03T21:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/04 05:00",
+      "postSnapshotAtUtc": "2026-07-04T01:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/04 09:45",
+      "analysisAtUtc": "2026-07-04T02:00:00.000Z",
+      "analysisAtBjt": "2026/07/04 10:00",
+      "teams": {
+        "home": {
+          "id": "131506",
+          "name": "Group J Winner",
+          "abbreviation": "1J"
+        },
+        "away": {
+          "id": "5938",
+          "name": "Group H 2nd Place",
+          "abbreviation": "2H"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, July 3rd at 6:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760500 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760500 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760501",
+      "name": "Third Place Group D/E/I/J/L at Group K Winner",
+      "shortName": "3RD @ 1K",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-04T01:30:00.000Z",
+      "kickoffBjt": "2026/07/04 09:30",
+      "preSnapshotAtUtc": "2026-07-04T00:30:00.000Z",
+      "preSnapshotAtBjt": "2026/07/04 08:30",
+      "postSnapshotAtUtc": "2026-07-04T05:15:00.000Z",
+      "postSnapshotAtBjt": "2026/07/04 13:15",
+      "analysisAtUtc": "2026-07-04T05:30:00.000Z",
+      "analysisAtBjt": "2026/07/04 13:30",
+      "teams": {
+        "home": {
+          "id": "131507",
+          "name": "Group K Winner",
+          "abbreviation": "1K"
+        },
+        "away": {
+          "id": "131546",
+          "name": "Third Place Group D/E/I/J/L",
+          "abbreviation": "3RD"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, July 3rd at 9:30 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760501 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760501 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760502",
+      "name": "Round of 32 3 Winner at Round of 32 1 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-04T17:00:00.000Z",
+      "kickoffBjt": "2026/07/05 01:00",
+      "preSnapshotAtUtc": "2026-07-04T16:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/05 00:00",
+      "postSnapshotAtUtc": "2026-07-04T20:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/05 04:45",
+      "analysisAtUtc": "2026-07-04T21:00:00.000Z",
+      "analysisAtBjt": "2026/07/05 05:00",
+      "teams": {
+        "home": {
+          "id": "131525",
+          "name": "Round of 32 1 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131527",
+          "name": "Round of 32 3 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "NRG Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, July 4th at 1:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760502 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760502 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760503",
+      "name": "Round of 32 5 Winner at Round of 32 2 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-04T21:00:00.000Z",
+      "kickoffBjt": "2026/07/05 05:00",
+      "preSnapshotAtUtc": "2026-07-04T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/05 04:00",
+      "postSnapshotAtUtc": "2026-07-05T00:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/05 08:45",
+      "analysisAtUtc": "2026-07-05T01:00:00.000Z",
+      "analysisAtBjt": "2026/07/05 09:00",
+      "teams": {
+        "home": {
+          "id": "131526",
+          "name": "Round of 32 2 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131529",
+          "name": "Round of 32 5 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "Lincoln Financial Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, July 4th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760503 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760503 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760504",
+      "name": "Round of 32 6 Winner at Round of 32 4 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-05T20:00:00.000Z",
+      "kickoffBjt": "2026/07/06 04:00",
+      "preSnapshotAtUtc": "2026-07-05T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/06 03:00",
+      "postSnapshotAtUtc": "2026-07-05T23:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/06 07:45",
+      "analysisAtUtc": "2026-07-06T00:00:00.000Z",
+      "analysisAtBjt": "2026/07/06 08:00",
+      "teams": {
+        "home": {
+          "id": "131528",
+          "name": "Round of 32 4 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131530",
+          "name": "Round of 32 6 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, July 5th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760504 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760504 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760505",
+      "name": "Round of 32 8 Winner at Round of 32 7 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-06T00:00:00.000Z",
+      "kickoffBjt": "2026/07/06 08:00",
+      "preSnapshotAtUtc": "2026-07-05T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/06 07:00",
+      "postSnapshotAtUtc": "2026-07-06T03:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/06 11:45",
+      "analysisAtUtc": "2026-07-06T04:00:00.000Z",
+      "analysisAtBjt": "2026/07/06 12:00",
+      "teams": {
+        "home": {
+          "id": "131531",
+          "name": "Round of 32 7 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131532",
+          "name": "Round of 32 8 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "Estadio Banorte",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, July 5th at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760505 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760505 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760506",
+      "name": "Round of 32 12 Winner at Round of 32 11 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-06T19:00:00.000Z",
+      "kickoffBjt": "2026/07/07 03:00",
+      "preSnapshotAtUtc": "2026-07-06T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/07 02:00",
+      "postSnapshotAtUtc": "2026-07-06T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/07 06:45",
+      "analysisAtUtc": "2026-07-06T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/07 07:00",
+      "teams": {
+        "home": {
+          "id": "131535",
+          "name": "Round of 32 11 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131536",
+          "name": "Round of 32 12 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, July 6th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760506 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760506 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760507",
+      "name": "Round of 32 10 Winner at Round of 32 9 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-07T00:00:00.000Z",
+      "kickoffBjt": "2026/07/07 08:00",
+      "preSnapshotAtUtc": "2026-07-06T23:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/07 07:00",
+      "postSnapshotAtUtc": "2026-07-07T03:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/07 11:45",
+      "analysisAtUtc": "2026-07-07T04:00:00.000Z",
+      "analysisAtBjt": "2026/07/07 12:00",
+      "teams": {
+        "home": {
+          "id": "131533",
+          "name": "Round of 32 9 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131534",
+          "name": "Round of 32 10 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "Lumen Field",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Mon, July 6th at 8:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760507 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760507 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760509",
+      "name": "Round of 32 16 Winner at Round of 32 14 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-07T16:00:00.000Z",
+      "kickoffBjt": "2026/07/08 00:00",
+      "preSnapshotAtUtc": "2026-07-07T15:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/07 23:00",
+      "postSnapshotAtUtc": "2026-07-07T19:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/08 03:45",
+      "analysisAtUtc": "2026-07-07T20:00:00.000Z",
+      "analysisAtBjt": "2026/07/08 04:00",
+      "teams": {
+        "home": {
+          "id": "131538",
+          "name": "Round of 32 14 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131540",
+          "name": "Round of 32 16 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, July 7th at 12:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760509 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760509 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760508",
+      "name": "Round of 32 15 Winner at Round of 32 13 Winner",
+      "shortName": "RD32 @ RD32",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-07T20:00:00.000Z",
+      "kickoffBjt": "2026/07/08 04:00",
+      "preSnapshotAtUtc": "2026-07-07T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/08 03:00",
+      "postSnapshotAtUtc": "2026-07-07T23:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/08 07:45",
+      "analysisAtUtc": "2026-07-08T00:00:00.000Z",
+      "analysisAtBjt": "2026/07/08 08:00",
+      "teams": {
+        "home": {
+          "id": "131537",
+          "name": "Round of 32 13 Winner",
+          "abbreviation": "RD32"
+        },
+        "away": {
+          "id": "131539",
+          "name": "Round of 32 15 Winner",
+          "abbreviation": "RD32"
+        }
+      },
+      "venue": "BC Place",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, July 7th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760508 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760508 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760510",
+      "name": "Round of 16 2 Winner at Round of 16 1 Winner",
+      "shortName": "RD16 W2 @ RD16 W1",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-09T20:00:00.000Z",
+      "kickoffBjt": "2026/07/10 04:00",
+      "preSnapshotAtUtc": "2026-07-09T19:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/10 03:00",
+      "postSnapshotAtUtc": "2026-07-09T23:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/10 07:45",
+      "analysisAtUtc": "2026-07-10T00:00:00.000Z",
+      "analysisAtBjt": "2026/07/10 08:00",
+      "teams": {
+        "home": {
+          "id": "19282",
+          "name": "Round of 16 1 Winner",
+          "abbreviation": "RD16 W1"
+        },
+        "away": {
+          "id": "19283",
+          "name": "Round of 16 2 Winner",
+          "abbreviation": "RD16 W2"
+        }
+      },
+      "venue": "Gillette Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Thu, July 9th at 4:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760510 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760510 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760511",
+      "name": "Round of 16 6 Winner at Round of 16 5 Winner",
+      "shortName": "RD16 W6 @ RD16 W5",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-10T19:00:00.000Z",
+      "kickoffBjt": "2026/07/11 03:00",
+      "preSnapshotAtUtc": "2026-07-10T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/11 02:00",
+      "postSnapshotAtUtc": "2026-07-10T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/11 06:45",
+      "analysisAtUtc": "2026-07-10T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/11 07:00",
+      "teams": {
+        "home": {
+          "id": "19278",
+          "name": "Round of 16 5 Winner",
+          "abbreviation": "RD16 W5"
+        },
+        "away": {
+          "id": "19279",
+          "name": "Round of 16 6 Winner",
+          "abbreviation": "RD16 W6"
+        }
+      },
+      "venue": "SoFi Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Fri, July 10th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760511 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760511 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760512",
+      "name": "Round of 16 4 Winner at Round of 16 3 Winner",
+      "shortName": "RD16 W4 @ RD16 W3",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-11T21:00:00.000Z",
+      "kickoffBjt": "2026/07/12 05:00",
+      "preSnapshotAtUtc": "2026-07-11T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/12 04:00",
+      "postSnapshotAtUtc": "2026-07-12T00:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/12 08:45",
+      "analysisAtUtc": "2026-07-12T01:00:00.000Z",
+      "analysisAtBjt": "2026/07/12 09:00",
+      "teams": {
+        "home": {
+          "id": "19284",
+          "name": "Round of 16 3 Winner",
+          "abbreviation": "RD16 W3"
+        },
+        "away": {
+          "id": "19285",
+          "name": "Round of 16 4 Winner",
+          "abbreviation": "RD16 W4"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, July 11th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760512 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760512 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760513",
+      "name": "Round of 16 8 Winner at Round of 16 7 Winner",
+      "shortName": "RD16 W8 @ RD16 W7",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-12T01:00:00.000Z",
+      "kickoffBjt": "2026/07/12 09:00",
+      "preSnapshotAtUtc": "2026-07-12T00:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/12 08:00",
+      "postSnapshotAtUtc": "2026-07-12T04:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/12 12:45",
+      "analysisAtUtc": "2026-07-12T05:00:00.000Z",
+      "analysisAtBjt": "2026/07/12 13:00",
+      "teams": {
+        "home": {
+          "id": "19280",
+          "name": "Round of 16 7 Winner",
+          "abbreviation": "RD16 W7"
+        },
+        "away": {
+          "id": "19281",
+          "name": "Round of 16 8 Winner",
+          "abbreviation": "RD16 W8"
+        }
+      },
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, July 11th at 9:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760513 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760513 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760514",
+      "name": "Quarterfinal 2 Winner at Quarterfinal 1 Winner",
+      "shortName": "QFW2 @ QFW1",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-14T19:00:00.000Z",
+      "kickoffBjt": "2026/07/15 03:00",
+      "preSnapshotAtUtc": "2026-07-14T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/15 02:00",
+      "postSnapshotAtUtc": "2026-07-14T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/15 06:45",
+      "analysisAtUtc": "2026-07-14T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/15 07:00",
+      "teams": {
+        "home": {
+          "id": "17631",
+          "name": "Quarterfinal 1 Winner",
+          "abbreviation": "QFW1"
+        },
+        "away": {
+          "id": "17629",
+          "name": "Quarterfinal 2 Winner",
+          "abbreviation": "QFW2"
+        }
+      },
+      "venue": "AT&T Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Tue, July 14th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760514 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760514 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760515",
+      "name": "Quarterfinal 4 Winner at Quarterfinal 3 Winner",
+      "shortName": "QW4 @ QFW3",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-15T19:00:00.000Z",
+      "kickoffBjt": "2026/07/16 03:00",
+      "preSnapshotAtUtc": "2026-07-15T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/16 02:00",
+      "postSnapshotAtUtc": "2026-07-15T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/16 06:45",
+      "analysisAtUtc": "2026-07-15T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/16 07:00",
+      "teams": {
+        "home": {
+          "id": "17630",
+          "name": "Quarterfinal 3 Winner",
+          "abbreviation": "QFW3"
+        },
+        "away": {
+          "id": "17632",
+          "name": "Quarterfinal 4 Winner",
+          "abbreviation": "QW4"
+        }
+      },
+      "venue": "Mercedes-Benz Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Wed, July 15th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760515 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760515 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760516",
+      "name": "Semifinal 2 Loser at Semifinal 1 Loser",
+      "shortName": "SF L2 @ SF L1",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-18T21:00:00.000Z",
+      "kickoffBjt": "2026/07/19 05:00",
+      "preSnapshotAtUtc": "2026-07-18T20:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/19 04:00",
+      "postSnapshotAtUtc": "2026-07-19T00:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/19 08:45",
+      "analysisAtUtc": "2026-07-19T01:00:00.000Z",
+      "analysisAtBjt": "2026/07/19 09:00",
+      "teams": {
+        "home": {
+          "id": "5958",
+          "name": "Semifinal 1 Loser",
+          "abbreviation": "SF L1"
+        },
+        "away": {
+          "id": "5959",
+          "name": "Semifinal 2 Loser",
+          "abbreviation": "SF L2"
+        }
+      },
+      "venue": "Hard Rock Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sat, July 18th at 5:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760516 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760516 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    },
+    {
+      "matchId": "760517",
+      "name": "Semifinal 2 Winner at Semifinal 1 Winner",
+      "shortName": "SFW2 @ SFW1",
+      "stage": "knockout",
+      "kickoffUtc": "2026-07-19T19:00:00.000Z",
+      "kickoffBjt": "2026/07/20 03:00",
+      "preSnapshotAtUtc": "2026-07-19T18:00:00.000Z",
+      "preSnapshotAtBjt": "2026/07/20 02:00",
+      "postSnapshotAtUtc": "2026-07-19T22:45:00.000Z",
+      "postSnapshotAtBjt": "2026/07/20 06:45",
+      "analysisAtUtc": "2026-07-19T23:00:00.000Z",
+      "analysisAtBjt": "2026/07/20 07:00",
+      "teams": {
+        "home": {
+          "id": "5960",
+          "name": "Semifinal 1 Winner",
+          "abbreviation": "SFW1"
+        },
+        "away": {
+          "id": "5961",
+          "name": "Semifinal 2 Winner",
+          "abbreviation": "SFW2"
+        }
+      },
+      "venue": "MetLife Stadium",
+      "status": {
+        "state": "pre",
+        "name": "STATUS_SCHEDULED",
+        "completed": false,
+        "detail": "Sun, July 19th at 3:00 PM EDT",
+        "shortDetail": "Scheduled"
+      },
+      "snapshotPolicy": {
+        "pre": "Run /api/predict/760517 after preSnapshotAtUtc and before kickoffUtc. If kickoff has passed with no pre snapshot, mark pre_missed; do not fabricate it.",
+        "post": "Run /api/post-match-review/760517 after postSnapshotAtUtc. If the match is not final, retry later."
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "matches": {
+    "R32-1": { "teamA": "A2", "teamB": "B2" },
+    "R32-2": { "teamA": "E1", "teamB": "3rd A/B/C/D/F" },
+    "R32-3": { "teamA": "F1", "teamB": "C2" },
+    "R32-4": { "teamA": "C1", "teamB": "F2" },
+    "R32-5": { "teamA": "A1", "teamB": "3rd C/E/F/H/I" },
+    "R32-6": { "teamA": "L1", "teamB": "3rd E/H/I/J/K" },
+    "R32-7": { "teamA": "G1", "teamB": "3rd A/E/H/I/J" },
+    "R32-8": { "teamA": "D1", "teamB": "3rd B/E/F/I/J" },
+    "R32-9": { "teamA": "H1", "teamB": "J2" },
+    "R32-10": { "teamA": "K2", "teamB": "L2" },
+    "R32-11": { "teamA": "B1", "teamB": "3rd E/F/G/I/J" },
+    "R32-12": { "teamA": "D2", "teamB": "G2" },
+    "R32-13": { "teamA": "E2", "teamB": "I2" },
+    "R32-14": { "teamA": "J1", "teamB": "H2" },
+    "R32-15": { "teamA": "I1", "teamB": "3rd C/D/F/G/H" },
+    "R32-16": { "teamA": "K1", "teamB": "3rd D/E/I/J/L" },
+    "R16-1": { "teamA": "W R32-1", "teamB": "W R32-3", "feedA": "R32-1", "feedB": "R32-3" },
+    "R16-2": { "teamA": "W R32-2", "teamB": "W R32-5", "feedA": "R32-2", "feedB": "R32-5" },
+    "R16-3": { "teamA": "W R32-4", "teamB": "W R32-6", "feedA": "R32-4", "feedB": "R32-6" },
+    "R16-4": { "teamA": "W R32-7", "teamB": "W R32-8", "feedA": "R32-7", "feedB": "R32-8" },
+    "R16-5": { "teamA": "W R32-11", "teamB": "W R32-12", "feedA": "R32-11", "feedB": "R32-12" },
+    "R16-6": { "teamA": "W R32-9", "teamB": "W R32-10", "feedA": "R32-9", "feedB": "R32-10" },
+    "R16-7": { "teamA": "W R32-14", "teamB": "W R32-16", "feedA": "R32-14", "feedB": "R32-16" },
+    "R16-8": { "teamA": "W R32-13", "teamB": "W R32-15", "feedA": "R32-13", "feedB": "R32-15" },
+    "QF-1": { "teamA": "W R16-1", "teamB": "W R16-2", "feedA": "R16-1", "feedB": "R16-2" },
+    "QF-2": { "teamA": "W R16-5", "teamB": "W R16-6", "feedA": "R16-5", "feedB": "R16-6" },
+    "QF-3": { "teamA": "W R16-3", "teamB": "W R16-4", "feedA": "R16-3", "feedB": "R16-4" },
+    "QF-4": { "teamA": "W R16-7", "teamB": "W R16-8", "feedA": "R16-7", "feedB": "R16-8" },
+    "SF-1": { "teamA": "W QF-1", "teamB": "W QF-2", "feedA": "QF-1", "feedB": "QF-2" },
+    "SF-2": { "teamA": "W QF-3", "teamB": "W QF-4", "feedA": "QF-3", "feedB": "QF-4" },
+    "FINAL": { "teamA": "W SF-1", "teamB": "W SF-2", "feedA": "SF-1", "feedB": "SF-2" }
+  },
+  "tree": {
+    "left": [
+      {
+        "id": "SF-1",
+        "children": [
+          {
+            "id": "QF-1",
+            "children": [
+              {
+                "id": "R16-1",
+                "children": [{ "id": "R32-1" }, { "id": "R32-3" }]
+              },
+              {
+                "id": "R16-2",
+                "children": [{ "id": "R32-2" }, { "id": "R32-5" }]
+              }
+            ]
+          },
+          {
+            "id": "QF-2",
+            "children": [
+              {
+                "id": "R16-5",
+                "children": [{ "id": "R32-11" }, { "id": "R32-12" }]
+              },
+              {
+                "id": "R16-6",
+                "children": [{ "id": "R32-9" }, { "id": "R32-10" }]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "right": [
+      {
+        "id": "SF-2",
+        "children": [
+          {
+            "id": "QF-3",
+            "children": [
+              {
+                "id": "R16-3",
+                "children": [{ "id": "R32-4" }, { "id": "R32-6" }]
+              },
+              {
+                "id": "R16-4",
+                "children": [{ "id": "R32-7" }, { "id": "R32-8" }]
+              }
+            ]
+          },
+          {
+            "id": "QF-4",
+            "children": [
+              {
+                "id": "R16-7",
+                "children": [{ "id": "R32-14" }, { "id": "R32-16" }]
+              },
+              {
+                "id": "R16-8",
+                "children": [{ "id": "R32-13" }, { "id": "R32-15" }]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "center": [
+      {
+        "id": "FINAL",
+        "children": [{ "id": "SF-1" }, { "id": "SF-2" }]
+      }
+    ]
+  }
+}

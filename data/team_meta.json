@@ -1,0 +1,211 @@
+{
+  "arg": {
+    "worldRanking": 1, "fifaPoints": 1858, "marketValue": "€8.54亿",
+    "radar": {"attack": 90, "defense": 84, "possession": 85, "pace": 82, "stamina": 86, "tactics": 88},
+    "tournamentHistory": {"worldCupApps": 18, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 47, "d": 15, "l": 17}}
+  },
+  "fra": {
+    "worldRanking": 2, "fifaPoints": 1840, "marketValue": "€10.4亿",
+    "radar": {"attack": 92, "defense": 85, "possession": 83, "pace": 90, "stamina": 85, "tactics": 86},
+    "tournamentHistory": {"worldCupApps": 16, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 38, "d": 14, "l": 17}}
+  },
+  "eng": {
+    "worldRanking": 3, "fifaPoints": 1794, "marketValue": "€8.19亿",
+    "radar": {"attack": 89, "defense": 86, "possession": 88, "pace": 85, "stamina": 84, "tactics": 85},
+    "tournamentHistory": {"worldCupApps": 16, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 30, "d": 22, "l": 13}}
+  },
+  "bra": {
+    "worldRanking": 4, "fifaPoints": 1784, "marketValue": "€8.63亿",
+    "radar": {"attack": 91, "defense": 82, "possession": 87, "pace": 93, "stamina": 88, "tactics": 84},
+    "tournamentHistory": {"worldCupApps": 22, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 76, "d": 19, "l": 19}}
+  },
+  "bel": {
+    "worldRanking": 5, "fifaPoints": 1765, "marketValue": "€6.01亿",
+    "radar": {"attack": 87, "defense": 82, "possession": 78, "pace": 84, "stamina": 80, "tactics": 83},
+    "tournamentHistory": {"worldCupApps": 14, "bestResult": "季军", "lastEdition": "2022年", "allTimeRecord": {"w": 21, "d": 9, "l": 18}}
+  },
+  "esp": {
+    "worldRanking": 6, "fifaPoints": 1763, "marketValue": "€8.50亿",
+    "radar": {"attack": 88, "defense": 84, "possession": 94, "pace": 82, "stamina": 84, "tactics": 92},
+    "tournamentHistory": {"worldCupApps": 16, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 31, "d": 13, "l": 16}}
+  },
+  "ned": {
+    "worldRanking": 7, "fifaPoints": 1744, "marketValue": "€7.58亿",
+    "radar": {"attack": 88, "defense": 83, "possession": 82, "pace": 84, "stamina": 82, "tactics": 85},
+    "tournamentHistory": {"worldCupApps": 11, "bestResult": "亚军", "lastEdition": "2022年", "allTimeRecord": {"w": 28, "d": 13, "l": 11}}
+  },
+  "por": {
+    "worldRanking": 8, "fifaPoints": 1728, "marketValue": "€7.05亿",
+    "radar": {"attack": 89, "defense": 80, "possession": 81, "pace": 86, "stamina": 82, "tactics": 80},
+    "tournamentHistory": {"worldCupApps": 9, "bestResult": "季军", "lastEdition": "2022年", "allTimeRecord": {"w": 18, "d": 7, "l": 10}}
+  },
+  "col": {
+    "worldRanking": 9, "fifaPoints": 1712, "marketValue": "€3.58亿",
+    "radar": {"attack": 85, "defense": 78, "possession": 76, "pace": 87, "stamina": 82, "tactics": 77},
+    "tournamentHistory": {"worldCupApps": 7, "bestResult": "八强", "lastEdition": "2018年", "allTimeRecord": {"w": 12, "d": 9, "l": 12}}
+  },
+  "ger": {
+    "worldRanking": 10, "fifaPoints": 1700, "marketValue": "€7.50亿",
+    "radar": {"attack": 87, "defense": 83, "possession": 85, "pace": 80, "stamina": 84, "tactics": 88},
+    "tournamentHistory": {"worldCupApps": 20, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 67, "d": 20, "l": 18}}
+  },
+  "usa": {
+    "worldRanking": 11, "fifaPoints": 1690, "marketValue": "€2.90亿",
+    "radar": {"attack": 78, "defense": 78, "possession": 71, "pace": 82, "stamina": 83, "tactics": 74},
+    "tournamentHistory": {"worldCupApps": 11, "bestResult": "十六强", "lastEdition": "2022年", "allTimeRecord": {"w": 11, "d": 6, "l": 26}}
+  },
+  "mar": {
+    "worldRanking": 13, "fifaPoints": 1692, "marketValue": "€5.07亿",
+    "radar": {"attack": 80, "defense": 88, "possession": 72, "pace": 82, "stamina": 90, "tactics": 84},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "四强", "lastEdition": "2022年", "allTimeRecord": {"w": 7, "d": 5, "l": 10}}
+  },
+  "mex": {
+    "worldRanking": 15, "fifaPoints": 1671, "marketValue": "€2.02亿",
+    "radar": {"attack": 76, "defense": 78, "possession": 74, "pace": 78, "stamina": 80, "tactics": 78},
+    "tournamentHistory": {"worldCupApps": 17, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 16, "d": 14, "l": 27}}
+  },
+  "uru": {
+    "worldRanking": 16, "fifaPoints": 1668, "marketValue": "€2.85亿",
+    "radar": {"attack": 82, "defense": 82, "possession": 72, "pace": 78, "stamina": 84, "tactics": 80},
+    "tournamentHistory": {"worldCupApps": 14, "bestResult": "冠军", "lastEdition": "2022年", "allTimeRecord": {"w": 28, "d": 11, "l": 23}}
+  },
+  "jpn": {
+    "worldRanking": 17, "fifaPoints": 1652, "marketValue": "€3.44亿",
+    "radar": {"attack": 79, "defense": 80, "possession": 78, "pace": 82, "stamina": 85, "tactics": 83},
+    "tournamentHistory": {"worldCupApps": 7, "bestResult": "十六强", "lastEdition": "2022年", "allTimeRecord": {"w": 9, "d": 6, "l": 13}}
+  },
+  "cro": {
+    "worldRanking": 18, "fifaPoints": 1641, "marketValue": "€3.48亿",
+    "radar": {"attack": 82, "defense": 80, "possession": 78, "pace": 76, "stamina": 78, "tactics": 84},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "亚军", "lastEdition": "2022年", "allTimeRecord": {"w": 14, "d": 8, "l": 8}}
+  },
+  "sui": {
+    "worldRanking": 19, "fifaPoints": 1638, "marketValue": "€4.18亿",
+    "radar": {"attack": 78, "defense": 82, "possession": 74, "pace": 76, "stamina": 82, "tactics": 80},
+    "tournamentHistory": {"worldCupApps": 12, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 18, "d": 11, "l": 23}}
+  },
+  "sen": {
+    "worldRanking": 20, "fifaPoints": 1631, "marketValue": "€2.74亿",
+    "radar": {"attack": 79, "defense": 80, "possession": 68, "pace": 86, "stamina": 85, "tactics": 74},
+    "tournamentHistory": {"worldCupApps": 3, "bestResult": "四强", "lastEdition": "2022年", "allTimeRecord": {"w": 5, "d": 4, "l": 7}}
+  },
+  "kor": {
+    "worldRanking": 22, "fifaPoints": 1618, "marketValue": "€3.50亿",
+    "radar": {"attack": 76, "defense": 78, "possession": 72, "pace": 80, "stamina": 84, "tactics": 78},
+    "tournamentHistory": {"worldCupApps": 11, "bestResult": "四强", "lastEdition": "2022年", "allTimeRecord": {"w": 9, "d": 8, "l": 22}}
+  },
+  "aus": {
+    "worldRanking": 24, "fifaPoints": 1604, "marketValue": "€1.52亿",
+    "radar": {"attack": 72, "defense": 76, "possession": 64, "pace": 74, "stamina": 80, "tactics": 72},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 8, "d": 4, "l": 15}}
+  },
+  "irn": {
+    "worldRanking": 25, "fifaPoints": 1598, "marketValue": "€0.90亿",
+    "radar": {"attack": 72, "defense": 79, "possession": 64, "pace": 72, "stamina": 78, "tactics": 76},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "小组赛", "lastEdition": "2022年", "allTimeRecord": {"w": 3, "d": 3, "l": 12}}
+  },
+  "sco": {
+    "worldRanking": 32, "fifaPoints": 1583, "marketValue": "€2.32亿",
+    "radar": {"attack": 72, "defense": 76, "possession": 66, "pace": 74, "stamina": 78, "tactics": 72},
+    "tournamentHistory": {"worldCupApps": 8, "bestResult": "小组赛", "lastEdition": "1998年", "allTimeRecord": {"w": 4, "d": 8, "l": 16}}
+  },
+  "alg": {
+    "worldRanking": 30, "fifaPoints": 1588, "marketValue": "€0.82亿",
+    "radar": {"attack": 72, "defense": 74, "possession": 64, "pace": 74, "stamina": 76, "tactics": 70},
+    "tournamentHistory": {"worldCupApps": 4, "bestResult": "十六强", "lastEdition": "2014年", "allTimeRecord": {"w": 3, "d": 4, "l": 9}}
+  },
+  "can": {
+    "worldRanking": 40, "fifaPoints": 1557, "marketValue": "€1.60亿",
+    "radar": {"attack": 72, "defense": 74, "possession": 65, "pace": 76, "stamina": 78, "tactics": 68},
+    "tournamentHistory": {"worldCupApps": 2, "bestResult": "小组赛", "lastEdition": "2022年", "allTimeRecord": {"w": 0, "d": 0, "l": 5}}
+  },
+  "tun": {
+    "worldRanking": 36, "fifaPoints": 1564, "marketValue": "€0.65亿",
+    "radar": {"attack": 68, "defense": 76, "possession": 62, "pace": 74, "stamina": 76, "tactics": 70},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "小组赛", "lastEdition": "2022年", "allTimeRecord": {"w": 2, "d": 5, "l": 11}}
+  },
+  "nga": {
+    "worldRanking": 42, "fifaPoints": 1541, "marketValue": "€1.85亿",
+    "radar": {"attack": 76, "defense": 74, "possession": 64, "pace": 86, "stamina": 80, "tactics": 68},
+    "tournamentHistory": {"worldCupApps": 7, "bestResult": "十六强", "lastEdition": "2014年", "allTimeRecord": {"w": 8, "d": 4, "l": 13}}
+  },
+  "cmr": {
+    "worldRanking": 43, "fifaPoints": 1540, "marketValue": "€0.92亿",
+    "radar": {"attack": 70, "defense": 70, "possession": 58, "pace": 80, "stamina": 76, "tactics": 64},
+    "tournamentHistory": {"worldCupApps": 8, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 5, "d": 5, "l": 18}}
+  },
+  "ecu": {
+    "worldRanking": 44, "fifaPoints": 1538, "marketValue": "€1.28亿",
+    "radar": {"attack": 70, "defense": 74, "possession": 60, "pace": 74, "stamina": 76, "tactics": 66},
+    "tournamentHistory": {"worldCupApps": 4, "bestResult": "十六强", "lastEdition": "2022年", "allTimeRecord": {"w": 2, "d": 3, "l": 7}}
+  },
+  "egy": {
+    "worldRanking": 48, "fifaPoints": 1527, "marketValue": "€0.48亿",
+    "radar": {"attack": 67, "defense": 74, "possession": 60, "pace": 70, "stamina": 74, "tactics": 68},
+    "tournamentHistory": {"worldCupApps": 3, "bestResult": "小组赛", "lastEdition": "2018年", "allTimeRecord": {"w": 0, "d": 2, "l": 6}}
+  },
+  "gha": {
+    "worldRanking": 50, "fifaPoints": 1520, "marketValue": "€1.10亿",
+    "radar": {"attack": 72, "defense": 70, "possession": 60, "pace": 82, "stamina": 76, "tactics": 66},
+    "tournamentHistory": {"worldCupApps": 4, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 4, "d": 4, "l": 8}}
+  },
+  "ksa": {
+    "worldRanking": 55, "fifaPoints": 1490, "marketValue": "€0.58亿",
+    "radar": {"attack": 68, "defense": 70, "possession": 58, "pace": 72, "stamina": 72, "tactics": 66},
+    "tournamentHistory": {"worldCupApps": 6, "bestResult": "十六强", "lastEdition": "2022年", "allTimeRecord": {"w": 4, "d": 2, "l": 15}}
+  },
+  "par": {
+    "worldRanking": 57, "fifaPoints": 1484, "marketValue": "€0.80亿",
+    "radar": {"attack": 64, "defense": 72, "possession": 56, "pace": 70, "stamina": 74, "tactics": 64},
+    "tournamentHistory": {"worldCupApps": 8, "bestResult": "十六强", "lastEdition": "2010年", "allTimeRecord": {"w": 6, "d": 9, "l": 15}}
+  },
+  "crc": {
+    "worldRanking": 60, "fifaPoints": 1476, "marketValue": "€0.42亿",
+    "radar": {"attack": 60, "defense": 72, "possession": 54, "pace": 68, "stamina": 76, "tactics": 66},
+    "tournamentHistory": {"worldCupApps": 5, "bestResult": "八强", "lastEdition": "2022年", "allTimeRecord": {"w": 4, "d": 3, "l": 12}}
+  },
+  "qat": {
+    "worldRanking": 62, "fifaPoints": 1472, "marketValue": "€0.36亿",
+    "radar": {"attack": 60, "defense": 68, "possession": 58, "pace": 66, "stamina": 72, "tactics": 64},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "2022年", "allTimeRecord": {"w": 0, "d": 0, "l": 3}}
+  },
+  "uzb": {
+    "worldRanking": 70, "fifaPoints": 1454, "marketValue": "€0.22亿",
+    "radar": {"attack": 62, "defense": 68, "possession": 56, "pace": 66, "stamina": 72, "tactics": 62},
+    "tournamentHistory": {"worldCupApps": 0, "bestResult": "首次参赛", "lastEdition": "—", "allTimeRecord": {"w": 0, "d": 0, "l": 0}}
+  },
+  "irq": {
+    "worldRanking": 65, "fifaPoints": 1464, "marketValue": "€0.18亿",
+    "radar": {"attack": 62, "defense": 66, "possession": 54, "pace": 66, "stamina": 70, "tactics": 60},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "1986年", "allTimeRecord": {"w": 0, "d": 1, "l": 2}}
+  },
+  "pan": {
+    "worldRanking": 74, "fifaPoints": 1442, "marketValue": "€0.18亿",
+    "radar": {"attack": 58, "defense": 68, "possession": 50, "pace": 66, "stamina": 72, "tactics": 60},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "2018年", "allTimeRecord": {"w": 0, "d": 0, "l": 3}}
+  },
+  "cod": {
+    "worldRanking": 68, "fifaPoints": 1458, "marketValue": "€0.35亿",
+    "radar": {"attack": 64, "defense": 66, "possession": 52, "pace": 72, "stamina": 70, "tactics": 58},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "1974年", "allTimeRecord": {"w": 0, "d": 1, "l": 2}}
+  },
+  "hai": {
+    "worldRanking": 86, "fifaPoints": 1410, "marketValue": "€0.08亿",
+    "radar": {"attack": 54, "defense": 60, "possession": 46, "pace": 64, "stamina": 66, "tactics": 52},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "1974年", "allTimeRecord": {"w": 0, "d": 0, "l": 3}}
+  },
+  "alg": {
+    "worldRanking": 30, "fifaPoints": 1588, "marketValue": "€0.82亿",
+    "radar": {"attack": 72, "defense": 74, "possession": 64, "pace": 74, "stamina": 76, "tactics": 70},
+    "tournamentHistory": {"worldCupApps": 4, "bestResult": "十六强", "lastEdition": "2014年", "allTimeRecord": {"w": 3, "d": 4, "l": 9}}
+  },
+  "cpv": {
+    "worldRanking": 76, "fifaPoints": 1438, "marketValue": "€0.16亿",
+    "radar": {"attack": 60, "defense": 66, "possession": 50, "pace": 68, "stamina": 68, "tactics": 58},
+    "tournamentHistory": {"worldCupApps": 0, "bestResult": "首次参赛", "lastEdition": "—", "allTimeRecord": {"w": 0, "d": 0, "l": 0}}
+  },
+  "default": {
+    "radar": {"attack": 68, "defense": 70, "possession": 60, "pace": 70, "stamina": 72, "tactics": 65},
+    "tournamentHistory": {"worldCupApps": 1, "bestResult": "小组赛", "lastEdition": "—", "allTimeRecord": {"w": 0, "d": 0, "l": 0}}
+  }
+}

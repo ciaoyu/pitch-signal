@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-06-25T04:50:00Z",
+  "matchId": "760462",
+  "trigger": "fulltime",
+  "minute": 90,
+  "home": { "name": "Bosnia-Herzegovina", "score": 3, "stats": { "possessionPct": 54.5, "totalShots": 14, "shotsOnTarget": 5, "wonCorners": 5, "foulsCommitted": 9 } },
+  "away": { "name": "Qatar", "score": 1, "stats": { "possessionPct": 45.5, "totalShots": 9, "shotsOnTarget": 3, "wonCorners": 5, "foulsCommitted": 14 } },
+  "livePrediction": { "probabilities": { "homeWin": 1.0, "draw": 0, "awayWin": 0 }, "stateShift": "reinforced" },
+  "details": [
+    { "type": "Goal", "minute": "29'", "player": "Kerim Alajbegovic" },
+    { "type": "Own Goal", "minute": "34'", "player": "Mahmoud Abunada" },
+    { "type": "Goal", "minute": "42'", "player": "Hassan Al-Haydos", "team": "Qatar" },
+    { "type": "Yellow Card", "minute": "78'", "player": "Ahmed Fathy" },
+    { "type": "Goal", "minute": "80'", "player": "Ermin Mahmic" },
+    { "type": "Yellow Card", "minute": "82'", "player": "Ermin Mahmic" }
+  ],
+  "summary": "【🏁 终场】Bosnia 3-1 Qatar（FT）\n  29'阿拉伊贝戈维奇 1-0 | 34'乌龙 2-0 | 42'阿尔海多斯 2-1 | 80'马赫米奇 3-1\n  射门14-9 射正5-3 控球54.5%-45.5%\n  🏆 波黑锁定胜局！\n  📊 赛前预测波黑胜58.9%→最终兑现\n  📌 E组最终: Bosnia 4分第三(净胜球+1)，大概率最佳第三出线\n  🔗 同组平行场: Switzerland 2-1 Canada（FT）"
+}

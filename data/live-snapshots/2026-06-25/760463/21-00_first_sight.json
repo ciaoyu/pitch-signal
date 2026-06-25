@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-06-25T03:20:00Z",
+  "matchId": "760463",
+  "trigger": "first_sight",
+  "minute": 21,
+  "home": { "name": "Switzerland", "score": 0, "stats": { "possessionPct": 72.1, "totalShots": 3, "shotsOnTarget": 2, "wonCorners": 1, "foulsCommitted": 7 } },
+  "away": { "name": "Canada", "score": 0, "stats": { "possessionPct": 27.9, "totalShots": 1, "shotsOnTarget": 1, "wonCorners": 0, "foulsCommitted": 3 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.695, "draw": 0.207, "awayWin": 0.097 }, "stateShift": "still_live" },
+  "summary": "【🔍 开球】Switzerland 0-0 Canada（21'）\n  胜平负: 主胜69.5% 平局20.7% 客胜9.7%\n  📊 场面: 瑞士控球72%完全主导，射门3-1射正2-1\n  📌 五五开判断正确，加拿大不急瑞士更主动\n  📌 加拿大越位2次在尝试打身后\n  🔗 同组平行场: Bosnia 0-0 Qatar（21'）\n  📊 出线推演: Canada平局就够拿小组第一（净胜球+7优势）"
+}

@@ -1,0 +1,82 @@
+{
+  "tournament": "2018 FIFA World Cup",
+  "year": 2018,
+  "host": "Russia",
+  "matches": [
+    {"date":"2018-06-14","home":"Russia","away":"Saudi Arabia","homeScore":5,"awayScore":0,"stage":"Group A","venue":"Luzhniki Stadium"},
+    {"date":"2018-06-15","home":"Egypt","away":"Uruguay","homeScore":0,"awayScore":1,"stage":"Group A","venue":"Ekaterinburg Arena"},
+    {"date":"2018-06-19","home":"Russia","away":"Egypt","homeScore":3,"awayScore":1,"stage":"Group A","venue":"Krestovsky Stadium"},
+    {"date":"2018-06-20","home":"Uruguay","away":"Saudi Arabia","homeScore":1,"awayScore":0,"stage":"Group A","venue":"Rostov Arena"},
+    {"date":"2018-06-25","home":"Uruguay","away":"Russia","homeScore":3,"awayScore":0,"stage":"Group A","venue":"Cosmos Arena"},
+    {"date":"2018-06-25","home":"Saudi Arabia","away":"Egypt","homeScore":2,"awayScore":1,"stage":"Group A","venue":"Volgograd Arena"},
+
+    {"date":"2018-06-15","home":"Morocco","away":"Iran","homeScore":0,"awayScore":1,"stage":"Group B","venue":"Krestovsky Stadium"},
+    {"date":"2018-06-15","home":"Portugal","away":"Spain","homeScore":3,"awayScore":3,"stage":"Group B","venue":"Fisht Stadium"},
+    {"date":"2018-06-20","home":"Portugal","away":"Morocco","homeScore":1,"awayScore":0,"stage":"Group B","venue":"Luzhniki Stadium"},
+    {"date":"2018-06-20","home":"Iran","away":"Spain","homeScore":0,"awayScore":1,"stage":"Group B","venue":"Kazan Arena"},
+    {"date":"2018-06-25","home":"Iran","away":"Portugal","homeScore":1,"awayScore":1,"stage":"Group B","venue":"Mordovia Arena"},
+    {"date":"2018-06-25","home":"Spain","away":"Morocco","homeScore":2,"awayScore":2,"stage":"Group B","venue":"Kaliningrad Stadium"},
+
+    {"date":"2018-06-16","home":"France","away":"Australia","homeScore":2,"awayScore":1,"stage":"Group C","venue":"Kazan Arena"},
+    {"date":"2018-06-16","home":"Peru","away":"Denmark","homeScore":0,"awayScore":1,"stage":"Group C","venue":"Mordovia Arena"},
+    {"date":"2018-06-21","home":"France","away":"Peru","homeScore":1,"awayScore":0,"stage":"Group C","venue":"Ekaterinburg Arena"},
+    {"date":"2018-06-21","home":"Denmark","away":"Australia","homeScore":1,"awayScore":1,"stage":"Group C","venue":"Cosmos Arena"},
+    {"date":"2018-06-26","home":"Denmark","away":"France","homeScore":0,"awayScore":0,"stage":"Group C","venue":"Luzhniki Stadium"},
+    {"date":"2018-06-26","home":"Australia","away":"Peru","homeScore":0,"awayScore":2,"stage":"Group C","venue":"Fisht Stadium"},
+
+    {"date":"2018-06-16","home":"Argentina","away":"Iceland","homeScore":1,"awayScore":1,"stage":"Group D","venue":"Spartak Stadium"},
+    {"date":"2018-06-16","home":"Croatia","away":"Nigeria","homeScore":2,"awayScore":0,"stage":"Group D","venue":"Kaliningrad Stadium"},
+    {"date":"2018-06-21","home":"Argentina","away":"Croatia","homeScore":0,"awayScore":3,"stage":"Group D","venue":"Nizhny Novgorod Stadium"},
+    {"date":"2018-06-22","home":"Nigeria","away":"Iceland","homeScore":2,"awayScore":0,"stage":"Group D","venue":"Volgograd Arena"},
+    {"date":"2018-06-26","home":"Nigeria","away":"Argentina","homeScore":1,"awayScore":2,"stage":"Group D","venue":"Krestovsky Stadium"},
+    {"date":"2018-06-26","home":"Iceland","away":"Croatia","homeScore":1,"awayScore":2,"stage":"Group D","venue":"Rostov Arena"},
+
+    {"date":"2018-06-17","home":"Costa Rica","away":"Serbia","homeScore":0,"awayScore":1,"stage":"Group E","venue":"Cosmos Arena"},
+    {"date":"2018-06-17","home":"Brazil","away":"Switzerland","homeScore":1,"awayScore":1,"stage":"Group E","venue":"Rostov Arena"},
+    {"date":"2018-06-22","home":"Brazil","away":"Costa Rica","homeScore":2,"awayScore":0,"stage":"Group E","venue":"Krestovsky Stadium"},
+    {"date":"2018-06-22","home":"Serbia","away":"Switzerland","homeScore":1,"awayScore":2,"stage":"Group E","venue":"Kaliningrad Stadium"},
+    {"date":"2018-06-27","home":"Serbia","away":"Brazil","homeScore":0,"awayScore":2,"stage":"Group E","venue":"Spartak Stadium"},
+    {"date":"2018-06-27","home":"Switzerland","away":"Costa Rica","homeScore":2,"awayScore":2,"stage":"Group E","venue":"Nizhny Novgorod Stadium"},
+
+    {"date":"2018-06-17","home":"Germany","away":"Mexico","homeScore":0,"awayScore":1,"stage":"Group F","venue":"Luzhniki Stadium"},
+    {"date":"2018-06-18","home":"Sweden","away":"South Korea","homeScore":1,"awayScore":0,"stage":"Group F","venue":"Nizhny Novgorod Stadium"},
+    {"date":"2018-06-23","home":"Germany","away":"Sweden","homeScore":2,"awayScore":1,"stage":"Group F","venue":"Fisht Stadium"},
+    {"date":"2018-06-23","home":"South Korea","away":"Mexico","homeScore":1,"awayScore":2,"stage":"Group F","venue":"Rostov Arena"},
+    {"date":"2018-06-27","home":"South Korea","away":"Germany","homeScore":2,"awayScore":0,"stage":"Group F","venue":"Kazan Arena"},
+    {"date":"2018-06-27","home":"Mexico","away":"Sweden","homeScore":0,"awayScore":3,"stage":"Group F","venue":"Ekaterinburg Arena"},
+
+    {"date":"2018-06-18","home":"Belgium","away":"Panama","homeScore":3,"awayScore":0,"stage":"Group G","venue":"Fisht Stadium"},
+    {"date":"2018-06-18","home":"Tunisia","away":"England","homeScore":1,"awayScore":2,"stage":"Group G","venue":"Volgograd Arena"},
+    {"date":"2018-06-23","home":"Belgium","away":"Tunisia","homeScore":5,"awayScore":2,"stage":"Group G","venue":"Spartak Stadium"},
+    {"date":"2018-06-24","home":"England","away":"Panama","homeScore":6,"awayScore":1,"stage":"Group G","venue":"Nizhny Novgorod Stadium"},
+    {"date":"2018-06-28","home":"England","away":"Belgium","homeScore":0,"awayScore":1,"stage":"Group G","venue":"Kaliningrad Stadium"},
+    {"date":"2018-06-28","home":"Panama","away":"Tunisia","homeScore":1,"awayScore":2,"stage":"Group G","venue":"Mordovia Arena"},
+
+    {"date":"2018-06-19","home":"Colombia","away":"Japan","homeScore":1,"awayScore":2,"stage":"Group H","venue":"Mordovia Arena"},
+    {"date":"2018-06-19","home":"Poland","away":"Senegal","homeScore":1,"awayScore":2,"stage":"Group H","venue":"Spartak Stadium"},
+    {"date":"2018-06-24","home":"Japan","away":"Senegal","homeScore":2,"awayScore":2,"stage":"Group H","venue":"Ekaterinburg Arena"},
+    {"date":"2018-06-24","home":"Poland","away":"Colombia","homeScore":0,"awayScore":3,"stage":"Group H","venue":"Kazan Arena"},
+    {"date":"2018-06-28","home":"Japan","away":"Poland","homeScore":0,"awayScore":1,"stage":"Group H","venue":"Volgograd Arena"},
+    {"date":"2018-06-28","home":"Senegal","away":"Colombia","homeScore":0,"awayScore":1,"stage":"Group H","venue":"Cosmos Arena"},
+
+    {"date":"2018-06-30","home":"France","away":"Argentina","homeScore":4,"awayScore":3,"stage":"Round of 16","venue":"Kazan Arena"},
+    {"date":"2018-06-30","home":"Uruguay","away":"Portugal","homeScore":2,"awayScore":1,"stage":"Round of 16","venue":"Fisht Stadium"},
+    {"date":"2018-07-01","home":"Spain","away":"Russia","homeScore":1,"awayScore":1,"stage":"Round of 16","venue":"Luzhniki Stadium"},
+    {"date":"2018-07-01","home":"Croatia","away":"Denmark","homeScore":1,"awayScore":1,"stage":"Round of 16","venue":"Nizhny Novgorod Stadium"},
+    {"date":"2018-07-02","home":"Brazil","away":"Mexico","homeScore":2,"awayScore":0,"stage":"Round of 16","venue":"Cosmos Arena"},
+    {"date":"2018-07-02","home":"Belgium","away":"Japan","homeScore":3,"awayScore":2,"stage":"Round of 16","venue":"Rostov Arena"},
+    {"date":"2018-07-03","home":"Sweden","away":"Switzerland","homeScore":1,"awayScore":0,"stage":"Round of 16","venue":"Krestovsky Stadium"},
+    {"date":"2018-07-03","home":"Colombia","away":"England","homeScore":1,"awayScore":1,"stage":"Round of 16","venue":"Spartak Stadium"},
+
+    {"date":"2018-07-06","home":"Uruguay","away":"France","homeScore":0,"awayScore":2,"stage":"Quarter-finals","venue":"Nizhny Novgorod Stadium"},
+    {"date":"2018-07-06","home":"Brazil","away":"Belgium","homeScore":1,"awayScore":2,"stage":"Quarter-finals","venue":"Kazan Arena"},
+    {"date":"2018-07-07","home":"Sweden","away":"England","homeScore":0,"awayScore":2,"stage":"Quarter-finals","venue":"Cosmos Arena"},
+    {"date":"2018-07-07","home":"Russia","away":"Croatia","homeScore":2,"awayScore":2,"stage":"Quarter-finals","venue":"Fisht Stadium"},
+
+    {"date":"2018-07-10","home":"France","away":"Belgium","homeScore":1,"awayScore":0,"stage":"Semi-finals","venue":"Krestovsky Stadium"},
+    {"date":"2018-07-11","home":"Croatia","away":"England","homeScore":2,"awayScore":1,"stage":"Semi-finals","venue":"Luzhniki Stadium"},
+
+    {"date":"2018-07-14","home":"Belgium","away":"England","homeScore":2,"awayScore":0,"stage":"Third place","venue":"Krestovsky Stadium"},
+    {"date":"2018-07-15","home":"France","away":"Croatia","homeScore":4,"awayScore":2,"stage":"Final","venue":"Luzhniki Stadium"}
+  ]
+}

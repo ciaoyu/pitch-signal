@@ -1,0 +1,450 @@
+{
+  "Russia": {
+    "espn_id": null,
+    "official_name": "Russia",
+    "the_odds_name": "Russia",
+    "zh_name": "Russia",
+    "flag": "🏳️"
+  },
+  "Saudi Arabia": {
+    "espn_id": "655",
+    "official_name": "Saudi Arabia",
+    "the_odds_name": "Saudi Arabia",
+    "zh_name": "沙特阿拉伯",
+    "flag": "🇸🇦",
+    "aliases": [
+      "KSA",
+      "Kingdom of Saudi Arabia"
+    ]
+  },
+  "Egypt": {
+    "espn_id": "2620",
+    "official_name": "Egypt",
+    "the_odds_name": "Egypt",
+    "zh_name": "埃及",
+    "flag": "🇪🇬"
+  },
+  "Uruguay": {
+    "espn_id": "212",
+    "official_name": "Uruguay",
+    "the_odds_name": "Uruguay",
+    "zh_name": "乌拉圭",
+    "flag": "🇺🇾"
+  },
+  "Morocco": {
+    "espn_id": "2869",
+    "official_name": "Morocco",
+    "the_odds_name": "Morocco",
+    "zh_name": "摩洛哥",
+    "flag": "🇲🇦"
+  },
+  "Iran": {
+    "espn_id": "469",
+    "official_name": "Iran",
+    "the_odds_name": "Iran",
+    "zh_name": "伊朗",
+    "flag": "🇮🇷",
+    "aliases": [
+      "IR Iran",
+      "Islamic Republic of Iran"
+    ]
+  },
+  "Portugal": {
+    "espn_id": "482",
+    "official_name": "Portugal",
+    "the_odds_name": "Portugal",
+    "zh_name": "Portugal",
+    "flag": "🇵🇹"
+  },
+  "Spain": {
+    "espn_id": "164",
+    "official_name": "Spain",
+    "the_odds_name": "Spain",
+    "zh_name": "西班牙",
+    "flag": "🇪🇸"
+  },
+  "France": {
+    "espn_id": "478",
+    "official_name": "France",
+    "the_odds_name": "France",
+    "zh_name": "法国",
+    "flag": "🇫🇷"
+  },
+  "Australia": {
+    "espn_id": "628",
+    "official_name": "Australia",
+    "the_odds_name": "Australia",
+    "zh_name": "澳大利亚",
+    "flag": "🇦🇺"
+  },
+  "Peru": {
+    "espn_id": null,
+    "official_name": "Peru",
+    "the_odds_name": "Peru",
+    "zh_name": "Peru",
+    "flag": "🇵🇪"
+  },
+  "Denmark": {
+    "espn_id": null,
+    "official_name": "Denmark",
+    "the_odds_name": "Denmark",
+    "zh_name": "Denmark",
+    "flag": "🇩🇰"
+  },
+  "Argentina": {
+    "espn_id": "202",
+    "official_name": "Argentina",
+    "the_odds_name": "Argentina",
+    "zh_name": "阿根廷",
+    "flag": "🇦🇷"
+  },
+  "Iceland": {
+    "espn_id": null,
+    "official_name": "Iceland",
+    "the_odds_name": "Iceland",
+    "zh_name": "Iceland",
+    "flag": "🏳️"
+  },
+  "Croatia": {
+    "espn_id": "477",
+    "official_name": "Croatia",
+    "the_odds_name": "Croatia",
+    "zh_name": "克罗地亚",
+    "flag": "🇭🇷"
+  },
+  "Nigeria": {
+    "espn_id": "366",
+    "official_name": "Nigeria",
+    "the_odds_name": "Nigeria",
+    "zh_name": "尼日利亚",
+    "flag": "🇳🇬"
+  },
+  "Costa Rica": {
+    "espn_id": "214",
+    "official_name": "Costa Rica",
+    "the_odds_name": "Costa Rica",
+    "zh_name": "哥斯达黎加",
+    "flag": "🏳️"
+  },
+  "Serbia": {
+    "espn_id": null,
+    "official_name": "Serbia",
+    "the_odds_name": "Serbia",
+    "zh_name": "Serbia",
+    "flag": "🇷🇸"
+  },
+  "Brazil": {
+    "espn_id": "205",
+    "official_name": "Brazil",
+    "the_odds_name": "Brazil",
+    "zh_name": "巴西",
+    "flag": "🇧🇷"
+  },
+  "Switzerland": {
+    "espn_id": "475",
+    "official_name": "Switzerland",
+    "the_odds_name": "Switzerland",
+    "zh_name": "瑞士",
+    "flag": "🇨🇭"
+  },
+  "Germany": {
+    "espn_id": "481",
+    "official_name": "Germany",
+    "the_odds_name": "Germany",
+    "zh_name": "德国",
+    "flag": "🇩🇪"
+  },
+  "Mexico": {
+    "espn_id": "203",
+    "official_name": "Mexico",
+    "the_odds_name": "Mexico",
+    "zh_name": "墨西哥",
+    "flag": "🇲🇽"
+  },
+  "Sweden": {
+    "espn_id": "466",
+    "official_name": "Sweden",
+    "the_odds_name": "Sweden",
+    "zh_name": "Sweden",
+    "flag": "🇸🇪"
+  },
+  "South Korea": {
+    "espn_id": "451",
+    "official_name": "South Korea",
+    "the_odds_name": "South Korea",
+    "zh_name": "韩国",
+    "flag": "🇰🇷",
+    "aliases": [
+      "Korea Republic",
+      "Korea",
+      "Republic of Korea"
+    ]
+  },
+  "Belgium": {
+    "espn_id": "459",
+    "official_name": "Belgium",
+    "the_odds_name": "Belgium",
+    "zh_name": "比利时",
+    "flag": "🇧🇪"
+  },
+  "Panama": {
+    "espn_id": "2659",
+    "official_name": "Panama",
+    "the_odds_name": "Panama",
+    "zh_name": "Panama",
+    "flag": "🏳️"
+  },
+  "Tunisia": {
+    "espn_id": "509",
+    "official_name": "Tunisia",
+    "the_odds_name": "Tunisia",
+    "zh_name": "突尼斯",
+    "flag": "🏳️"
+  },
+  "England": {
+    "espn_id": "448",
+    "official_name": "England",
+    "the_odds_name": "England",
+    "zh_name": "英格兰",
+    "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    "aliases": [
+      "UK",
+      "United Kingdom",
+      "Great Britain"
+    ]
+  },
+  "Colombia": {
+    "espn_id": "208",
+    "official_name": "Colombia",
+    "the_odds_name": "Colombia",
+    "zh_name": "哥伦比亚",
+    "flag": "🇨🇴"
+  },
+  "Japan": {
+    "espn_id": "627",
+    "official_name": "Japan",
+    "the_odds_name": "Japan",
+    "zh_name": "日本",
+    "flag": "🇯🇵"
+  },
+  "Poland": {
+    "espn_id": null,
+    "official_name": "Poland",
+    "the_odds_name": "Poland",
+    "zh_name": "Poland",
+    "flag": "🇵🇱"
+  },
+  "Senegal": {
+    "espn_id": "654",
+    "official_name": "Senegal",
+    "the_odds_name": "Senegal",
+    "zh_name": "Senegal",
+    "flag": "🇸🇳"
+  },
+  "Qatar": {
+    "espn_id": "4398",
+    "official_name": "Qatar",
+    "the_odds_name": "Qatar",
+    "zh_name": "卡塔尔",
+    "flag": "🇶🇦"
+  },
+  "Ecuador": {
+    "espn_id": "209",
+    "official_name": "Ecuador",
+    "the_odds_name": "Ecuador",
+    "zh_name": "厄瓜多尔",
+    "flag": "🇪🇨"
+  },
+  "Netherlands": {
+    "espn_id": "449",
+    "official_name": "Netherlands",
+    "the_odds_name": "Netherlands",
+    "zh_name": "荷兰",
+    "flag": "🇳🇱"
+  },
+  "USA": {
+    "espn_id": "660",
+    "official_name": "USA",
+    "the_odds_name": "USA",
+    "zh_name": "美国",
+    "flag": "🇺🇸",
+    "aliases": [
+      "United States",
+      "US",
+      "U.S.A.",
+      "U.S."
+    ]
+  },
+  "Wales": {
+    "espn_id": null,
+    "official_name": "Wales",
+    "the_odds_name": "Wales",
+    "zh_name": "Wales",
+    "flag": "🏴󠁧󠁢󠁷󠁬󠁳󠁿"
+  },
+  "Canada": {
+    "espn_id": "206",
+    "official_name": "Canada",
+    "the_odds_name": "Canada",
+    "zh_name": "加拿大",
+    "flag": "🇨🇦"
+  },
+  "Cameroon": {
+    "espn_id": "492",
+    "official_name": "Cameroon",
+    "the_odds_name": "Cameroon",
+    "zh_name": "喀麦隆",
+    "flag": "🇨🇲"
+  },
+  "Ghana": {
+    "espn_id": "4469",
+    "official_name": "Ghana",
+    "the_odds_name": "Ghana",
+    "zh_name": "加纳",
+    "flag": "🇬🇭"
+  },
+  "Bosnia-Herzegovina": {
+    "espn_id": "452",
+    "official_name": "Bosnia-Herzegovina",
+    "the_odds_name": "Bosnia-Herzegovina",
+    "zh_name": "波黑",
+    "flag": "🏳️",
+    "aliases": [
+      "Bosnia and Herzegovina",
+      "Bosnia"
+    ]
+  },
+  "Haiti": {
+    "espn_id": "2654",
+    "official_name": "Haiti",
+    "the_odds_name": "Haiti",
+    "zh_name": "海地",
+    "flag": "🏳️"
+  },
+  "Scotland": {
+    "espn_id": "580",
+    "official_name": "Scotland",
+    "the_odds_name": "Scotland",
+    "zh_name": "苏格兰",
+    "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿"
+  },
+  "Paraguay": {
+    "espn_id": "210",
+    "official_name": "Paraguay",
+    "the_odds_name": "Paraguay",
+    "zh_name": "巴拉圭",
+    "flag": "🏳️"
+  },
+  "Curaçao": {
+    "espn_id": "11678",
+    "official_name": "Curaçao",
+    "the_odds_name": "Curaçao",
+    "zh_name": "Curaçao",
+    "flag": "🏳️"
+  },
+  "Ivory Coast": {
+    "espn_id": "4789",
+    "official_name": "Ivory Coast",
+    "the_odds_name": "Ivory Coast",
+    "zh_name": "Ivory Coast",
+    "flag": "🇨🇮",
+    "aliases": [
+      "Côte d'Ivoire",
+      "Cote d'Ivoire"
+    ]
+  },
+  "Cape Verde": {
+    "espn_id": "2597",
+    "official_name": "Cape Verde",
+    "the_odds_name": "Cape Verde",
+    "zh_name": "佛得角",
+    "flag": "🏳️"
+  },
+  "Iraq": {
+    "espn_id": "4375",
+    "official_name": "Iraq",
+    "the_odds_name": "Iraq",
+    "zh_name": "伊拉克",
+    "flag": "🇮🇶"
+  },
+  "Norway": {
+    "espn_id": "464",
+    "official_name": "Norway",
+    "the_odds_name": "Norway",
+    "zh_name": "Norway",
+    "flag": "🇳🇴"
+  },
+  "Algeria": {
+    "espn_id": "624",
+    "official_name": "Algeria",
+    "the_odds_name": "Algeria",
+    "zh_name": "Algeria",
+    "flag": "🇩🇿"
+  },
+  "Austria": {
+    "espn_id": "474",
+    "official_name": "Austria",
+    "the_odds_name": "Austria",
+    "zh_name": "Austria",
+    "flag": "🇦🇹"
+  },
+  "Jordan": {
+    "espn_id": "2917",
+    "official_name": "Jordan",
+    "the_odds_name": "Jordan",
+    "zh_name": "约旦",
+    "flag": "🇯🇴"
+  },
+  "Congo DR": {
+    "espn_id": "2850",
+    "official_name": "Congo DR",
+    "the_odds_name": "Congo DR",
+    "zh_name": "Congo DR",
+    "flag": "🏳️",
+    "aliases": [
+      "DR Congo",
+      "Democratic Republic of the Congo"
+    ]
+  },
+  "Uzbekistan": {
+    "espn_id": "2570",
+    "official_name": "Uzbekistan",
+    "the_odds_name": "Uzbekistan",
+    "zh_name": "乌兹别克斯坦",
+    "flag": "🇺🇿"
+  },
+  "Czechia": {
+    "espn_id": "450",
+    "official_name": "Czechia",
+    "the_odds_name": "Czechia",
+    "zh_name": "Czechia",
+    "flag": "🏳️",
+    "aliases": [
+      "Czech Republic"
+    ]
+  },
+  "New Zealand": {
+    "espn_id": "2666",
+    "official_name": "New Zealand",
+    "the_odds_name": "New Zealand",
+    "zh_name": "新西兰",
+    "flag": "🏳️"
+  },
+  "South Africa": {
+    "espn_id": "467",
+    "official_name": "South Africa",
+    "the_odds_name": "South Africa",
+    "zh_name": "南非",
+    "flag": "🏳️"
+  },
+  "Türkiye": {
+    "espn_id": "465",
+    "official_name": "Türkiye",
+    "the_odds_name": "Türkiye",
+    "zh_name": "Türkiye",
+    "flag": "🏳️",
+    "aliases": [
+      "Turkey"
+    ]
+  }
+}

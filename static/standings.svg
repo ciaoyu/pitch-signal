@@ -1,0 +1,679 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="3460" viewBox="0 0 1400 3460">
+<defs><style>.t{font-family:"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif;}</style></defs>
+<rect width="100%" height="100%" fill="#1a1a2e"/>
+<text x="700" y="50" text-anchor="middle" fill="#e94560" font-size="28" font-weight="bold" class="t">🏆 2026 世界杯 - 实时积分榜</text>
+<text x="700" y="75" text-anchor="middle" fill="#a0a0a0" font-size="14" class="t">已赛 16 场</text>
+<rect x="30" y="100" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="130" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 A</text>
+<text x="55" y="150" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="150" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="150" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="152" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="185" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="185" fill="#e0e0e0" font-size="14" class="t">🇲🇽 墨西哥</text>
+<text x="437" y="185" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="185" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="185" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="185" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="185" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="185" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="185" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+2</text>
+<text x="715" y="185" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<rect x="40" y="204" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="204" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="237" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="237" fill="#e0e0e0" font-size="14" class="t">🇰🇷 韩国</text>
+<text x="437" y="237" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="237" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="237" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="237" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="237" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="237" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="237" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+1</text>
+<text x="715" y="237" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<text x="55" y="289" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="289" fill="#e0e0e0" font-size="14" class="t">🇨🇿 捷克</text>
+<text x="437" y="289" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="289" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="289" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="289" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="289" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="289" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="289" fill="#f44336" font-size="13" text-anchor="middle" class="t">-1</text>
+<text x="715" y="289" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="308" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="341" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="341" fill="#e0e0e0" font-size="14" class="t">🇿🇦 南非</text>
+<text x="437" y="341" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="341" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="341" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="341" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="341" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="341" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="341" fill="#f44336" font-size="13" text-anchor="middle" class="t">-2</text>
+<text x="715" y="341" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="378" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="408" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 B</text>
+<text x="55" y="428" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="428" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="428" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="430" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="463" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="463" fill="#e0e0e0" font-size="14" class="t">🇨🇦 加拿大</text>
+<text x="437" y="463" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="463" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="463" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="463" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="463" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="463" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="463" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="463" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="482" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="482" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="515" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="515" fill="#e0e0e0" font-size="14" class="t">🇶🇦 卡塔尔</text>
+<text x="437" y="515" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="515" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="515" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="515" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="515" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="515" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="515" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="515" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<text x="55" y="567" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="567" fill="#e0e0e0" font-size="14" class="t">🇧🇦 波黑</text>
+<text x="437" y="567" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="567" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="567" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="567" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="567" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="567" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="567" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="567" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="586" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="619" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="619" fill="#e0e0e0" font-size="14" class="t">🇨🇭 瑞士</text>
+<text x="437" y="619" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="619" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="619" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="619" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="619" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="619" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="619" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="619" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="30" y="656" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="686" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 C</text>
+<text x="55" y="706" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="706" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="706" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="708" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="741" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="741" fill="#e0e0e0" font-size="14" class="t">🏴󠁧󠁢󠁳󠁣󠁴󠁿 苏格兰</text>
+<text x="437" y="741" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="741" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="741" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="741" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="741" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="741" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="741" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+1</text>
+<text x="715" y="741" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<rect x="40" y="760" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="760" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="793" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="793" fill="#e0e0e0" font-size="14" class="t">🇧🇷 巴西</text>
+<text x="437" y="793" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="793" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="793" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="793" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="793" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="793" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="793" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="793" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<text x="55" y="845" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="845" fill="#e0e0e0" font-size="14" class="t">🇲🇦 摩洛哥</text>
+<text x="437" y="845" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="845" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="845" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="845" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="845" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="845" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="845" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="845" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="864" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="897" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="897" fill="#e0e0e0" font-size="14" class="t">🇭🇹 海地</text>
+<text x="437" y="897" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="897" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="897" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="897" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="897" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="897" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="897" fill="#f44336" font-size="13" text-anchor="middle" class="t">-1</text>
+<text x="715" y="897" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="934" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="964" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 D</text>
+<text x="55" y="984" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="984" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="984" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="986" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1019" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="1019" fill="#e0e0e0" font-size="14" class="t">🇺🇸 美国</text>
+<text x="437" y="1019" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1019" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="1019" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1019" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1019" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">4</text>
+<text x="637" y="1019" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="1019" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+3</text>
+<text x="715" y="1019" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<rect x="40" y="1038" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="1038" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1071" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="1071" fill="#e0e0e0" font-size="14" class="t">🇦🇺 澳大利亚</text>
+<text x="437" y="1071" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1071" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="1071" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1071" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1071" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="1071" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="1071" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+2</text>
+<text x="715" y="1071" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<text x="55" y="1123" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="1123" fill="#e0e0e0" font-size="14" class="t">🇹🇷 土耳其</text>
+<text x="437" y="1123" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1123" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1123" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1123" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="1123" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="1123" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="1123" fill="#f44336" font-size="13" text-anchor="middle" class="t">-2</text>
+<text x="715" y="1123" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="1142" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="1175" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="1175" fill="#e0e0e0" font-size="14" class="t">🇵🇾 巴拉圭</text>
+<text x="437" y="1175" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1175" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1175" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1175" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="1175" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="1175" fill="#ef5350" font-size="13" text-anchor="middle" class="t">4</text>
+<text x="677" y="1175" fill="#f44336" font-size="13" text-anchor="middle" class="t">-3</text>
+<text x="715" y="1175" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="1212" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="1242" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 E</text>
+<text x="55" y="1262" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="1262" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="1262" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="1264" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1297" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="1297" fill="#e0e0e0" font-size="14" class="t">🇩🇪 德国</text>
+<text x="437" y="1297" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1297" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="1297" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1297" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1297" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">7</text>
+<text x="637" y="1297" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="1297" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+6</text>
+<text x="715" y="1297" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<rect x="40" y="1316" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="1316" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1349" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="1349" fill="#e0e0e0" font-size="14" class="t">🇨🇮 科特迪瓦</text>
+<text x="437" y="1349" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1349" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="1349" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1349" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1349" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="1349" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="1349" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+1</text>
+<text x="715" y="1349" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<text x="55" y="1401" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="1401" fill="#e0e0e0" font-size="14" class="t">🇪🇨 厄瓜多尔</text>
+<text x="437" y="1401" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1401" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1401" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1401" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="1401" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="1401" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="1401" fill="#f44336" font-size="13" text-anchor="middle" class="t">-1</text>
+<text x="715" y="1401" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="1420" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="1453" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="1453" fill="#e0e0e0" font-size="14" class="t">🇨🇼 库拉索</text>
+<text x="437" y="1453" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1453" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1453" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1453" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="1453" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="1453" fill="#ef5350" font-size="13" text-anchor="middle" class="t">7</text>
+<text x="677" y="1453" fill="#f44336" font-size="13" text-anchor="middle" class="t">-6</text>
+<text x="715" y="1453" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="1490" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="1520" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 F</text>
+<text x="55" y="1540" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="1540" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="1540" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="1542" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1575" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="1575" fill="#e0e0e0" font-size="14" class="t">🇸🇪 瑞典</text>
+<text x="437" y="1575" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1575" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="517" y="1575" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1575" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1575" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">5</text>
+<text x="637" y="1575" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="1575" fill="#4caf50" font-size="13" text-anchor="middle" class="t">+4</text>
+<text x="715" y="1575" fill="#ff8a65" font-size="18" font-weight="bold" text-anchor="middle" class="t">3</text>
+<rect x="40" y="1594" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="1594" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1627" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="1627" fill="#e0e0e0" font-size="14" class="t">🇯🇵 日本</text>
+<text x="437" y="1627" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1627" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1627" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="1627" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1627" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="1627" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="1627" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="1627" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<text x="55" y="1679" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="1679" fill="#e0e0e0" font-size="14" class="t">🇳🇱 荷兰</text>
+<text x="437" y="1679" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1679" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1679" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="1679" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1679" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="1679" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="1679" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="1679" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="1698" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="1731" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="1731" fill="#e0e0e0" font-size="14" class="t">🇹🇳 突尼斯</text>
+<text x="437" y="1731" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1731" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1731" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="1731" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="597" y="1731" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="1731" fill="#ef5350" font-size="13" text-anchor="middle" class="t">5</text>
+<text x="677" y="1731" fill="#f44336" font-size="13" text-anchor="middle" class="t">-4</text>
+<text x="715" y="1731" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="1768" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="1798" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 G</text>
+<text x="55" y="1818" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="1818" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="1818" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="1820" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1853" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="1853" fill="#e0e0e0" font-size="14" class="t">🇮🇷 伊朗</text>
+<text x="437" y="1853" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1853" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1853" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="1853" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1853" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="1853" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="1853" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="1853" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="1872" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="1872" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="1905" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="1905" fill="#e0e0e0" font-size="14" class="t">🇳🇿 新西兰</text>
+<text x="437" y="1905" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1905" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1905" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="1905" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1905" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="637" y="1905" fill="#ef5350" font-size="13" text-anchor="middle" class="t">2</text>
+<text x="677" y="1905" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="1905" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<text x="55" y="1957" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="1957" fill="#e0e0e0" font-size="14" class="t">🇪🇬 埃及</text>
+<text x="437" y="1957" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="1957" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="1957" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="1957" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="1957" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="1957" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="1957" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="1957" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="1976" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="2009" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="2009" fill="#e0e0e0" font-size="14" class="t">🇧🇪 比利时</text>
+<text x="437" y="2009" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="2009" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2009" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="2009" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2009" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="2009" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="2009" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2009" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="30" y="2046" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="2076" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 H</text>
+<text x="55" y="2096" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="2096" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="2096" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="2098" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2131" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="2131" fill="#e0e0e0" font-size="14" class="t">🇺🇾 乌拉圭</text>
+<text x="437" y="2131" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="2131" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2131" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="2131" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2131" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="2131" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="2131" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2131" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="2150" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="2150" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2183" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="2183" fill="#e0e0e0" font-size="14" class="t">🇸🇦 沙特阿拉伯</text>
+<text x="437" y="2183" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="2183" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2183" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="2183" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2183" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="637" y="2183" fill="#ef5350" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="677" y="2183" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2183" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<text x="55" y="2235" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="2235" fill="#e0e0e0" font-size="14" class="t">🇨🇻 佛得角</text>
+<text x="437" y="2235" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="2235" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2235" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="2235" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2235" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2235" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2235" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2235" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="40" y="2254" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="2287" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="2287" fill="#e0e0e0" font-size="14" class="t">🇪🇸 西班牙</text>
+<text x="437" y="2287" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="477" y="2287" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2287" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">1</text>
+<text x="557" y="2287" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2287" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2287" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2287" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2287" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">1</text>
+<rect x="30" y="2324" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="2354" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 I</text>
+<text x="55" y="2374" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="2374" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="2374" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="2376" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2409" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="2409" fill="#e0e0e0" font-size="14" class="t">🇮🇶 伊拉克</text>
+<text x="437" y="2409" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2409" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2409" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2409" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2409" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2409" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2409" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2409" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="2428" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="2428" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2461" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="2461" fill="#e0e0e0" font-size="14" class="t">🇸🇳 塞内加尔</text>
+<text x="437" y="2461" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2461" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2461" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2461" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2461" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2461" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2461" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2461" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<text x="55" y="2513" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="2513" fill="#e0e0e0" font-size="14" class="t">🇳🇴 挪威</text>
+<text x="437" y="2513" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2513" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2513" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2513" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2513" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2513" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2513" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2513" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="2532" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="2565" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="2565" fill="#e0e0e0" font-size="14" class="t">🇫🇷 法国</text>
+<text x="437" y="2565" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2565" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2565" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2565" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2565" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2565" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2565" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2565" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="2602" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="2632" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 J</text>
+<text x="55" y="2652" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="2652" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="2652" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="2654" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2687" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="2687" fill="#e0e0e0" font-size="14" class="t">🇦🇹 奥地利</text>
+<text x="437" y="2687" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2687" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2687" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2687" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2687" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2687" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2687" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2687" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="2706" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="2706" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2739" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="2739" fill="#e0e0e0" font-size="14" class="t">🇯🇴 约旦</text>
+<text x="437" y="2739" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2739" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2739" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2739" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2739" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2739" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2739" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2739" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<text x="55" y="2791" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="2791" fill="#e0e0e0" font-size="14" class="t">🇩🇿 阿尔及利亚</text>
+<text x="437" y="2791" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2791" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2791" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2791" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2791" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2791" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2791" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2791" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="2810" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="2843" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="2843" fill="#e0e0e0" font-size="14" class="t">🇦🇷 阿根廷</text>
+<text x="437" y="2843" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2843" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2843" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2843" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2843" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2843" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2843" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2843" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="2880" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="2910" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 K</text>
+<text x="55" y="2930" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="2930" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="2930" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="2932" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="2965" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="2965" fill="#e0e0e0" font-size="14" class="t">🇺🇿 乌兹别克斯坦</text>
+<text x="437" y="2965" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="2965" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="2965" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="2965" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="2965" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="2965" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="2965" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="2965" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="2984" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="2984" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="3017" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="3017" fill="#e0e0e0" font-size="14" class="t">🇨🇩 刚果(金)</text>
+<text x="437" y="3017" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3017" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3017" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3017" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3017" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3017" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3017" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3017" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<text x="55" y="3069" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="3069" fill="#e0e0e0" font-size="14" class="t">🇨🇴 哥伦比亚</text>
+<text x="437" y="3069" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3069" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3069" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3069" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3069" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3069" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3069" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3069" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="3088" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="3121" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="3121" fill="#e0e0e0" font-size="14" class="t">🇵🇹 葡萄牙</text>
+<text x="437" y="3121" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3121" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3121" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3121" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3121" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3121" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3121" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3121" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="30" y="3158" width="1340" height="253" rx="10" fill="#16213e" stroke="#0f3460" stroke-width="1"/>
+<text x="55" y="3188" fill="#e94560" font-size="16" font-weight="bold" class="t">小组 L</text>
+<text x="55" y="3208" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">#</text>
+<text x="85" y="3208" fill="#a0a0a0" font-size="11" text-anchor="start" class="t">球队</text>
+<text x="425" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">赛</text>
+<text x="465" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">胜</text>
+<text x="505" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">平</text>
+<text x="545" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">负</text>
+<text x="585" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">进</text>
+<text x="625" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">失</text>
+<text x="665" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">净</text>
+<text x="715" y="3208" fill="#a0a0a0" font-size="11" text-anchor="middle" class="t">分</text>
+<rect x="40" y="3210" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="3243" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">1</text>
+<text x="85" y="3243" fill="#e0e0e0" font-size="14" class="t">🇭🇷 克罗地亚</text>
+<text x="437" y="3243" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3243" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3243" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3243" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3243" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3243" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3243" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3243" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="3262" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<rect x="40" y="3262" width="6" height="50" rx="3" fill="#00c853"/>
+<text x="55" y="3295" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">2</text>
+<text x="85" y="3295" fill="#e0e0e0" font-size="14" class="t">🇬🇭 加纳</text>
+<text x="437" y="3295" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3295" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3295" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3295" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3295" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3295" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3295" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3295" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<text x="55" y="3347" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">3</text>
+<text x="85" y="3347" fill="#e0e0e0" font-size="14" class="t">🇵🇦 巴拿马</text>
+<text x="437" y="3347" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3347" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3347" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3347" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3347" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3347" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3347" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3347" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<rect x="40" y="3366" width="1320" height="50" rx="5" fill="rgba(255,255,255,0.03)"/>
+<text x="55" y="3399" fill="#e0e0e0" font-size="16" font-weight="bold" class="t">4</text>
+<text x="85" y="3399" fill="#e0e0e0" font-size="14" class="t">🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰</text>
+<text x="437" y="3399" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="477" y="3399" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="517" y="3399" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="557" y="3399" fill="#e0e0e0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="597" y="3399" fill="#64b5f6" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="637" y="3399" fill="#ef5350" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="677" y="3399" fill="#a0a0a0" font-size="13" text-anchor="middle" class="t">0</text>
+<text x="715" y="3399" fill="#e0e0e0" font-size="18" font-weight="bold" text-anchor="middle" class="t">0</text>
+<text x="700" y="3466" text-anchor="middle" fill="#a0a0a0" font-size="12" class="t">数据来源: ESPN · 仅包含已赛小组赛 · 更新时间: 2026-06-16T19:22:28.700494Z</text>
+</svg>

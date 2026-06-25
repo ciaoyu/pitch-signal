@@ -1,0 +1,257 @@
+{
+  "matches": {
+    "R32-1": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-2": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-3": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-4": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-5": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-6": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-7": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-8": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-9": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-10": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-11": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-12": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-13": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-14": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-15": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R32-16": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-1": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-2": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-3": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-4": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-5": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-6": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-7": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "R16-8": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "QF-1": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "QF-2": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "QF-3": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "QF-4": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "SF-1": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "SF-2": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    },
+    "FINAL": {
+      "teamA": "TBD",
+      "teamB": "TBD"
+    }
+  },
+  "tree": {
+    "left": [
+      {
+        "id": "SF-1",
+        "children": [
+          {
+            "id": "QF-1",
+            "children": [
+              {
+                "id": "R16-1",
+                "children": [
+                  {
+                    "id": "R32-1"
+                  },
+                  {
+                    "id": "R32-2"
+                  }
+                ]
+              },
+              {
+                "id": "R16-2",
+                "children": [
+                  {
+                    "id": "R32-3"
+                  },
+                  {
+                    "id": "R32-4"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "QF-2",
+            "children": [
+              {
+                "id": "R16-3",
+                "children": [
+                  {
+                    "id": "R32-5"
+                  },
+                  {
+                    "id": "R32-6"
+                  }
+                ]
+              },
+              {
+                "id": "R16-4",
+                "children": [
+                  {
+                    "id": "R32-7"
+                  },
+                  {
+                    "id": "R32-8"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "right": [
+      {
+        "id": "SF-2",
+        "children": [
+          {
+            "id": "QF-3",
+            "children": [
+              {
+                "id": "R16-5",
+                "children": [
+                  {
+                    "id": "R32-9"
+                  },
+                  {
+                    "id": "R32-10"
+                  }
+                ]
+              },
+              {
+                "id": "R16-6",
+                "children": [
+                  {
+                    "id": "R32-11"
+                  },
+                  {
+                    "id": "R32-12"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "QF-4",
+            "children": [
+              {
+                "id": "R16-7",
+                "children": [
+                  {
+                    "id": "R32-13"
+                  },
+                  {
+                    "id": "R32-14"
+                  }
+                ]
+              },
+              {
+                "id": "R16-8",
+                "children": [
+                  {
+                    "id": "R32-15"
+                  },
+                  {
+                    "id": "R32-16"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "center": [
+      {
+        "id": "FINAL"
+      }
+    ]
+  }
+}

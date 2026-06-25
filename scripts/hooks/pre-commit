@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Check if gitleaks is installed
+if ! command -v gitleaks >/dev/null 2>&1; then
+    echo "gitleaks is not installed. Please install it (e.g. brew install gitleaks) to enable secret scanning."
+    exit 1 # We won't block the commit if gitleaks isn't installed, but maybe we should?
+    # For stricter compliance, change `exit 0` to `exit 1` so they must install it.
+fi
+
+# Run gitleaks on staged changes
+echo "Running gitleaks to detect hardcoded secrets..."
+gitleaks protect --staged --source . --verbose --redact
+
+if [ $? -ne 0 ]; then
+    echo "gitleaks detected secrets in your commit! Please remove them and try again."
+    exit 1
+fi

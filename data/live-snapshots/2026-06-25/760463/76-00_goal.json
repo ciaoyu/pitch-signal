@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-06-25T04:16:00Z",
+  "matchId": "760463",
+  "trigger": "goal",
+  "minute": 76,
+  "home": { "name": "Switzerland", "score": 2, "stats": { "possessionPct": 61, "totalShots": 6, "shotsOnTarget": 4, "wonCorners": 2, "foulsCommitted": 15 } },
+  "away": { "name": "Canada", "score": 1, "stats": { "possessionPct": 39, "totalShots": 9, "shotsOnTarget": 4, "wonCorners": 6, "foulsCommitted": 8 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.912, "draw": 0.078, "awayWin": 0.01 }, "stateShift": "lean_reinforced" },
+  "details": [
+    { "type": "Substitution", "minute": "75'", "player": "Promise David in, Tajon Buchanan out", "team": "Canada" },
+    { "type": "Goal", "minute": "76'", "player": "Promise David", "assist": "Nathan Saliba" }
+  ],
+  "summary": "【⚽ 2-1】Switzerland 2-1 Canada（76' 大卫，萨利巴助攻）\n  胜平负: 瑞士胜91.2% 平7.8% 加拿大胜1%\n  终场推演: 瑞士胜52% 平17.6% 加拿大胜30.4%\n  📊 你的分析验证:\n  ✅ \"换人立刻见效\"—大卫75'上场76'进球，1分钟改变比赛\n  ✅ \"比赛重新活了\"—射门5→9, 角球1→6, 控球32%→39%\n  ✅ \"下一球加拿大略高于瑞士\"—Poisson支持\n  ✅ \"瑞士从控场胜局回到守住最后15分钟的压力局\"\n  🔮 剩余14分钟+补时:\n    76-80'加拿大趁势追击\n    80-85'关键窗口\n    85-90+补时'瑞士消耗时间\n  ⚠️ 核心矛盾: 瑞士犯规15次+扎卡黄牌=防线不敢做动作\n  📌 2-2对加拿大价值巨大: 凭净胜球+7>>+2拿回第一→打第三名\n  🔗 同组平行场: Bosnia 3-1 Qatar（80'锁定）"
+}

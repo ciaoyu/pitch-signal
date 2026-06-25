@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-06-25T03:34:00Z",
+  "matchId": "760462",
+  "trigger": "goal",
+  "minute": 34,
+  "home": { "name": "Bosnia-Herzegovina", "score": 2, "stats": { "possessionPct": 60, "totalShots": 9, "shotsOnTarget": 3, "wonCorners": 3, "foulsCommitted": 4 } },
+  "away": { "name": "Qatar", "score": 0, "stats": { "possessionPct": 40, "totalShots": 0, "shotsOnTarget": 0, "wonCorners": 1, "foulsCommitted": 2 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.98, "draw": 0.015, "awayWin": 0.005 }, "stateShift": "reinforced" },
+  "details": [
+    { "type": "Goal", "minute": "29'", "player": "Kerim Alajbegovic" },
+    { "type": "Own Goal", "minute": "34'", "player": "Sultan Al-Brake" }
+  ],
+  "summary": "【⚽⚽ 进球】Bosnia 2-0 Qatar（29'+34'）\n  ⚡ 29'阿拉伊贝戈维奇进球（巴西奇助攻）1-0\n  ⚡ 34'卡塔尔阿尔布雷克乌龙球2-0\n  胜平负: 主胜98% 平1.5% 客胜0.5%\n  📊 场面: 波黑控球60%，射门9-0射正3-0—完全碾压\n  ✅ 你预测的\"最可能2-0\"正在兑现！\n  ✅ \"35分钟前进球→可能打到2球以上\"—29'+34'各一球\n  ⚠️ 第二球是乌龙球—卡塔尔防线崩溃\n  📌 你指出的\"卡塔尔防线风险高\"完全应验\n  🔗 同组平行场: Switzerland 0-0 Canada（34'）\n  📊 E组出线: 波黑2-0领先，加拿大平局拿第一的战略正在执行"
+}

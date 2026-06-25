@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-06-25T03:57:00Z",
+  "matchId": "760463",
+  "trigger": "goal",
+  "minute": 57,
+  "home": { "name": "Switzerland", "score": 2, "stats": { "possessionPct": 68, "totalShots": 6, "shotsOnTarget": 4, "wonCorners": 2, "foulsCommitted": 13 } },
+  "away": { "name": "Canada", "score": 0, "stats": { "possessionPct": 32, "totalShots": 5, "shotsOnTarget": 3, "wonCorners": 1, "foulsCommitted": 5 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.98, "draw": 0.015, "awayWin": 0.005 }, "stateShift": "reinforced" },
+  "details": [ { "type": "Goal", "minute": "57'", "player": "Johan Manzambi", "assist": "Breel Embolo" } ],
+  "summary": "【⚽⚽ 2-0】Switzerland 2-0 Canada（57' 曼赞比，恩博洛助攻）\n  胜平负: 瑞士胜98% 平1.5% 加拿大胜0.5%\n  终场推演: 瑞士胜83% 平10.6% 加拿大胜6.4%\n  📊 你的分析验证:\n  ✅ \"打进自己最舒服的剧本\"—控球68%+领先+反击空间\n  ✅ \"有限机会打进了\"—射门6次射正4次进球2个=50%射正转化\n  ✅ \"前场三人状态都打开\"—曼赞比1球1助, 瓦尔加斯1球, 恩博洛1助\n  ✅ \"70分钟前没扳成基本难翻\"—Poisson加拿大胜仅6.4%\n  🔮 剩余33分钟: 57-70'加拿大最后窗口 | 75-80'瑞士反击窗口\n  🔗 同组平行场: Bosnia 2-1 Qatar（进行中）\n  📌 淘汰赛路径: Switzerland第一→打第三名(轻松) | Canada第二→打Colombia"
+}

@@ -1,0 +1,35 @@
+.env
+.env.*
+*.env
+.envrc
+!.env.example
+
+secrets/
+*.key
+*.pem
+
+node_modules/
+data/*.db
+data/*.db-*
+data/match_snapshot_runs.json
+
+.DS_Store
+*.log
+*.sync-conflict-*
+
+# Runtime artifacts
+*.old
+db/*.db
+snapshots/*/data/*.db
+
+# Local agent/editor tooling
+.claude/settings.local.json
+.claude/
+
+# Runtime caches (regenerated at startup)
+data/roster_cache.json
+
+# Broaden DB ignores
+*.db
+*.sqlite
+*.sqlite3

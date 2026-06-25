@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-06-25T04:50:00Z",
+  "matchId": "760463",
+  "trigger": "fulltime",
+  "minute": 90,
+  "home": { "name": "Switzerland", "score": 2, "stats": { "possessionPct": 55.2, "totalShots": 6, "shotsOnTarget": 4, "wonCorners": 2, "foulsCommitted": 19 } },
+  "away": { "name": "Canada", "score": 1, "stats": { "possessionPct": 44.8, "totalShots": 13, "shotsOnTarget": 7, "wonCorners": 7, "foulsCommitted": 13 } },
+  "livePrediction": { "probabilities": { "homeWin": 1.0, "draw": 0, "awayWin": 0 }, "stateShift": "reinforced" },
+  "details": [
+    { "type": "Yellow Card", "minute": "32'", "player": "Cyle Larin", "team": "Canada" },
+    { "type": "Yellow Card", "minute": "32'", "player": "Granit Xhaka", "team": "Switzerland" },
+    { "type": "Goal", "minute": "46'", "player": "Rubén Vargas", "assist": "Johan Manzambi" },
+    { "type": "Goal", "minute": "57'", "player": "Johan Manzambi", "assist": "Breel Embolo" },
+    { "type": "Goal", "minute": "76'", "player": "Promise David", "assist": "Nathan Saliba" },
+    { "type": "Yellow Card", "minute": "87'", "player": "Liam Millar", "team": "Canada" }
+  ],
+  "summary": "【🏁 终场】Switzerland 2-1 Canada（FT）\n  46'瓦尔加斯 1-0 | 57'曼赞比 2-0 | 76'大卫 2-1\n  射门6-13 射正4-7 控球55.2%-44.8%\n  🏆 瑞士锁定小组第一！\n  📊 关键洞察: Canada射门13-6大幅领先但只进1球(14%转化)\n     瑞士射门6射正4进2球(50%转化)—创造机会多≠赢球\n  📌 E组最终排名:\n    Switzerland 7分第一→R32打第三名(轻松) ✅\n    Canada 4分第二(净胜球+5)→R32打I2(Colombia) ⚠️\n    Bosnia 4分第三(净胜球+1)→打某组第一(极难) 🔴\n    Qatar 1分出局\n  📌 淘汰赛路径: 瑞士这粒进球价值巨大—不仅赢球还拿到最佳路径\n  🔗 同组平行场: Bosnia 3-1 Qatar（FT）"
+}

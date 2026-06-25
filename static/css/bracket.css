@@ -1,0 +1,84 @@
+/* bracket.css - 2026 World Cup Bracket Styles */
+
+#bracket-container-pred, #bracket-container-standings {
+    /* Ensure containers hide scrollbars but allow scrolling */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+#bracket-container-pred::-webkit-scrollbar, #bracket-container-standings::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.bk-card {
+    background: rgba(18, 18, 26, 0.85); /* Dark background matching theme */
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    font-size: 10px;
+}
+.bk-card:hover {
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    z-index: 50;
+}
+
+.bk-final-badge {
+    text-align: center;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #000;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 1px 0;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.bk-team {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 5px;
+    flex: 1;
+}
+
+.bk-team-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 48px;
+}
+
+.bk-score {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+}
+
+.bk-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    width: 100%;
+}
+
+.bk-round-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+}
+
+/* Mobile: tighter spacing */
+@media (max-width: 640px) {
+    .bk-card { font-size: 9px; }
+    .bk-team { padding: 1px 4px; }
+    .bk-team-name { max-width: 40px; }
+    .bk-score { font-size: 10px; }
+    .bk-round-label { font-size: 9px; }
+}

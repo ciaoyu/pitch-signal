@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-06-25T04:20:00Z",
+  "matchId": "760462",
+  "trigger": "goal",
+  "minute": 80,
+  "home": { "name": "Bosnia-Herzegovina", "score": 3, "stats": { "possessionPct": 58, "totalShots": 14, "shotsOnTarget": 5, "wonCorners": 5, "foulsCommitted": 7 } },
+  "away": { "name": "Qatar", "score": 1, "stats": { "possessionPct": 42, "totalShots": 6, "shotsOnTarget": 1, "wonCorners": 3, "foulsCommitted": 11 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.99, "draw": 0.008, "awayWin": 0.002 }, "stateShift": "reinforced" },
+  "details": [ { "type": "Goal", "minute": "80'", "player": "Ermin Mahmic" } ],
+  "summary": "【⚽ 3-1】Bosnia 3-1 Qatar（80' 马赫米奇）\n  胜平负: 波黑胜99% 平0.8% 卡塔尔胜0.2%\n  📊 射门14-6 射正5-1—卡塔尔只有1射正，追两球概率极低\n  📌 波黑基本锁胜，从\"守胜局\"回到\"安全区\"\n  🔗 同组平行场: Switzerland 2-1 Canada（76'大卫追回）\n  📊 E组出线推演:\n    Switzerland 7分第一→打第三名(轻松)\n    Canada 4分第二(净胜球+5)→打I2(Colombia)\n    Bosnia 4分第三(净胜球+1)→打某组第一(极难)\n    Qatar 1分出局\n  📌 Canada净胜球+5>>Bosnia+1，Canada第二不会被追上"
+}

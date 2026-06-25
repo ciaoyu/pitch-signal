@@ -1,0 +1,18 @@
+[
+  {"id":"1","name":"SoFi Stadium","city":"Inglewood, CA","country":"USA","capacity":70000,"altitude":30,"grass":"人工草皮","timezone":"America/Los_Angeles","coordinates":{"lat":33.9535,"lng":-118.3389}},
+  {"id":"2","name":"MetLife Stadium","city":"East Rutherford, NJ","country":"USA","capacity":82500,"altitude":10,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":40.8135,"lng":-74.0745}},
+  {"id":"3","name":"AT&T Stadium","city":"Arlington, TX","country":"USA","capacity":80000,"altitude":180,"grass":"人工草皮","timezone":"America/Chicago","coordinates":{"lat":32.7479,"lng":-97.0927}},
+  {"id":"4","name":"Hard Rock Stadium","city":"Miami Gardens, FL","country":"USA","capacity":65000,"altitude":3,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":25.958,"lng":-80.2389}},
+  {"id":"5","name":"Mercedes-Benz Stadium","city":"Atlanta, GA","country":"USA","capacity":70000,"altitude":300,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":33.7555,"lng":-84.4007}},
+  {"id":"6","name":"Lumen Field","city":"Seattle, WA","country":"USA","capacity":69000,"altitude":40,"grass":"天然草皮","timezone":"America/Los_Angeles","coordinates":{"lat":47.5952,"lng":-122.3316}},
+  {"id":"7","name":"Gillette Stadium","city":"Foxborough, MA","country":"USA","capacity":65000,"altitude":60,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":42.0909,"lng":-71.2643}},
+  {"id":"8","name":"Lincoln Financial Field","city":"Philadelphia, PA","country":"USA","capacity":69000,"altitude":10,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":39.9008,"lng":-75.1674}},
+  {"id":"9","name":"NRG Stadium","city":"Houston, TX","country":"USA","capacity":72000,"altitude":15,"grass":"天然草皮","timezone":"America/Chicago","coordinates":{"lat":29.6847,"lng":-95.4107}},
+  {"id":"10","name":"Arrowhead Stadium","city":"Kansas City, MO","country":"USA","capacity":76000,"altitude":270,"grass":"天然草皮","timezone":"America/Chicago","coordinates":{"lat":39.0489,"lng":-94.4839}},
+  {"id":"11","name":"Levi's Stadium","city":"Santa Clara, CA","country":"USA","capacity":68000,"altitude":20,"grass":"天然草皮","timezone":"America/Los_Angeles","coordinates":{"lat":37.4033,"lng":-121.9694}},
+  {"id":"12","name":"BMO Field","city":"Toronto, ON","country":"Canada","capacity":45000,"altitude":80,"grass":"天然草皮","timezone":"America/New_York","coordinates":{"lat":43.6225,"lng":-79.4178}},
+  {"id":"13","name":"BC Place","city":"Vancouver, BC","country":"Canada","capacity":54000,"altitude":5,"grass":"天然草皮","timezone":"America/Los_Angeles","coordinates":{"lat":49.2767,"lng":-123.112}},
+  {"id":"14","name":"Estadio Azteca","city":"Mexico City","country":"Mexico","capacity":87000,"altitude":2200,"grass":"天然草皮","timezone":"America/Mexico_City","coordinates":{"lat":19.3022,"lng":-99.1506}},
+  {"id":"15","name":"Estadio BBVA","city":"Monterrey","country":"Mexico","capacity":53000,"altitude":530,"grass":"天然草皮","timezone":"America/Mexico_City","coordinates":{"lat":25.6668,"lng":-100.2507}},
+  {"id":"16","name":"Estadio Akron","city":"Guadalajara","country":"Mexico","capacity":49000,"altitude":1560,"grass":"天然草皮","timezone":"America/Mexico_City","coordinates":{"lat":20.6275,"lng":-103.3228}}
+]

@@ -1,0 +1,28 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "node server.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Single instance — SQLite is single-writer, cannot horizontally scale
+numReplicas = 1
+
+# Health check — Railway platform-level endpoint check
+# ⚠️ 格式待平台验证：顶层 [build]/[deploy] 字段在 Railway 实际部署中是否被识别，
+#    尚未经过真实 Railway 项目验证。首次部署后必须确认 Railway 正确读取了
+#    numReplicas、healthcheckPath 等字段。
+healthcheckPath = "/health"
+healthcheckTimeout = 5
+
+# Persistent volume for SQLite DB (WAL mode), snapshots, caches
+# ⚠️ Railway Volumes can ONLY be created via the platform Dashboard.
+#   After first deploy: Service → Settings → Volumes → New Volume
+#     Mount Path: /usr/src/app/data
+#   Then redeploy to activate.
+#   Without a volume, the DB is reset on every redeploy.
+#
+# Environment variables to configure alongside:
+#   DATA_PATH=/usr/src/app/data  (must match volume mount path)

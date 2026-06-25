@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: pitch-signal
+    env: node
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: ~22.0.0
+      - key: OWM_API_KEY
+        sync: false
+      - key: ODDS_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATA_PATH
+        value: /data
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1
+    numInstances: 1
+    healthCheckPath: /health

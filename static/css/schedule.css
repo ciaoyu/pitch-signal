@@ -1,0 +1,60 @@
+/* Schedule date scrollbar styling */
+
+/* Container – already has class flex overflow-x-auto in HTML, we add optional snap */
+#date-bar {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Individual date button */
+.date-btn {
+  flex: 0 0 auto;
+  min-width: 3rem;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  background: var(--bg-muted, rgba(255,255,255,0.05));
+  color: var(--text-muted, #ccc);
+  scroll-snap-align: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.date-btn:hover {
+  background: var(--bg-hover, rgba(255,255,255,0.1));
+  color: #fff;
+}
+
+.date-btn.active {
+  background: var(--bg-active, rgba(0,120,255,0.6));
+  color: #fff;
+}
+
+.date-btn.yesterday {
+  background: var(--bg-yesterday, rgba(100,100,100,0.4));
+  color: #fff;
+}
+
+.date-btn.today {
+  background: var(--bg-today, rgba(0,150,255,0.6));
+  color: #fff;
+}
+
+/* Arrow button overlays (already styled inline in HTML, but we add hover effect) */
+#date-scroll-left, #date-scroll-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+#date-scroll-left:hover, #date-scroll-right:hover {
+  opacity: 1;
+}

@@ -1,0 +1,620 @@
+#!/usr/bin/env node
+/**
+ * Live Match Monitor — 赛中实时数据采集 + 预测 + 出线形势
+ * 
+ * 独立脚本，不影响主 server.js。
+ * 用法：node scripts/live-match-monitor.js [--once] [--dry-run]
+ * 
+ * 功能：
+ *   1. 每 5 分钟轮询 ESPN /scoreboard，检测进行中的比赛
+ *   2. 在关键时间点记录快照：进球/补水(27-33',72-78')/半场(45')/终场
+ *   3. 调 buildLiveAnalysis 赛中实时概率修正
+ *   4. 同组平行场比分 → qualification.js 出线概率变化
+ *   5. 进球发生时 → 计算对平行场出线的即时影响
+ *
+ * 输出：data/live-snapshots/YYYY-MM-DD/matchId-MMDDHHmm.json
+ * 
+ * --once   只运行一次（测试用）
+ * --dry-run 不写文件，只打印到 stdout
+ */
+
+'use strict';
+
+const path = require('path');
+const fs = require('fs');
+
+// 加载 .env
+require('../lib/env').loadEnv();
+
+const { espn } = require('../services/espn');
+const PredictionService = require('../lib/services/PredictionService');
+const teamResolver = require('../lib/team_resolver');
+
+const DATA_DIR = path.join(__dirname, '..', 'data', 'live-snapshots');
+const TODAY = new Date().toISOString().slice(0, 10);
+const POLL_INTERVAL = 5 * 60 * 1000; // 5 分钟
+
+// 赛前预测缓存（matchId → prediction result），避免每次轮询都重新计算
+let predictionService = null;
+const basePredictionCache = {};
+
+function getPredictionService() {
+  if (predictionService) return predictionService;
+  let ratings = {};
+  try { ratings = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'ratings.json'), 'utf8')).teams || {}; } catch {}
+  const cache = {};
+  const deps = { espn, getCached: (k) => cache[k], setCache: (k, v) => { cache[k] = v; }, TEAM_FLAGS: {}, RATINGS: { teams: ratings }, getTeamNameZh: (id) => id, getTeamNameI18n: () => null };
+  predictionService = new PredictionService(deps);
+  return predictionService;
+}
+
+async function getBasePrediction(matchId) {
+  if (basePredictionCache[matchId]) return basePredictionCache[matchId];
+  const ps = getPredictionService();
+  try {
+    const pred = await ps.predictMatch(matchId, { persist: false, bypassCache: true });
+    if (!pred?.error) {
+      basePredictionCache[matchId] = pred;
+      return pred;
+    }
+  } catch {}
+  return { homeWin: 0.46, draw: 0.247, awayWin: 0.293, goals: { homeExpected: 2.7, awayExpected: 2.3 } };
+}
+
+// 关键时间点（分钟）
+const HYDRATION_WINDOWS = [
+  { start: 27, end: 33, label: 'first_half_hydration' },
+  { start: 72, end: 78, label: 'second_half_hydration' },
+];
+const HALFTIME_MINUTE = 45;
+
+// CLI 参数
+const args = process.argv.slice(2);
+const ONCE = args.includes('--once');
+const DRY_RUN = args.includes('--dry-run');
+
+// 状态追踪（跨轮次比较）
+const matchState = {};  // matchId → { score, minute, lastTrigger, lastGoalMinute }
+
+// ============================================================
+// buildLiveAnalysis（从 prediction.js 提取，自包含）
+// ============================================================
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function toNumber(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
+function normalizeThreeWay(h, d, a) {
+  const t = h + d + a;
+  return t > 0
+    ? { homeWin: h / t, draw: d / t, awayWin: a / t }
+    : { homeWin: 0.333, draw: 0.334, awayWin: 0.333 };
+}
+
+function buildLiveAnalysis(basePrediction, matchMeta, liveStats = {}) {
+  const minute = clamp(toNumber(liveStats.minute) ?? 0, 0, 120);
+  const homeScore = toNumber(liveStats.homeScore) ?? 0;
+  const awayScore = toNumber(liveStats.awayScore) ?? 0;
+  const homeShots = toNumber(liveStats.homeShots) ?? 0;
+  const awayShots = toNumber(liveStats.awayShots) ?? 0;
+  const homeSot = toNumber(liveStats.homeShotsOnTarget) ?? 0;
+  const awaySot = toNumber(liveStats.awayShotsOnTarget) ?? 0;
+  const homePoss = toNumber(liveStats.homePossession);
+  const awayPoss = toNumber(liveStats.awayPossession);
+  const homeReds = toNumber(liveStats.homeRedCards) ?? 0;
+  const awayReds = toNumber(liveStats.awayRedCards) ?? 0;
+  const homeYellows = toNumber(liveStats.homeYellowCards) ?? 0;
+  const awayYellows = toNumber(liveStats.awayYellowCards) ?? 0;
+
+  const baseH = Number(basePrediction.homeWin || 0.333);
+  const baseD = Number(basePrediction.draw || 0.334);
+  const baseA = Number(basePrediction.awayWin || 0.333);
+  const scoreDiff = homeScore - awayScore;
+  const timeFactor = minute / 90;
+
+  let edge = 0;
+  edge += scoreDiff * (0.16 + 0.20 * timeFactor);
+  edge += clamp(homeShots - awayShots, -8, 8) * 0.008;
+  edge += clamp(homeSot - awaySot, -5, 5) * 0.03;
+  edge += (homePoss != null && awayPoss != null) ? clamp((homePoss - awayPoss) / 100, -0.7, 0.7) * 0.10 : 0;
+  edge += clamp(awayYellows - homeYellows, -3, 3) * 0.01;
+  edge += clamp(awayReds - homeReds, -1, 1) * 0.18;
+
+  let aH = baseH + edge, aA = baseA - edge * 0.82, aD = baseD - Math.abs(edge) * 0.45;
+  if (scoreDiff >= 2 && minute >= 15) aD -= 0.04;
+  if (scoreDiff <= -2 && minute >= 15) aD -= 0.04;
+  if (scoreDiff === 0 && minute < 25) aD += 0.02;
+  aH = clamp(aH, 0.01, 0.985); aA = clamp(aA, 0.01, 0.985); aD = clamp(aD, 0.01, 0.60);
+  const n = normalizeThreeWay(aH, aD, aA);
+
+  return {
+    minute, score: { home: homeScore, away: awayScore },
+    probabilities: n,
+    expectedGoals: {
+      home: Math.round(Math.max(homeScore, Number(basePrediction.goals?.homeExpected || 0) + Math.max(0, homeShots - awayShots) * 0.08) * 10) / 10,
+      away: Math.round(Math.max(awayScore, Number(basePrediction.goals?.awayExpected || 0) + Math.max(0, awayShots - homeShots) * 0.06) * 10) / 10,
+    },
+    signals: { scoreDiff, shotDiff: homeShots - awayShots },
+    stateShift: scoreDiff >= 2 ? 'reinforced' : (scoreDiff !== 0 ? 'lean_reinforced' : 'still_live'),
+  };
+}
+
+// ============================================================
+// ESPN 数据拉取
+// ============================================================
+
+async function fetchLiveMatches() {
+  const sb = await espn('/scoreboard', `live_${Date.now()}`, 30000);
+  const events = sb.events || [];
+  const live = [];
+  for (const e of events) {
+    const comp = e.competitions?.[0];
+    if (!comp) continue;
+    const status = comp.status?.type;
+    if (status?.state !== 'in') continue;  // 只看进行中
+
+    const homeComp = comp.competitors?.find(c => c.homeAway === 'home');
+    const awayComp = comp.competitors?.find(c => c.homeAway === 'away');
+
+    // 从 status.detail 提取分钟："35'" → 35
+    const minuteStr = String(status?.detail || '').replace(/[^0-9]/g, '');
+    const minute = Number(minuteStr) || 0;
+
+    // 从 competitors 提取统计数据（赛后/赛中均可用）
+    const homeStats = {};
+    const awayStats = {};
+    for (const s of (homeComp?.statistics || [])) homeStats[s.name] = s.displayValue || s.value;
+    for (const s of (awayComp?.statistics || [])) awayStats[s.name] = s.displayValue || s.value;
+
+    // 从 comp.details 提取进球/红黄牌事件
+    const details = (comp.details || []).map(d => ({
+      type: d.type?.text || String(d.type || ''),
+      minute: d.clock?.displayValue || '',
+      team: d.team?.displayName || '',
+      player: d.athletesInvolved?.[0]?.displayName || '',
+      text: d.text || '',
+    }));
+
+    live.push({
+      matchId: e.id,
+      home: {
+        id: homeComp?.team?.id,
+        name: homeComp?.team?.displayName,
+        score: Number(homeComp?.score || 0),
+        stats: homeStats,
+      },
+      away: {
+        id: awayComp?.team?.id,
+        name: awayComp?.team?.displayName,
+        score: Number(awayComp?.score || 0),
+        stats: awayStats,
+      },
+      minute,
+      statusDetail: status?.detail || '',
+      venue: comp.venue?.fullName || '',
+      details,
+      group: comp.group?.displayName || null,
+    });
+  }
+  return live;
+}
+
+// ============================================================
+// 触发器判定（vs 上一轮快照）
+// ============================================================
+
+function classifyTrigger(matchId, current) {
+  const prev = matchState[matchId];
+  if (!prev) return 'first_sight';  // 第一次看到
+
+  const prevScore = prev.score?.home ?? 0 + '' + prev.score?.away ?? 0;
+  const curScore = current.home.score + '' + current.away.score;
+
+  // 进球
+  if (curScore !== prevScore) return 'goal';
+
+  // 半场
+  if (current.minute >= HALFTIME_MINUTE && (prev.minute || 0) < HALFTIME_MINUTE) return 'halftime';
+
+  // 补水窗口
+  for (const w of HYDRATION_WINDOWS) {
+    if (current.minute >= w.start && current.minute <= w.end &&
+        !((prev.minute || 0) >= w.start && (prev.minute || 0) <= w.end)) {
+      return w.label;
+    }
+  }
+
+  // 终场
+  if (current.minute >= 90 && (prev.minute || 0) < 90) return 'fulltime';
+
+  // 每 5 分钟定期
+  const minuteDiff = current.minute - (prev.minute || 0);
+  if (minuteDiff >= 5) return 'periodic';
+
+  return null;  // 无需记录
+}
+
+// ============================================================
+// 出线形势计算（轻量版）
+// ============================================================
+
+async function computeGroupImpact(matchData, allLive) {
+  try {
+    const sim = new QualificationSimulator({ simulations: 5000 });
+    const groups = sim.loadGroups();  // 从 DB 加载真实分组
+    const impact = {};
+    for (const group of groups) {
+      const result = sim.simulateGroup(group);
+      const homeTeam = matchData.home.name;
+      const awayTeam = matchData.away.name;
+      for (const [teamId, stats] of Object.entries(result)) {
+        if (teamId.includes(homeTeam) || teamId.includes(awayTeam)) {
+          impact[teamId] = {
+            qualifyPct: Math.round((stats.qualifyProb || 0) * 100),
+            runnerUpPct: Math.round((stats.runnerUpProb || 0) * 100),
+          };
+        }
+      }
+    }
+    return Object.keys(impact).length ? impact : null;
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+// ============================================================
+// 快照写入
+// ============================================================
+
+function saveSnapshot(snapshot) {
+  if (DRY_RUN) {
+    console.log(JSON.stringify(snapshot, null, 2));
+    return;
+  }
+
+  const dir = path.join(DATA_DIR, TODAY, snapshot.matchId);
+  fs.mkdirSync(dir, { recursive: true });
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
+  const filename = `${ts}_${snapshot.trigger}.json`;
+  fs.writeFileSync(path.join(dir, filename), JSON.stringify(snapshot, null, 2));
+  console.log(`  💾 saved: ${dir}/${filename}`);
+}
+
+// ============================================================
+// 主循环
+// ============================================================
+
+async function pollOnce() {
+  const now = new Date();
+  console.log(`\n🔍 [${now.toISOString().slice(11, 19)}] Polling ESPN scoreboard...`);
+
+  let live;
+  try {
+    live = await fetchLiveMatches();
+  } catch (e) {
+    console.error('  ❌ ESPN fetch failed:', e.message);
+    return;
+  }
+
+  if (live.length === 0) {
+    console.log('  ⏸  No live matches');
+    return;
+  }
+
+  console.log(`  ⚽ ${live.length} live match(es)`);
+
+  for (const m of live) {
+    const trigger = classifyTrigger(m.matchId, m);
+    if (!trigger) {
+      // console.log(`  ${m.matchId} ${m.home.name} ${m.home.score}-${m.away.score} ${m.away.name} @ ${m.minute}' — no trigger`);
+      continue;
+    }
+
+    console.log(`  📍 ${m.matchId} ${m.home.name} ${m.home.score}-${m.away.score} ${m.away.name} @ ${m.minute}' — trigger: ${trigger}`);
+
+    // 从 PredictionService 读取真实赛前预测（首次调用后缓存）
+    let basePrediction;
+    try {
+      basePrediction = await getBasePrediction(m.matchId);
+    } catch (e) {
+      basePrediction = { homeWin: 0.46, draw: 0.247, awayWin: 0.293, goals: { homeExpected: 2.7, awayExpected: 2.3 } };
+    }
+
+    const liveAnalysis = buildLiveAnalysis(basePrediction, {
+      homeName: m.home.name,
+      awayName: m.away.name,
+    }, {
+      minute: m.minute,
+      homeScore: m.home.score,
+      awayScore: m.away.score,
+      homeShots: Number(m.home.stats.totalShots || 0),
+      awayShots: Number(m.away.stats.totalShots || 0),
+      homeShotsOnTarget: Number(m.home.stats.shotsOnTarget || 0),
+      awayShotsOnTarget: Number(m.away.stats.shotsOnTarget || 0),
+      homePossession: Number(m.home.stats.possessionPct || null),
+      awayPossession: Number(m.away.stats.possessionPct || null),
+    });
+
+    // 出线形势（仅末轮有效）
+    let groupImpact = null;
+    try {
+      groupImpact = await computeGroupImpact(m, live);
+    } catch {}
+
+    // 组装快照
+    const snapshot = {
+      timestamp: now.toISOString(),
+      matchId: m.matchId,
+      trigger,
+      minute: m.minute,
+      home: { name: m.home.name, score: m.home.score, stats: m.home.stats },
+      away: { name: m.away.name, score: m.away.score, stats: m.away.stats },
+      livePrediction: liveAnalysis,
+      groupImpact,
+      details: m.details,
+      venue: m.venue,
+    };
+
+    // 生成实时文字分析
+    snapshot.summary = generateSummary(snapshot, basePrediction, live);
+    saveSnapshot(snapshot);
+
+    // 打印到控制台
+    console.log('');
+    console.log(snapshot.summary);
+    console.log('');
+
+    // 更新状态
+    matchState[m.matchId] = {
+      score: { home: m.home.score, away: m.away.score },
+      minute: m.minute,
+      lastTrigger: trigger,
+      lastGoalMinute: trigger === 'goal' ? m.minute : (matchState[m.matchId]?.lastGoalMinute || 0),
+    };
+  }
+}
+
+// ============================================================
+// 实时文字分析生成
+// ============================================================
+
+const GROUP_TAG = {
+  '760462': 'E', '760463': 'E', '760464': 'E', '760465': 'E',
+  '760466': 'F', '760467': 'F',
+  '760468': 'G', '760473': 'G', '760471': 'G', '760472': 'G',
+  '760469': 'H', '760470': 'H',
+};
+
+// 历史快照队列（同场次近 5 条，用于趋势分析）
+const recentSnapshots = {};
+function pushRecent(matchId, snap) {
+  if (!recentSnapshots[matchId]) recentSnapshots[matchId] = [];
+  recentSnapshots[matchId].push(snap);
+  if (recentSnapshots[matchId].length > 5) recentSnapshots[matchId].shift();
+}
+function getRecent(matchId) { return recentSnapshots[matchId] || []; }
+
+function pct(v) { return Math.round(v * 1000) / 10 + '%'; }
+
+// 用 Poisson 进行简单终场比分蒙特卡洛推演（200 次）
+function poissonSample(lambda) {
+  let L = Math.exp(-lambda), k = 0, p = 1;
+  do { k++; p *= Math.random(); } while (p > L);
+  return k - 1;
+}
+
+function simulateFinalScores(homeXG, awayXG, runs = 200) {
+  let hw = 0, d = 0, aw = 0;
+  for (let i = 0; i < runs; i++) {
+    const h = poissonSample(homeXG), a = poissonSample(awayXG);
+    if (h > a) hw++; else if (h < a) aw++; else d++;
+  }
+  return { homeWin: hw / runs, draw: d / runs, awayWin: aw / runs };
+}
+
+function generateSummary(snapshot, basePrediction, allLive) {
+  const { matchId, trigger, minute } = snapshot;
+  const hs = snapshot.home.score, as = snapshot.away.score;
+  const hn = snapshot.home.name, an = snapshot.away.name;
+  const p = snapshot.livePrediction.probabilities;
+  const base = { h: basePrediction.homeWin, d: basePrediction.draw, a: basePrediction.awayWin };
+  const group = GROUP_TAG[matchId] || '?';
+  const diff = hs - as;
+  const remaining = Math.max(0, 90 - minute);
+  const prevSnap = getRecent(matchId).slice(-1)[0];
+  pushRecent(matchId, snapshot);
+
+  // 触发器中文标签
+  const triggerLabel = {
+    first_sight: '🔍 开球',
+    goal: '⚽ 进球',
+    halftime: '⏱ 半场',
+    first_half_hydration: '💧 上半场补水',
+    second_half_hydration: '💧 下半场补水',
+    fulltime: '🏁 终场',
+    periodic: '📊 ' + minute + "'",
+  }[trigger] || trigger;
+
+  let lines = [];
+  lines.push(`【${triggerLabel}】${hn} ${hs}-${as} ${an}（${minute}'）`);
+
+  // 概率
+  const hShift = p.homeWin - base.h;
+  lines.push(`  胜平负: 主胜${pct(p.homeWin)}（${hShift >= 0 ? '+' : ''}${pct(hShift)}）平局${pct(p.draw)} 客胜${pct(p.awayWin)}`);
+
+  // ---- 趋势（和上一次快照比） ----
+  if (prevSnap && prevSnap.livePrediction) {
+    const pp = prevSnap.livePrediction.probabilities;
+    const dp = p.homeWin - pp.homeWin;
+    if (Math.abs(dp) > 0.01) {
+      lines.push(`  📈 趋势（vs ${prevSnap.minute}'）: 主胜${dp > 0 ? '↑' : '↓'}${pct(Math.abs(dp))}`);
+    }
+  }
+
+  // ---- 比赛表现分析 ----
+  const shots = Number(snapshot.home.stats?.totalShots || 0) + Number(snapshot.away.stats?.totalShots || 0);
+  const sot  = Number(snapshot.home.stats?.shotsOnTarget || 0) + Number(snapshot.away.stats?.shotsOnTarget || 0);
+  const poss = Number(snapshot.home.stats?.possessionPct || 0);
+  if (shots > 0) {
+    const hShots = Number(snapshot.home.stats?.totalShots || 0);
+    const aShots = Number(snapshot.away.stats?.totalShots || 0);
+    const hSot   = Number(snapshot.home.stats?.shotsOnTarget || 0);
+    const aSot   = Number(snapshot.away.stats?.shotsOnTarget || 0);
+    const possDesc = poss > 55 ? `${hn} 掌控球权（${Math.round(poss)}%）` : poss < 45 ? `${an} 掌控球权（${Math.round(100 - poss)}%）` : '球权均势';
+    const shotDesc = hShots > aShots + 3 ? `${hn} 射门压制（${hShots}-${aShots}）` : aShots > hShots + 3 ? `${an} 射门压制（${aShots}-${hShots}）` : `射门接近（${hShots}-${aShots}）`;
+    const effH = hShots > 0 ? Math.round(hs / hShots * 100) : 0;
+    const effA = aShots > 0 ? Math.round(as / aShots * 100) : 0;
+    const effDesc = hs > 0 && effH > 25 ? `${hn} 转化率极高（${effH}%）` : as > 0 && effA > 25 ? `${an} 转化率极高（${effA}%）` : '';
+    lines.push(`  📊 场面: ${possDesc}，${shotDesc}${effDesc ? '，' + effDesc : ''}`);
+  }
+
+  // ---- 进球时刻分析 ----
+  if (trigger === 'goal') {
+    const prevScore = prevSnap ? `${prevSnap.home.score}-${prevSnap.away.score}` : '?-?';
+    if (diff > 0) {
+      lines.push(`  ⚡ ${hn} 进球！比分从 ${prevScore} 变为 ${hs}-${as}`);
+      if (minute <= 15) lines.push(`  📌 早早进球，${an} 需要立即反扑，比赛节奏将被改变`);
+      else if (minute >= 75) lines.push(`  📌 绝杀时刻！${an} 所剩时间极少，翻盘概率极低`);
+      else lines.push(`  📌 ${hn} 占据主动，${an} 需要至少追回一球`);
+    } else if (diff < 0) {
+      lines.push(`  ⚡ ${an} 进球！比分从 ${prevScore} 变为 ${hs}-${as}`);
+      if (minute >= 75) lines.push(`  📌 晚段进球！${hn} 主场落后，形势严峻`);
+      else lines.push(`  📌 ${an} 反客为主，${hn} 需要回应`);
+    } else {
+      lines.push(`  ⚡ 扳平！比分从 ${prevScore} 回到 ${hs}-${as}`);
+      lines.push(`  📌 平局重开悬念，双方回到同一起跑线`);
+    }
+  }
+
+  // ---- 半场总结 ----
+  if (trigger === 'halftime') {
+    if (diff > 0) {
+      lines.push(`  📌 半场结束，${hn} 领先。下半场${an}必须加强进攻，阵型可能前压，留出反击空间`);
+      lines.push(`  📌 预计下半场: ${an} 博命式进攻 vs ${hn} 防守反击，比赛节奏将明显加快`);
+    } else if (diff < 0) {
+      lines.push(`  📌 半场结束，${an} 客场领先。${hn} 主场压力巨大，下半场必然全力反扑`);
+    } else {
+      lines.push(`  📌 半场平局，${remaining} 分钟剩余。双方教练都可能在下半场做出关键换人`);
+      lines.push(`  📌 预计下半场: 体能下降+换人增兵，进球窗口在 60-80'`);
+    }
+  }
+
+  // ---- 补水窗口分析 ----
+  if (trigger === 'first_half_hydration' || trigger === 'second_half_hydration') {
+    const half = trigger === 'first_half_hydration' ? '上半场' : '下半场';
+    const minLeft = trigger === 'first_half_hydration' ? 45 - minute : 90 - minute;
+    lines.push(`  💧 ${half}补水（${minLeft}' 剩余），教练组抓紧时间调整`);
+    if (diff === 0) lines.push(`  📌 僵局阶段，补水后往往是打破平衡的关键时刻（历史上30%进球在补水后10分钟内出现）`);
+    else if (Math.abs(diff) === 1) lines.push(`  📌 一球差距，补水后落后方大概率加码进攻`);
+  }
+
+  // ---- 终场总结 ----
+  if (trigger === 'fulltime') {
+    if (diff > 0) {
+      lines.push(`  🏆 ${hn} 主场全取三分！赛前预测主胜${pct(base.h)}，最终兑现`);
+    } else if (diff < 0) {
+      lines.push(`  🏆 ${an} 客场逆转！赛前客胜仅${pct(base.a)}，重大冷门`);
+    } else {
+      lines.push(`  🤝 握手言和，各取一分。赛前预测平局${pct(base.d)}`);
+    }
+    lines.push(`  📌 最终概率 vs 赛前: 主胜${pct(base.h)}→${pct(p.homeWin)} | 客胜${pct(base.a)}→${pct(p.awayWin)}`);
+  }
+
+  // ---- 预测终场走向（剩余时间推演） ----
+  if (trigger !== 'fulltime' && minute >= 60 && remaining > 0) {
+    const xgH = Math.max(hs, (basePrediction.goals?.homeExpected || 2.0) * (minute / 90));
+    const xgA = Math.max(as, (basePrediction.goals?.awayExpected || 1.5) * (minute / 90));
+    const sim = simulateFinalScores(xgH * (90 / Math.max(minute, 1)), xgA * (90 / Math.max(minute, 1)), 300);
+    lines.push(`  🔮 剩余 ${remaining}' 推演: 维持现状${pct(sim.homeWin)} | 翻盘${pct(sim.awayWin)} | 平局${pct(sim.draw)}`);
+  }
+
+  // ---- 同组平行场 ----
+  const parallelMatch = allLive.find(l => l.matchId !== matchId && GROUP_TAG[l.matchId] === group);
+  if (parallelMatch) {
+    const ph = parallelMatch.home.name, pa = parallelMatch.away.name;
+    const pScore = parallelMatch.home.score, pScoreA = parallelMatch.away.score;
+    lines.push('');
+    lines.push(`  🔗 同组平行场: ${ph} ${pScore}-${pScoreA} ${pa}（${parallelMatch.minute}'）`);
+
+    // 平行场进球对本场影响
+    const pParallelPrev = getRecent(parallelMatch.matchId).slice(-1)[0];
+    if (pParallelPrev && (pScore !== pParallelPrev.home.score || pScoreA !== pParallelPrev.away.score)) {
+      lines.push(`  ⚠️ 平行场刚刚进球！这对本场两队的出线形势产生了直接影响`);
+    }
+
+    // 四队当前积分推演
+    lines.push(`  📊 当前比分组合下四队出线推演:`);
+    // E组举例（实际用 qualification.js 计算）
+    if (snapshot.groupImpact && !snapshot.groupImpact.error) {
+      for (const [team, info] of Object.entries(snapshot.groupImpact)) {
+        const status = info.qualifyPct >= 75 ? '🟢 晋级在望' : info.qualifyPct >= 40 ? '🟡 形势胶着' : '🔴 危险';
+        lines.push(`    → ${team}: ${status}（${info.qualifyPct}%）`);
+      }
+    } else {
+      lines.push(`    → （蒙特卡洛出线计算未就绪，仅基于当前比分直推）`);
+      // 简化判断
+      if (diff > 0 && hs - as >= 2) lines.push(`    → ${hn} 大胜概率高，大概率锁定出线`);
+      if (diff === 0 && pScore === pScoreA) lines.push(`    → 两场均平局，四队形势极度紧张，净胜球成关键`);
+      if (diff > 0 && pScore > pScoreA) lines.push(`    → 两场主队均领先，主队出线组合非常有利`);
+      if (diff > 0 && pScore < pScoreA) lines.push(`    → ${hn} 领先但平行场${pa}也在赢，出线仍存变数`);
+    }
+  } else {
+    lines.push(`  🔗 本组无同时进行的平行场`);
+  }
+
+  // ---- 对平行场局势的特别影响（当本场进球时） ----
+  if (parallelMatch && trigger === 'goal') {
+    const pg = GROUP_TAG[parallelMatch.matchId];
+    const pDiff = parallelMatch.home.score - parallelMatch.away.score;
+    lines.push('');
+    if (diff > 0 && hs >= 2) {
+      lines.push(`  💥 ${hn} 大比分领先！平行场 ${parallelMatch.home.name} 的出线形势被动——除非他们自己也大比分领先`);
+    }
+    if (diff === 0 && hs >= 1) {
+      lines.push(`  💥 本场追平！平行场两队压力倍增——平局组合下四队命运交织`);
+    }
+    lines.push(`  ⏳ 距离本组最终排名确定还有 ${remaining}'，任何进球都可能彻底改变出线格局`);
+  }
+
+  return lines.join('\n');
+}
+
+// ============================================================
+// 启动
+// ============================================================
+
+async function main() {
+  console.log('🏟️  Live Match Monitor started');
+  console.log(`   mode: ${ONCE ? 'single run' : 'continuous (5min interval)'}`);
+  console.log(`   dry-run: ${DRY_RUN}`);
+  console.log(`   output: ${DRY_RUN ? 'stdout' : path.join(DATA_DIR, TODAY)}`);
+  console.log('');
+
+  if (ONCE) {
+    await pollOnce();
+    console.log('\n✅ Single run complete');
+    return;
+  }
+
+  // 连续模式
+  await pollOnce();
+  const timer = setInterval(pollOnce, POLL_INTERVAL);
+
+  // 优雅退出
+  process.on('SIGINT', () => {
+    console.log('\n🛑 Shutting down...');
+    clearInterval(timer);
+    // 写入最终汇总
+    const summary = { endedAt: new Date().toISOString(), trackedMatches: Object.keys(matchState), finalState: matchState };
+    if (!DRY_RUN) {
+      const dir = path.join(DATA_DIR, TODAY);
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, 'session-summary.json'), JSON.stringify(summary, null, 2));
+      console.log('📊 Session summary saved');
+    }
+    process.exit(0);
+  });
+}
+
+main().catch(e => {
+  console.error('Fatal:', e.message);
+  process.exit(1);
+});

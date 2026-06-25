@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+    <title>PitchSignal · 2026 世界杯</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    dark: { 900: '#0a0a0f', 800: '#12121a', 700: '#1a1a25' }
+                }
+            }
+        }
+    }
+    </script>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
+    * { font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #08080c; color: #e8e8ec; overscroll-behavior: none; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+    .glass-light { background: rgba(255,255,255,0.07); }
+    .live-pulse { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    .fade-in { animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .slide-up { animation: slideUp 0.35s ease-out; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+    .card { transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.12); }
+    .card:active { transform: scale(0.98); }
+
+    /* Schedule rows (🦞 style) */
+    .schedule-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:rgba(255,255,255,0.04); border-radius:10px; margin-bottom:6px; cursor:pointer; transition:all 0.2s; border:1px solid rgba(255,255,255,0.05); }
+    .schedule-row:hover { background:rgba(255,255,255,0.08); transform:translateX(2px); border-color:rgba(255,255,255,0.12); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+    .schedule-time { color:#888; min-width:42px; font-size:12px; font-weight:600; }
+
+    /* Formation pitch */
+    .pitch { background: linear-gradient(180deg, #1a472a 0%, #1e5631 25%, #1a472a 50%, #1e5631 75%, #1a472a 100%); border: 2px solid rgba(255,255,255,0.15); border-radius: 12px; position: relative; overflow: hidden; }
+    .pitch::before { content:''; position:absolute; top:50%; left:10%; right:10%; height:1px; background:rgba(255,255,255,0.15); }
+    .pitch::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:60px; height:60px; border:1px solid rgba(255,255,255,0.1); border-radius:50%; }
+    .player-dot { position:absolute; text-align:center; cursor:pointer; transition: all 0.2s; z-index:2; width:52px; margin-left:-26px; margin-top:-28px; }
+    .player-dot:hover { transform:scale(1.15); z-index:10; }
+    .player-dot .avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; margin:0 auto; border:2px solid; box-shadow:0 2px 8px rgba(0,0,0,0.4); position:relative; }
+    .player-dot .avatar .rating-badge { position:absolute; bottom:-4px; right:-4px; font-size:9px; font-weight:800; border-radius:4px; padding:1px 3px; line-height:1; }
+    .player-dot .name { font-size:10px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52px; text-shadow:0 1px 3px rgba(0,0,0,0.9); margin-top:4px; cursor:pointer; }
+    .rating-high { background:#22c55e; color:#000; }
+    .rating-mid { background:#eab308; color:#000; }
+    .rating-low { background:#ef4444; color:#fff; }
+
+    /* Player tooltip */
+    .player-tip { position:absolute; z-index:50; background:#1a1a25; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.5); pointer-events:none; opacity:0; transition:opacity 0.15s; }
+    .player-tip.show { opacity:1; pointer-events:auto; }
+
+    /* Odds trend arrows */
+    .trend-up { color:#22c55e; }
+    .trend-down { color:#ef4444; }
+    .trend-flat { color:#6b7280; }
+    .arrow-bounce { animation: bounceUp 0.6s ease-in-out; }
+    @keyframes bounceUp { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+
+    /* Comparison bar */
+    .compare-bar { height:6px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; position:relative; }
+    .compare-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
+    @media (hover:hover) { .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.12); } }
+    .tab-on { background: linear-gradient(135deg, #3b82f6, #7c3aed); color: #fff; box-shadow: 0 4px 16px rgba(59,130,246,0.3); }
+
+    /* === Prediction Tab Styles === */
+    .pred-section { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 14px; }
+    .pred-section-title { font-size: 13px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .elo-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 12px; transition: all 0.2s; position: relative; overflow: hidden; }
+    .elo-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, #a855f7, #3b82f6); border-radius: 0 2px 2px 0; }
+    .elo-card:hover { border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.06); }
+    .elo-rank-badge { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .rank-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; box-shadow: 0 2px 8px rgba(245,158,11,0.4); }
+    .rank-silver { background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; box-shadow: 0 2px 8px rgba(148,163,184,0.3); }
+    .rank-bronze { background: linear-gradient(135deg, #d97706, #b45309); color: #fff; box-shadow: 0 2px 8px rgba(217,119,6,0.3); }
+    .rank-default { background: rgba(255,255,255,0.08); color: #9ca3af; }
+    .rank-change { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 1px; }
+    .rank-up { color: #22c55e; }
+    .rank-down { color: #ef4444; }
+    .rank-same { color: #6b7280; }
+    .elo-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; position: relative; }
+    .elo-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #7c3aed, #3b82f6); transition: width 0.8s ease; }
+    .pred-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; transition: all 0.2s; }
+    .pred-card:hover { border-color: rgba(59,130,246,0.2); }
+    .prob-bar { height: 28px; border-radius: 8px; overflow: hidden; display: flex; position: relative; background: rgba(255,255,255,0.04); }
+    .prob-bar-home { background: linear-gradient(90deg, #22c55e, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; transition: width 0.8s ease; min-width: 0; }
+    .prob-bar-draw { background: linear-gradient(90deg, #eab308, #ca8a04); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000; transition: width 0.8s ease; min-width: 0; }
+    .prob-bar-away { background: linear-gradient(90deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; transition: width 0.8s ease; min-width: 0; }
+    .score-badge { font-size: 18px; font-weight: 900; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.03em; }
+    .confidence-pill { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 3px; }
+    .quali-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 12px; }
+    .quali-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden; }
+    .quali-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+    .quali-high { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .quali-mid { background: linear-gradient(90deg, #eab308, #ca8a04); }
+    .quali-low { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .team-flag { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .score-lg { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+    ::-webkit-scrollbar { width:4px; height:4px; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:2px; }
+
+    /* Radar chart */
+    .radar-bg { fill: rgba(255,255,255,0.03); stroke: rgba(255,255,255,0.08); }
+    .radar-grid { stroke: rgba(255,255,255,0.06); fill: none; }
+    .radar-home { fill: rgba(59,130,246,0.2); stroke: #3b82f6; stroke-width: 2; }
+    .radar-away { fill: rgba(239,68,68,0.2); stroke: #ef4444; stroke-width: 2; }
+
+    /* Match detail modal */
+    .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+    .modal-sheet { background: #12121a; border-radius: 1.5rem 1.5rem 0 0; max-height: 90vh; overflow-y: auto; }
+
+    /* Loading skeleton */
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .animate-scale-in { animation: scaleIn 0.2s ease-out; }
+    @keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+    </style>
+</head>
+<body class="min-h-screen min-h-[100dvh]">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 glass border-b border-white/5" style="padding-top: env(safe-area-inset-top)">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <span class="text-xl">⚽</span>
+            <div>
+                <h1 class="text-base font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    2026 世界杯
+                </h1>
+                <p class="text-[11px] text-gray-600 leading-none">美加墨 · 赛事分析</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span id="clock" class="text-xs text-gray-500 font-mono tabular-nums"></span>
+            <div class="flex items-center rounded-lg bg-white/5 p-0.5 text-[10px] font-bold" aria-label="Language">
+                <button data-action="set-lang" data-lang="zh" class="lang-btn px-2 py-1 rounded-md transition">中</button>
+                <button data-action="set-lang" data-lang="en" class="lang-btn px-2 py-1 rounded-md transition">EN</button>
+            </div>
+            <button data-action="refresh-all" id="refresh-btn" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition text-sm">🔄</button>
+        </div>
+    </div>
+</header>
+
+<!-- Nav -->
+<nav class="sticky top-[57px] z-40 glass border-b border-white/5">
+    <div class="max-w-5xl mx-auto px-3 py-2 flex gap-1.5 overflow-x-auto" id="nav">
+        <button data-tab="live" class="tab-btn tab-on px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5">
+            <span class="text-sm">🔴</span><span class="hidden sm:inline" data-i18n="navLive">比分</span><span class="sm:hidden">Live</span>
+        </button>
+        <button data-tab="schedule" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
+            <span class="text-sm">📅</span><span class="hidden sm:inline" data-i18n="navSchedule">赛程</span><span class="sm:hidden">Schedule</span>
+        </button>
+        <button data-tab="prediction" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
+            <span class="text-sm">🧠</span><span class="hidden sm:inline" data-i18n="navPrediction">预测</span><span class="sm:hidden">Predict</span>
+        </button>
+        <button data-tab="standings" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
+            <span class="text-sm">📊</span><span class="hidden sm:inline" data-i18n="navStandings">积分</span><span class="sm:hidden">Table</span>
+        </button>
+        <button data-tab="teams" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
+            <span class="text-sm">🏆</span><span class="hidden sm:inline" data-i18n="navTeams">球队</span><span class="sm:hidden">Teams</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Content -->
+<main class="max-w-5xl mx-auto px-3 pb-24 pt-3">
+
+    <!-- Data Transparency (collapsed popover) -->
+    <div class="mb-4 flex justify-end">
+        <button id="quality-info-btn" class="text-[11px] text-gray-500 hover:text-blue-400 transition flex items-center gap-1 bg-white/5 rounded-full px-2.5 py-1" onclick="toggleQualityPopover()">
+            <span class="text-sm">ⓘ</span><span class="hidden sm:inline" data-i18n="dataQualityBtn">数据质量说明</span>
+        </button>
+    </div>
+    <!-- Popover -->
+    <div id="quality-popover" class="hidden fixed inset-0 z-50 flex items-center justify-center" onclick="if(event.target===this) toggleQualityPopover()">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative bg-[#1a1a2e] border border-blue-500/20 rounded-2xl p-5 max-w-sm w-[90%] shadow-2xl z-10 animate-scale-in">
+            <div class="flex items-center justify-between mb-3">
+                <div class="font-bold text-white text-sm" data-i18n="dataQualityTitle">📊 数据质量说明</div>
+                <button class="text-gray-500 hover:text-white text-lg leading-none" onclick="toggleQualityPopover()">✕</button>
+            </div>
+            <div class="space-y-2.5 text-xs text-gray-400 leading-relaxed">
+                <div>
+                    <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityRealtimeTitle">✓ 实时数据</div>
+                    <div data-i18n="dataQualityRealtimeDesc">比赛进程、即时比分（ESPN 延迟 ~5 分钟）</div>
+                </div>
+                <div>
+                    <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityPrematchTitle">✓ 赛前数据</div>
+                    <div data-i18n="dataQualityPrematchDesc">推测阵容（基于历史首发）、概率预测</div>
+                </div>
+                <div>
+                    <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityDevTitle">⏳ 规划支持</div>
+                    <div data-i18n="dataQualityDevDesc">官方首发、历史替补与换人</div>
+                </div>
+                <div>
+                    <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityPendingTitle">⚠️ 暂不支持</div>
+                    <div data-i18n="dataQualityPendingDesc">历史天气、完整 H2H 库</div>
+                </div>
+                <div class="pt-2 border-t border-gray-600/30 text-gray-500 text-[11px]" data-i18n="dataQualityFooter">缺失数据不会被推测填充；页面会清晰注明"暂无"或"尚未同步"。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE -->
+    <section id="tab-live" class="tab-content fade-in">
+        <div id="live-list" class="space-y-2.5">
+            <div class="flex items-center justify-center py-20 text-gray-600"><span class="text-3xl mr-3">⚽</span>加载中...</div>
+        </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="tab-schedule" class="tab-content hidden relative">
+        <div class="relative flex items-center mb-3">
+            <button id="date-scroll-left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#121212] via-[#121212] to-transparent pr-4 hover:text-white text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <div id="date-bar" class="flex gap-1.5 overflow-x-auto px-6 scrollbar-hide scroll-smooth w-full hide-scrollbar snap-x snap-mandatory"></div>
+            <button id="date-scroll-right" class="absolute right-0 z-10 h-full bg-gradient-to-l from-[#121212] via-[#121212] to-transparent pl-4 hover:text-white text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+        <div id="schedule-list" class="space-y-2.5"></div>
+    </section>
+
+    <!-- ANALYSIS -->
+    <section id="tab-prediction" class="tab-content hidden">
+        <div id="prediction-content" class="space-y-3">
+            <div class="text-center py-10 text-gray-500">加载预测数据...</div>
+        </div>
+    </section>
+
+    <!-- STANDINGS -->
+    <section id="tab-standings" class="tab-content hidden">
+        <div id="groups-container" class="grid gap-3"></div>
+    </section>
+
+    <!-- TEAMS -->
+    <section id="tab-teams" class="tab-content hidden">
+        <div id="teams-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        <div id="team-detail" class="hidden"></div>
+    </section>
+</main>
+
+<!-- Team Detail Modal -->
+<div id="team-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0" data-action="close-team-modal"></div>
+    <div class="modal-sheet absolute bottom-0 left-0 right-0 p-4 pb-8" style="padding-bottom: max(2rem, env(safe-area-inset-bottom))">
+        <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-4"></div>
+        <div id="team-modal-content"></div>
+    </div>
+</div>
+
+<!-- Match Detail Modal -->
+<div id="match-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0" data-action="close-modal"></div>
+    <div class="modal-sheet absolute bottom-0 left-0 right-0 p-4 pb-8" style="padding-bottom: max(2rem, env(safe-area-inset-bottom))">
+        <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-4"></div>
+        <div id="modal-content"></div>
+    </div>
+</div>
+
+<!-- Bottom bar -->
+<div class="fixed bottom-0 w-full glass border-t border-white/5 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
+    <div class="max-w-5xl mx-auto px-4 py-1.5 flex items-center justify-between text-[11px] text-gray-700">
+        <span>实验性概率模型 · 非投注建议 · ESPN 数据</span>
+        <span id="update-time">--</span>
+    </div>
+</div>
+
+<!-- AI Bot -->
+<div id="ai-bot-root"></div>
+<link rel="stylesheet" href="/static/css/bot.css?v=20260627">
+<script src="/static/js/bot.js?v=20260627"></script>
+
+<!-- Knockout Bracket Renderer -->
+<link rel="stylesheet" href="/static/css/bracket.css?v=20260627">
+<script src="/static/js/bracket.js?v=20260627"></script>
+
+<script src="/static/js/formatters.js?v=20260627"></script>
+<script src="/static/js/api-client.js?v=20260627"></script>
+<script src="/static/js/app.js?v=20260627"></script>
+<script src="/static/js/match-renderers.js?v=20260627"></script>
+<script>
+function toggleQualityPopover() {
+    const popover = document.getElementById('quality-popover');
+    if (popover.classList.contains('hidden')) {
+        popover.classList.remove('hidden');
+        // Re-trigger animation
+        const card = popover.querySelector('.animate-scale-in');
+        card.style.animation = 'none';
+        card.offsetHeight; // force reflow
+        card.style.animation = '';
+    } else {
+        popover.classList.add('hidden');
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-06-25T03:45:00Z",
+  "matchId": "760462",
+  "trigger": "halftime",
+  "minute": 45,
+  "home": { "name": "Bosnia-Herzegovina", "score": 2, "stats": { "possessionPct": 59, "totalShots": 10, "shotsOnTarget": 3, "wonCorners": 4, "foulsCommitted": 4 } },
+  "away": { "name": "Qatar", "score": 1, "stats": { "possessionPct": 41, "totalShots": 4, "shotsOnTarget": 1, "wonCorners": 1, "foulsCommitted": 5 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.937, "draw": 0.045, "awayWin": 0.018 }, "stateShift": "lean_reinforced" },
+  "details": [
+    { "type": "Goal", "minute": "29'", "player": "Kerim Alajbegovic" },
+    { "type": "Own Goal", "minute": "34'", "player": "Sultan Al-Brake" },
+    { "type": "Goal", "minute": "42'", "player": "Hassan Al-Haydos", "team": "Qatar" }
+  ],
+  "summary": "【⏱ 半场】Bosnia 2-1 Qatar（45'）\n  29'1-0 | 34'2-0乌龙 | 42'2-1卡塔尔追回\n  控球59%-41% | 射门10-4 | 射正3-1\n  胜平负: 波黑胜93.7% 平4.5% 卡塔尔胜1.8%\n  📊 你的分析验证:\n  ✅ \"从刷分局变成守胜局\"—卡塔尔0射门→4射门1进球，比赛结构已变\n  ✅ \"42分钟进球影响很大\"—半场心态完全改变\n  🔮 关键: 波黑下半场45'-60'是生死窗口\n     先丢球→2-2崩盘风险 | 先进球→3-1锁定\n  📌 下半场走势: 卡塔尔会抢开局，波黑需要抗住\n  🔗 同组平行场: Switzerland 0-0 Canada（半场）加拿大门柱+射正威胁大"
+}

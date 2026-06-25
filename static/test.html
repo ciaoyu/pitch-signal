@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0f; color: #e5e5e5; font-family: Inter, sans-serif; }
+        .glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+    </style>
+</head>
+<body class="p-4">
+    <h1 class="text-xl font-bold mb-4">Dashboard 组件测试</h1>
+    
+    <h2 class="text-lg font-bold mb-2">1. 综合评分条</h2>
+    <div id="score-bar" class="mb-6"></div>
+    
+    <h2 class="text-lg font-bold mb-2">2. 空间球场</h2>
+    <div id="pitch" class="mb-6"></div>
+    
+    <h2 class="text-lg font-bold mb-2">3. AI 问答</h2>
+    <div id="ai-chat" class="mb-6"></div>
+    
+    <script>
+        // Mock data
+        const mockData = {
+            home: { teamId: '660', name: 'USA', formation: '3-4-2-1', players: [
+                {name: 'Matt Turner', pos: 'GK', rating: 72, x: 50, y: 95, jersey: 1},
+                {name: 'Sergino Dest', pos: 'RB', rating: 76, x: 85, y: 75, jersey: 2},
+            ]},
+            away: { teamId: '210', name: 'Paraguay', formation: '4-4-2', players: [
+                {name: 'Gatito Fernández', pos: 'GK', rating: 72, x: 50, y: 5, jersey: 1},
+                {name: 'Robert Rojas', pos: 'CB', rating: 73, x: 50, y: 25, jersey: 3},
+            ]},
+            pairs: [
+                {home: {name: 'Matt Turner', rating: 72, x: 50, y: 95}, away: {name: 'Gatito Fernández', rating: 72, x: 50, y: 5}, diff: 0, advantage: 'even', key: false},
+                {home: {name: 'Sergino Dest', rating: 76, x: 85, y: 75}, away: {name: 'Robert Rojas', rating: 73, x: 50, y: 25}, diff: 3, advantage: 'home', key: false},
+            ],
+            summary: {homeAdvantages: 1, awayAdvantages: 0, even: 1, avgGap: 1.5}
+        };
+        
+        // Test renderSpatialMatchupPanel
+        function renderSpatialMatchupPanel(data) {
+            if (!data) return '';
+            const s = data.summary || {};
+            const pairs = data.pairs || [];
+            const homeAvg = 74, awayAvg = 72.5;
+            const homePct = 50.5, awayPct = 49.5;
+            const difficulty = 'LOW', difficultyColor = 'text-green-400';
+            
+            return `
+            <div class="glass rounded-xl p-3">
+                <div class="mb-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🇺🇸</span>
+                            <div>
+                                <div class="text-sm font-bold text-white">${data.home?.name || '主队'}</div>
+                                <div class="text-[10px] text-gray-500">${data.home?.formation || '?'}</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-[10px] text-gray-500 mb-0.5">综合评分</div>
+                            <div class="text-lg font-black text-red-400">${homePct} <span class="text-gray-600">vs</span> ${awayPct}</div>
+                            <div class="text-[10px] font-bold ${difficultyColor}">${difficulty}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <div class="text-sm font-bold text-white">${data.away?.name || '客队'}</div>
+                                <div class="text-[10px] text-gray-500">${data.away?.formation || '?'}</div>
+                            </div>
+                            <span class="text-lg">🇵🇾</span>
+                        </div>
+                    </div>
+                    <div class="flex h-2.5 rounded-full overflow-hidden bg-white/5 mb-2">
+                        <div class="bg-red-500" style="width:${homePct}%"></div>
+                        <div class="bg-blue-500" style="width:${awayPct}%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-red-400 font-bold">主优 ${s.homeAdvantages||0}</span>
+                        <span class="text-gray-400">均势 ${s.even||0}</span>
+                        <span class="text-blue-400 font-bold">客优 ${s.awayAdvantages||0}</span>
+                        <span class="text-gray-500">平均差 ${s.avgGap||0}</span>
+                    </div>
+                </div>
+                <div id="pitch-container"></div>
+            </div>`;
+        }
+        
+        // Test renderSpatialPitch
+        function renderSpatialPitch(data) {
+            if (!data) return '<div class="text-gray-500 text-center py-10">对位数据加载失败</div>';
+            const W = 680, H = 1050;
+            let svg = `<svg viewBox="0 0 ${W} ${H}" class="w-full rounded-xl overflow-hidden" style="max-height:500px;">`;
+            svg += `<rect width="${W}" height="${H}" fill="#1a472a" rx="8"/>`;
+            svg += `<rect x="20" y="20" width="${W-40}" height="${H-40}" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>`;
+            svg += `<line x1="20" y1="${H/2}" x2="${W-20}" y2="${H/2}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>`;
+            svg += `<circle cx="${W/2}" cy="${H/2}" r="80" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
+            
+            for (const p of data.pairs) {
+                const hx = p.home.x * 6.8;
+                const hy = (100 - p.home.y) * 10.5;
+                const ax = p.away.x * 6.8;
+                const ay = (100 - p.away.y) * 10.5;
+                let color = '#9E9E9E', width = 1, dash = '4,4';
+                if (p.advantage === 'home') { color = '#4CAF50'; width = 2.5; dash = 'none'; }
+                else if (p.advantage === 'away') { color = '#F44336'; width = 2; dash = '6,4'; }
+                svg += `<line x1="${hx}" y1="${hy}" x2="${ax}" y2="${ay}" stroke="${color}" stroke-width="${width}" stroke-dasharray="${dash}" opacity="0.6"/>`;
+            }
+            
+            for (const p of data.home.players) {
+                const px = p.x * 6.8;
+                const py = (100 - p.y) * 10.5;
+                svg += `<circle cx="${px}" cy="${py}" r="18" fill="#C62828" stroke="#fff" stroke-width="2"/>`;
+                svg += `<text x="${px}" y="${py+4}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
+                svg += `<text x="${px}" y="${py+32}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${p.name.split(' ').pop()}</text>`;
+                svg += `<text x="${px}" y="${py+44}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
+            }
+            
+            for (const p of data.away.players) {
+                const px = p.x * 6.8;
+                const py = (100 - p.y) * 10.5;
+                svg += `<circle cx="${px}" cy="${py}" r="18" fill="#1565C0" stroke="#fff" stroke-width="2"/>`;
+                svg += `<text x="${px}" y="${py+4}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
+                svg += `<text x="${px}" y="${py-24}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${p.name.split(' ').pop()}</text>`;
+                svg += `<text x="${px}" y="${py-36}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
+            }
+            
+            svg += `</svg>`;
+            return svg;
+        }
+        
+        // Test renderAIChat
+        function renderAIChat(matchId, homeId, awayId, homeName, awayName) {
+            return `
+            <div class="glass rounded-xl p-3">
+                <h4 class="text-xs font-bold text-purple-400 mb-2">🤖 AI 战术分析</h4>
+                <div class="space-y-2 max-h-48 overflow-y-auto mb-2">
+                    <div class="text-[10px] text-gray-500 text-center py-2">询问 AI 关于这场比赛的任何问题...</div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="例：谁会赢？关键对位？战术分析？" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-600">
+                    <button class="bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg text-xs font-bold">发送</button>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-1">
+                    <button class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400">谁会赢？</button>
+                    <button class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400">关键对位</button>
+                    <button class="text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400">战术对比</button>
+                </div>
+            </div>`;
+        }
+        
+        // Render components
+        document.getElementById('score-bar').innerHTML = renderSpatialMatchupPanel(mockData);
+        document.getElementById('pitch').innerHTML = renderSpatialPitch(mockData);
+        document.getElementById('ai-chat').innerHTML = renderAIChat('test', '660', '210', 'USA', 'Paraguay');
+    </script>
+</body>
+</html>

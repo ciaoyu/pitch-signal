@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-06-25T03:46:00Z",
+  "matchId": "760463",
+  "trigger": "goal",
+  "minute": 46,
+  "home": { "name": "Switzerland", "score": 1, "stats": { "possessionPct": 68, "totalShots": 5, "shotsOnTarget": 3, "wonCorners": 1, "foulsCommitted": 11 } },
+  "away": { "name": "Canada", "score": 0, "stats": { "possessionPct": 32, "totalShots": 5, "shotsOnTarget": 3, "wonCorners": 0, "foulsCommitted": 5 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.898, "draw": 0.093, "awayWin": 0.01 }, "stateShift": "reinforced" },
+  "details": [ { "type": "Goal", "minute": "46'", "player": "Rubén Vargas", "assist": "Johan Manzambi" } ],
+  "summary": "【⚽ 进球】Switzerland 1-0 Canada（46' 瓦尔加斯，曼赞比助攻）\n  胜平负: 瑞士胜89.8% 平9.3% 加拿大胜1%\n  终场推演: 瑞士胜66.4% 平14.4% 加拿大胜19.2%\n  📊 你的分析验证:\n  ✅ \"下半场刚开始就破局\"—46'进球，加拿大舒适区被打破\n  ✅ \"瑞士控球拖节奏逼加拿大压出来\"—战略逻辑完全正确\n  ✅ Poisson终场推演: 瑞士胜66.4% > 你的\"赢球概率超60%\"\n  🔮 下半场走势:\n    50-60'加拿大抢开局窗口\n    65-75'瑞士反击最佳窗口\n    75-90'瑞士控球消耗时间\n  ⚠️ 关键: 加拿大1-1就够凭净胜球+7>>+2拿回第一\n  📌 2-2对加拿大价值巨大: 从\"打Colombia\"变\"打第三名\"\n  🔗 同组平行场: Bosnia 2-1 Qatar（进行中）"
+}

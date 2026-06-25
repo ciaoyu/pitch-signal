@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-06-25T03:45:00Z",
+  "matchId": "760463",
+  "trigger": "halftime",
+  "minute": 45,
+  "home": { "name": "Switzerland", "score": 0, "stats": { "possessionPct": 68, "totalShots": 4, "shotsOnTarget": 2, "wonCorners": 1, "foulsCommitted": 11 } },
+  "away": { "name": "Canada", "score": 0, "stats": { "possessionPct": 32, "totalShots": 5, "shotsOnTarget": 3, "wonCorners": 0, "foulsCommitted": 5 } },
+  "livePrediction": { "probabilities": { "homeWin": 0.601, "draw": 0.243, "awayWin": 0.156 }, "stateShift": "still_live" },
+  "details": [
+    { "type": "Shot on post", "minute": "20'", "player": "Luc de Fougerolles", "team": "Canada" },
+    { "type": "Yellow Card", "minute": "32'", "player": "Granit Xhaka", "team": "Switzerland" },
+    { "type": "Yellow Card", "minute": "32'", "player": "Cyle Larin", "team": "Canada" },
+    { "type": "Shot saved", "minute": "33'", "player": "Cyle Larin", "team": "Canada" },
+    { "type": "Shot on post", "minute": "45'", "player": "Ali Ahmed", "team": "Canada" }
+  ],
+  "summary": "【⏱ 半场】Switzerland 0-0 Canada（45'）\n  控球68%-32% | 射门4-5 | 射正2-3 | 扑救3-1\n  关键事件:\n    20'德富热罗尔（加拿大）射中门柱\n    32'哈卡+拉林双双黄牌\n    33'拉林射正被扑\n    45'艾哈迈德射中门框\n  胜平负: 瑞士胜60.1% 平24.3% 加拿大胜15.6%\n  终场推演: 瑞士胜35.2% 平20.8% 加拿大胜44%\n  📊 你的分析验证:\n  ✅ \"数据瑞士、威胁加拿大\"—射正2-3加拿大领先，扑救3-1瑞士门将更忙\n  ✅ \"加拿大不败概率更高\"—终场推演加拿大胜44%+平20.8%=64.8%\n  ✅ 犯规11-5—瑞士防转换压力巨大\n  ✅ 加拿大越位3次—持续冲身后球\n  🔮 下半场关键: 瑞士是否提高防线→压高则加拿大身后空间更大\n  📌 你判断的\"加拿大1-0最高之一\"—Poisson支持，加拿大终场胜44%\n  🔗 同组平行场: Bosnia 2-1 Qatar（半场）42'卡塔尔追回一球"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "pitch-signal",
+  "version": "1.0.0",
+  "description": "PitchSignal — analytics dashboard for the 2026 FIFA World Cup (live scores, Poisson/Elo predictions, spatial matchups).",
+  "main": "server.js",
+  "scripts": {
+    "healthcheck": "node scripts/runtime-healthcheck.js",
+    "healthcheck:native": "node scripts/runtime-healthcheck.js --native-only",
+    "check:env": "node scripts/check-env.js",
+    "generate:ai-postmortem": "node scripts/generate-ai-postmortem.js",
+    "test": "TEST_MODE=1 TEST_DB_PATH=:memory: NODE_ENV=test sh -c 'for f in scripts/test-*.js; do echo \"Running $f\"; node \"$f\" || exit 1; done'",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.105.0",
+    "better-sqlite3": "^12.10.0"
+  }
+}
