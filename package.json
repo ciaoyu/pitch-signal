@@ -4,6 +4,7 @@
   "description": "PitchSignal — analytics dashboard for the 2026 FIFA World Cup (live scores, Poisson/Elo predictions, spatial matchups).",
   "main": "server.js",
   "scripts": {
+    "build:css": "npx tailwindcss -i static/css/tailwind-input.css -o static/css/tailwind-output.css --minify",
     "healthcheck": "node scripts/runtime-healthcheck.js",
     "healthcheck:native": "node scripts/runtime-healthcheck.js --native-only",
     "check:env": "node scripts/check-env.js",
@@ -21,5 +22,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",
     "better-sqlite3": "^12.10.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
   }
 }
