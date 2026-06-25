@@ -923,10 +923,16 @@ function card(m) {
     }
 
     const action = 'open-match';
+    const timeText = (() => {
+        const raw = String(m.timeBJT || m.dateBJT || '').trim();
+        if (!raw) return '';
+        const parts = raw.split(/\s+/);
+        return (parts.length > 1 ? parts[1] : parts[0]).substring(0, 5);
+    })();
 
     return `
     <div class="schedule-row" data-action="${action}" data-match-id="${attr(m.id)}" data-home-id="${attr(m.home.id || '')}" data-away-id="${attr(m.away.id || '')}" data-home-name="${attr(m.home.name)}" data-away-name="${attr(m.away.name)}" data-venue-name="${attr(m.venue || '')}">
-        <div class="schedule-time">${esc(m.timeBJT?.split(' ')[1]?.substring(0,5) || '')} <span class="text-[9px] text-gray-600">${tx('北京时间', 'CST')}</span></div>
+        <div class="schedule-time">${esc(timeText)} <span class="text-[9px] text-gray-600">${tx('北京时间', 'CST')}</span></div>
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
             ${logo(m.home)}
             <span class="font-bold text-xs truncate">${esc(displayMaybeTeamName(m.home))}</span>
@@ -1221,7 +1227,7 @@ async function openMatch(id) {
     api('/api/match/' + id + '/news').then(newsData => {
         const el = document.getElementById('detail-content-news');
         if (el && newsData && !newsData.error) el.innerHTML = renderNewsList(newsData);
-        else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('新闻数据暂无', 'No news data')}</div>`;
+        else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('暂无新闻同步', 'No synced news yet')}</div>`;
     });
     
     // === ⚔️ 历史交锋 ===
@@ -4426,5 +4432,5 @@ Object.assign(window, {
 
 // ========== Service Worker (PWA) ==========
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/static/sw.js?v=20260627').catch(() => {});
+    navigator.serviceWorker.register('/static/sw.js?v=20260629').catch(() => {});
 }

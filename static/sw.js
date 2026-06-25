@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pitchsignal-v20260627';
+const CACHE_NAME = 'pitchsignal-v20260629';
 const STATIC_ASSETS = [
   '/static/manifest.json',
   '/static/icon-192.png',
