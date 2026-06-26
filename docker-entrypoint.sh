@@ -7,7 +7,7 @@ set -e
 # to create the data directory and hand ownership to 'node', then drops
 # privileges and execs the application as 'node' — the app never runs as root.
 
-DB_DIR="$(dirname "${DB_PATH:-/data/predictions.db}")"
+DB_DIR="$(dirname "${DB_PATH:-${DATA_PATH:-/usr/src/app/data}/predictions.db}")"
 
 mkdir -p "$DB_DIR"
 chown -R node:node "$DB_DIR" 2>/dev/null || true

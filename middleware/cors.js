@@ -5,7 +5,6 @@
 const DEFAULT_ALLOWED_ORIGINS = [
   'http://localhost:5099',
   'http://127.0.0.1:5099',
-  'http://192.168.2.231:5099',
 ];
 
 function getAllowedOrigins() {

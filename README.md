@@ -67,15 +67,29 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 | `PORT` | No | `5099` | Server port |
 | `NODE_ENV` | No | `development` | `production` enables stricter security |
 | `DATA_PATH` | No | `./data` | SQLite + snapshots directory. Must be on a persistent volume in deployed environments. |
+| `DB_PATH` | No | `${DATA_PATH}/predictions.db` | Override SQLite database path |
+| `CORS_ORIGINS` | No | `localhost:5099` | Comma-separated allowed browser origins |
+| `RATE_LIMIT_MAX` | No | `100` | Max requests per rate-limit window |
+| `RATE_LIMIT_WINDOW_MS` | No | `60000` | Rate-limit window in milliseconds |
 | `ODDS_API_KEY` | No | — | the-odds-api.com key |
 | `OWM_API_KEY` | No | — | OpenWeatherMap key (venue weather) |
+| `BALLDONTLIE_API_KEY` | No | — | balldontlie.io roster/stats enrichment |
+| `TAVILY_API_KEY` | No | — | Tavily search (AI post-match research) |
 | `ANTHROPIC_API_KEY` | No | — | AI post-match review (experimental, beta disabled) |
+| `POSTMORTEM_API_KEY` | No | — | Override provider for post-match review |
+| `POSTMORTEM_BASE_URL` | No | — | Override provider base URL |
+| `POSTMORTEM_MODEL` | No | — | Override provider model name |
 | `ADMIN_TOKEN` | **Beta: must be unset** | — | Fallback token for protected endpoints |
 | `BOT_API_TOKEN` | **Beta: must be unset** | — | Bot chat endpoint token |
 | `WRITE_API_TOKEN` | **Beta: must be unset** | — | Write endpoint token |
 | `POLYMARKET_ENABLED` | **Beta: must be `false`** | `false` | Market odds fusion |
 | `PUNDIT_ENABLED` | **Beta: must be `false`** | `false` | Pundit opinion aggregation |
 | `AUTO_CALIBRATION` | **Beta: must be `false`** | `false` | Auto parameter calibration |
+| `AI_POSTMORTEM_ENABLED` | **Beta: must be `false`** | `false` | Background AI post-match review worker |
+| `PRE_SNAPSHOT_MINUTES` | No | `30` | Minutes before kickoff to take prediction snapshot |
+| `GROUP_POST_MINUTES` | No | `120` | Minutes after group match to post review |
+| `KNOCKOUT_POST_MINUTES` | No | `180` | Minutes after knockout match to post review |
+| `ANALYSIS_DELAY_MINUTES` | No | `10` | Delay before running post-match analysis |
 
 > **Public Beta**: All three security tokens must be unset → anonymous write returns 401.
 > All three feature gates are force-overridden to `false` at startup.
