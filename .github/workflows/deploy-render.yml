@@ -1,0 +1,33 @@
+name: Deploy to Render
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}" \
+            -H "Content-Type: application/json" \
+            --silent --show-error --fail
+
+      - name: Wait for Render deployment
+        run: sleep 30
+
+      - name: Verify deployment
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_APP_URL }}/health)
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Health check failed"
+            exit 1
+          fi
+          echo "✅ Render deployment verified"
+        env:
+          RENDER_APP_URL: ${{ secrets.RENDER_APP_URL }}
