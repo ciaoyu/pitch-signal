@@ -1,0 +1,131 @@
+// ========== WorldCup Namespace ==========
+window.WorldCup = window.WorldCup || {};
+// Mount shared modules (loaded from separate files)
+if (typeof Fmt !== 'undefined') window.WorldCup.Formatters = Fmt;
+if (typeof API !== 'undefined') window.WorldCup.ApiClient = API;
+// State will be populated after definition
+window.WorldCup.State = {};
+// Utils will be populated after helper definitions
+window.WorldCup.Utils = {};
+
+// ========== State ==========
+let tab = 'live';
+let scheduleCache = [];
+let uiLang = localStorage.getItem('worldcup_lang') || 'zh';
+let pitchViewMode = 'both'; // 'home', 'away', 'both'
+// Mount state
+window.WorldCup.State = { tab, scheduleCache, uiLang, pitchViewMode };
+
+const I18N = {
+    zh: {
+        navLive: '比分',
+        navSchedule: '赛程',
+        navPrediction: '预测',
+        navStandings: '积分',
+        navTeams: '球队',
+        noMatchesToday: '今天暂无比赛',
+        loadingPredictions: '加载预测数据...',
+        team: '球队',
+        played: '赛',
+        wins: '胜',
+        draws: '平',
+        losses: '负',
+        goalsFor: '进',
+        goalsAgainst: '失',
+        goalDifference: '净',
+        points: '分',
+        matchesSuffix: '场',
+        matchSuffix: '场',
+        updatePrefix: '更新 ',
+        pointsLabel: '积分',
+        teamsLoading: '球队数据加载中...',
+        赛前预测: '赛前预测',
+        加载赛前预测: '加载赛前预测...',
+        'Elo 实力对比': 'Elo 实力对比',
+        'Elo 差值': 'Elo 差值',
+        胜平负概率: '胜平负概率',
+        '进球期望值 (λ)': '进球期望值 (λ)',
+        场均进球: '场均进球',
+        预测数据加载失败: '预测数据加载失败',
+        preMatchStatsTitle: '近期场均统计',
+        postMatchStatsTitle: '本场统计',
+        postMatchNoStats: '赛后统计暂未同步',
+        postMatchNoStatsDesc: 'ESPN 暂未提供本场技术统计，页面不会用赛前均值填充。',
+        preMatchNoStats: '赛前暂无可用统计',
+        preMatchNoStatsDesc: '缺乏近期完赛记录，无法生成场均统计。',
+        dataQualityTitle: '📊 数据质量说明',
+        dataQualityRealtimeTitle: '✓ 实时数据',
+        dataQualityRealtimeDesc: '比赛进程、即时比分（ESPN 延迟 ~5 分钟）',
+        dataQualityPrematchTitle: '✓ 赛前数据',
+        dataQualityPrematchDesc: '推测阵容（基于历史首发）、概率预测',
+        dataQualityDevTitle: '⏳ 规划支持',
+        dataQualityDevDesc: '官方首发、历史替补与换人',
+        dataQualityPendingTitle: '⚠️ 暂不支持',
+        dataQualityPendingDesc: '历史天气、完整 H2H 库',
+        dataQualityFooter: '缺失数据不会被推测填充；页面会清晰注明"暂无"或"尚未同步"。',
+        dataQualityBtn: '数据质量说明',
+        headerSubtitle: '美加墨 · 赛事分析',
+        footerDisclaimer: '实验性概率模型 · 非投注建议 · ESPN 数据',
+        scrollLeft: '向左滚动日期',
+        scrollRight: '向右滚动日期',
+        tzSuffix: '北京时间',
+        teamsError: '球队数据加载失败',
+    },
+    en: {
+        navLive: 'Live',
+        navSchedule: 'Schedule',
+        navPrediction: 'Prediction',
+        navStandings: 'Table',
+        navTeams: 'Teams',
+        noMatchesToday: 'No matches today',
+        loadingPredictions: 'Loading predictions...',
+        team: 'Team',
+        played: 'P',
+        wins: 'W',
+        draws: 'D',
+        losses: 'L',
+        goalsFor: 'GF',
+        goalsAgainst: 'GA',
+        goalDifference: 'GD',
+        points: 'Pts',
+        matchesSuffix: 'matches',
+        matchSuffix: 'match',
+        updatePrefix: 'Updated ',
+        pointsLabel: 'Pts',
+        teamsLoading: 'Loading teams...',
+        '赛前预测': 'Pre-Match',
+        '加载赛前预测...': 'Loading pre-match prediction...',
+        'Elo 实力对比': 'Elo Comparison',
+        'Elo 差值': 'Elo Diff',
+        '胜平负概率': 'W/D/L Probability',
+        '进球期望值 (λ)': 'Expected Goals (λ)',
+        '场均进球': 'Avg Goals',
+        '预测数据加载失败': 'Prediction data unavailable',
+        preMatchStatsTitle: 'Recent Avg Stats',
+        postMatchStatsTitle: 'Match Stats',
+        postMatchNoStats: 'Post-match stats not synced',
+        postMatchNoStatsDesc: 'ESPN has not provided match statistics yet.',
+        preMatchNoStats: 'No pre-match stats',
+        preMatchNoStatsDesc: 'Insufficient completed matches to generate averages.',
+        dataQualityTitle: '📊 Data Quality Notice',
+        dataQualityRealtimeTitle: '✓ Live Data',
+        dataQualityRealtimeDesc: 'Match progress, live scores (ESPN delay ~5 mins)',
+        dataQualityPrematchTitle: '✓ Pre-Match Data',
+        dataQualityPrematchDesc: 'Projected lineups (based on history), probability predictions',
+        dataQualityDevTitle: '⏳ Planned Features',
+        dataQualityDevDesc: 'Official lineups, historical substitutes & substitutions',
+        dataQualityPendingTitle: '⚠️ Not Supported',
+        dataQualityPendingDesc: 'Historical weather, complete H2H database',
+        dataQualityFooter: 'Missing data will not be speculatively filled; pages will clearly indicate "N/A" or "Not Synced".',
+        dataQualityBtn: 'Data Quality Notice',
+        headerSubtitle: 'USA · CAN · MEX · Match Analysis',
+        footerDisclaimer: 'Experimental probability model · Not betting advice · ESPN data',
+        scrollLeft: 'Scroll dates left',
+        scrollRight: 'Scroll dates right',
+        tzSuffix: 'CST (UTC+8)',
+        teamsError: 'Failed to load teams',
+    },
+};
+
+// Expose I18N to WorldCup namespace for other modules
+window.WorldCup.I18N = I18N;

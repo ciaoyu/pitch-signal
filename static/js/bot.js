@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   root.innerHTML = `
-    <div id="ai-bot-fab" class="fixed bottom-6 right-4 sm:right-6 w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 cursor-pointer z-[9999] text-2xl" title="${tx('提问与反馈', 'Ask & Feedback')}">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+    <div id="ai-bot-fab" class="fixed bottom-[4.5rem] right-4 sm:right-5 w-11 h-11 rounded-xl glass hover:bg-white/10 text-gray-400 hover:text-purple-400 flex items-center justify-center shadow-md shadow-black/20 hover:shadow-lg hover:shadow-purple-500/20 hover:scale-105 transition-all duration-300 cursor-pointer z-[90]" title="${tx('提问与反馈', 'Ask & Feedback')}">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
     </div>
-    <div id="ai-bot-panel" class="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[380px] h-[70vh] max-h-[calc(100vh-7.5rem)] bg-[#12121a]/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col z-[9998] opacity-0 pointer-events-none translate-y-5 transition-all duration-300 overflow-hidden">
+    <div id="ai-bot-panel" class="fixed bottom-[6.5rem] right-4 sm:right-5 w-[calc(100vw-2.5rem)] sm:w-[380px] h-[70vh] max-h-[calc(100vh-7.5rem)] bg-[#12121a]/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col z-[89] opacity-0 pointer-events-none translate-y-5 transition-all duration-300 overflow-hidden">
       <div class="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex-shrink-0">
         <span id="ai-bot-title" class="font-semibold tracking-wide">${tx('AI 智能助理', 'AI Assistant')}</span>
         <span class="cursor-pointer text-2xl leading-none hover:text-white/70 transition-colors" id="ai-bot-close">&times;</span>
@@ -125,12 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function getPageContext() {
     const hash = window.location.hash;
     const ctx = { currentRoute: hash, uiLang: currentLang() };
+
+    // 从 URL hash 提取 matchId
     if (hash.startsWith('#predict/')) {
       ctx.matchId = hash.split('/')[1];
       const home = document.querySelector('#pred-home-team .pred-team-name');
       const away = document.querySelector('#pred-away-team .pred-team-name');
       if (home && away) ctx.teams = `${home.textContent} vs ${away.textContent}`;
+    } else if (hash.startsWith('#match/')) {
+      ctx.matchId = hash.split('/')[1];
     }
+
+    // 从当前打开的赛季详情弹窗提取 matchId（优先级更高）
+    const modal = document.getElementById('match-modal');
+    if (modal && !modal.classList.contains('hidden')) {
+      const modalMatchId = modal.dataset?.currentMatchId || modal.getAttribute('data-current-match-id');
+      if (modalMatchId) ctx.matchId = modalMatchId;
+    }
+
     return ctx;
   }
 

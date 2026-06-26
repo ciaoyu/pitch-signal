@@ -1,21 +1,25 @@
 {
   "name": "2026 世界杯 Dashboard",
   "short_name": "世界杯",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
   "description": "2026 美加墨世界杯实时赛事分析平台",
   "icons": [
     {
-      "src": "/static/icon-192.png",
+      "src": "/static/icon-192-v3.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/static/icon-512.png",
+      "src": "/static/icon-512-v3.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

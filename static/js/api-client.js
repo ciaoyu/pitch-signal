@@ -219,3 +219,4 @@ const API = (() => {
 
 // Freeze to prevent accidental mutation
 Object.freeze(API.STATUS);
+window.API = API;

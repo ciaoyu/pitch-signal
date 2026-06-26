@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Responsive helpers (Tailwind JIT not generating these) */
+@media (min-width: 640px) {
+  .sm\:inline { display: inline !important; }
+  .sm\:hidden { display: none !important; }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:right-5 { right: 1.25rem; }
+  .sm\:w-auto { width: auto; }
+}

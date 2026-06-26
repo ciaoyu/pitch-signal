@@ -114,6 +114,11 @@
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
     .animate-scale-in { animation: scaleIn 0.2s ease-out; }
     @keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+
+    /* Fix: hide HUD layer completely when inactive to prevent click blocking */
+    .fade-out { display: none !important; }
+    /* Team highlight from standings click */
+    .schedule-row.highlight-team { background:rgba(56,189,248,0.08); border-left:3px solid #38bdf8; }
     </style>
 </head>
 <body class="min-h-screen min-h-[100dvh]">
@@ -276,10 +281,6 @@
 <link rel="stylesheet" href="/static/css/bracket.css?v=20260627">
 <script src="/static/js/bracket.js?v=20260627"></script>
 
-<script src="/static/js/formatters.js?v=20260627"></script>
-<script src="/static/js/api-client.js?v=20260627"></script>
-<script src="/static/js/app.js?v=20260629"></script>
-<script src="/static/js/match-renderers.js?v=20260627"></script>
 <script>
 function toggleQualityPopover() {
     const popover = document.getElementById('quality-popover');
@@ -295,5 +296,29 @@ function toggleQualityPopover() {
     }
 }
 </script>
+
+<script src="/static/js/api-client.js?v=20260627"></script>
+<script src="/static/js/formatters.js?v=20260627"></script>
+<script src="/static/js/state.js?v=20260627"></script>
+<script src="/static/js/i18n.js?v=20260627"></script>
+<script src="/static/js/utils.js?v=20260627"></script>
+<script src="/static/js/match-stats.js?v=20260627"></script>
+<script src="/static/js/scores.js?v=20260627b"></script>
+<script src="/static/js/schedule.js?v=20260627"></script>
+<script src="/static/js/standings.js?v=20260627"></script>
+<script src="/static/js/match-detail.js?v=20260627"></script>
+<script src="/static/js/team-detail.js?v=20260627"></script>
+<script src="/static/js/elo-prediction.js?v=20260627b"></script>
+<script src="/static/js/players-tab.js?v=20260627"></script>
+<script src="/static/js/spatial-matchup.js?v=20260627"></script>
+<script src="/static/js/ai-chat.js?v=20260627"></script>
+<script src="/static/js/coach-comparison.js?v=20260627"></script>
+<script src="/static/js/match-review.js?v=20260627"></script>
+<script src="/static/js/player-detail.js?v=20260627"></script>
+<script src="/static/js/pre-match.js?v=20260627"></script>
+<script src="/static/js/odds-card.js?v=20260627"></script>
+<script src="/static/js/ui-helpers.js?v=20260627"></script>
+<script src="/static/js/match-renderers.js?v=20260627"></script>
+<script src="/static/js/app.js?v=20260627"></script>
 </body>
 </html>
