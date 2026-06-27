@@ -167,6 +167,19 @@
         container.innerHTML = html;
     }
 
+    // Event delegation for bracket match clicks
+    document.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-action="open-match-from-bracket"]');
+        if (!card) return;
+        const matchId = card.dataset.matchId;
+        if (!matchId) return;
+
+        const openFn = window.WorldCup.MatchDetail?.open || window.WorldCup.MatchDetail?.openMatch || window.openMatch || window.openMatchDetail;
+        if (openFn) {
+            openFn(matchId);
+        }
+    });
+
     // Expose
     window.WorldCup.Standings = { loadStandings, switchStandingsSubTab };
     window.loadStandings = loadStandings;

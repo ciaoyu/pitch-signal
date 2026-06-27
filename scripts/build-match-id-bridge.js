@@ -106,6 +106,35 @@ function main() {
     const awayCode = normCode(fm.away?.code || '');
     const dk = dateKey(fm.date);
 
+    // 1. 对于淘汰赛，直接通过 kickoff 时间进行匹配（误差 1 分钟以内），因为此时队伍代码可能是占位符（2A, 2B等）或尚未确定
+    if (fm.stage && fm.stage !== 'group') {
+      const fTime = new Date(fm.date).getTime();
+      const match = espnMatches.find(em => {
+        if (em.stage !== 'knockout') return false;
+        const eTime = new Date(em.kickoffUtc).getTime();
+        return Math.abs(fTime - eTime) < 60000;
+      });
+
+      if (match) {
+        const espnId = String(match.matchId);
+        bridge[espnId] = {
+          espn_match_id: espnId,
+          fifa_match_id: fifaId,
+          home: homeCode || normCode(fm.phA || ''),
+          away: awayCode || normCode(fm.phB || ''),
+          date: fm.date,
+          fifa_stage: fm.stage || null,
+          fifa_group: fm.group || null,
+          fifa_status: fm.status || null,
+          espn_name: match.name || '',
+        };
+        reverseBridge[fifaId] = espnId;
+        matched++;
+        continue;
+      }
+    }
+
+    // 2. 小组赛或兜底逻辑：按队伍代码 + 日期匹配
     if (!homeCode || !awayCode) {
       unmatched.push({ fifaId, reason: 'missing_team_codes' });
       continue;
@@ -116,16 +145,10 @@ function main() {
 
     // 如果精确日期找不到，放宽到 ±1 天
     if (candidates.length === 0 && dk) {
-      // 尝试所有可能的日期
       const targetMs = Date.parse(fm.date);
       for (const [key, ems] of espnIndex) {
         const parts = key.split('_');
-        const keyDate = parts[parts.length - 1]; // 后 10 位是日期
-        const keyHome = parts.slice(0, -2).join('_'); // 剩余是 homeCode_awayCode
-        const keyHomeAway = parts.slice(0, -1).join('_');
-        // 简化：直接比较日期部分
         if (key.endsWith(`_${dk}`)) continue; // 已处理
-        // 尝试放宽匹配
         const emDate = ems[0]?.kickoffUtc;
         if (emDate && withinDays(fm.date, emDate, 1)) {
           // 检查球队是否匹配

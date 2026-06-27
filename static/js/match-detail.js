@@ -32,6 +32,14 @@
         const homeFormation = matchupData?.home?.formation || '4-3-3';
         const awayFormation = matchupData?.away?.formation || '4-3-3';
 
+        // Normalize matchup data: API returns gk/def/mid/fwd with x,y coords; renderTacticalBoard needs home.players[]
+        if (matchupData?.home && !matchupData.home.players) {
+            matchupData.home.players = [...(matchupData.home.gk||[]), ...(matchupData.home.def||[]), ...(matchupData.home.mid||[]), ...(matchupData.home.fwd||[])];
+        }
+        if (matchupData?.away && !matchupData.away.players) {
+            matchupData.away.players = [...(matchupData.away.gk||[]), ...(matchupData.away.def||[]), ...(matchupData.away.mid||[]), ...(matchupData.away.fwd||[])];
+        }
+
         // Fill topbar info
         const groupLabel = scheduledMatch.group || matchData.group || '';
         const mdLabel = scheduledMatch.matchday || matchData.matchday || '?';

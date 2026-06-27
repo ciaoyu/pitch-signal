@@ -255,14 +255,15 @@ function renderBracket(data, container) {
         ? 'border border-yellow-400/40 shadow-[0_0_18px_rgba(250,189,0,0.25)]'
         : 'border border-white/10';
 
-      const cardStyle = `position:absolute;left:${pos.x - BK.CARD_W / 2}px;top:${pos.y - BK.CARD_H / 2}px;width:${BK.CARD_W}px;`;
+      const matchId = m.matchId || '';
+      const cardStyle = `position:absolute;left:${pos.x - BK.CARD_W / 2}px;top:${pos.y - BK.CARD_H / 2}px;width:${BK.CARD_W}px;cursor:pointer;`;
 
       // Round label header
       const roundColKey = Math.round(pos.x - BK.CARD_W / 2);
       if (!roundLabelMap[roundColKey]) roundLabelMap[roundColKey] = bkRoundShort(node.id);
 
       cards.push(`
-        <div class="bk-card ${borderCls} rounded-xl overflow-hidden" style="${cardStyle}" data-match-bk="${node.id}">
+        <div class="bk-card ${borderCls} rounded-xl overflow-hidden" style="${cardStyle}" data-match-bk="${node.id}" data-match-id="${matchId}" data-action="open-match-from-bracket">
           ${isFinal ? `<div class="bk-final-badge">🏆 ${bkRoundLabel(node.id)}</div>` : ''}
           <div class="bk-team ${bgWinA} ${clsWinA}" title="${teamA}">
             <span class="bk-team-name">${teamA}</span>
