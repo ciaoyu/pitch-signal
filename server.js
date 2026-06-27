@@ -13,11 +13,17 @@ try {
   const envFile = path.join(__dirname, '.env');
   if (fs.existsSync(envFile)) {
     fs.readFileSync(envFile, 'utf8').split('\n').forEach(line => {
-      const [key, ...vals] = line.split('=');
-      const name = key?.trim();
-      if (name && vals.length) {
-        if (process.env[name] === undefined) process.env[name] = vals.join('=').trim();
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;  // 跳过空行和注释
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx < 1) return;
+      const name = trimmed.slice(0, eqIdx).trim();
+      let val = trimmed.slice(eqIdx + 1).trim();
+      // 去引号（支持单引号和双引号）
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
       }
+      if (name && val && process.env[name] === undefined) process.env[name] = val;
     });
   }
 } catch (e) {
@@ -217,11 +223,11 @@ function serveStatic(res, filePath) {
   const mime = MIME[ext] || 'application/octet-stream';
   const base = path.basename(filePath);
   const cacheControl = ext === '.html' || base === 'sw.js' ? 'no-store' : 'public, max-age=3600';
-  try {
-    const data = fs.readFileSync(filePath);
+  fs.stat(filePath, (err, stats) => {
+    if (err || !stats.isFile()) { res.writeHead(404); res.end('Not found'); return; }
     res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': cacheControl });
-    res.end(data);
-  } catch { res.writeHead(404); res.end('Not found'); }
+    fs.createReadStream(filePath).pipe(res);
+  });
 }
 function safeStaticPath(root, requestPath) {
   const safeRoot = path.resolve(root);
