@@ -5,7 +5,7 @@
 (function () {
     'use strict';
     const esc = (...a) => (window.WorldCup.Utils?.esc || ((s) => s))(...a);
-    const tx = (...a) => (window.WorldCup.I18n?.t || ((z, e) => e))(...a);
+    const { tx } = window.WorldCup.Utils;
     const i18nText = (...a) => (window.WorldCup.I18n?.i18nText || ((o, f) => f))(...a);
     const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
 

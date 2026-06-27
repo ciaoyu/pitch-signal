@@ -7,13 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('ai-bot-root');
   if (!root) return;
 
-  function currentLang() {
-    const lang = window.uiLang || localStorage.getItem('worldcup_lang') || document.documentElement.lang || 'zh';
-    return lang === 'en' ? 'en' : 'zh';
-  }
-
   function tx(zh, en) {
-    return currentLang() === 'en' ? en : zh;
+    return window.WorldCup.Utils.tx(zh, en);
   }
 
   root.innerHTML = `

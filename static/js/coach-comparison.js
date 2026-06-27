@@ -4,7 +4,7 @@
  */
 (function () {
     'use strict';
-    const tx = (...a) => (window.WorldCup.I18n?.t || ((z, e) => e))(...a);
+    const { tx } = window.WorldCup.Utils;
     const translateCoachField = (...a) => (window.WorldCup.I18n?.translateCoachField || ((x) => x))(...a);
     const i18nText = (...a) => (window.WorldCup.I18n?.i18nText || ((o, f) => f))(...a);
 

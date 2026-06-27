@@ -88,6 +88,7 @@ function parseEvent(ev) {
     const teamDisplayName = c.team?.shortDisplayName || c.team?.displayName || c.team?.name || '';
     const nameI18n = getTeamNameI18n(teamId, teamDisplayName);
     const displayName = zhName ? `${zhName.zh} ${teamDisplayName}` : (teamDisplayName || String(teamId));
+    const ratingEntry = RATINGS?.[teamDisplayName] || RATINGS?.[c.team?.name] || null;
     const t = {
       name: displayName,
       fullName: zhName ? `${zhName.zh} ${zhName.en}` : (teamDisplayName || String(teamId)),
@@ -96,6 +97,7 @@ function parseEvent(ev) {
       logo: c.team?.logos?.[0]?.href || TEAM_LOGOS[teamId] || '',
       score: c.score || '0',
       rank: c.curatedRank?.current || ELO_RANK_MAP[c.team?.displayName] || 99,
+      elo: ratingEntry?.rating || null,
       id: teamId,
       flag: TEAM_FLAGS[teamId] || '🏳️',
     };
@@ -111,11 +113,23 @@ function parseEvent(ev) {
   for (const n of (comp.notes || [])) {
     if (n.type === 'event') { group = n.headline || n.text || ''; break; }
   }
+  // Compute basic Elo-based win/draw/lose probabilities
+  let homeWin = 0, draw = 0, awayWin = 0;
+  if (home.elo && away.elo) {
+    const diff = home.elo - away.elo;
+    const expectedHome = 1 / (1 + Math.pow(10, -diff / 400));
+    const drawProb = Math.max(0.15, 0.28 - Math.abs(diff) * 0.0003);
+    homeWin = Math.round((1 - drawProb) * expectedHome * 100);
+    draw = Math.round(drawProb * 100);
+    awayWin = Math.max(0, 100 - homeWin - draw);
+  }
+
   return {
     id: ev.id||'', name: ev.name||'', date: ev.date||'',
     dateBJT: bjt(ev.date), timeBJT: bjtShort(ev.date),
     status, sClass, state, home, away, group,
     venue: comp.venue?.fullName||'', venueId: comp.venue?.id||'',
+    homeWin, draw, awayWin,
   };
 }
 

@@ -8,6 +8,9 @@
     const { tab } = state; // shorthand; state.tab is mutated via switchTab
 
     // ========== Tab + URL Routing ==========
+    // Max-width per tab (design spec): Live 720, Schedule 720, Prediction 1080, Standings 960, Teams 1080
+    const TAB_MAX_WIDTHS = { live: '720px', schedule: '720px', prediction: '1080px', standings: '960px', teams: '1080px' };
+
     function switchTab(newTab) {
         state.tab = newTab;
         // Hide all tab content AND any match detail overlay
@@ -16,9 +19,23 @@
         // Close match detail / spatial matchup overlay if open
         const detailOverlay = document.querySelector('.match-detail-overlay, .spatial-matchup-panel');
         if (detailOverlay) detailOverlay.remove();
-        document.getElementById('tab-' + state.tab).classList.remove('hidden');
-        document.getElementById('tab-' + state.tab).classList.add('fade-in');
+        // Close match modal if open
+        document.getElementById('match-modal').classList.add('hidden');
+
+        const target = document.getElementById('tab-' + state.tab);
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('fade-in');
+        }
         document.querySelector(`[data-tab="${state.tab}"]`)?.classList.add('tab-on');
+
+        // Dynamic max-width for main content + bottom bar
+        const w = TAB_MAX_WIDTHS[state.tab] || '720px';
+        const main = document.getElementById('main-content');
+        if (main) main.style.maxWidth = w;
+        const bb = document.getElementById('bottom-bar-inner');
+        if (bb) bb.style.maxWidth = w;
+
         if (state.tab === 'schedule' && !state.scheduleCache.length) loadSchedule();
         if (state.tab === 'standings') loadStandings();
         if (state.tab === 'teams') {
@@ -148,6 +165,8 @@
             return window.openPlayerDetail(ds.playerId, inline);
         }
         if (action === 'switch-detail-tab') return window.switchDetailTab(target.dataset.detailTab, target);
+        if (action === 'switch-standings-tab') return window.switchStandingsSubTab(target.dataset.standingsTab, target);
+        if (action === 'switch-standings-sub-tab') return window.switchStandingsSubTab(target.dataset.standingsTab, target);
         if (action === 'set-pitch-view') return window.setPitchView(target.dataset.view, target);
         if (action === 'send-ai-message') {
             return window.sendAIMessage(target.dataset.chatId, target.dataset.matchId, target.dataset.homeId, target.dataset.awayId);

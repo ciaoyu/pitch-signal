@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @keyframes breath { 0%,100%{ opacity:.03 } 50%{ opacity:.07 } }
+    body { margin:0; background:#0f172a; }
+  </style>
+</helmet>
+
+<div style="width:100%;min-height:100vh;background:radial-gradient(ellipse at 50% 20%, #1e293b 0%, #0f172a 70%);position:relative;font-family:'Inter',system-ui,sans-serif;color:#f8fafc">
+
+  <!-- Pitch Layer 0 -->
+  <div style="position:fixed;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+    <div style="width:70%;max-width:900px;aspect-ratio:1.5/1;position:relative">
+      <div style="position:absolute;inset:-20%;background:radial-gradient(ellipse, rgba(16,42,28,.3) 0%, transparent 70%);animation:breath 10s ease-in-out infinite"></div>
+      <svg viewBox="0 0 680 450" style="width:100%;height:100%;opacity:.04"><rect x="20" y="20" width="640" height="410" rx="4" fill="none" stroke="#34d399" stroke-width="1"></rect><line x1="340" y1="20" x2="340" y2="430" stroke="#34d399" stroke-width="0.8"></line><circle cx="340" cy="225" r="60" fill="none" stroke="#34d399" stroke-width="0.8"></circle></svg>
+    </div>
+  </div>
+
+  <!-- NAV BAR -->
+  <div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid rgba(255,255,255,.04)">
+    <div style="display:flex;align-items:center;gap:8px">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#34d399" stroke-width="1.2" opacity=".5"></circle><circle cx="10" cy="10" r="3" fill="#34d399" opacity=".4"></circle><line x1="13" y1="7" x2="17" y2="3" stroke="#34d399" stroke-width="1" opacity=".4"></line></svg>
+      <div style="font:600 14px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.6)">PitchSignal</div>
+    </div>
+    <div style="display:flex;gap:2px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px">
+      <div style="font:500 11px/1 'DM Sans';color:rgba(248,250,252,.3);padding:7px 16px;border-radius:6px;cursor:pointer">比分 Live</div>
+      <div style="font:500 11px/1 'DM Sans';color:rgba(248,250,252,.3);padding:7px 16px;border-radius:6px;cursor:pointer">赛程 Schedule</div>
+      <div style="font:500 11px/1 'DM Sans';color:#f8fafc;padding:7px 16px;border-radius:6px;background:rgba(255,255,255,.06);cursor:pointer">预测 Predict</div>
+      <div style="font:500 11px/1 'DM Sans';color:rgba(248,250,252,.3);padding:7px 16px;border-radius:6px;cursor:pointer">积分 Table</div>
+      <div style="font:500 11px/1 'DM Sans';color:rgba(248,250,252,.3);padding:7px 16px;border-radius:6px;cursor:pointer">球队 Teams</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font:500 10px/1 'DM Sans';color:rgba(248,250,252,.35);padding:4px 10px;border-radius:4px;background:rgba(255,255,255,.04)">中</div>
+      <div style="font:400 10px/1 'DM Sans';color:rgba(248,250,252,.15);padding:4px 10px">EN</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT — Two-column layout -->
+  <div style="position:relative;z-index:10;display:flex;gap:20px;max-width:1080px;margin:0 auto;padding:20px 24px 40px;align-items:flex-start">
+
+    <!-- LEFT: Elo Rankings -->
+    <div style="flex:1;min-width:0">
+      <div style="font:600 16px/1 'DM Sans';color:rgba(248,250,252,.6);margin-bottom:4px">Elo 实力排名</div>
+      <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:16px">Based on Elo + Poisson model · GET /api/elo/rankings</div>
+
+      <div style="background:rgba(0,0,0,.3);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.05);border-radius:14px;overflow:hidden">
+        <!-- Header -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center">
+          <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.1)">#</span>
+          <span style="font:400 8px/1 'Inter';color:rgba(248,250,252,.15)">Team</span>
+          <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.1);text-align:right">Elo</span>
+          <span style="font:400 8px/1 'Inter';color:rgba(248,250,252,.1);text-align:right">出线概率</span>
+        </div>
+
+        <!-- Row 1 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.5)">1</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇦🇷</span><span style="font:500 13px/1 'Inter';color:#f8fafc">Argentina</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.6)">2048</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:94%;height:100%;background:rgba(52,211,153,.4);border-radius:2px"></div></div>
+            <span style="font:500 10px/1 'JetBrains Mono', monospace;color:#34d399">94%</span>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)">2</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇫🇷</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.8)">France</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.5)">2020</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:91%;height:100%;background:rgba(52,211,153,.35);border-radius:2px"></div></div>
+            <span style="font:500 10px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.6)">91%</span>
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)">3</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇪🇸</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.8)">Spain</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.5)">1998</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:87%;height:100%;background:rgba(52,211,153,.3);border-radius:2px"></div></div>
+            <span style="font:500 10px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.5)">87%</span>
+          </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)">4</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇧🇷</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.8)">Brazil</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.5)">1985</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:85%;height:100%;background:rgba(52,211,153,.3);border-radius:2px"></div></div>
+            <span style="font:500 10px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.5)">85%</span>
+          </div>
+        </div>
+
+        <!-- Row 5 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)">5</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇵🇹</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.7)">Portugal</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.45)">1975</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:82%;height:100%;background:rgba(52,211,153,.25);border-radius:2px"></div></div>
+            <span style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.3)">82%</span>
+          </div>
+        </div>
+
+        <!-- Row 6 -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2)">6</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇩🇪</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.6)">Germany</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.4)">1962</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:78%;height:100%;background:rgba(52,211,153,.2);border-radius:2px"></div></div>
+            <span style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)">78%</span>
+          </div>
+        </div>
+
+        <!-- Row 7-8 dimmer -->
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.02)">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">7</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇬🇧</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.5)">England</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.35)">1948</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:75%;height:100%;background:rgba(52,211,153,.18);border-radius:2px"></div></div>
+            <span style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2)">75%</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:8px;padding:10px 18px;align-items:center">
+          <span style="font:500 12px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">8</span>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">🇯🇵</span><span style="font:500 13px/1 'Inter';color:rgba(248,250,252,.5)">Japan</span></div>
+          <div style="text-align:right"><span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.35)">1856</span></div>
+          <div style="text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:40px;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:62%;height:100%;background:rgba(245,158,11,.2);border-radius:2px"></div></div>
+            <span style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(245,158,11,.4)">62%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Upcoming Match Predictions -->
+    <div style="width:380px;flex-shrink:0">
+      <div style="font:600 16px/1 'DM Sans';color:rgba(248,250,252,.6);margin-bottom:4px">赛事预测</div>
+      <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:16px">Elo + Poisson model predictions</div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <!-- Prediction Card 1 -->
+        <div style="background:rgba(0,0,0,.3);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 18px">
+          <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15);letter-spacing:1px;margin-bottom:12px">GROUP A · MATCHDAY 2</div>
+
+          <!-- Teams -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:18px">🇦🇷</span>
+              <span style="font:500 13px/1 'Inter';color:#f8fafc">Argentina</span>
+            </div>
+            <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.15)">vs</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font:500 13px/1 'Inter';color:#f8fafc">Mexico</span>
+              <span style="font-size:18px">🇲🇽</span>
+            </div>
+          </div>
+
+          <!-- Win probability visualization -->
+          <div style="display:flex;height:28px;border-radius:8px;overflow:hidden;gap:1px;margin-bottom:6px">
+            <div style="width:68%;background:linear-gradient(90deg, rgba(59,130,246,.2), rgba(59,130,246,.1));display:flex;align-items:center;padding-left:10px">
+              <span style="font:500 11px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.7)">68%</span>
+            </div>
+            <div style="width:18%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2)">18%</span>
+            </div>
+            <div style="width:14%;background:rgba(248,113,113,.08);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.4)">14%</span>
+            </div>
+          </div>
+
+          <!-- Predicted score -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,.03)">
+            <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">预期比分 Expected</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.5)">2</span>
+              <span style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.1)">:</span>
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.4)">1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prediction Card 2 -->
+        <div style="background:rgba(0,0,0,.3);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 18px">
+          <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15);letter-spacing:1px;margin-bottom:12px">GROUP E · MATCHDAY 1</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🇩🇪</span><span style="font:500 13px/1 'Inter';color:#f8fafc">Germany</span></div>
+            <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.15)">vs</div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:500 13px/1 'Inter';color:#f8fafc">Japan</span><span style="font-size:18px">🇯🇵</span></div>
+          </div>
+          <div style="display:flex;height:28px;border-radius:8px;overflow:hidden;gap:1px;margin-bottom:6px">
+            <div style="width:45%;background:linear-gradient(90deg, rgba(59,130,246,.15), rgba(59,130,246,.08));display:flex;align-items:center;padding-left:10px">
+              <span style="font:500 11px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.6)">45%</span>
+            </div>
+            <div style="width:25%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2)">25%</span>
+            </div>
+            <div style="width:30%;background:rgba(248,113,113,.06);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.35)">30%</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,.03)">
+            <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">预期比分 Expected</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.45)">1</span>
+              <span style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.1)">:</span>
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.35)">1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prediction Card 3 -->
+        <div style="background:rgba(0,0,0,.3);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 18px">
+          <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15);letter-spacing:1px;margin-bottom:12px">GROUP C · MATCHDAY 2</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🇪🇸</span><span style="font:500 13px/1 'Inter';color:#f8fafc">Spain</span></div>
+            <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.15)">vs</div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:500 13px/1 'Inter';color:#f8fafc">Portugal</span><span style="font-size:18px">🇵🇹</span></div>
+          </div>
+          <div style="display:flex;height:28px;border-radius:8px;overflow:hidden;gap:1px;margin-bottom:6px">
+            <div style="width:42%;background:linear-gradient(90deg, rgba(59,130,246,.15), rgba(59,130,246,.08));display:flex;align-items:center;padding-left:10px">
+              <span style="font:500 11px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.6)">42%</span>
+            </div>
+            <div style="width:26%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2)">26%</span>
+            </div>
+            <div style="width:32%;background:rgba(248,113,113,.06);display:flex;align-items:center;justify-content:center">
+              <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.35)">32%</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,.03)">
+            <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">预期比分 Expected</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(59,130,246,.45)">1</span>
+              <span style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.1)">:</span>
+              <span style="font:500 14px/1 'JetBrains Mono', monospace;color:rgba(248,113,113,.35)">1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model info -->
+        <div style="padding:12px 16px;border-radius:10px;background:rgba(52,211,153,.03);border:1px solid rgba(52,211,153,.06)">
+          <div style="font:500 8px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.35);letter-spacing:1px;margin-bottom:6px">MODEL INFO</div>
+          <div style="font:400 10px/1.5 'Inter';color:rgba(248,250,252,.2)">
+            Predictions use Elo ratings + Poisson distribution with venue factor adjustments (altitude, surface, temperature).
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

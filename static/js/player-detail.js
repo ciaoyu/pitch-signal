@@ -11,7 +11,7 @@
         content.innerHTML = '<div class="py-10 text-center text-gray-500">' + tx('加载球员信息...', 'Loading player...') + '</div>';
         const showInline = () => {
             if (!inlineData) { content.innerHTML = '<div class="text-gray-500 text-center py-10">' + tx('球员数据暂无', 'No player data') + '</div>'; return; }
-            const nameZh = translatePlayerName(inlineData.name);
+            const nameZh = translatePlayerName(inlineData.name, inlineData.nameZh);
             content.innerHTML = `
             <div class="space-y-3">
                 <div class="flex items-center gap-3">
@@ -91,7 +91,7 @@
             if (value >= 1000) return `€${(value / 1000).toFixed(0)}千`;
             return `€${value}`;
         };
-        const nameZh = translatePlayerName(d.name);
+        const nameZh = translatePlayerName(d.name, d.nameZh);
         return `
         <div class="space-y-3">
             <!-- Header -->

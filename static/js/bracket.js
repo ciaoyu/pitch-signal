@@ -24,11 +24,16 @@ const BK = {
 
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
 
-/** Return display label for a team slot */
+/** Return display label for a team slot — handles string, object {name, nameI18n}, null */
 function bkTeamLabel(raw) {
   if (!raw) return 'TBD';
   if (raw === 'TBD') return 'TBD';
-  return raw;
+  if (typeof raw === 'object') {
+    // Try i18n display name first, fall back to .name
+    const fn = (window.WorldCup?.I18n?.displayMaybeTeamName) || ((x) => (x?.nameI18n || x?.name || 'TBD'));
+    return fn(raw);
+  }
+  return String(raw);
 }
 
 /** Build a round label string (i18n-aware via window.uiLang) */

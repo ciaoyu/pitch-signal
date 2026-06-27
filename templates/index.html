@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="/manifest.json">
     <title>PitchSignal · 2026 世界杯</title>
     <link rel="stylesheet" href="/static/css/tailwind-output.css?v=20260628">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
-    * { font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: #08080c; color: #e8e8ec; overscroll-behavior: none; }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
-    .glass-light { background: rgba(255,255,255,0.07); }
-    .live-pulse { animation: pulse 1.5s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    * { -webkit-tap-highlight-color: transparent; }
+    body { background: radial-gradient(ellipse at 50% 20%, #1e293b 0%, #0f172a 70%); color: #f8fafc; overscroll-behavior: none; margin: 0; min-height: 100vh; }
+    .font-dm { font-family: 'DM Sans', system-ui, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-body { font-family: 'Inter', system-ui, sans-serif; }
+    .glass { background: rgba(15,23,42,.5); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.06); }
+    .glass-light { background: rgba(255,255,255,0.06); }
+    @keyframes pulse-live { 0%,100%{ opacity:.45 } 50%{ opacity:1 } }
+    @keyframes breath { 0%,100%{ opacity:.03 } 50%{ opacity:.07 } }
+    @keyframes score-flash { 0%{ text-shadow:0 0 0 transparent } 50%{ text-shadow:0 0 14px rgba(52,211,153,.3) } 100%{ text-shadow:0 0 0 transparent } }
+    .live-pulse { animation: pulse-live 1.8s ease-in-out infinite; }
     .fade-in { animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
     .slide-up { animation: slideUp 0.35s ease-out; }
@@ -30,6 +35,68 @@
     .schedule-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:rgba(255,255,255,0.04); border-radius:10px; margin-bottom:6px; cursor:pointer; transition:all 0.2s; border:1px solid rgba(255,255,255,0.05); }
     .schedule-row:hover { background:rgba(255,255,255,0.08); transform:translateX(2px); border-color:rgba(255,255,255,0.12); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
     .schedule-time { color:#888; min-width:42px; font-size:12px; font-weight:600; }
+
+    /* Nav pill tabs — active/off handled by .tab-btn + .tab-on */
+
+    /* Live score card styles */
+    .match-card-live { background: rgba(0,0,0,.35); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(52,211,153,.1); border-radius: 16px; padding: 18px 22px; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04); }
+    .match-card-live .accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(52,211,153,.3), transparent); }
+    .match-card-done { background: rgba(0,0,0,.22); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.03); }
+    .match-card-pre { background: rgba(0,0,0,.3); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03); }
+    .section-label { font: 500 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .section-label-live { color: rgba(52,211,153,.4); }
+    .section-label-live .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse-live 1.8s ease-in-out infinite; }
+    .flag-badge { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .flag-badge-home { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.1); }
+    .flag-badge-away { background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.08); }
+    .flag-badge-neutral { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); }
+    .score-jumbo { font: 300 52px/1 'JetBrains Mono', monospace; letter-spacing: -2px; }
+    .score-sep { color: rgba(248,250,252,.12); font-size: 20px; margin: 0 4px; }
+    .score-dim { color: rgba(248,250,252,.35); }
+    .score-pending { color: rgba(248,250,252,.15); }
+    .scorer-text { font: italic 300 9px/1.3 'Inter'; margin-top: 4px; }
+    .scorer-home { color: rgba(52,211,153,.45); }
+    .scorer-away { color: rgba(248,113,113,.4); }
+    .scorer-dim { color: rgba(248,250,252,.15); }
+    .team-name-live { font: 500 15px/1 'Inter'; color: #f8fafc; }
+    .team-name-dim { font: 500 15px/1 'Inter'; color: rgba(248,250,252,.5); }
+    .team-name-pre { font: 500 15px/1 'Inter'; color: rgba(248,250,252,.7); }
+    .match-meta { font: 400 9px/1 'JetBrains Mono', monospace; letter-spacing: 1px; }
+    .match-meta-live { color: rgba(248,250,252,.2); }
+    .match-meta-done { color: rgba(248,250,252,.15); }
+    .match-meta-pre { color: rgba(248,250,252,.2); }
+    .live-badge { display: flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 8px; background: rgba(52,211,153,.08); }
+    .live-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: #34d399; animation: pulse-live 1.8s ease-in-out infinite; }
+    .live-badge-text { font: 500 9px/1 'JetBrains Mono', monospace; color: #34d399; }
+    .ft-badge { font: 400 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.15); }
+    .time-badge { font: 400 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.25); }
+    .stats-strip { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.04); }
+    .stats-strip-dim { display: flex; gap: 16px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.03); }
+    .stat-item { display: flex; align-items: center; gap: 4px; }
+    .stat-label { font: 400 8px/1 'Inter'; color: rgba(248,250,252,.15); }
+    .stat-label-dim { font: 400 8px/1 'Inter'; color: rgba(248,250,252,.1); }
+    .stat-val { font: 400 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.25); }
+    .stat-val-dim { font: 400 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.15); }
+    .possession-bar { display: flex; height: 3px; width: 60px; gap: 1px; border-radius: 2px; overflow: hidden; }
+    .possession-home { background: rgba(59,130,246,.25); border-radius: 2px; }
+    .possession-away { background: rgba(248,113,113,.12); border-radius: 2px; }
+    .prob-strip { display: flex; height: 3px; gap: 1px; border-radius: 2px; overflow: hidden; margin-top: 10px; }
+    .prob-home { background: rgba(59,130,246,.2); border-radius: 2px; }
+    .prob-draw { background: rgba(255,255,255,.04); border-radius: 2px; }
+    .prob-away { background: rgba(248,113,113,.1); border-radius: 2px; }
+    .prob-label-strip { display: flex; justify-content: space-between; margin-top: 4px; }
+    .prob-label-home { font: 300 7px/1 'JetBrains Mono', monospace; color: rgba(59,130,246,.3); }
+    .prob-label-draw { font: 300 7px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.1); }
+    .prob-label-away { font: 300 7px/1 'JetBrains Mono', monospace; color: rgba(248,113,113,.2); }
+    .venue-text { font: 300 9px/1 'Inter'; color: rgba(248,250,252,.15); }
+    .elo-label { font: 300 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.15); margin-top: 3px; }
+
+    /* FAB */
+    .fab-btn { position: fixed; bottom: 24px; right: 24px; z-index: 50; width: 44px; height: 44px; border-radius: 50%; background: rgba(52,211,153,.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(52,211,153,.2); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.4), 0 0 20px rgba(52,211,153,.08); transition: all 0.2s; }
+    .fab-btn:hover { background: rgba(52,211,153,.15); border-color: rgba(52,211,153,.3); box-shadow: 0 4px 24px rgba(0,0,0,.5), 0 0 28px rgba(52,211,153,.12); }
+    .fab-btn:active { transform: scale(0.92); }
+    /* Hide bot.js duplicate FAB — we use the native one */
+    #ai-bot-fab { display: none !important; }
 
     /* Formation pitch */
     .pitch { background: linear-gradient(180deg, #1a472a 0%, #1e5631 25%, #1a472a 50%, #1e5631 75%, #1a472a 100%); border: 2px solid rgba(255,255,255,0.15); border-radius: 12px; position: relative; overflow: hidden; }
@@ -59,7 +126,9 @@
     .compare-bar { height:6px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; position:relative; }
     .compare-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
     @media (hover:hover) { .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.12); } }
-    .tab-on { background: linear-gradient(135deg, #3b82f6, #7c3aed); color: #fff; box-shadow: 0 4px 16px rgba(59,130,246,0.3); }
+    .tab-on { background: rgba(255,255,255,.06); color: #f8fafc; }
+    .tab-btn { border: none; background: transparent; color: rgba(248,250,252,.3); transition: all .15s; }
+    .tab-btn:hover { color: rgba(248,250,252,.6); }
 
     /* === Prediction Tab Styles === */
     .pred-section { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 14px; }
@@ -105,7 +174,13 @@
     .radar-home { fill: rgba(59,130,246,0.2); stroke: #3b82f6; stroke-width: 2; }
     .radar-away { fill: rgba(239,68,68,0.2); stroke: #ef4444; stroke-width: 2; }
 
-    /* Match detail modal */
+    /* Match detail HUD — immersive fullscreen */
+    .hud-glass-panel { background: rgba(15,23,42,.4); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05); }
+    .hud-tab-btn { border: none; background: transparent; color: rgba(248,250,252,.3); transition: all .15s; cursor: pointer; }
+    .hud-tab-btn:hover { color: rgba(248,250,252,.6); }
+    .hud-tab-btn.active { color: #f8fafc; border-bottom: 2px solid #34d399; background: rgba(255,255,255,.03); }
+
+    /* Team detail modal (bottom sheet) */
     .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
     .modal-sheet { background: #12121a; border-radius: 1.5rem 1.5rem 0 0; max-height: 90vh; overflow-y: auto; }
 
@@ -117,110 +192,101 @@
 
     /* Fix: hide HUD layer completely when inactive to prevent click blocking */
     .fade-out { display: none !important; }
+
+    /* HUD responsive: stack columns on narrow screens */
+    @media (max-width: 767px) {
+      #hud-body { flex-direction: column !important; }
+      #hud-left { width: 100% !important; }
+      #hud-center { width: 100% !important; }
+      #hud-right { width: 100% !important; }
+    }
+
+    /* Prediction dual-column → stack on narrow screens */
+    @media (max-width: 767px) {
+      .pred-two-col {
+        flex-direction: column !important;
+      }
+      .pred-two-col > * {
+        width: 100% !important;
+        flex: none !important;
+      }
+    }
     /* Team highlight from standings click */
     .schedule-row.highlight-team { background:rgba(56,189,248,0.08); border-left:3px solid #38bdf8; }
     </style>
 </head>
-<body class="min-h-screen min-h-[100dvh]">
+<body>
 
-<!-- Header -->
-<header class="sticky top-0 z-50 glass border-b border-white/5" style="padding-top: env(safe-area-inset-top)">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-            <span class="text-xl">⚽</span>
-            <div>
-                <h1 class="text-base font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    2026 世界杯
-                </h1>
-                <p class="text-[11px] text-gray-600 leading-none" data-i18n="headerSubtitle">美加墨 · 赛事分析</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <span id="clock" class="text-xs text-gray-500 font-mono tabular-nums"></span>
-            <div class="flex items-center rounded-lg bg-white/5 p-0.5 text-[10px] font-bold" aria-label="Language">
-                <button data-action="set-lang" data-lang="zh" class="lang-btn px-2 py-1 rounded-md transition">中</button>
-                <button data-action="set-lang" data-lang="en" class="lang-btn px-2 py-1 rounded-md transition">EN</button>
-            </div>
-            <button data-action="refresh-all" id="refresh-btn" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition text-sm">🔄</button>
+<!-- Pitch Layer 0 background -->
+<div style="position:fixed;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+    <div style="width:70%;max-width:900px;aspect-ratio:1.5/1;position:relative">
+        <div style="position:absolute;inset:-20%;background:radial-gradient(ellipse, rgba(16,42,28,.3) 0%, transparent 70%);animation:breath 10s ease-in-out infinite"></div>
+        <svg viewBox="0 0 680 450" style="width:100%;height:100%;opacity:.05">
+            <rect x="20" y="20" width="640" height="410" rx="4" fill="none" stroke="#34d399" stroke-width="1"></rect>
+            <line x1="340" y1="20" x2="340" y2="430" stroke="#34d399" stroke-width="0.8"></line>
+            <circle cx="340" cy="225" r="60" fill="none" stroke="#34d399" stroke-width="0.8"></circle>
+            <rect x="20" y="120" width="110" height="210" fill="none" stroke="#34d399" stroke-width="0.8"></rect>
+            <rect x="550" y="120" width="110" height="210" fill="none" stroke="#34d399" stroke-width="0.8"></rect>
+        </svg>
+    </div>
+</div>
+
+<!-- Top Nav Bar — 5 Tabs -->
+<div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(15,23,42,.5);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);padding-top:max(14px, env(safe-area-inset-top))">
+    <div style="display:flex;align-items:center;gap:6px" class="flex-shrink-0">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" stroke="#34d399" stroke-width="1.2" opacity=".5"></circle>
+            <circle cx="10" cy="10" r="3" fill="#34d399" opacity=".4"></circle>
+            <line x1="13" y1="7" x2="17" y2="3" stroke="#34d399" stroke-width="1" opacity=".4"></line>
+        </svg>
+        <div style="font:600 14px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.6);letter-spacing:0.5px">PitchSignal</div>
+    </div>
+    <div id="nav" style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px" class="flex-1 mx-4 justify-center max-w-lg">
+        <button data-tab="live" class="tab-btn tab-on" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">比分 Live</button>
+        <button data-tab="schedule" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">赛程 Schedule</button>
+        <button data-tab="prediction" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">预测 Predict</button>
+        <button data-tab="standings" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">积分 Table</button>
+        <button data-tab="teams" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">球队 Teams</button>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0">
+        <span id="clock" style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)"></span>
+        <button data-action="refresh-all" id="refresh-btn" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;border:none;background:rgba(255,255,255,.03);color:rgba(248,250,252,.35);font-size:12px">🔄</button>
+        <div style="display:flex;align-items:center;border-radius:4px;background:rgba(255,255,255,.04);padding:2px">
+            <button data-action="set-lang" data-lang="zh" class="lang-btn" style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.35);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">中</button>
+            <button data-action="set-lang" data-lang="en" class="lang-btn" style="font:400 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.15);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">EN</button>
         </div>
     </div>
-</header>
-
-<!-- Nav -->
-<nav class="sticky top-[57px] z-40 glass border-b border-white/5">
-    <div class="max-w-5xl mx-auto px-3 py-2 flex gap-1.5 overflow-x-auto" id="nav">
-        <button data-tab="live" class="tab-btn tab-on px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5">
-            <span class="text-sm">🔴</span><span class="hidden sm:inline" data-i18n="navLive">比分</span><span class="sm:hidden">Live</span>
-        </button>
-        <button data-tab="schedule" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
-            <span class="text-sm">📅</span><span class="hidden sm:inline" data-i18n="navSchedule">赛程</span><span class="sm:hidden">Schedule</span>
-        </button>
-        <button data-tab="prediction" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
-            <span class="text-sm">🧠</span><span class="hidden sm:inline" data-i18n="navPrediction">预测</span><span class="sm:hidden">Prediction</span>
-        </button>
-        <button data-tab="standings" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
-            <span class="text-sm">📊</span><span class="hidden sm:inline" data-i18n="navStandings">积分</span><span class="sm:hidden">Table</span>
-        </button>
-        <button data-tab="teams" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition hover:bg-white/10 flex items-center gap-1.5">
-            <span class="text-sm">🏆</span><span class="hidden sm:inline" data-i18n="navTeams">球队</span><span class="sm:hidden">Teams</span>
-        </button>
-    </div>
-</nav>
+</div>
 
 <!-- Content -->
-<main class="max-w-5xl mx-auto px-3 pb-24 pt-3">
-
-    <!-- Data Transparency (collapsed popover) -->
-    <div class="mb-4 flex justify-end">
-        <button id="quality-info-btn" class="text-[11px] text-gray-500 hover:text-blue-400 transition flex items-center gap-1 bg-white/5 rounded-full px-2.5 py-1" onclick="toggleQualityPopover()">
-            <span class="text-sm">ⓘ</span><span class="hidden sm:inline" data-i18n="dataQualityBtn">数据质量说明</span>
-        </button>
-    </div>
-    <!-- Popover -->
-    <div id="quality-popover" class="hidden fixed inset-0 z-50 flex items-center justify-center" onclick="if(event.target===this) toggleQualityPopover()">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-        <div class="relative bg-[#1a1a2e] border border-blue-500/20 rounded-2xl p-5 max-w-sm w-[90%] shadow-2xl z-10 animate-scale-in">
-            <div class="flex items-center justify-between mb-3">
-                <div class="font-bold text-white text-sm" data-i18n="dataQualityTitle">📊 数据质量说明</div>
-                <button class="text-gray-500 hover:text-white text-lg leading-none" onclick="toggleQualityPopover()">✕</button>
-            </div>
-            <div class="space-y-2.5 text-xs text-gray-400 leading-relaxed">
-                <div>
-                    <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityRealtimeTitle">✓ 实时数据</div>
-                    <div data-i18n="dataQualityRealtimeDesc">比赛进程、即时比分（ESPN 延迟 ~5 分钟）</div>
-                </div>
-                <div>
-                    <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityPrematchTitle">✓ 赛前数据</div>
-                    <div data-i18n="dataQualityPrematchDesc">推测阵容（基于历史首发）、概率预测</div>
-                </div>
-                <div>
-                    <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityDevTitle">⏳ 规划支持</div>
-                    <div data-i18n="dataQualityDevDesc">官方首发、历史替补与换人</div>
-                </div>
-                <div>
-                    <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityPendingTitle">⚠️ 暂不支持</div>
-                    <div data-i18n="dataQualityPendingDesc">历史天气、完整 H2H 库</div>
-                </div>
-                <div class="pt-2 border-t border-gray-600/30 text-gray-500 text-[11px]" data-i18n="dataQualityFooter">缺失数据不会被推测填充；页面会清晰注明"暂无"或"尚未同步"。</div>
-            </div>
-        </div>
-    </div>
+<main id="main-content" style="position:relative;z-index:10;max-width:720px;margin:0 auto;padding:20px 20px 80px;transition:max-width .3s ease">
 
     <!-- LIVE -->
     <section id="tab-live" class="tab-content fade-in">
-        <div id="live-list" class="space-y-2.5">
-            <div class="flex items-center justify-center py-20 text-gray-600"><span class="text-3xl mr-3">⚽</span>加载中...</div>
+        <div id="live-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <div>
+                <div style="font:600 18px/1 'DM Sans', sans-serif;color:#f8fafc" data-i18n="liveTitle">实时比分</div>
+                <div style="font:400 11px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.25);margin-top:3px" data-i18n="headerSubtitle">美加墨 · 赛事分析</div>
+                <div id="live-date" style="font:400 10px/1.3 'Inter';color:rgba(248,250,252,.2);margin-top:5px"></div>
+            </div>
+            <div id="live-count-badge" style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.1)">
+                <div style="width:6px;height:6px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>
+                <span style="font:500 10px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.6)">0 LIVE</span>
+            </div>
+        </div>
+        <div id="live-list">
+            <div style="display:flex;align-items:center;justify-content:center;padding:60px 0;color:rgba(248,250,252,.15)"><span style="font-size:28px;margin-right:8px">⚽</span>加载中...</div>
         </div>
     </section>
 
     <!-- SCHEDULE -->
     <section id="tab-schedule" class="tab-content hidden relative">
         <div class="relative flex items-center mb-3">
-            <button id="date-scroll-left" aria-label="Scroll dates left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#121212] via-[#121212] to-transparent pr-4 hover:text-white text-gray-400">
+            <button id="date-scroll-left" aria-label="Scroll dates left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#0f172a] via-[#0f172a] to-transparent pr-4 hover:text-white text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
             <div id="date-bar" class="flex gap-1.5 overflow-x-auto px-6 scrollbar-hide scroll-smooth w-full hide-scrollbar snap-x snap-mandatory"></div>
-            <button id="date-scroll-right" aria-label="Scroll dates right" class="absolute right-0 z-10 h-full bg-gradient-to-l from-[#121212] via-[#121212] to-transparent pl-4 hover:text-white text-gray-400">
+            <button id="date-scroll-right" aria-label="Scroll dates right" class="absolute right-0 z-10 h-full bg-gradient-to-l from-[#0f172a] via-[#0f172a] to-transparent pl-4 hover:text-white text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>
@@ -236,15 +302,56 @@
 
     <!-- STANDINGS -->
     <section id="tab-standings" class="tab-content hidden">
-        <div id="groups-container" class="grid gap-3"></div>
+        <!-- Sub-tabs: Groups / Knockout -->
+        <div style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content">
+        <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛</button>
+        <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛</button>
+        </div>
+        <div id="standings-sub-groups-content"></div>
+        <div id="standings-sub-knockout-content" class="hidden">
+            <div id="bracket-container-standings" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center flex justify-center min-h-[200px]">
+                <div class="text-gray-500 py-10">加载对阵图...</div>
+            </div>
+        </div>
     </section>
 
     <!-- TEAMS -->
     <section id="tab-teams" class="tab-content hidden">
-        <div id="teams-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        <div id="teams-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2"></div>
         <div id="team-detail" class="hidden"></div>
     </section>
 </main>
+
+<!-- Data Quality Popover -->
+<button id="quality-info-btn" class="hidden" onclick="toggleQualityPopover()"></button>
+<div id="quality-popover" class="hidden fixed inset-0 z-50 flex items-center justify-center" onclick="if(event.target===this) toggleQualityPopover()">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative bg-[#1a1a2e] border border-blue-500/20 rounded-2xl p-5 max-w-sm w-[90%] shadow-2xl z-10 animate-scale-in">
+        <div class="flex items-center justify-between mb-3">
+            <div class="font-bold text-white text-sm" data-i18n="dataQualityTitle">📊 数据质量说明</div>
+            <button class="text-gray-500 hover:text-white text-lg leading-none" onclick="toggleQualityPopover()">✕</button>
+        </div>
+        <div class="space-y-2.5 text-xs text-gray-400 leading-relaxed">
+            <div>
+                <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityRealtimeTitle">✓ 实时数据</div>
+                <div data-i18n="dataQualityRealtimeDesc">比赛进程、即时比分（ESPN 延迟 ~5 分钟）</div>
+            </div>
+            <div>
+                <div class="text-green-400 font-semibold mb-0.5" data-i18n="dataQualityPrematchTitle">✓ 赛前数据</div>
+                <div data-i18n="dataQualityPrematchDesc">推测阵容（基于历史首发）、概率预测</div>
+            </div>
+            <div>
+                <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityDevTitle">⏳ 规划支持</div>
+                <div data-i18n="dataQualityDevDesc">官方首发、历史替补与换人</div>
+            </div>
+            <div>
+                <div class="text-yellow-500 font-semibold mb-0.5" data-i18n="dataQualityPendingTitle">⚠️ 暂不支持</div>
+                <div data-i18n="dataQualityPendingDesc">历史天气、完整 H2H 库</div>
+            </div>
+            <div class="pt-2 border-t border-gray-600/30 text-gray-500 text-[11px]" data-i18n="dataQualityFooter">缺失数据不会被推测填充；页面会清晰注明"暂无"或"尚未同步"。</div>
+        </div>
+    </div>
+</div>
 
 <!-- Team Detail Modal -->
 <div id="team-modal" class="fixed inset-0 z-[100] hidden">
@@ -255,21 +362,37 @@
     </div>
 </div>
 
-<!-- Match Detail Modal -->
-<div id="match-modal" class="fixed inset-0 z-[100] hidden">
-    <div class="modal-overlay absolute inset-0" data-action="close-modal"></div>
-    <div class="modal-sheet absolute bottom-0 left-0 right-0 p-4 pb-8" style="padding-bottom: max(2rem, env(safe-area-inset-bottom))">
-        <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-4"></div>
-        <div id="modal-content"></div>
+<!-- Match Detail HUD — immersive fullscreen overlay -->
+<div id="match-modal" class="fixed inset-0 z-[100] hidden flex flex-col" style="background: radial-gradient(ellipse at 50% 20%, #1e293b 0%, #0f172a 70%);">
+    <!-- HUD top bar -->
+    <div id="hud-topbar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(15,23,42,.5);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);padding-top:max(10px, env(safe-area-inset-top));flex-shrink:0">
+        <button data-action="close-modal" style="display:flex;align-items:center;gap:6px;border:none;background:rgba(255,255,255,.04);color:rgba(248,250,252,.5);padding:6px 12px;border-radius:8px;cursor:pointer;font:500 11px/1 'Inter';transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.5)'">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8L10 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>← 返回</span>
+        </button>
+        <div id="hud-topbar-info" style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);letter-spacing:1px"></div>
+        <div style="width:70px"></div>
     </div>
+    <!-- HUD scrollable body -->
+    <div id="modal-content" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:max(2rem,env(safe-area-inset-bottom))"></div>
 </div>
 
 <!-- Bottom bar -->
-<div class="fixed bottom-0 w-full glass border-t border-white/5 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
-    <div class="max-w-5xl mx-auto px-4 py-1.5 flex items-center justify-between text-[11px] text-gray-700">
+<div style="position:fixed;bottom:0;width:100%;z-index:30;background:rgba(15,23,42,.5);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-top:1px solid rgba(255,255,255,.06);padding-bottom:env(safe-area-inset-bottom)">
+    <div id="bottom-bar-inner" style="max-width:720px;margin:0 auto;padding:6px 20px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:rgba(248,250,252,.15);transition:max-width .3s ease">
         <span data-i18n="footerDisclaimer">实验性概率模型 · 非投注建议 · ESPN 数据</span>
-        <span id="update-time">--</span>
+        <span id="update-time" style="font-family:'JetBrains Mono',monospace">--</span>
     </div>
+</div>
+
+<!-- AI Chat FAB -->
+<div id="ai-fab" class="fab-btn" title="AI 助手" onclick="var f=document.getElementById('ai-bot-fab');if(f)f.click();">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M3 4C3 3.44772 3.44772 3 4 3H14C14.5523 3 15 3.44772 15 4V11C15 11.5523 14.5523 12 14 12H7L4 15V12H4C3.44772 12 3 11.5523 3 11V4Z" stroke="#34d399" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="7" cy="7.5" r=".8" fill="#34d399"></circle>
+        <circle cx="9" cy="7.5" r=".8" fill="#34d399"></circle>
+        <circle cx="11" cy="7.5" r=".8" fill="#34d399"></circle>
+    </svg>
 </div>
 
 <!-- AI Bot -->
@@ -297,28 +420,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script src="/static/js/api-client.js?v=20260627"></script>
-<script src="/static/js/formatters.js?v=20260627"></script>
-<script src="/static/js/state.js?v=20260627"></script>
-<script src="/static/js/i18n.js?v=20260627"></script>
-<script src="/static/js/utils.js?v=20260627"></script>
-<script src="/static/js/match-stats.js?v=20260627"></script>
-<script src="/static/js/scores.js?v=20260627b"></script>
-<script src="/static/js/schedule.js?v=20260627"></script>
-<script src="/static/js/standings.js?v=20260627"></script>
-<script src="/static/js/match-detail.js?v=20260627"></script>
-<script src="/static/js/team-detail.js?v=20260627"></script>
-<script src="/static/js/elo-prediction.js?v=20260627b"></script>
-<script src="/static/js/players-tab.js?v=20260627"></script>
-<script src="/static/js/spatial-matchup.js?v=20260627"></script>
-<script src="/static/js/ai-chat.js?v=20260627"></script>
-<script src="/static/js/coach-comparison.js?v=20260627"></script>
-<script src="/static/js/match-review.js?v=20260627"></script>
-<script src="/static/js/player-detail.js?v=20260627"></script>
-<script src="/static/js/pre-match.js?v=20260627"></script>
-<script src="/static/js/odds-card.js?v=20260627"></script>
-<script src="/static/js/ui-helpers.js?v=20260627"></script>
-<script src="/static/js/match-renderers.js?v=20260627"></script>
-<script src="/static/js/app.js?v=20260627"></script>
+<script type="module" src="/static/js/bundle.js?v=c3f9fde3"></script>
 </body>
 </html>

@@ -1,13 +1,15 @@
-// ========== match-detail.js - Match Detail Module ==========
+// ========== match-detail.js - Match Detail Module (HUD Layout) ==========
 (function() {
     const { tx, esc, displayMaybeTeamName, attr, api, withClientTimeout } = window.WorldCup.Utils;
     const t = window.t;
     const state = window.WorldCup.State;
+    const MR = () => window.WorldCup.MatchRenderers;
 
     async function openMatch(id) {
         const modal = document.getElementById('match-modal');
         const content = document.getElementById('modal-content');
         modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // lock body scroll
         content.innerHTML = `<div class="py-10 text-center text-gray-500">${tx('加载中...', 'Loading...')}</div>`;
 
         const [matchData, matchupData] = await window.WorldCup.ApiClient.allData([
@@ -17,121 +19,269 @@
         if (!matchData) { content.innerHTML = `<div class="py-10 text-center text-red-400">${tx('加载失败', 'Failed to load')}</div>`; return; }
         const scheduledMatch = state.scheduleCache.find(m => String(m.id) === String(id)) || {};
         const isFinishedMatch = scheduledMatch.state === 'post' || matchData.state === 'post';
-
-        let html = `<h3 class="font-bold text-base mb-4">${tx('比赛详情', 'Match Details')}</h3>`;
-        html += `<div class="mb-4">${window.WorldCup.MatchRenderers.renderFormation(matchupData, isFinishedMatch)}</div>`;
-        html += `<div id="detail-content-venue" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载场地天气数据...', 'Loading venue and weather...')}</span></div></div>`;
-        
+        const isLive = matchData.state === 'in';
         const knownVenue = scheduledMatch.venue || matchData.venue || '';
-        const loadVenue = () => {
-            const venueEl = document.getElementById('detail-content-venue');
-            if (venueEl && knownVenue) venueEl.innerHTML = `<div class="text-gray-500 text-xs py-2">🏟️ ${tx('已知场馆', 'Known venue')}: ${esc(knownVenue)} · ${tx('加载场地资料...', 'Loading venue details...')}</div>`;
-            if (knownVenue) {
-                api('/api/venue/' + encodeURIComponent(knownVenue)).then(venueData => {
-                    const el = document.getElementById('detail-content-venue');
-                    if (el && venueData && !venueData.error && !venueData.note) el.innerHTML = renderVenueWeather(venueData);
-                    else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料未同步；不以当前天气替代比赛时段天气。', 'Venue details are not synced; current weather is not substituted for match-time weather.')}</div>`;
-                }).catch(() => { const el = document.getElementById('detail-content-venue'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料暂不可用', 'Venue details are unavailable')}</div>`; });
-            } else if (venueEl) { venueEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('场馆信息未随比赛数据返回。', 'Venue information was not returned with match data.')}</div>`; }
-        };
-        
-        html += `<div id="detail-content-bench" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载替补席数据...', 'Loading bench data...')}</span></div></div>`;
-        api('/api/match/' + id + '/bench').then(benchData => {
-            const el = document.getElementById('detail-content-bench');
-            if (el && benchData && !benchData.error) {
-                el.innerHTML = window.WorldCup.MatchRenderers.renderBenchAnalysis(benchData, isFinishedMatch);
-                if (benchData.realSubstitutions?.length > 0) window.WorldCup.MatchRenderers.applySubstitutionsToFormation(benchData.realSubstitutions);
-            } else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${isFinishedMatch ? tx('官方替补与换人数据尚未同步', 'Official bench and substitution data is not synced') : tx('替补席数据暂无', 'No bench data')}</div>`;
-        });
-        
-        html += `<div id="detail-content-news" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载新闻数据...', 'Loading news...')}</span></div></div>`;
-        api('/api/match/' + id + '/news').then(newsRes => { const newsData = newsRes?.data || newsRes; const el = document.getElementById('detail-content-news'); if (el && newsData && !newsData.error) el.innerHTML = renderNewsList(newsData); else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('暂无新闻同步', 'No synced news yet')}</div>`; });
-        
-        html += `<div id="detail-content-h2h" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载历史交锋数据...', 'Loading head-to-head data...')}</span></div></div>`;
-        withClientTimeout(api('/api/h2h/' + id), 8000).then(h2hRes => { const h2hData = h2hRes?.data || h2hRes; const el = document.getElementById('detail-content-h2h'); if (el && h2hData && !h2hData.error) el.innerHTML = renderHeadToHead(h2hData); else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('ESPN 暂无历史交锋样本', 'No ESPN head-to-head sample')}</div>`; });
-
-        const showPreMatch = !isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED'));
-        html += `<div class="mt-4"><div class="flex gap-1.5 mb-3 overflow-x-auto" id="detail-tabs">`;
-        if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="review" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition">📋 ${tx('回顾', 'Review')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="venue" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">🏟️ ${tx('场地', 'Venue')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="bench" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">🔄 ${tx('替补', 'Bench')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="news" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">📰 ${tx('新闻', 'News')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="h2h" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">⚔️ ${tx('交锋', 'H2H')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">📊 ${tx('统计', 'Stats')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="corners" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">📐 ${tx('角球', 'Corners')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="coach" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition">🧠 ${tx('教练', 'Coach')}</button>`;
-        html += `</div>`;
-        if (showPreMatch) html += `<div id="detail-content-pre-match" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载赛前预测...', 'Loading pre-match prediction...')}</span></div></div>`;
-        html += `<div id="detail-content-review" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载比赛回顾...', 'Loading match review...')}</span></div></div>`;
-        html += `<div id="detail-content-stats" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载统计数据...', 'Loading stats...')}</span></div></div>`;
-        html += `<div id="detail-content-corners" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载角球数据...', 'Loading corner data...')}</span></div></div>`;
-        html += `<div id="detail-content-coach" class="detail-content hidden">${window.WorldCup.MatchRenderers.renderCoachPanel(matchData, isFinishedMatch)}</div>`;
-        html += '</div>';
-
-        content.innerHTML = html;
-        loadVenue();
-
-        // Stats loading
-        const isFin = isFinishedMatch;
         const mHomeId = scheduledMatch.home?.id || matchData.home?.id || matchData.homeId;
         const mAwayId = scheduledMatch.away?.id || matchData.away?.id || matchData.awayId;
-        const mHomeScore = parseInt(scheduledMatch.home?.score ?? matchData.home?.score ?? '0');
-        const mAwayScore = parseInt(scheduledMatch.away?.score ?? matchData.away?.score ?? '0');
-        const statsEl = document.getElementById('detail-content-stats');
-        if (statsEl && isFin && matchData.teamStats?.length) {
-            let statsHtml = '';
-            if (matchData.goals?.length) { statsHtml += `<h4 class="text-xs font-bold text-gray-500 mb-2">⚽ ${tx('进球', 'Goals')}</h4>`; statsHtml += matchData.goals.map(g => `<div class="flex items-center gap-2 text-xs py-1"><span class="text-gray-500 w-10">${esc(g.minute)}</span><span class="font-medium">${esc(g.player)}</span><span class="text-gray-600">(${esc(g.team)})</span></div>`).join(''); }
-            statsHtml += `<h4 class="text-xs font-bold text-gray-500 mb-2 mt-3">📊 ${tx('技术统计', 'Match Stats')}</h4>`;
-            statsHtml += window.WorldCup.MatchStats.renderMatchStats(matchData.teamStats);
-            statsEl.innerHTML = statsHtml;
-        } else if (statsEl && isFin) { statsEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center"><p>⏳ ${tx('赛后统计暂未同步', 'Post-match stats not synced')}</p></div>`; }
-        else if (statsEl) {
+        const homeName = displayMaybeTeamName(matchData.home?.nameI18n || matchData.home?.name || '');
+        const awayName = displayMaybeTeamName(matchData.away?.nameI18n || matchData.away?.name || '');
+        const homeScore = matchData.home?.score ?? '-';
+        const awayScore = matchData.away?.score ?? '-';
+        const homeElo = matchData.home?.elo || matchData.elo?.home || '';
+        const awayElo = matchData.away?.elo || matchData.elo?.away || '';
+        const homeFormation = matchupData?.home?.formation || '4-3-3';
+        const awayFormation = matchupData?.away?.formation || '4-3-3';
+
+        // Fill topbar info
+        const groupLabel = scheduledMatch.group || matchData.group || '';
+        const mdLabel = scheduledMatch.matchday || matchData.matchday || '?';
+        const topbarInfo = document.getElementById('hud-topbar-info');
+        if (topbarInfo) topbarInfo.textContent = groupLabel ? `${groupLabel} · MD ${mdLabel}/3` : '';
+
+        // ── Build HUD HTML ──
+        let html = '';
+
+        // Score header — jumbo
+        html += `<div id="hud-score" style="display:flex;align-items:center;justify-content:center;padding:24px 24px 16px;gap:20px">
+            <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:16px">
+                <div style="text-align:right">
+                    <div style="font:500 22px/1 'Inter';color:#f8fafc">${esc(homeName)}</div>
+                    <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:4px">
+                        ${homeElo ? `<span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.45)">ELO ${homeElo}</span><span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.12)">|</span>` : ''}
+                        <span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${esc(homeFormation)}</span>
+                    </div>
+                </div>
+                ${matchData.home?.logo ? `<img src="${attr(matchData.home.logo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🏠</div>`}
+            </div>
+            <div style="min-width:140px;text-align:center;padding:0 20px">
+                <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
+                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">FT</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx('待赛', 'TBD')}</div>`}
+            </div>
+            <div style="flex:1;display:flex;align-items:center;gap:16px">
+                ${matchData.away?.logo ? `<img src="${attr(matchData.away.logo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">✈️</div>`}
+                <div>
+                    <div style="font:500 22px/1 'Inter';color:#f8fafc">${esc(awayName)}</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                        ${awayElo ? `<span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">ELO ${awayElo}</span><span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.12)">|</span>` : ''}
+                        <span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${esc(awayFormation)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        // ── 3-column HUD body (design: 300 / flex center 540 max / 280) ──
+        html += `<div id="hud-body" style="display:flex;gap:12px;padding:8px 24px 0;align-items:flex-start;min-height:360px">`;
+
+        // LEFT: Stats / H2H / News tabs (300px)
+        html += `<div id="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
+            <div class="hud-glass-panel">
+                <div style="display:flex;border-bottom:1px solid rgba(255,255,255,.05);padding:0 4px" id="hud-left-tabs">
+                    <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active">${tx('统计', 'Stats')}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="h2h" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn">${tx('交锋', 'H2H')}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="news" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn">${tx('新闻', 'News')}</button>
+                </div>
+                <div id="hud-left-content" style="max-height:calc(100vh - 380px);overflow-y:auto">
+                    <div id="detail-content-stats" class="detail-content">${tx('加载中...', 'Loading...')}</div>
+                    <div id="detail-content-h2h" class="detail-content hidden">${tx('加载中...', 'Loading...')}</div>
+                    <div id="detail-content-news" class="detail-content hidden">${tx('加载中...', 'Loading...')}</div>
+                </div>
+            </div>
+        </div>`;
+
+        // CENTER: Tactical board (flex:1, max-width:540px, aspect-ratio:1.45/1)
+        html += `<div id="hud-center" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;min-width:0">
+            <div id="pitch-canvas" style="width:100%;max-width:540px;aspect-ratio:1.45/1;position:relative;background:linear-gradient(180deg,rgba(16,42,28,.25) 0%,rgba(22,58,36,.2) 100%);border-radius:12px;border:1px solid rgba(52,211,153,.08);overflow:hidden">
+                ${MR().renderTacticalBoard(matchupData)}
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
+                <div style="display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:rgba(59,130,246,.3);border:1px solid rgba(59,130,246,.5)"></div><span style="font:400 8px/1 'Inter';color:rgba(248,250,252,.25)">${esc(homeName)}</span></div>
+                <div style="display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:rgba(248,113,113,.2);border:1px solid rgba(248,113,113,.4)"></div><span style="font:400 8px/1 'Inter';color:rgba(248,250,252,.25)">${esc(awayName)}</span></div>
+            </div>
+        </div>`;
+
+        // RIGHT: Win probability + Venue (280px)
+        html += `<div id="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
+            <div class="hud-glass-panel" style="padding:14px 16px">
+                <div id="hud-winprob">${tx('加载预测...', 'Loading prediction...')}</div>
+            </div>
+            <div class="hud-glass-panel" style="padding:14px 16px">
+                <div id="hud-venue">${tx('加载场地...', 'Loading venue...')}</div>
+            </div>
+        </div>`;
+
+        html += `</div>`; // end hud-body
+
+        // Bottom dock: extra tabs (Bench, Coach, Review, Corners, Pre-match)
+        html += `<div id="hud-bottom" style="margin-top:8px;background:rgba(15,23,42,.5);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-top:1px solid rgba(255,255,255,.06);border-radius:24px 24px 0 0;padding:14px 32px 18px">
+            <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
+
+        const showPreMatch = !isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED'));
+        if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="review" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition whitespace-nowrap">📋 ${tx('回顾', 'Review')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="bench" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🔄 ${tx('替补', 'Bench')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="corners" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">📐 ${tx('角球', 'Corners')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="coach" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🧠 ${tx('教练', 'Coach')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="venue-tab" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🏟️ ${tx('场地详情', 'Venue')}</button>`;
+        html += `</div>`;
+
+        if (showPreMatch) html += `<div id="detail-content-pre-match" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载赛前预测...', 'Loading...')}</span></div></div>`;
+        html += `<div id="detail-content-review" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载比赛回顾...', 'Loading...')}</span></div></div>`;
+        html += `<div id="detail-content-bench" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载替补席数据...', 'Loading...')}</span></div></div>`;
+        html += `<div id="detail-content-corners" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载角球数据...', 'Loading...')}</span></div></div>`;
+        html += `<div id="detail-content-coach" class="detail-content hidden">${MR().renderCoachPanel(matchData, isFinishedMatch)}</div>`;
+        html += `<div id="detail-content-venue-tab" class="detail-content hidden"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载场地天气数据...', 'Loading...')}</span></div></div>`;
+        html += `</div>`; // end hud-bottom
+
+        content.innerHTML = html;
+
+        // ── Async data loads ──
+
+        // Prediction → HUD right winprob
+        api('/api/predict/' + id).then(predRes => {
+            const pred = predRes?.data || predRes;
+            const el = document.getElementById('hud-winprob');
+            if (el) el.innerHTML = MR().renderHudWinProbPanel(pred, homeName, awayName);
+            // Also fill pre-match tab if present
+            const pmEl = document.getElementById('detail-content-pre-match');
+            if (pmEl && pred && !pred.error && pred.homeWin !== undefined) pmEl.innerHTML = renderPreMatchPrediction(pred);
+            else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
+        }).catch(() => {
+            const el = document.getElementById('hud-winprob');
+            if (el) el.innerHTML = `<div class="text-gray-500 text-xs text-center py-6">${tx('预测暂不可用', 'Prediction unavailable')}</div>`;
+        });
+
+        // Venue → HUD right venue
+        if (knownVenue) {
+            api('/api/venue/' + encodeURIComponent(knownVenue)).then(venueData => {
+                const el = document.getElementById('hud-venue');
+                if (el && venueData && !venueData.error && !venueData.note) el.innerHTML = MR().renderHudVenuePanel(venueData);
+                else if (el) el.innerHTML = '';
+                // Also fill venue-tab
+                const vEl = document.getElementById('detail-content-venue-tab');
+                if (vEl && venueData && !venueData.error && !venueData.note) vEl.innerHTML = renderVenueWeather(venueData);
+                else if (vEl) vEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料暂不可用', 'Venue details unavailable')}</div>`;
+            }).catch(() => {
+                document.getElementById('hud-venue').innerHTML = '';
+            });
+        }
+
+        // Stats → left panel
+        const isFin = isFinishedMatch;
+        if (isFin && matchData.teamStats?.length) {
+            const statsEl = document.getElementById('detail-content-stats');
+            if (statsEl) {
+                let statsHtml = '';
+                if (matchData.goals?.length) {
+                    statsHtml += `<div style="padding:12px 18px 0"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:8px">${tx('进球', 'GOALS')}</div>`;
+                    statsHtml += matchData.goals.map(g => `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px"><span style="color:rgba(248,250,252,.3);min-width:28px;font-family:'JetBrains Mono',monospace;font-size:10px">${esc(g.minute)}</span><span style="color:rgba(248,250,252,.7)">${esc(g.player)}</span><span style="color:rgba(248,250,252,.2);font-size:10px">(${esc(g.team)})</span></div>`).join('');
+                    statsHtml += `</div>`;
+                }
+                statsHtml += MR().renderHudStatsPanel(matchData, null);
+                statsEl.innerHTML = statsHtml;
+            }
+        } else {
+            // Pre-match: show recent stats
             const hId = mHomeId || matchData.home?.id, aId = mAwayId || matchData.away?.id;
             if (hId && aId) {
-                Promise.allSettled([hId ? api('/api/team/' + hId + '/recent-stats') : Promise.resolve(null), aId ? api('/api/team/' + aId + '/recent-stats') : Promise.resolve(null)]).then(([h, a]) => {
+                Promise.allSettled([api('/api/team/' + hId + '/recent-stats'), api('/api/team/' + aId + '/recent-stats')]).then(([h, a]) => {
                     const el = document.getElementById('detail-content-stats'); if (!el) return;
-                    const hVal = h.value?.data || h.value;
-                    const aVal = a.value?.data || a.value;
+                    const hVal = h.value?.data || h.value; const aVal = a.value?.data || a.value;
                     const hs = (h.status === 'fulfilled' && hVal?.stats) ? hVal : null;
-                    const as = (a.status === 'fulfilled' && aVal?.stats) ? aVal : null;
-                    if (!hs && !as) { el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center"><p>📊 ${tx('赛前暂无可用统计', 'No pre-match stats')}</p></div>`; return; }
-                    const hName = displayMaybeTeamName(matchData.home?.nameI18n || matchData.home?.name || '');
-                    const aName = displayMaybeTeamName(matchData.away?.nameI18n || matchData.away?.name || '');
-                    let s = `<h4 class="text-xs font-bold text-gray-500 mb-2">📊 ${tx('近期场均统计', 'Recent Avg Stats')}</h4><p class="text-[10px] text-gray-500 mb-3">${tx('基于近期完赛记录生成，非预测。', 'Based on recent completed matches, not predictions.')}</p>`;
-                    s += window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as, hName, aName);
-                    el.innerHTML = s;
-                }).catch(() => { const el = document.getElementById('detail-content-stats'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('统计数据加载失败', 'Failed to load stats')}</div>`; });
+                    const as2 = (a.status === 'fulfilled' && aVal?.stats) ? aVal : null;
+                    if (!hs && !as2) { el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`; return; }
+                    el.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('近期场均', 'RECENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
+                }).catch(() => { const el = document.getElementById('detail-content-stats'); if (el) el.innerHTML = ''; });
             }
         }
 
-        if (showPreMatch) {
-            api('/api/predict/' + id).then(predRes => { const pred = predRes?.data || predRes; const el = document.getElementById('detail-content-pre-match'); if (el && pred && !pred.error && pred.homeWin !== undefined) el.innerHTML = renderPreMatchPrediction(pred); else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction data unavailable')}</div>`; }).catch(() => { const el = document.getElementById('detail-content-pre-match'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction data unavailable')}</div>`; });
-        }
+        // H2H → left panel
+        withClientTimeout(api('/api/h2h/' + id), 8000).then(h2hRes => {
+            const h2hData = h2hRes?.data || h2hRes;
+            const el = document.getElementById('detail-content-h2h');
+            if (el && h2hData && !h2hData.error) el.innerHTML = `<div style="padding:16px 18px">${renderHeadToHead(h2hData)}</div>`;
+            else if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无交锋记录', 'No H2H data')}</div>`;
+        });
 
-        api('/api/corner-analysis/' + id).then(cornerRes => { const corner = cornerRes?.data || cornerRes; const el = document.getElementById('detail-content-corners'); if (el && corner && !corner.error) el.innerHTML = renderCornerAnalysis(corner); else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('角球数据暂无', 'No corner data')}</div>`; });
+        // News → left panel
+        api('/api/match/' + id + '/news').then(newsRes => {
+            const newsData = newsRes?.data || newsRes;
+            const el = document.getElementById('detail-content-news');
+            if (el && newsData && !newsData.error) el.innerHTML = `<div style="padding:16px 18px">${renderNewsList(newsData)}</div>`;
+            else if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无新闻', 'No news')}</div>`;
+        });
 
+        // Bench → bottom dock
+        api('/api/match/' + id + '/bench').then(benchData => {
+            const el = document.getElementById('detail-content-bench');
+            if (el && benchData && !benchData.error) {
+                el.innerHTML = MR().renderBenchAnalysis(benchData, isFinishedMatch);
+                if (benchData.realSubstitutions?.length > 0) MR().applySubstitutionsToFormation(benchData.realSubstitutions);
+            } else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('替补席数据暂无', 'No bench data')}</div>`;
+        });
+
+        // Corners → bottom dock
+        api('/api/corner-analysis/' + id).then(cornerRes => {
+            const corner = cornerRes?.data || cornerRes;
+            const el = document.getElementById('detail-content-corners');
+            if (el && corner && !corner.error) el.innerHTML = renderCornerAnalysis(corner);
+            else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('角球数据暂无', 'No corner data')}</div>`;
+        });
+
+        // Review → bottom dock
         if (isFin && mHomeId && mAwayId) {
             fetch('/api/post-match-review/' + id).then(r => r.json()).then(async review => {
                 if (review && !review.error) {
-                    if (!review.aiPrediction) { const pred = await api('/api/predict/' + id); if (pred && !pred.error && pred.homeWin !== undefined) { review.aiPrediction = { homeWin: Math.round((pred.homeWin || 0) * 1000) / 10, draw: Math.round((pred.draw || 0) * 1000) / 10, awayWin: Math.round((pred.awayWin || 0) * 1000) / 10, predictedScore: pred.likelyScore || '', source: 'current_model' }; review.predictionSourceNote = tx('赛前预测快照缺失', 'Pre-match snapshot missing'); } }
+                    if (!review.aiPrediction) { const pred = await api('/api/predict/' + id); if (pred && !pred.error && pred.homeWin !== undefined) { review.aiPrediction = { homeWin: Math.round((pred.homeWin || 0) * 1000) / 10, draw: Math.round((pred.draw || 0) * 1000) / 10, awayWin: Math.round((pred.awayWin || 0) * 1000) / 10, predictedScore: pred.likelyScore || '', source: 'current_model' }; } }
                     const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(review);
-                } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="review-unavailable"><p>${tx('赛后复盘暂未生成', 'Post-match review not yet available')}</p></div>`; }
-            }).catch(() => { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">比赛回顾暂不可用</div>`; });
-        } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">⏳ 比赛结束后自动生成回顾</div>`; }
+                } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛后复盘暂未生成', 'Post-match review not yet available')}</div>`; }
+            }).catch(() => { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('比赛回顾暂不可用', 'Review unavailable')}</div>`; });
+        } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">⏳ ${tx('比赛结束后自动生成回顾', 'Auto-generated after match ends')}</div>`; }
 
+        // Coach → bottom dock
         if (mHomeId && mAwayId) {
             withClientTimeout(window.WorldCup.ApiClient.get('/api/coach-compare/' + mHomeId + '/' + mAwayId, { timeout: window.WorldCup.ApiClient.TIMEOUT_LONG }), 8000).then(res => {
                 const el = document.getElementById('detail-content-coach'); const coachData = res?.data;
-                if (el && coachData && !coachData.error) { el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(coachData, isFinishedMatch); }
-                else if (el) { Promise.allSettled([window.WorldCup.ApiClient.get('/api/coach/' + mHomeId, { timeout: 5000 }), window.WorldCup.ApiClient.get('/api/coach/' + mAwayId, { timeout: 5000 })]).then(([homeR, awayR]) => { if (el) { const homeC = homeR.status === 'fulfilled' && homeR.value?.data && !homeR.value.data.error ? homeR.value.data : null; const awayC = awayR.status === 'fulfilled' && awayR.value?.data && !awayR.value.data.error ? awayR.value.data : null; el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel({ coachA: homeC, coachB: awayC, comparison: null, _fallback: true }, isFinishedMatch); } }).catch(() => { if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch); }); }
-            }).catch(() => { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch); });
-        } else { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = window.WorldCup.MatchRenderers.renderCoachPanel(null, isFinishedMatch); }
+                if (el && coachData && !coachData.error) { el.innerHTML = MR().renderCoachPanel(coachData, isFinishedMatch); }
+                else if (el) { Promise.allSettled([window.WorldCup.ApiClient.get('/api/coach/' + mHomeId, { timeout: 5000 }), window.WorldCup.ApiClient.get('/api/coach/' + mAwayId, { timeout: 5000 })]).then(([homeR, awayR]) => { if (el) { const homeC = homeR.status === 'fulfilled' && homeR.value?.data && !homeR.value.data.error ? homeR.value.data : null; const awayC = awayR.status === 'fulfilled' && awayR.value?.data && !awayR.value.data.error ? awayR.value.data : null; el.innerHTML = MR().renderCoachPanel({ coachA: homeC, coachB: awayC, comparison: null, _fallback: true }, isFinishedMatch); } }).catch(() => { if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); }); }
+            }).catch(() => { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); });
+        } else { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); }
     }
 
-    function switchDetailTab(tab, btn) { document.querySelectorAll('.detail-content').forEach(el => el.classList.add('hidden')); document.querySelectorAll('.detail-tab').forEach(el => { el.classList.remove('bg-white/10', 'text-white'); el.classList.add('bg-white/5', 'text-gray-400'); }); document.getElementById('detail-content-' + tab)?.classList.remove('hidden'); if (btn) { btn.classList.remove('bg-white/5', 'text-gray-400'); btn.classList.add('bg-white/10', 'text-white'); } }
+    // Left-panel tabs (stats/h2h/news) and bottom-dock tabs (pre-match/review/bench/corners/coach/venue-tab)
+    const LEFT_TABS = ['stats', 'h2h', 'news'];
+    function switchDetailTab(tab, btn) {
+        // Determine which group this tab belongs to
+        const isLeft = LEFT_TABS.includes(tab);
+        const contents = document.querySelectorAll('.detail-content');
+        contents.forEach(el => el.classList.add('hidden'));
+        // All detail-tab buttons reset
+        document.querySelectorAll('.detail-tab').forEach(el => {
+            el.classList.remove('active');
+            el.style.color = 'rgba(248,250,252,.35)';
+            el.style.borderBottom = 'none';
+            el.style.background = 'transparent';
+        });
+        // Show target
+        const target = document.getElementById('detail-content-' + tab);
+        if (target) target.classList.remove('hidden');
+        // Activate clicked button
+        if (btn) {
+            btn.classList.add('active');
+            if (isLeft) {
+                btn.style.color = '#f8fafc';
+                btn.style.borderBottom = '2px solid #34d399';
+                btn.style.background = 'rgba(255,255,255,.03)';
+            } else {
+                btn.style.background = 'rgba(255,255,255,.1)';
+                btn.style.color = '#f8fafc';
+            }
+        }
+    }
 
-    function closeModal() { document.getElementById('match-modal').classList.add('hidden'); }
+    function closeModal() {
+        document.getElementById('match-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 
     function renderNewsList(data) {
         if (!data) return `<div class="text-gray-500 text-xs py-4 text-center">${tx('数据暂无', 'No data')}</div>`;

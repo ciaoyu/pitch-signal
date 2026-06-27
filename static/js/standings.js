@@ -1,95 +1,128 @@
-// ========== standings.js - Standings Module ==========
+// ========== standings.js - Standings Module (2-col grid + sub-tabs) ==========
 (function() {
+    let standingsData = null;
+
+    function switchStandingsSubTab(tab, btn) {
+        const groupsContent = document.getElementById('standings-sub-groups-content');
+        const knockoutContent = document.getElementById('standings-sub-knockout-content');
+
+        // Hide both
+        if (groupsContent) groupsContent.classList.add('hidden');
+        if (knockoutContent) knockoutContent.classList.add('hidden');
+
+        // Deactivate all sub-tab buttons
+        document.querySelectorAll('[data-action="switch-standings-sub-tab"]').forEach(b => {
+            b.classList.remove('tab-on');
+            b.style.color = 'rgba(248,250,252,.3)';
+        });
+
+        // Activate target
+        if (tab === 'knockout') {
+            if (knockoutContent) knockoutContent.classList.remove('hidden');
+        } else {
+            if (groupsContent) groupsContent.classList.remove('hidden');
+        }
+
+        if (btn) {
+            btn.classList.add('tab-on');
+            btn.style.color = '#f8fafc';
+        }
+
+        // Lazy-load knockout bracket
+        if (tab === 'knockout' && window.WorldCup.Utils) {
+            const container = document.getElementById('bracket-container-standings');
+            if (container && container.querySelector('.text-gray-500')) {
+                window.WorldCup.Utils.api('/api/bracket').then(data => {
+                    if (container && data && !data.error && window.renderBracket) {
+                        container.innerHTML = '';
+                        window.renderBracket(data, container);
+                        setTimeout(() => {
+                            const wrap = container.querySelector('#bk-wrap');
+                            if (wrap) container.scrollLeft = (wrap.scrollWidth - container.clientWidth) / 2;
+                        }, 100);
+                    }
+                }).catch(() => {
+                    const t = window.t;
+                    if (container) container.innerHTML = `<div class="text-gray-500 py-10">${t ? t('淘汰赛对阵图将在小组赛结束后生成', 'Knockout bracket will be generated after group stage.') : '淘汰赛对阵图将在小组赛结束后生成'}</div>`;
+                });
+            }
+        }
+    }
+
     async function loadStandings() {
         const { esc, tx, displayGroupName, displayMaybeTeamName, attr } = window.WorldCup.Utils;
-    const t = window.t;
-        const state = window.WorldCup.State;
-        const el = document.getElementById('groups-container');
-        el.innerHTML = `<div class="text-center py-10 text-gray-500">${state.uiLang === 'zh' ? '加载积分榜...' : 'Loading table...'}</div>`;
+        const t = window.t;
+
+        const container = document.getElementById('standings-sub-groups-content');
+        container.innerHTML = `<div class="text-center py-10 text-gray-500">${tx('加载积分榜...', 'Loading table...')}</div>`;
         const res = await window.WorldCup.ApiClient.get('/api/standings');
         if (!res.ok || !res.data?.groups) {
-            el.innerHTML = `<div class="text-center py-10 text-red-400">${state.uiLang === 'zh' ? '积分榜加载失败' : 'Table failed to load'}</div>`;
+            container.innerHTML = `<div class="text-center py-10 text-red-400">${tx('积分榜加载失败', 'Table failed to load')}</div>`;
             return;
         }
         const d = res.data;
-        let html = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">` + d.groups.map(g => `
-            <div class="glass rounded-xl overflow-hidden">
-                <div class="px-3 py-1.5 bg-white/5 text-[11px] font-bold">${esc(displayGroupName(g.name))}</div>
-                <table class="w-full table-fixed text-[11px]">
+
+        // 2-column grid for groups (design spec: 960px max-width)
+        let html = `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">` + d.groups.map(g => `
+            <div style="background:rgba(15,23,42,.4);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)">
+                <div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:space-between">
+                    <span style="font:600 11px/1 'DM Sans',sans-serif;color:rgba(248,250,252,.5);letter-spacing:.5px">${esc(displayGroupName(g.name))}</span>
+                    <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">MD ${g.matchday||'?'}/3</span>
+                </div>
+                <table style="width:100%;table-layout:fixed;font-size:12px;border-collapse:separate;border-spacing:0">
                     <colgroup>
-                        <col style="width:20px">
+                        <col style="width:26px">
                         <col>
-                        <col style="width:26px">
-                        <col style="width:26px">
-                        <col style="width:26px">
-                        <col style="width:26px">
+                        <col style="width:28px">
+                        <col style="width:28px">
+                        <col style="width:28px">
                         <col style="width:30px">
-                        <col style="width:32px">
+                        <col style="width:36px">
                     </colgroup>
-                    <thead><tr class="text-[10px] text-gray-500 border-b border-white/5">
-                        <th class="text-left pl-2 py-1">#</th>
-                        <th class="text-left py-1">${esc(t('team'))}</th>
-                        <th class="text-right py-1 pr-0.5 tabular-nums">${esc(t('played'))}</th>
-                        <th class="text-right py-1 pr-0.5 tabular-nums">${esc(t('wins'))}</th>
-                        <th class="text-right py-1 pr-0.5 tabular-nums">${esc(t('draws'))}</th>
-                        <th class="text-right py-1 pr-0.5 tabular-nums">${esc(t('losses'))}</th>
-                        <th class="text-right py-1 pr-0.5 tabular-nums">${esc(t('goalDifference'))}</th>
-                        <th class="text-right pr-2 py-1 font-bold tabular-nums">${esc(t('points'))}</th>
+                    <thead><tr style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.2);border-bottom:1px solid rgba(255,255,255,.04)">
+                        <th style="text-align:left;padding:6px 4px 6px 14px">#</th>
+                        <th style="text-align:left;padding:6px 4px">${tx('球队','Team')}</th>
+                        <th style="text-align:center;padding:6px 4px">${tx('胜','W')}</th>
+                        <th style="text-align:center;padding:6px 4px">${tx('平','D')}</th>
+                        <th style="text-align:center;padding:6px 4px">${tx('负','L')}</th>
+                        <th style="text-align:center;padding:6px 4px">${tx('净','GD')}</th>
+                        <th style="text-align:right;padding:6px 12px 6px 4px;font-weight:600">${tx('分','Pts')}</th>
                     </tr></thead>
-                    <tbody>${g.standings.map((t, i) => `
-                        <tr class="border-b border-white/[0.03] hover:bg-white/[0.03] transition">
-                            <td class="pl-2 py-1.5 text-gray-600">${i+1}</td>
-                            <td class="py-1.5"><div class="flex items-center gap-1">
-                                ${t.logo ? `<img src="${attr(t.logo)}" class="w-3.5 h-3.5 object-contain flex-shrink-0" onerror="this.style.display='none'">` : ''}
-                                <span class="font-medium truncate cursor-pointer hover:text-blue-400 transition max-w-full" data-action="open-team-detail" data-team-id="${attr(t.id)}" data-team-name="${attr(t.name)}" data-group="${attr(g.name)}">${esc(displayMaybeTeamName(t))}</span>
+                    <tbody>${g.standings.map((row, i) => {
+                        const isQ1 = i === 0;
+                        const isQ2 = i === 1;
+                        const borderColor = isQ1 ? 'rgba(52,211,153,.35)' : isQ2 ? 'rgba(52,211,153,.18)' : 'transparent';
+                        const ptsColor = isQ1 || isQ2 ? '#34d399' : 'rgba(59,130,246,.6)';
+                        return `
+                        <tr style="border-left:2px solid ${borderColor};border-bottom:1px solid rgba(255,255,255,.03)">
+                            <td style="padding:6px 4px 6px 12px;font:400 11px/1 'JetBrains Mono', monospace;color:${isQ1?'rgba(52,211,153,.5)':'rgba(248,250,252,.2)'}">${i+1}</td>
+                            <td style="padding:6px 4px"><div style="display:flex;align-items:center;gap:6px;overflow:hidden">
+                                ${row.logo ? `<img src="${attr(row.logo)}" style="width:14px;height:14px;object-fit:contain;flex-shrink:0;border-radius:2px" onerror="this.style.display='none'">` : ''}
+                                <span style="font:400 11px/1 'Inter';color:rgba(248,250,252,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" data-action="open-team-detail" data-team-id="${attr(row.id)}" data-team-name="${attr(row.name)}" data-group="${attr(g.name)}">${esc(displayMaybeTeamName(row))}</span>
                             </div></td>
-                            <td class="text-right py-1.5 text-gray-500 tabular-nums pr-0.5">${t.played}</td>
-                            <td class="text-right py-1.5 tabular-nums pr-0.5">${t.wins}</td>
-                            <td class="text-right py-1.5 tabular-nums pr-0.5">${t.draws}</td>
-                            <td class="text-right py-1.5 tabular-nums pr-0.5">${t.losses}</td>
-                            <td class="text-right py-1.5 tabular-nums pr-0.5 ${+t.gd>0?'text-green-400':+t.gd<0?'text-red-400':''}">${t.gd}</td>
-                            <td class="text-right pr-2 py-1.5 font-bold text-blue-400 tabular-nums">${t.pts}</td>
-                        </tr>`).join('')}
+                            <td style="text-align:center;padding:6px 4px;font:400 11px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.4)">${row.wins}</td>
+                            <td style="text-align:center;padding:6px 4px;font:400 11px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.4)">${row.draws}</td>
+                            <td style="text-align:center;padding:6px 4px;font:400 11px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.4)">${row.losses}</td>
+                            <td style="text-align:center;padding:6px 4px;font:400 11px/1 'JetBrains Mono', monospace;color:${+row.gd>0?'rgba(52,211,153,.5)':+row.gd<0?'rgba(248,113,113,.3)':'rgba(248,250,252,.2)'}">${+row.gd>=0?'+':''}${row.gd}</td>
+                            <td style="text-align:right;padding:6px 12px 6px 4px;font:600 12px/1 'JetBrains Mono', monospace;color:${ptsColor}">${row.pts}</td>
+                        </tr>`;
+                    }).join('')}
                     </tbody>
                 </table>
             </div>
         `).join('') + `</div>`;
 
-        // Append Knockout Stage placeholder
-        html += `<div class="mt-4 glass rounded-2xl p-4">
-            <div class="flex items-center gap-2 mb-3 text-orange-400 font-bold text-xs">
-                <span>🏆</span>
-                <span>${tx('后期淘汰赛', 'Knockout Stage')}</span>
-            </div>
-            <div id="bracket-container-standings" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center flex justify-center min-h-[200px]">
-                <div class="text-gray-500 py-10">${tx('加载对阵图...', 'Loading bracket...')}</div>
-            </div>
+        // Legend
+        html += `<div style="display:flex;align-items:center;gap:12px;margin-top:12px;font:400 9px/1 'Inter';color:rgba(248,250,252,.2)">
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:2px;border-radius:1px;background:rgba(52,211,153,.35)"></div> ${tx('已晋级','Qualified')}</div>
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:2px;border-radius:1px;background:rgba(52,211,153,.18)"></div> ${tx('有望晋级','Likely qualified')}</div>
         </div>`;
 
-        el.innerHTML = html;
-        
-        // Load bracket from dynamic API (resolves group positions → team names)
-        window.WorldCup.Utils.api('/api/bracket').then(data => {
-            const container = document.getElementById('bracket-container-standings');
-            if (container && data && !data.error) {
-                container.innerHTML = '';
-                window.renderBracket(data, container);
-                setTimeout(() => {
-                    const wrap = container.querySelector('#bk-wrap');
-                    if (wrap) container.scrollLeft = (wrap.scrollWidth - container.clientWidth) / 2;
-                }, 100);
-            }
-        }).catch(e => {
-            const container = document.getElementById('bracket-container-standings');
-            if (container) container.innerHTML = `<div class="text-gray-500 py-10">${tx('淘汰赛对阵图将在小组赛结束后生成', 'Knockout bracket will be generated after group stage.')}</div>`;
-        });
+        container.innerHTML = html;
     }
 
-    // Expose to WorldCup namespace
-    window.WorldCup.Standings = {
-        loadStandings
-    };
-
-    // Also expose globally for backward compatibility
+    // Expose
+    window.WorldCup.Standings = { loadStandings, switchStandingsSubTab };
     window.loadStandings = loadStandings;
+    window.switchStandingsSubTab = switchStandingsSubTab;
 })();

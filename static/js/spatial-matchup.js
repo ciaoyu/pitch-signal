@@ -4,7 +4,7 @@
 (function () {
     'use strict';
     const esc = (...a) => (window.WorldCup.Utils?.esc || ((s) => s))(...a);
-    const tx = (...a) => (window.WorldCup.I18n?.t || ((z, e) => e))(...a);
+    const { tx } = window.WorldCup.Utils;
     const api = (...a) => (window.WorldCup.Utils?.api || (async () => ({})))(...a);
     const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
     const translatePlayerName = (...a) => (window.WorldCup.I18n?.translatePlayerName || ((x) => x))(...a);
@@ -49,11 +49,22 @@
         if (!data) return '<div class="text-gray-500 text-center py-10">对位数据加载失败</div>';
         const W = 680, H = 1050;
         let svg = `<svg viewBox="0 0 ${W} ${H}" class="w-full rounded-xl overflow-hidden" style="max-height:500px;"><rect width="${W}" height="${H}" fill="#1a472a" rx="8"/>`;
+        // Horizontal grass stripes (zebra pattern, opacity 0.03)
+        const sH = (H - 40) / 20;
+        for (let i = 0; i < 20; i += 2) svg += `<rect x="20" y="${20 + i * sH}" width="${W-40}" height="${sH}" fill="rgba(255,255,255,0.03)"/>`;
         svg += `<rect x="20" y="20" width="${W-40}" height="${H-40}" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>`;
         svg += `<line x1="20" y1="${H/2}" x2="${W-20}" y2="${H/2}" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>`;
         svg += `<circle cx="${W/2}" cy="${H/2}" r="80" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/><circle cx="${W/2}" cy="${H/2}" r="4" fill="rgba(255,255,255,0.3)"/>`;
         svg += `<rect x="${W/2-150}" y="20" width="300" height="150" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/><rect x="${W/2-90}" y="20" width="180" height="60" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
         svg += `<rect x="${W/2-150}" y="${H-170}" width="300" height="150" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/><rect x="${W/2-90}" y="${H-80}" width="180" height="60" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+        // Penalty arcs (semi-circles at penalty area edges)
+        svg += `<path d="M ${W/2-60} 170 A 60 60 0 0 0 ${W/2+60} 170" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>`;
+        svg += `<path d="M ${W/2-60} ${H-170} A 60 60 0 0 1 ${W/2+60} ${H-170}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>`;
+        // Corner arcs (4 corners, radius 15)
+        svg += `<path d="M 35 20 A 15 15 0 0 1 20 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
+        svg += `<path d="M ${W-35} 20 A 15 15 0 0 0 ${W-20} 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
+        svg += `<path d="M ${W-20} ${H-35} A 15 15 0 0 0 ${W-35} ${H-20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
+        svg += `<path d="M 20 ${H-35} A 15 15 0 0 1 35 ${H-20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
         for (const p of data.pairs) {
             const hx = p.home.x * 6.8, hy = (100 - p.home.y) * 10.5, ax = p.away.x * 6.8, ay = (100 - p.away.y) * 10.5;
             let color = '#9E9E9E', width = 1, dash = '4,4';
@@ -62,19 +73,19 @@
         }
         for (const p of data.home.players) {
             const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-            svg += `<circle class="pitch-home" cx="${px}" cy="${py}" r="18" fill="#C62828" stroke="#fff" stroke-width="2"/>`;
-            svg += `<text class="pitch-home" x="${px}" y="${py+4}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
-            const nm = translatePlayerName(p.name); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
-            svg += `<text class="pitch-home" x="${px}" y="${py+32}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-            svg += `<text class="pitch-home" x="${px}" y="${py+44}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
+            svg += `<circle class="pitch-home" cx="${px}" cy="${py}" r="14" fill="rgba(239,68,68,0.6)" stroke="#fff" stroke-width="2"/>`;
+            svg += `<text class="pitch-home" x="${px}" y="${py+5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
+            const nm = translatePlayerName(p.name, p.nameZh); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
+            svg += `<text class="pitch-home" x="${px}" y="${py+28}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
+            svg += `<text class="pitch-home" x="${px}" y="${py+40}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
         }
         for (const p of data.away.players) {
             const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-            svg += `<circle class="pitch-away" cx="${px}" cy="${py}" r="18" fill="#1565C0" stroke="#fff" stroke-width="2"/>`;
-            svg += `<text class="pitch-away" x="${px}" y="${py+4}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
-            const nm = translatePlayerName(p.name); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
-            svg += `<text class="pitch-away" x="${px}" y="${py-24}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-            svg += `<text class="pitch-away" x="${px}" y="${py-36}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
+            svg += `<circle class="pitch-away" cx="${px}" cy="${py}" r="14" fill="rgba(59,130,246,0.6)" stroke="#fff" stroke-width="2"/>`;
+            svg += `<text class="pitch-away" x="${px}" y="${py+5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
+            const nm = translatePlayerName(p.name, p.nameZh); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
+            svg += `<text class="pitch-away" x="${px}" y="${py-20}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
+            svg += `<text class="pitch-away" x="${px}" y="${py-32}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
         }
         return svg + '</svg>';
     }

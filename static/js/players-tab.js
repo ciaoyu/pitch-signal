@@ -7,7 +7,7 @@
 
     const esc = (...a) => (window.WorldCup.Utils?.esc || ((s) => s))(...a);
     const attr = (...a) => (window.WorldCup.Utils?.attr || ((s) => s))(...a);
-    const tx = (...a) => (window.WorldCup.I18n?.t || ((z, e) => e))(...a);
+    const { tx } = window.WorldCup.Utils;
     const api = (...a) => (window.WorldCup.Utils?.api || (async () => ({})))(...a);
 
     let allPlayersCache = [];

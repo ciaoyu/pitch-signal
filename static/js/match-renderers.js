@@ -234,6 +234,9 @@ window.WorldCup.MatchRenderers = (() => {
         // ── Pitch background ──
         svg += `<rect width="100" height="160" fill="url(#tb-pitch)"/>`;
 
+        // ── Grass stripes (horizontal zebra, 20 bands, every other at 0.03 opacity) ──
+        for (let i = 0; i < 20; i += 2) svg += `<rect x="0" y="${i * 8}" width="100" height="8" fill="rgba(255,255,255,0.03)"/>`;
+
         // ── Pitch markings ──
         svg += `<line x1="0" y1="80" x2="100" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>`;
         svg += `<circle cx="50" cy="80" r="12" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
@@ -247,6 +250,14 @@ window.WorldCup.MatchRenderers = (() => {
         // Center circle arc at home (just decorative)
         svg += `<path d="M 38 80 A 12 12 0 0 0 62 80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>`;
         svg += `<path d="M 38 80 A 12 12 0 0 1 62 80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.3"/>`;
+        // Penalty arcs (semi-circles at penalty area edges)
+        svg += `<path d="M 38 20 A 12 12 0 0 0 62 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>`;
+        svg += `<path d="M 38 140 A 12 12 0 0 1 62 140" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.3"/>`;
+        // Corner arcs (4 corners, radius 2)
+        svg += `<path d="M 2 0 A 2 2 0 0 1 0 2" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
+        svg += `<path d="M 98 0 A 2 2 0 0 0 100 2" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
+        svg += `<path d="M 100 158 A 2 2 0 0 0 98 160" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
+        svg += `<path d="M 0 158 A 2 2 0 0 1 2 160" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
 
         // ── Source 徽标（official / projected）──
         // 优先级：matchupData.source > matchupData.lineupSource；其次各队 source
@@ -649,14 +660,22 @@ window.WorldCup.MatchRenderers = (() => {
         </div>`;
 
         // Key matchups list (from pairs if available, or from matchups)
+        // Short name helper: prefer Chinese, then last name
+        const shortName = (name, nameZh) => {
+            const d = Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : (nameZh || name);
+            return d.includes('·') ? d.split('·').pop() : d.split(' ').pop();
+        };
+
         if (matchups.length > 0) {
             html += '<div class="mt-2 space-y-0.5">';
             html += `<div class="text-[10px] text-gray-500 mb-1">⚔️ ${tx('关键对位', 'Key Matchups')}</div>`;
             for (const m of matchups.slice(0, 4)) {
                 const cls = m.type === 'critical' ? 'text-yellow-400' : 'text-gray-400';
+                const hName = m.homeInfo?.nameZh || m.homePlayer;
+                const aName = m.awayInfo?.nameZh || m.awayPlayer;
                 html += `<div class="text-[11px] ${cls} flex items-center gap-1">
                     <span>${m.type === 'critical' ? '⭐' : '•'}</span>
-                    ${esc(m.homePlayer)} ↔ ${esc(m.awayPlayer)}
+                    ${esc(hName)} ↔ ${esc(aName)}
                     ${m.type === 'critical' ? `<span class="text-[10px] font-bold text-amber-400">${tx('关键', 'Critical')}</span>` : ''}
                 </div>`;
             }
@@ -668,9 +687,11 @@ window.WorldCup.MatchRenderers = (() => {
                 html += '<div class="mt-2 space-y-0.5">';
                 for (const p of keyPairs) {
                     const cls = p.advantage === 'home' ? 'text-green-400' : p.advantage === 'away' ? 'text-red-400' : 'text-gray-400';
+                    const hShort = shortName(p.home.name, p.home.nameZh);
+                    const aShort = shortName(p.away.name, p.away.nameZh);
                     html += `<div class="text-[11px] ${cls} flex items-center gap-1">
                         ${p.advantage === 'home' ? '🟢' : '🔴'}
-                        ${esc(p.home.name.split(' ').pop())} (${(p.home.rating/10).toFixed(1)}) vs ${esc(p.away.name.split(' ').pop())} (${(p.away.rating/10).toFixed(1)})
+                        ${esc(hShort)} (${(p.home.rating/10).toFixed(1)}) vs ${esc(aShort)} (${(p.away.rating/10).toFixed(1)})
                         <span class="font-bold">${p.gap > 0 ? '+' : ''}${(p.gap/10).toFixed(1)}</span>
                     </div>`;
                 }
@@ -682,7 +703,7 @@ window.WorldCup.MatchRenderers = (() => {
     }
     
     // Translate player name helper
-    const translatePlayerName = (name) => Utils.translatePlayerName ? Utils.translatePlayerName(name) : name;
+    const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : name;
     
     // renderBenchAnalysis function
     function renderBenchAnalysis(data, isFinishedMatch) {
@@ -718,7 +739,7 @@ window.WorldCup.MatchRenderers = (() => {
         
         // Render bench player card
         const renderBenchPlayer = (player, teamColor, teamNameStr) => {
-            const playerNameZh = translatePlayerName(player.name);
+            const playerNameZh = translatePlayerName(player.name, player.nameZh);
             
             // Find if this player actually played
             let playedStr = '';
@@ -1064,7 +1085,201 @@ window.WorldCup.MatchRenderers = (() => {
 
         return html;
     }
-    
+
+    // ═══════════════════════════════════════════════════════
+    // HUD Renderers — 3-column desktop layout
+    // ═══════════════════════════════════════════════════════
+
+    /**
+     * HUD Left Panel — Stats bar rows (possession, shots, passes etc.)
+     * Renders from matchData.teamStats ESPN format
+     */
+    function renderHudStatsPanel(matchData, pred) {
+        const stats = matchData?.teamStats;
+        if (!stats || stats.length < 2) {
+            return `<div class="text-gray-500 text-xs text-center py-6">${tx('暂无统计数据', 'No stats available')}</div>`;
+        }
+        const hs = stats[0]?.statistics || [];
+        const as = stats[1]?.statistics || [];
+
+        const findStat = (arr, key) => {
+            const s = arr.find(x => x.name === key || x.abbreviation === key);
+            return s ? String(s.displayValue || s.value || '0') : '0';
+        };
+        const pct = (v) => parseFloat(v) || 0;
+
+        const statRows = [
+            { key: 'Possession', label: tx('控球率', 'Possession'), fmt: v => v.includes('%') ? v : v + '%' },
+            { key: 'Total Shots', label: tx('射门', 'Shots'), fmt: v => v },
+            { key: 'Shots on Target', label: tx('射正', 'On Target'), fmt: v => v },
+            { key: 'PassAccuracy', label: tx('传球成功', 'Pass Acc.'), fmt: v => v.includes('%') ? v : v + '%' },
+            { key: 'Corners', label: tx('角球', 'Corners'), fmt: v => v },
+            { key: 'Fouls Committed', label: tx('犯规', 'Fouls'), fmt: v => v },
+        ];
+
+        let html = `<div style="padding:16px 18px">`;
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx('比赛统计', 'MATCH STATISTICS')}</div>`;
+        html += `<div style="display:flex;flex-direction:column;gap:12px">`;
+
+        for (const row of statRows) {
+            const hRaw = findStat(hs, row.key);
+            const aRaw = findStat(as, row.key);
+            const hVal = row.fmt(hRaw);
+            const aVal = row.fmt(aRaw);
+            const hNum = pct(hRaw);
+            const aNum = pct(aRaw);
+            const total = hNum + aNum || 1;
+            const hPct = Math.round((hNum / total) * 100);
+
+            html += `<div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+                    <span style="font:500 16px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(hVal)}</span>
+                    <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">${esc(row.label)}</span>
+                    <span style="font:500 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.45)">${esc(aVal)}</span>
+                </div>
+                <div style="display:flex;height:4px;gap:2px;border-radius:2px;overflow:hidden">
+                    <div style="width:${hPct}%;background:linear-gradient(90deg,rgba(59,130,246,.5),rgba(59,130,246,.25));border-radius:2px"></div>
+                    <div style="width:${100 - hPct}%;background:rgba(248,113,113,.15);border-radius:2px"></div>
+                </div>
+            </div>`;
+        }
+
+        html += `</div>`;
+
+        // Poisson xG section
+        if (pred && pred.goals) {
+            const hxG = pred.goals.homeExpected != null ? Number(pred.goals.homeExpected).toFixed(1) : '-';
+            const axG = pred.goals.awayExpected != null ? Number(pred.goals.awayExpected).toFixed(1) : '-';
+            html += `<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.04)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">${tx('泊松期望进球', 'POISSON EXPECTED SCORE')}</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+                    <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${hxG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx('主', 'H')}</div></div>
+                    <div style="font:300 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">—</div>
+                    <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${axG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx('客', 'A')}</div></div>
+                </div>
+            </div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    }
+
+    /**
+     * HUD Right Panel — Win Probability arc + breakdown bar
+     */
+    function renderHudWinProbPanel(pred, homeName, awayName) {
+        if (!pred || pred.homeWin == null) {
+            return `<div class="text-gray-500 text-xs text-center py-6">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
+        }
+        const hw = Math.round((pred.homeWin || 0) * 100);
+        const dr = Math.round((pred.draw || 0) * 100);
+        const aw = 100 - hw - dr;
+        const score = pred.likelyScore || '? : ?';
+        const [sH, sA] = score.includes(':') ? score.split(':').map(s => s.trim()) : ['?', '?'];
+
+        // Arc: hw% of 180° semicircle
+        const arcAngle = (hw / 100) * Math.PI;
+        const r = 75;
+        const cx = 90, cy = 85;
+        const x2 = cx + r * Math.cos(Math.PI - arcAngle);
+        const y2 = cy - r * Math.sin(Math.PI - arcAngle);
+        const largeArc = hw > 50 ? 1 : 0;
+
+        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx('胜率预测', 'WIN PROBABILITY')}</div>`;
+
+        // SVG arc
+        html += `<div style="text-align:center;margin-bottom:6px">
+            <svg width="180" height="95" viewBox="0 0 180 95">
+                <path d="M15 85 A75 75 0 0 1 165 85" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="10" stroke-linecap="round"/>
+                <path d="M15 85 A${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="rgba(59,130,246,.35)" stroke-width="10" stroke-linecap="round"/>
+                <text x="90" y="65" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="14" fill="rgba(248,250,252,.3)">%</tspan></text>
+                <text x="90" y="82" text-anchor="middle" fill="rgba(59,130,246,.5)" font-family="JetBrains Mono" font-size="8" font-weight="400" letter-spacing="1.5">${esc(homeName || 'HOME')} WIN</text>
+            </svg>
+        </div>`;
+
+        // Breakdown bar
+        html += `<div style="display:flex;height:24px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:8px">
+            <div style="width:${hw}%;background:rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center"><span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.7)">${hw}%</span></div>
+            <div style="width:${dr}%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${dr}%</span></div>
+            <div style="width:${Math.max(1, aw)}%;background:rgba(248,113,113,.08);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${aw}%</span></div>
+        </div>`;
+        html += `<div style="display:flex;justify-content:space-between"><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || 'H')}</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.15)">DRAW</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || 'A')}</span></div>`;
+
+        // Predicted score
+        html += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('预测比分', 'PREDICTED SCORE')}</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+                <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
+                <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
+                <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
+            </div>
+        </div>`;
+
+        html += `</div>`;
+        return html;
+    }
+
+    /**
+     * HUD Right Panel — Venue Conditions card
+     */
+    function renderHudVenuePanel(venueData) {
+        if (!venueData || venueData.error) {
+            return '';
+        }
+        const v = venueData;
+        const w = v.weather;
+        const impact = v.impact;
+
+        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('场地条件', 'VENUE CONDITIONS')}</div>`;
+
+        html += `<div style="font:italic 400 15px/1 'Instrument Serif',serif;color:rgba(248,250,252,.6);margin-bottom:3px">${esc(v.name || '')}</div>`;
+        html += `<div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:14px">${esc(v.city || '')}, ${esc(v.country || '')}</div>`;
+
+        const alt = v.altitude || 0;
+        const altWarn = alt > 1500;
+        const temp = w?.temp || '--';
+        const hum = w?.humidity || '--';
+        const grass = v.grass || tx('天然草', 'Natural');
+
+        html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx('海拔', 'Altitude')}</div>
+                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.6)">${alt.toLocaleString()}<span style="font-size:9px;color:rgba(251,146,60,.3)">m</span></div>
+                ${altWarn ? `<div style="font:400 7px/1 'Inter';color:rgba(251,146,60,.35);margin-top:3px">⚠ ${tx('高海拔', 'High altitude')}</div>` : ''}
+            </div>
+            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx('温度', 'Temp')}</div>
+                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(temp))}<span style="font-size:9px;color:rgba(248,250,252,.2)">°C</span></div>
+            </div>
+            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx('草皮', 'Surface')}</div>
+                <div style="font:500 11px/1 'Inter';color:rgba(52,211,153,.5);margin-top:2px">${esc(grass)}</div>
+            </div>
+            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx('湿度', 'Humidity')}</div>
+                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(hum))}<span style="font-size:9px;color:rgba(248,250,252,.2)">%</span></div>
+            </div>
+        </div>`;
+
+        // Venue factor impact
+        if (impact && impact.overall != null) {
+            const pct = Math.min(100, Math.max(0, Math.round((impact.overall + 50))));
+            const color = impact.overall > 5 ? 'rgba(52,211,153,.5)' : impact.overall < -5 ? 'rgba(248,113,113,.5)' : 'rgba(251,146,60,.5)';
+            html += `<div style="margin-top:12px;padding:10px;border-radius:8px;background:rgba(251,146,60,.04);border:1px solid rgba(251,146,60,.08)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.4);letter-spacing:1px;margin-bottom:6px">${tx('场地因子', 'VENUE FACTOR')}</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div style="flex:1;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${color},${color.replace('.5', '.15')});border-radius:2px"></div></div>
+                    <span style="font:400 10px/1 'JetBrains Mono',monospace;color:${color}">${impact.overall > 0 ? '+' : ''}${impact.overall.toFixed(0)}</span>
+                </div>
+            </div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    }
+
     // Export functions
     return {
         renderFormation,
@@ -1077,5 +1292,9 @@ window.WorldCup.MatchRenderers = (() => {
         getMockPrediction,
         formationTemplate,
         parseFormationStr,
+        // HUD renderers
+        renderHudStatsPanel,
+        renderHudWinProbPanel,
+        renderHudVenuePanel,
     };
 })();

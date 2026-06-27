@@ -24,35 +24,49 @@
         const tzStr = { timeZone: 'Asia/Shanghai' };
         const getMMDD = ms => {
             const parts = new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', ...tzStr }).formatToParts(new Date(ms));
-            return `${parts.find(p=>p.type==='month').value}/${parts.find(p=>p.type==='day').value}`;
+            const mVal = parts.find(p=>p.type==='month').value;
+            const dVal = parts.find(p=>p.type==='day').value;
+            return { mmdd: `${mVal}/${dVal}`, month: mVal, day: dVal };
         };
-        const todayStr = getMMDD(nowMs);
-        const yesterdayStr = getMMDD(nowMs - 86400000);
+        // Name weekday from Intl
+        const getWeekdayShort = ms => {
+            return new Intl.DateTimeFormat(state.uiLang === 'zh' ? 'zh-CN' : 'en-US', { weekday: 'short', ...tzStr }).format(new Date(ms));
+        };
+        const todayInfo = getMMDD(nowMs);
+        const yesterdayInfo = getMMDD(nowMs - 86400000);
+        const todayStr = todayInfo.mmdd;
+        const yesterdayStr = yesterdayInfo.mmdd;
 
         let defaultDate = dates[dates.length - 1]; // fallback
 
         document.getElementById('date-bar').innerHTML = dates.map((d, i) => {
             const n = byDate[d].length;
-            
-            let label = esc(d); // e.g., "06/20"
-            let extraCls = 'bg-white/5 hover:bg-white/10 text-gray-300';
-            let specialIcon = '';
-            
-            if (d === todayStr) {
-                label = state.uiLang === 'zh' ? '今天 ' + label : 'Today';
-                extraCls = 'bg-blue-600/30 text-blue-400 border border-blue-500/50';
-                specialIcon = '📍';
-                defaultDate = d; // Set default to today
-            } else if (d === yesterdayStr) {
-                label = state.uiLang === 'zh' ? '昨天 ' + label : 'Yest.';
-                extraCls = 'bg-gray-600/30 text-gray-400 border border-gray-500/50';
-                if (!dates.includes(todayStr)) defaultDate = d; // fallback to yesterday if today has no matches
+            const parts = d.split('/');
+            const month = parts[0] || '';
+            const day = parts[1] || '';
+
+            let isToday = d === todayStr;
+            let isYesterday = d === yesterdayStr;
+            let specialLabel = '';
+            let extraCls = 'text-slate-500 hover:text-slate-300';
+
+            if (isToday) {
+                specialLabel = state.uiLang === 'zh' ? '今天' : 'Today';
+                extraCls = 'bg-emerald-500/8 text-emerald-400 border border-emerald-500/15';
+                defaultDate = d;
+            } else if (isYesterday) {
+                specialLabel = state.uiLang === 'zh' ? '昨天' : 'Yest.';
+                extraCls = 'bg-white/5 text-slate-400 border border-white/5';
+                if (!dates.includes(todayStr)) defaultDate = d;
             }
             
             return `<button data-d="${attr(d)}" data-action="filter-date" data-date="${attr(d)}"
-                class="date-btn snap-center shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-bold transition
+                class="date-btn snap-center shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-lg transition-all duration-150
                 ${extraCls}">
-                ${specialIcon} ${label} <span class="opacity-50 text-[10px] ml-1">${n}${state.uiLang === 'zh' ? '' : ' '}${esc(t(n === 1 ? 'matchSuffix' : 'matchesSuffix'))}</span></button>`;
+                <span style="font:400 9px/1 'Inter'">${specialLabel ? esc(specialLabel) : month+'月'}</span>
+                <span style="font:600 16px/1 'JetBrains Mono', monospace">${esc(day)}</span>
+                <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">${n}场</span>
+            </button>`;
         }).join('');
 
         if (dates.length) {
@@ -63,7 +77,7 @@
                 const db = document.getElementById('date-bar');
                 const targetBtn = db.querySelector(`[data-d="${yesterdayStr}"]`) || db.querySelector(`[data-d="${todayStr}"]`);
                 if (targetBtn && db) {
-                    const targetLeft = targetBtn.offsetLeft - db.offsetLeft - 10;
+                    const targetLeft = targetBtn.offsetLeft - db.offsetLeft - 16;
                     db.scrollTo({ left: targetLeft, behavior: 'smooth' });
                 }
             }, 100);
@@ -91,13 +105,15 @@
     function filterDate(d) {
         const state = window.WorldCup.State;
         document.querySelectorAll('.date-btn').forEach(b => {
-            b.classList.remove('ring-2', 'ring-white', 'text-white', 'scale-105');
-            b.classList.add('opacity-70');
+            b.style.background = '';
+            b.style.border = '';
+            b.style.color = '';
         });
         const activeBtn = document.querySelector(`[data-d="${CSS.escape(d)}"]`);
         if (activeBtn) {
-            activeBtn.classList.remove('opacity-70');
-            activeBtn.classList.add('ring-2', 'ring-white', 'text-white', 'scale-105');
+            activeBtn.style.background = 'rgba(52,211,153,.08)';
+            activeBtn.style.border = '1px solid rgba(52,211,153,.15)';
+            activeBtn.style.color = '#34d399';
         }
         const list = state.scheduleCache.filter(m => m.dateBJT?.startsWith(d));
         document.getElementById('schedule-list').innerHTML = list.map(m => window.WorldCup.Scores.card(m)).join('');

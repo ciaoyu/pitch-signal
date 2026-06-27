@@ -18,6 +18,8 @@ window.WorldCup.State = { tab, scheduleCache, uiLang, pitchViewMode };
 
 const I18N = {
     zh: {
+        liveTitle: '实时比分',
+        headerSubtitle: '美加墨 · 赛事分析',
         navLive: '比分',
         navSchedule: '赛程',
         navPrediction: '预测',
@@ -72,6 +74,8 @@ const I18N = {
         teamsError: '球队数据加载失败',
     },
     en: {
+        liveTitle: 'Live Scores',
+        headerSubtitle: 'USA · CAN · MEX · Match Analysis',
         navLive: 'Live',
         navSchedule: 'Schedule',
         navPrediction: 'Prediction',
