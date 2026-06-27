@@ -88,7 +88,7 @@ function parseEvent(ev) {
     const teamDisplayName = c.team?.shortDisplayName || c.team?.displayName || c.team?.name || '';
     const nameI18n = getTeamNameI18n(teamId, teamDisplayName);
     const displayName = zhName ? `${zhName.zh} ${teamDisplayName}` : (teamDisplayName || String(teamId));
-    const ratingEntry = RATINGS?.[teamDisplayName] || RATINGS?.[c.team?.name] || null;
+    const ratingEntry = RATINGS?.teams?.[teamDisplayName] || RATINGS?.teams?.[c.team?.name] || null;
     const t = {
       name: displayName,
       fullName: zhName ? `${zhName.zh} ${zhName.en}` : (teamDisplayName || String(teamId)),

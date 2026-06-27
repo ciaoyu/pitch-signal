@@ -5,10 +5,12 @@
     function switchStandingsSubTab(tab, btn) {
         const groupsContent = document.getElementById('standings-sub-groups-content');
         const knockoutContent = document.getElementById('standings-sub-knockout-content');
+        const scorersContent = document.getElementById('standings-sub-scorers-content');
 
-        // Hide both
+        // Hide all
         if (groupsContent) groupsContent.classList.add('hidden');
         if (knockoutContent) knockoutContent.classList.add('hidden');
+        if (scorersContent) scorersContent.classList.add('hidden');
 
         // Deactivate all sub-tab buttons
         document.querySelectorAll('[data-action="switch-standings-sub-tab"]').forEach(b => {
@@ -19,6 +21,8 @@
         // Activate target
         if (tab === 'knockout') {
             if (knockoutContent) knockoutContent.classList.remove('hidden');
+        } else if (tab === 'scorers') {
+            if (scorersContent) scorersContent.classList.remove('hidden');
         } else {
             if (groupsContent) groupsContent.classList.remove('hidden');
         }
@@ -47,6 +51,48 @@
                 });
             }
         }
+
+        // Lazy-load top scorers
+        if (tab === 'scorers' && scorersContent) {
+            if (scorersContent.querySelector('.text-gray-500') || scorersContent.innerHTML.trim() === '') {
+                scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx('加载射手榜...', 'Loading scorers...')}</div>`;
+                window.WorldCup.ApiClient.get('/api/tournament-stats').then(res => {
+                    if (res.ok && res.data?.topScorers) {
+                        scorersContent.innerHTML = renderTopScorers(res.data.topScorers);
+                    } else {
+                        scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx('射手榜数据暂无', 'No scorer data available')}</div>`;
+                    }
+                }).catch(() => {
+                    scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx('射手榜加载失败', 'Failed to load scorers')}</div>`;
+                });
+            }
+        }
+    }
+
+    function renderTopScorers(scorers) {
+        const { esc, tx, attr, displayMaybeTeamName } = window.WorldCup.Utils;
+        if (!scorers.length) return `<div class="text-center py-10 text-gray-500">${tx('暂无射手数据', 'No scorer data')}</div>`;
+
+        let html = '';
+        scorers.slice(0, 50).forEach((p, i) => {
+            const rank = i + 1;
+            const nameZh = p.nameZh || p.name;
+            const rankColor = rank <= 3 ? '#34d399' : 'rgba(248,250,252,.3)';
+            html += `<div class="schedule-row" data-action="open-player-detail" data-player-id="${attr(p.playerId)}" data-player-name="${attr(p.name)}">
+                <span style="font:600 13px/1 'JetBrains Mono', monospace;color:${rankColor};min-width:24px;text-align:center">${rank}</span>
+                ${p.teamLogo ? `<img src="${attr(p.teamLogo)}" style="width:18px;height:18px;object-fit:contain;border-radius:3px;flex-shrink:0" onerror="this.style.display='none'">` : '<span style="width:18px;height:18px;flex-shrink:0"></span>'}
+                <div style="flex:1;min-width:0;overflow:hidden">
+                    <div style="font:500 12px/1 'Inter';color:rgba(248,250,252,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nameZh)}</div>
+                    <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.3);margin-top:2px">${esc(p.team)}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0">
+                    <div style="font:700 18px/1 'JetBrains Mono', monospace;color:#34d399">${p.goals}</div>
+                    <div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px">${p.appearances}${tx('场',' apps')}</div>
+                </div>
+            </div>`;
+        });
+
+        return html;
     }
 
     async function loadStandings() {
@@ -125,4 +171,5 @@
     window.WorldCup.Standings = { loadStandings, switchStandingsSubTab };
     window.loadStandings = loadStandings;
     window.switchStandingsSubTab = switchStandingsSubTab;
+    window.renderTopScorers = renderTopScorers;
 })();

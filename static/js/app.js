@@ -233,7 +233,15 @@
     tick();
     setInterval(tick, 1000);
     window.applyLanguage();
-    loadScores();
+    loadScores().then(() => {
+        // Pre-fill scheduleCache with live data so HUD lookups work without visiting Schedule tab
+        const liveMatches = window.WorldCup.State._lastScoresMatches || [];
+        if (liveMatches.length) {
+            const cache = window.WorldCup.State.scheduleCache;
+            const existingIds = new Set(cache.map(m => String(m.id)));
+            for (const m of liveMatches) { if (!existingIds.has(String(m.id))) cache.push(m); }
+        }
+    });
     const autoRefresh = setInterval(loadScores, 120000);
 
     // ========== Service Worker (PWA) ==========

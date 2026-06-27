@@ -91,8 +91,8 @@ async function main() {
 function updateIndexHtml(version) {
     let html = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
 
-    // Remove old bundle script tag
-    html = html.replace(/<script src="\/static\/js\/bundle\.js[^"]*"><\/script>\n?/g, '');
+    // Remove old bundle script tag (handles both plain and type="module" variants)
+    html = html.replace(/<script(?:[^>]*?)src="\/static\/js\/bundle\.js[^"]*"(?:[^>]*)><\/script>\n?/g, '');
 
     // Remove old individual module script tags
     for (const m of MODULES) {

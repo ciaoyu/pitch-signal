@@ -159,58 +159,34 @@
                     </div>
                     <div>
                         <span class="text-gray-500">${tx('评分', 'Rating')}</span>
-                        <span class="font-bold ml-1">${d.recentForm.rating}</span>
+                        <span class="font-bold ml-1">${d.recentForm.rating ?? '-'}</span>
                     </div>
                 </div>
             </div>
             ` : ''}
             <!-- Club Stats -->
-            ${d.clubStats ? `
+            ${d.clubStats && d.clubStats.dataQuality !== 'unavailable' ? `
             <div class="glass-light rounded-lg p-2">
                 <div class="text-xs font-bold text-gray-400 mb-2">🏟️ 俱乐部数据</div>
-                <div class="text-[11px] text-gray-500 mb-1">${d.clubStats.team} · ${d.clubStats.league} · ${d.clubStats.season}</div>
+                ${d.clubStats.season ? `<div class="text-[11px] text-gray-500 mb-1">${d.clubStats.season}</div>` : ''}
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    <div>
-                        <span class="text-gray-500">出场</span>
-                        <span class="font-bold ml-1">${d.clubStats.appearances}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">进球</span>
-                        <span class="font-bold ml-1 text-green-400">${d.clubStats.goals}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">助攻</span>
-                        <span class="font-bold ml-1 text-blue-400">${d.clubStats.assists}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">评分</span>
-                        <span class="font-bold ml-1">${d.clubStats.rating}</span>
-                    </div>
+                    ${d.clubStats.appearances != null ? `<div><span class="text-gray-500">出场</span><span class="font-bold ml-1">${d.clubStats.appearances}</span></div>` : ''}
+                    ${d.clubStats.goals != null ? `<div><span class="text-gray-500">进球</span><span class="font-bold ml-1 text-green-400">${d.clubStats.goals}</span></div>` : ''}
+                    ${d.clubStats.assists != null ? `<div><span class="text-gray-500">助攻</span><span class="font-bold ml-1 text-blue-400">${d.clubStats.assists}</span></div>` : ''}
+                    ${d.clubStats.shots != null ? `<div><span class="text-gray-500">射门</span><span class="font-bold ml-1">${d.clubStats.shots}</span></div>` : ''}
                 </div>
             </div>
             ` : ''}
             <!-- National Stats -->
-            ${d.nationalStats ? `
+            ${d.nationalStats && d.nationalStats.dataQuality === 'live' ? `
             <div class="glass-light rounded-lg p-2">
-                <div class="text-xs font-bold text-gray-400 mb-2">🇺🇸 国家队数据</div>
-                <div class="text-[11px] text-gray-500 mb-1">${d.nationalStats.team}</div>
+                <div class="text-xs font-bold text-gray-400 mb-2">🌍 国家队数据</div>
+                ${d.nationalStats.teamCode ? `<div class="text-[11px] text-gray-500 mb-1">${d.nationalStats.teamCode}</div>` : ''}
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    <div>
-                        <span class="text-gray-500">出场</span>
-                        <span class="font-bold ml-1">${d.nationalStats.caps}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">进球</span>
-                        <span class="font-bold ml-1 text-green-400">${d.nationalStats.goals}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">助攻</span>
-                        <span class="font-bold ml-1 text-blue-400">${d.nationalStats.assists}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">大赛进球</span>
-                        <span class="font-bold ml-1 text-yellow-400">${d.nationalStats.tournamentGoals}</span>
-                    </div>
+                    <div><span class="text-gray-500">国家队帽</span><span class="font-bold ml-1">${d.nationalStats.caps ?? '-'}</span></div>
+                    <div><span class="text-gray-500">国家队进球</span><span class="font-bold ml-1 text-green-400">${d.nationalStats.goals ?? '-'}</span></div>
+                    <div><span class="text-gray-500">本届出场</span><span class="font-bold ml-1">${d.nationalStats.tournamentApps ?? '-'}</span></div>
+                    <div><span class="text-gray-500">本届进球</span><span class="font-bold ml-1 text-yellow-400">${d.nationalStats.tournamentGoals ?? '-'}</span></div>
                 </div>
             </div>
             ` : ''}

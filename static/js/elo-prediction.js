@@ -260,7 +260,7 @@
             <div class="pred-section-title text-orange-400" style="font-family:'DM Sans',sans-serif">
                 <span class="w-6 h-6 rounded-lg bg-orange-500/20 flex items-center justify-center text-xs flex-shrink-0">🏆</span>${tx('后期淘汰赛', 'Knockout Stage')}
             </div>
-            <div id="bracket-container-pred" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center flex justify-center min-h-[200px]">
+            <div id="bracket-container-pred" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center min-h-[200px]">
                 <div class="text-gray-500 py-10">${tx('加载对阵图...', 'Loading bracket...')}</div>
             </div>
         </div>`;

@@ -12,6 +12,7 @@
             return;
         }
         const visibleMatches = d.matches || [];
+        state._lastScoresMatches = visibleMatches;
 
         if (!visibleMatches.length) {
             el.innerHTML = `<div style="text-align:center;padding:60px 0"><div style="font-size:40px;margin-bottom:10px">&#128564;</div><p style="color:rgba(248,250,252,.3)">${esc(t('noMatchesToday'))}</p></div>`;
@@ -70,7 +71,8 @@
             dateEl.textContent = dateStr + ' · ESPN';
         }
 
-        // Enrich live/finished match cards with stats (async, non-blocking)
+        // Load tournament stats banner + enrich match cards (async, non-blocking)
+        loadTournamentStats();
         enrichMatchStats(visibleMatches);
 
         document.getElementById('update-time').textContent = t('updatePrefix') + new Date().toLocaleTimeString(state.uiLang === 'zh' ? 'zh-CN' : 'en-US', { timeZone: 'Asia/Shanghai', hour12: false, hour: '2-digit', minute: '2-digit' });
@@ -282,6 +284,48 @@
             </div>`;
     }
 
+    // ── Load tournament stats banner ──
+    async function loadTournamentStats() {
+        const { tx, esc } = window.WorldCup.Utils;
+        const container = document.getElementById('tournament-stats');
+        const inner = document.getElementById('tournament-stats-inner');
+        if (!container || !inner) return;
+
+        try {
+            const res = await window.WorldCup.ApiClient.get('/api/tournament-stats');
+            if (!res.ok || !res.data) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const d = res.data;
+            const items = [
+                { label: tx('已赛', 'Played'), value: d.matchesPlayed ?? '--', icon: '⚽' },
+                { label: tx('总进球', 'Goals'), value: d.totalGoals ?? '--', icon: '🥅' },
+                { label: tx('场均', 'Avg'), value: d.avgGoals != null ? Number(d.avgGoals).toFixed(1) : '--', icon: '📊' },
+                { label: tx('黄牌', 'Yellows'), value: d.yellowCards ?? '--', icon: '🟨' },
+                { label: tx('红牌', 'Reds'), value: d.redCards ?? '--', icon: '🟥' },
+            ];
+
+            inner.innerHTML = items.map(it => `
+                <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:8px;white-space:nowrap;flex-shrink:0">
+                    <span style="font-size:12px">${it.icon}</span>
+                    <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.25)">${it.label}</span>
+                    <span style="font:600 13px/1 'JetBrains Mono', monospace;color:#f8fafc">${esc(String(it.value))}</span>
+                </div>
+            `).join('') + (d.biggestWin || d.fastestGoal ? `
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;white-space:nowrap;flex-shrink:0;margin-left:4px">
+                    ${d.biggestWin ? `<span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2)">${tx('最大分差', 'Biggest')}: <span style="color:rgba(248,250,252,.45)">${esc(d.biggestWin)}</span></span>` : ''}
+                    ${d.fastestGoal ? `<span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);${d.biggestWin ? 'margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,.06)' : ''}">${tx('最快进球', 'Fastest')}: <span style="color:rgba(248,250,252,.45)">${esc(d.fastestGoal)}</span></span>` : ''}
+                </div>
+            ` : '');
+
+            container.style.display = 'block';
+        } catch {
+            container.style.display = 'none';
+        }
+    }
+
     // ── Enrich match cards with stats from /api/match/:id ──
     async function enrichMatchStats(matches) {
         const targets = matches.filter(m => m.state === 'in' || m.state === 'post');
@@ -309,13 +353,13 @@
                 const pe = card.querySelector('[data-stat="poss"]');
                 const ph = card.querySelector('[data-stat="poss-h"]');
                 const pa = card.querySelector('[data-stat="poss-a"]');
-                if (pe) pe.textContent = stats.poss.h + ':' + stats.poss.a;
+                if (pe) pe.textContent = stats.poss.h + '%-' + stats.poss.a + '%';
                 if (ph) ph.style.width = stats.poss.h + '%';
                 if (pa) pa.style.width = stats.poss.a + '%';
             }
             if (stats.shots) {
                 const se = card.querySelector('[data-stat="shots"]');
-                if (se) se.textContent = stats.shots.h + ':' + stats.shots.a;
+                if (se) se.textContent = stats.shots.h + '-' + stats.shots.a;
             }
             if (stats.xg) {
                 const xe = card.querySelector('[data-stat="xg"]');
@@ -334,6 +378,7 @@
     // Expose to WorldCup namespace
     window.WorldCup.Scores = {
         loadScores,
+        loadTournamentStats,
         liveCard,
         doneCard,
         preCard,

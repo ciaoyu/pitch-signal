@@ -305,7 +305,7 @@ function renderBracket(data, container) {
   `;
 
   container.innerHTML = `
-    <div id="bk-wrap" style="position:relative;width:${totalW}px;height:${totalSvgH}px;min-width:${totalW}px;">
+    <div id="bk-wrap" style="position:relative;width:${totalW}px;height:${totalSvgH}px;min-width:${totalW}px;margin:0 auto;">
       <!-- Connector SVG layer -->
       <svg style="position:absolute;left:0;top:0;width:${totalW}px;height:${totalSvgH}px;overflow:visible;pointer-events:none;" viewBox="0 0 ${totalW} ${totalSvgH}">
         ${svgDefs}

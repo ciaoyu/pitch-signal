@@ -703,7 +703,7 @@ window.WorldCup.MatchRenderers = (() => {
     }
     
     // Translate player name helper
-    const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : name;
+    const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : (nameZh || name);
     
     // renderBenchAnalysis function
     function renderBenchAnalysis(data, isFinishedMatch) {
@@ -1193,8 +1193,8 @@ window.WorldCup.MatchRenderers = (() => {
             <svg width="180" height="95" viewBox="0 0 180 95">
                 <path d="M15 85 A75 75 0 0 1 165 85" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="10" stroke-linecap="round"/>
                 <path d="M15 85 A${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="rgba(59,130,246,.35)" stroke-width="10" stroke-linecap="round"/>
-                <text x="90" y="65" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="14" fill="rgba(248,250,252,.3)">%</tspan></text>
-                <text x="90" y="82" text-anchor="middle" fill="rgba(59,130,246,.5)" font-family="JetBrains Mono" font-size="8" font-weight="400" letter-spacing="1.5">${esc(homeName || 'HOME')} WIN</text>
+                <text x="90" y="50" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="14" fill="rgba(248,250,252,.3)">%</tspan></text>
+                <text x="90" y="67" text-anchor="middle" fill="rgba(59,130,246,.5)" font-family="JetBrains Mono" font-size="8" font-weight="400" letter-spacing="1.5">${esc(homeName || 'HOME')} WIN</text>
             </svg>
         </div>`;
 

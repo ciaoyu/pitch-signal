@@ -46,7 +46,7 @@
     .section-label { font: 500 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .section-label-live { color: rgba(52,211,153,.4); }
     .section-label-live .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse-live 1.8s ease-in-out infinite; }
-    .flag-badge { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .flag-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
     .flag-badge-home { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.1); }
     .flag-badge-away { background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.08); }
     .flag-badge-neutral { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); }
@@ -274,6 +274,9 @@
                 <span style="font:500 10px/1 'JetBrains Mono', monospace;color:rgba(52,211,153,.6)">0 LIVE</span>
             </div>
         </div>
+        <div id="tournament-stats" style="display:none;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+            <div id="tournament-stats-inner" style="display:flex;gap:12px;min-width:max-content"></div>
+        </div>
         <div id="live-list">
             <div style="display:flex;align-items:center;justify-content:center;padding:60px 0;color:rgba(248,250,252,.15)"><span style="font-size:28px;margin-right:8px">⚽</span>加载中...</div>
         </div>
@@ -281,6 +284,7 @@
 
     <!-- SCHEDULE -->
     <section id="tab-schedule" class="tab-content hidden relative">
+        <div id="date-header" style="font:500 11px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.35);letter-spacing:0.5px;padding:0 6px;margin-bottom:10px"></div>
         <div class="relative flex items-center mb-3">
             <button id="date-scroll-left" aria-label="Scroll dates left" class="absolute left-0 z-10 h-full bg-gradient-to-r from-[#0f172a] via-[#0f172a] to-transparent pr-4 hover:text-white text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -306,10 +310,12 @@
         <div style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content">
         <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛</button>
         <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛</button>
+        <button id="standings-sub-scorers" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Top Scorers</button>
         </div>
         <div id="standings-sub-groups-content"></div>
+        <div id="standings-sub-scorers-content" class="hidden"></div>
         <div id="standings-sub-knockout-content" class="hidden">
-            <div id="bracket-container-standings" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center flex justify-center min-h-[200px]">
+            <div id="bracket-container-standings" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center min-h-[200px]">
                 <div class="text-gray-500 py-10">加载对阵图...</div>
             </div>
         </div>
@@ -420,6 +426,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=c3f9fde3"></script>
+<script type="module" src="/static/js/bundle.js?v=168dfaa6"></script>
 </body>
 </html>

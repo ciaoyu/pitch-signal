@@ -104,6 +104,7 @@
 
     function filterDate(d) {
         const state = window.WorldCup.State;
+        const { tx } = window.WorldCup.Utils;
         document.querySelectorAll('.date-btn').forEach(b => {
             b.style.background = '';
             b.style.border = '';
@@ -115,7 +116,24 @@
             activeBtn.style.border = '1px solid rgba(52,211,153,.15)';
             activeBtn.style.color = '#34d399';
         }
+
+        // Date header: "Thursday · June 26, 2026 · 3 MATCHES"
         const list = state.scheduleCache.filter(m => m.dateBJT?.startsWith(d));
+        const dateHeaderEl = document.getElementById('date-header');
+        if (dateHeaderEl) {
+            const parts = d.split('/');
+            const month = parseInt(parts[0], 10) - 1;
+            const day = parseInt(parts[1], 10);
+            const year = new Date().getFullYear();
+            const dateObj = new Date(year, month, day);
+            const lang = state.uiLang === 'zh' ? 'zh-CN' : 'en-US';
+            const weekday = new Intl.DateTimeFormat(lang, { weekday: 'long', timeZone: 'Asia/Shanghai' }).format(dateObj);
+            const fullDate = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Shanghai' }).format(dateObj);
+            const n = list.length;
+            const matchLabel = state.uiLang === 'zh' ? `${n} 场比赛` : `${n} MATCH${n !== 1 ? 'ES' : ''}`;
+            dateHeaderEl.textContent = `${weekday} · ${fullDate} · ${matchLabel}`;
+        }
+
         document.getElementById('schedule-list').innerHTML = list.map(m => window.WorldCup.Scores.card(m)).join('');
     }
 

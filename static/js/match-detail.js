@@ -23,8 +23,8 @@
         const knownVenue = scheduledMatch.venue || matchData.venue || '';
         const mHomeId = scheduledMatch.home?.id || matchData.home?.id || matchData.homeId;
         const mAwayId = scheduledMatch.away?.id || matchData.away?.id || matchData.awayId;
-        const homeName = displayMaybeTeamName(matchData.home?.nameI18n || matchData.home?.name || '');
-        const awayName = displayMaybeTeamName(matchData.away?.nameI18n || matchData.away?.name || '');
+        const homeName = displayMaybeTeamName(scheduledMatch.home?.nameI18n || scheduledMatch.home?.name || matchData.home?.nameI18n || matchData.home?.name || '');
+        const awayName = displayMaybeTeamName(scheduledMatch.away?.nameI18n || scheduledMatch.away?.name || matchData.away?.nameI18n || matchData.away?.name || '');
         const homeScore = matchData.home?.score ?? '-';
         const awayScore = matchData.away?.score ?? '-';
         const homeElo = matchData.home?.elo || matchData.elo?.home || '';
@@ -41,6 +41,12 @@
         // ── Build HUD HTML ──
         let html = '';
 
+        // Resolve team logos (scheduledMatch has logo from parseEvent; matchData from /api/match/:id does not)
+        const homeLogo = scheduledMatch.home?.logo || matchData.home?.logo || '';
+        const awayLogo = scheduledMatch.away?.logo || matchData.away?.logo || '';
+        const homeFlag = scheduledMatch.home?.flag || '🏳️';
+        const awayFlag = scheduledMatch.away?.flag || '🏳️';
+
         // Score header — jumbo
         html += `<div id="hud-score" style="display:flex;align-items:center;justify-content:center;padding:24px 24px 16px;gap:20px">
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:16px">
@@ -51,14 +57,14 @@
                         <span style="font:300 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${esc(homeFormation)}</span>
                     </div>
                 </div>
-                ${matchData.home?.logo ? `<img src="${attr(matchData.home.logo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🏠</div>`}
+                ${homeLogo ? `<img src="${attr(homeLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(homeFlag)}</div>`}
             </div>
-            <div style="min-width:140px;text-align:center;padding:0 20px">
+            <div style="min-width:140px;text-align:center;padding:0 20px;flex-shrink:0">
                 <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
                 ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">FT</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx('待赛', 'TBD')}</div>`}
             </div>
-            <div style="flex:1;display:flex;align-items:center;gap:16px">
-                ${matchData.away?.logo ? `<img src="${attr(matchData.away.logo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">✈️</div>`}
+            <div style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:16px">
+                ${awayLogo ? `<img src="${attr(awayLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(awayFlag)}</div>`}
                 <div>
                     <div style="font:500 22px/1 'Inter';color:#f8fafc">${esc(awayName)}</div>
                     <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
@@ -298,7 +304,9 @@
         if (!data || data.dataQuality === "unavailable") return `<div class="text-gray-500 text-xs py-4 text-center">${tx('ESPN 暂无历史交锋样本','No historical H2H data from ESPN')}</div>`;
         const homeTeam=data.homeTeam||tx("主队","Home"),awayTeam=data.awayTeam||tx("客队","Away"),grouped=data.grouped||{},summary=data.summary||{},homeSummary=summary.home||{},awaySummary=summary.away||{},recentMatches=data.recentMatches||[];
         let html='<div class="space-y-3">';
-        html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('交锋走势','H2H Trend')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">●</span><span class="text-sm">${esc(homeSummary.summaryText||homeTeam+tx(" 数据不足"," Insufficient data"))}</span></div><div class="flex items-center gap-2"><span class="text-red-400">●</span><span class="text-sm">${esc(awaySummary.summaryText||awayTeam+tx(" 数据不足"," Insufficient data"))}</span></div></div></div>`;
+        const recentHome=data.recent?.home||homeSummary.recent10||[];const recentAway=data.recent?.away||awaySummary.recent10||[];
+        const wdl=r10=>{if(!r10.length)return'';let w=0,d=0,l=0;r10.forEach(m=>{if(m.result==='W')w++;else if(m.result==='D')d++;else l++;});return ` <span class=\"font-mono text-[11px] text-white/40\">${w}-${d}-${l}</span>`;};
+        html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('交锋走势','H2H Trend')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">●</span><span class="text-sm">${esc(homeSummary.summaryText||homeTeam+tx(" 数据不足"," Insufficient data"))}${wdl(recentHome)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">●</span><span class="text-sm">${esc(awaySummary.summaryText||awayTeam+tx(" 数据不足"," Insufficient data"))}${wdl(recentAway)}</span></div></div></div>`;
         html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('对阵记录','H2H History')}</div>`;
         const wc=grouped.worldCup;
         if(wc?.matches?.length) html+=`<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>🏆</span><span class="text-sm font-bold">${esc(wc.label||tx("世界杯","World Cup"))}</span><span class="text-[11px] text-gray-500">${tx('共 ','Total ')}${esc(wc.stats?.total||0)}${tx(' 场',' matches')}</span></div>${renderH2HMatchList(wc.matches)}</div>`;
