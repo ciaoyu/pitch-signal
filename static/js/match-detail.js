@@ -161,14 +161,19 @@
             api('/api/venue/' + encodeURIComponent(knownVenue)).then(venueData => {
                 const el = document.getElementById('hud-venue');
                 if (el && venueData && !venueData.error && !venueData.note) el.innerHTML = MR().renderHudVenuePanel(venueData);
-                else if (el) el.innerHTML = '';
+                else if (el) el.innerHTML = matchData.weather ? renderMatchWeatherBlock(matchData.weather) : '';
                 // Also fill venue-tab
                 const vEl = document.getElementById('detail-content-venue-tab');
                 if (vEl && venueData && !venueData.error && !venueData.note) vEl.innerHTML = renderVenueWeather(venueData);
-                else if (vEl) vEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料暂不可用', 'Venue details unavailable')}</div>`;
+                else if (vEl) vEl.innerHTML = matchData.weather ? renderMatchWeatherBlock(matchData.weather) : `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料暂不可用', 'Venue details unavailable')}</div>`;
             }).catch(() => {
-                document.getElementById('hud-venue').innerHTML = '';
+                const el = document.getElementById('hud-venue');
+                if (el && matchData.weather) el.innerHTML = renderMatchWeatherBlock(matchData.weather);
+                else if (el) el.innerHTML = '';
             });
+        } else if (matchData.weather) {
+            const el = document.getElementById('hud-venue');
+            if (el) el.innerHTML = renderMatchWeatherBlock(matchData.weather);
         }
 
         // Stats → left panel
@@ -322,6 +327,47 @@
     function renderH2HMatchList(matches) {
         if (!matches?.length) return `<div class="text-gray-600 text-xs">${tx('暂无比赛','No matches')}</div>`;
         return '<div class="space-y-1">'+matches.map(m=>{const score=m.score||(m.homeScore!==undefined?m.homeScore+"-"+m.awayScore:"0-0");const[hs,as]=score.split("-").map(Number);let cls="text-yellow-400";if(hs>as)cls="text-blue-400";else if(hs<as)cls="text-red-400";const teams=[m.homeTeamName,m.awayTeamName].filter(Boolean).join(' vs ');return `<div class="flex items-center justify-between text-[11px] py-1 border-b border-white/5"><span class="text-gray-600">${esc((m.date||"").substring(0,10))}</span><span class="text-gray-500 truncate px-2">${esc(teams||m.competition||"")}</span><span class="font-bold ${cls}">${esc(score)}</span></div>`;}).join("")+'</div>';
+    }
+
+    function renderMatchWeatherBlock(w) {
+        if (!w) return '';
+        const wmoEmoji = (code) => {
+            if (code === 0) return '☀️';
+            if (code <= 3) return ['🌤️','⛅','☁️'][Math.min(code - 1, 2)];
+            if (code <= 48) return '🌫️';
+            if (code <= 55) return '🌦️';
+            if (code <= 65) return '🌧️';
+            if (code <= 75) return '🌨️';
+            if (code <= 82) return '🌧️';
+            if (code >= 95) return '⛈️';
+            return '🌤️';
+        };
+        const emoji = wmoEmoji(w.code);
+        const tempColor = w.tC >= 32 ? 'rgba(248,113,113,.6)' : w.tC <= 10 ? 'rgba(59,130,246,.6)' : 'rgba(248,250,252,.5)';
+        return `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('比赛天气', 'MATCH WEATHER')}</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <span style="font-size:28px">${emoji}</span>
+                <div>
+                    <div style="font:300 28px/1 'JetBrains Mono',monospace;color:${tempColor}">${w.tC}<span style="font-size:12px;color:rgba(248,250,252,.2)">°C</span></div>
+                    <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-top:2px">${tx('体感', 'Feels')} ${w.feelsC}°C</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+                <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);text-align:center">
+                    <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">💧 ${tx('降水概率', 'Rain')}</div>
+                    <div style="font:400 16px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.5)">${w.pp}<span style="font-size:9px;color:rgba(59,130,246,.3)">%</span></div>
+                </div>
+                <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);text-align:center">
+                    <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">💨 ${tx('风速', 'Wind')}</div>
+                    <div style="font:400 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${Math.round(w.windKmh)}<span style="font-size:9px;color:rgba(248,250,252,.2)">km/h</span></div>
+                </div>
+                <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);text-align:center">
+                    <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">💦 ${tx('湿度', 'Humidity')}</div>
+                    <div style="font:400 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${w.rh}<span style="font-size:9px;color:rgba(248,250,252,.2)">%</span></div>
+                </div>
+            </div>
+        </div>`;
     }
 
     function renderVenueWeather(data) {
