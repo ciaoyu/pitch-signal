@@ -71,24 +71,25 @@ feat: update prediction, matchup-spatial, and bot knowledge base
 
 ---
 
-## 问题 2：`world cup data/` 目录已 tracked
+## 问题 2：历史 CSV 输入目录需要脱离仓库根目录
 
 **现状：**
-- 3 个 CSV 文件已被 git 追踪：WorldCupMatches.csv、WorldCupPlayers.csv、WorldCupsSummary.csv
-- 目录名含空格，共 2.1MB
+- 3 个 CSV 文件属于本地历史数据输入：WorldCupMatches.csv、WorldCupPlayers.csv、WorldCupsSummary.csv
+- 旧目录名 `world cup data/` 含空格，不适合继续作为项目根目录结构的一部分
 - 属于数据探索输入，不应在公开仓库中
 
 **方案：**
-- [ ] `git rm --cached "world cup data/WorldCupMatches.csv" "world cup data/WorldCupPlayers.csv" "world cup data/WorldCupsSummary.csv"`
-- [ ] `.gitignore` 中加 `"world cup data/"`
+- [ ] 将文件保存在 `data/sources/world-cup-history/`
+- [ ] `git rm --cached "data/sources/world-cup-history/WorldCupMatches.csv" "data/sources/world-cup-history/WorldCupPlayers.csv" "data/sources/world-cup-history/WorldCupsSummary.csv"`
+- [ ] `.gitignore` 中加 `data/sources/world-cup-history/`
 - [ ] 单独 commit：
   ```
-  chore: untrack world cup data CSVs (moved to .gitignore)
+  chore: untrack historical world cup CSVs (moved under data/sources)
   ```
 
 **完成标志：**
-- [ ] `git ls-files "world cup data/"` 返回空
-- [ ] `.gitignore` 包含 `"world cup data/"`
+- [ ] `git ls-files "data/sources/world-cup-history/"` 返回空
+- [ ] `.gitignore` 包含 `data/sources/world-cup-history/`
 - [ ] 文件仍在本地磁盘（`git rm --cached` 不删本地）
 
 ---
@@ -96,14 +97,14 @@ feat: update prediction, matchup-spatial, and bot knowledge base
 ## 问题 3：未 tracked 目录/文件缺少 .gitignore 条目
 
 **现状：**
-- `scratch/`、`deliverables/`、`data/wc2026/`、`data/lineups_sync_runs.json` 未 tracked 也未 ignore
+- `scratch/`、`docs/archive/`、`data/wc2026/`、`data/lineups_sync_runs.json` 未 tracked 也未 ignore
 - 容易被 `git add .` 误提交
 
 **方案：`.gitignore` 中追加**
 ```
 # 临时/探索性文件
 scratch/
-deliverables/
+docs/archive/
 
 # 数据探索产物
 data/wc2026/
@@ -114,10 +115,8 @@ data/lineups_sync_runs.json
 .workbuddy/
 
 # 临时文件
-static-preview.html
-UI-DESIGNER-HANDOFF.md
-UI-FIX-REPORT.md
-distribution-strategy.md
+scratch/previews/
+docs/archive/
 docs/deployment-strategy.md
 *.bak
 templates/*.bak

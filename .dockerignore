@@ -12,6 +12,7 @@ data/match_snapshot_runs.json
 .git
 reports/
 *.log
+logs/
 workbuddy/
 docs/archive/
 scripts/test-*.js
@@ -19,14 +20,9 @@ scripts/test-*.js
 DREAMS.md
 # Additional exclusions
 scratch/
-deliverables/
-world cup data/
+data/sources/world-cup-history/
 .codebuddy/
 .workbuddy/
 *.bak
-static-preview.html
-UI-DESIGNER-HANDOFF.md
-UI-FIX-REPORT.md
-distribution-strategy.md
 test-*.js
 test_*.js

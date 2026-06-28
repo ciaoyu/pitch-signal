@@ -119,7 +119,7 @@ function loadSchedule() {
 // ── H2H Index (CSV) ─────────────────────────────────────
 function loadH2HIndex() {
   try {
-    const csvPath = path.join(__dirname, '..', 'world cup data', 'WorldCupMatches.csv');
+    const csvPath = path.join(__dirname, 'sources', 'world-cup-history', 'WorldCupMatches.csv');
     const raw = fs.readFileSync(csvPath, 'utf8');
     const lines = raw.split('\n').filter(line => line.trim());
     if (lines.length < 2) {

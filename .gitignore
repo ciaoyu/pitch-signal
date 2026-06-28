@@ -32,17 +32,19 @@ data/roster_cache.json
 # JS build artifact (source is in static/js/*.js, run `npm run build:js` to regenerate)
 static/js/bundle.js
 
+# Local runtime outputs
+logs/
+
 # Broaden DB ignores
 *.db
 *.sqlite
 *.sqlite3
 
-# World cup data CSVs (data exploration input, not for public repo)
-world cup data/
+# Historical source CSVs (support H2H import, not for public repo)
+data/sources/world-cup-history/
 
 # Temporary / exploratory files
 scratch/
-deliverables/
 
 # Data exploration outputs
 data/wc2026/
@@ -54,8 +56,6 @@ data/lineups_sync_runs.json
 
 # Temp / backup files
 *.bak
-static-preview.html
-UI-DESIGNER-HANDOFF.md
-UI-FIX-REPORT.md
-distribution-strategy.md
+scratch/previews/
+docs/archive/
 docs/deployment-strategy.md

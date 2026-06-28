@@ -23,8 +23,8 @@ pitch-signal/
 ├── static/js/app.js   # 前端 SPA(4297 行)
 ├── templates/index.html
 ├── scripts/           # 9 测试脚本(~230 断言)+ 运维/工具脚本
-├── data/              # SQLite + ratings.json + 静态 JSON
-├── docs/              # 归档/运营安全手册/API 文档/放行总闸
+├── data/              # SQLite + ratings.json + 静态 JSON + source inputs
+├── docs/              # 共享文档/治理规则/运营安全手册
 └── middleware/         # CORS/CSP/缓存/限流
 ```
 
@@ -44,6 +44,7 @@ ESPN scoreboard → Elo Calculator → Poisson λ Estimator → Probability Fusi
 - Beta Safety: [docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)
 - Deployment: [docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)
 - Prediction Model: [docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)
+- Repository Layout: [docs/repository-layout.md](docs/repository-layout.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Tech Stack

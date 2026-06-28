@@ -9,7 +9,7 @@
 职责：Git 清理、CI/CD、安全、配置、文档
 
 ### A1: Git 仓库清理（git-hygiene 全部）
-- [ ] `.gitignore` 追加条目（scratch/、deliverables/、data/wc2026/、.codebuddy/、.workbuddy/、*.bak、world cup data/ 等）
+- [ ] `.gitignore` 追加条目（scratch/、docs/archive/、data/wc2026/、.codebuddy/、.workbuddy/、*.bak、data/sources/world-cup-history/ 等）
 - [ ] `git rm --cached` 移除已追踪的 world cup data CSV（3 文件，2.1MB）
 - [ ] 将 25 个未提交文件拆分为 3-4 个语义化 commit（refactor/chore/feat）
 - [ ] 图标文件 icon-192.png/icon-512.png 被删除，确认 icon-v3 替代后提交
@@ -45,7 +45,7 @@
 - **涉及文件**：`docker-entrypoint.sh`（第 10 行）
 
 ### A8: 配置 — .dockerignore 验证（审计 LOW）
-- [ ] 确认 `.dockerignore` 排除 scratch/、test*、world cup data/、deliverables/、docs/、node_modules/
+- [ ] 确认 `.dockerignore` 排除 scratch/、test*、data/sources/world-cup-history/、docs/archive/、docs/、node_modules/
 - **涉及文件**：`.dockerignore`
 
 ### A9: PWA 图标替换（审计 HIGH）

@@ -39,6 +39,7 @@ Runs the test suites for Prediction Models, Elo rating, and Poisson distribution
 - `/static` - Frontend JS, CSS, and SVG assets.
 - `/templates` - Single Page Application HTML.
 - `/data` - Static JSON files (brackets, base ratings, offline scrape data).
+- `/data/sources/world-cup-history` - Local historical CSV inputs used for H2H enrichment.
 - `/scripts` - Utilities for data scraping (e.g., Transfermarkt values).
 - `/middleware`, `/services` - HTTP middleware and domain services.
 
