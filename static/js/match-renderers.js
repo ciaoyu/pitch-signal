@@ -197,9 +197,18 @@ window.WorldCup.MatchRenderers = (() => {
     }
 
     function renderTacticalBoard(matchupData, matchData) {
+        // Flatten gk/def/mid/fwd into players if players array is empty
+        if (matchupData) {
+            ['home', 'away'].forEach(side => {
+                const s = matchupData[side];
+                if (s && (!s.players || !s.players.length)) {
+                    s.players = [...(s.gk || []), ...(s.def || []), ...(s.mid || []), ...(s.fwd || [])];
+                }
+            });
+        }
         const hasData = matchupData
-            && matchupData.home?.players?.length >= 11
-            && matchupData.away?.players?.length >= 11;
+            && matchupData.home?.players?.length >= 1
+            && matchupData.away?.players?.length >= 1;
 
         let svg = `<svg viewBox="0 0 100 160" class="w-full h-auto max-h-[500px] rounded-xl border-2 border-white/10">`;
 
@@ -296,6 +305,20 @@ window.WorldCup.MatchRenderers = (() => {
 
         const home = matchupData.home;
         const away = matchupData.away;
+        // Flatten gk/def/mid/fwd into players if players array is empty
+        const flattenPlayers = (side) => {
+            if (!side) return;
+            if (!side.players || !side.players.length) {
+                side.players = [
+                    ...(side.gk || []),
+                    ...(side.def || []),
+                    ...(side.mid || []),
+                    ...(side.fwd || []),
+                ];
+            }
+        };
+        flattenPlayers(home);
+        flattenPlayers(away);
         const matchups = matchupData.matchups || [];
         const substitutions = matchupData.substitutions || [];
 
@@ -620,10 +643,12 @@ window.WorldCup.MatchRenderers = (() => {
         const summary = matchupData.summary || {};
 
         // Calculate composite score for display
-        const totalPairs = (summary.homeAdvantagePairs || 0) + (summary.evenPairs || 0) + (summary.awayAdvantagePairs || 0);
-        const homePct = totalPairs ? ((summary.homeAdvantagePairs || 0) / totalPairs * 100) : 0;
+        const homeAdv = summary.homeAdvantages ?? summary.homeAdvantagePairs ?? 0;
+        const awayAdv = summary.awayAdvantages ?? summary.awayAdvantagePairs ?? 0;
+        const totalPairs = homeAdv + (summary.evenPairs || 0) + awayAdv;
+        const homePct = totalPairs ? (homeAdv / totalPairs * 100) : 0;
         const evenPct = totalPairs ? ((summary.evenPairs || 0) / totalPairs * 100) : (totalPairs === 0 ? 100 : 0);
-        const awayPct = totalPairs ? ((summary.awayAdvantagePairs || 0) / totalPairs * 100) : 0;
+        const awayPct = totalPairs ? (awayAdv / totalPairs * 100) : 0;
 
         let html = `
         <div class="flex items-center justify-between mb-2">
@@ -645,13 +670,13 @@ window.WorldCup.MatchRenderers = (() => {
             </div>
             <div class="flex h-4 rounded-full overflow-hidden mb-2 shadow-inner bg-white/5">
                 <div class="flex items-center justify-center bg-blue-500/80 transition-all duration-700" style="width:${homePct}%">
-                    ${summary.homeAdvantagePairs ? `<span class="text-[10px] font-bold text-white">${summary.homeAdvantagePairs}</span>` : ''}
+                    ${homeAdv ? `<span class="text-[10px] font-bold text-white">${homeAdv}</span>` : ''}
                 </div>
                 <div class="flex items-center justify-center bg-gray-500/50 transition-all duration-700" style="width:${evenPct}%">
                     ${summary.evenPairs ? `<span class="text-[10px] font-bold text-gray-300">${summary.evenPairs}</span>` : ''}
                 </div>
                 <div class="flex items-center justify-center bg-red-500/80 transition-all duration-700" style="width:${awayPct}%">
-                    ${summary.awayAdvantagePairs ? `<span class="text-[10px] font-bold text-white">${summary.awayAdvantagePairs}</span>` : ''}
+                    ${awayAdv ? `<span class="text-[10px] font-bold text-white">${awayAdv}</span>` : ''}
                 </div>
             </div>
             <div class="flex items-center justify-between text-[10px] text-gray-400 px-1">
@@ -689,17 +714,19 @@ window.WorldCup.MatchRenderers = (() => {
             html += '</div>';
         } else if (pairs.length > 0) {
             // Legacy pairs format
-            const keyPairs = pairs.filter(p => Math.abs(p.gap) >= 8).slice(0, 4);
+            const _pDiff = p => p.diff ?? p.gap ?? 0;
+            const keyPairs = pairs.filter(p => Math.abs(_pDiff(p)) >= 8).slice(0, 4);
             if (keyPairs.length) {
                 html += '<div class="mt-2 space-y-0.5">';
                 for (const p of keyPairs) {
+                    const diff = _pDiff(p);
                     const cls = p.advantage === 'home' ? 'text-green-400' : p.advantage === 'away' ? 'text-red-400' : 'text-gray-400';
                     const hShort = shortName(p.home.name, p.home.nameZh);
                     const aShort = shortName(p.away.name, p.away.nameZh);
                     html += `<div class="text-[11px] ${cls} flex items-center gap-1">
                         ${p.advantage === 'home' ? '🟢' : '🔴'}
                         ${esc(hShort)} (${(p.home.rating/10).toFixed(1)}) vs ${esc(aShort)} (${(p.away.rating/10).toFixed(1)})
-                        <span class="font-bold">${p.gap > 0 ? '+' : ''}${(p.gap/10).toFixed(1)}</span>
+                        <span class="font-bold">${diff > 0 ? '+' : ''}${(diff/10).toFixed(1)}</span>
                     </div>`;
                 }
                 html += '</div>';
