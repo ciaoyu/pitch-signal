@@ -1,11 +1,15 @@
 // ========== match-detail.js - Match Detail Module (HUD Layout) ==========
 (function() {
-    const { tx, esc, displayMaybeTeamName, attr, api, withClientTimeout } = window.WorldCup.Utils;
+    const { tx, esc, displayMaybeTeamName, attr, api } = window.WorldCup.Utils;
     const t = window.t;
     const state = window.WorldCup.State;
     const MR = () => window.WorldCup.MatchRenderers;
 
+    // Request ID counter for openMatch race condition prevention
+    let _openMatchReqId = 0;
+
     async function openMatch(id) {
+        const myReqId = ++_openMatchReqId;
         const modal = document.getElementById('match-modal');
         const content = document.getElementById('modal-content');
         modal.classList.remove('hidden');
@@ -84,10 +88,10 @@
         </div>`;
 
         // ── 3-column HUD body (design: 300 / flex center 540 max / 280) ──
-        html += `<div id="hud-body" style="display:flex;gap:12px;padding:8px 24px 0;align-items:flex-start;min-height:360px">`;
+        html += `<div id="hud-body" class="hud-container" style="display:flex;gap:12px;padding:8px 24px 0;align-items:flex-start;min-height:360px">`;
 
         // LEFT: Stats / H2H / News tabs (300px)
-        html += `<div id="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
+        html += `<div id="hud-left" class="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
             <div class="hud-glass-panel">
                 <div style="display:flex;border-bottom:1px solid rgba(255,255,255,.05);padding:0 4px" id="hud-left-tabs">
                     <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active">${tx('统计', 'Stats')}</button>
@@ -103,9 +107,9 @@
         </div>`;
 
         // CENTER: Tactical board (flex:1, max-width:540px, aspect-ratio:1.45/1)
-        html += `<div id="hud-center" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;min-width:0">
+        html += `<div id="hud-center" class="hud-center" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;min-width:0">
             <div id="pitch-canvas" style="width:100%;max-width:540px;aspect-ratio:1.45/1;position:relative;background:linear-gradient(180deg,rgba(16,42,28,.25) 0%,rgba(22,58,36,.2) 100%);border-radius:12px;border:1px solid rgba(52,211,153,.08);overflow:hidden">
-                ${MR().renderTacticalBoard(matchupData)}
+                ${MR().renderTacticalBoard(matchupData, matchData)}
             </div>
             <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
                 <div style="display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:rgba(59,130,246,.3);border:1px solid rgba(59,130,246,.5)"></div><span style="font:400 8px/1 'Inter';color:rgba(248,250,252,.25)">${esc(homeName)}</span></div>
@@ -114,7 +118,7 @@
         </div>`;
 
         // RIGHT: Win probability + Venue (280px)
-        html += `<div id="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
+        html += `<div id="hud-right" class="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx('加载预测...', 'Loading prediction...')}</div>
             </div>
@@ -126,7 +130,7 @@
         html += `</div>`; // end hud-body
 
         // Bottom dock: extra tabs (Bench, Coach, Review, Corners, Pre-match)
-        html += `<div id="hud-bottom" style="margin-top:8px;background:rgba(15,23,42,.5);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-top:1px solid rgba(255,255,255,.06);border-radius:24px 24px 0 0;padding:14px 32px 18px">
+        html += `<div id="hud-bottom" style="margin-top:8px;background:rgba(15,23,42,.5);backdrop-filter:blur(var(--glass-blur-md));-webkit-backdrop-filter:blur(var(--glass-blur-md));border-top:1px solid rgba(255,255,255,.06);border-radius:24px 24px 0 0;padding:14px 32px 18px">
             <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
 
         const showPreMatch = !isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED'));
@@ -152,6 +156,7 @@
 
         // Prediction → HUD right winprob
         api('/api/predict/' + id).then(predRes => {
+            if (myReqId !== _openMatchReqId) return;
             const pred = predRes?.data || predRes;
             const el = document.getElementById('hud-winprob');
             if (el) el.innerHTML = MR().renderHudWinProbPanel(pred, homeName, awayName);
@@ -159,7 +164,9 @@
             const pmEl = document.getElementById('detail-content-pre-match');
             if (pmEl && pred && !pred.error && pred.homeWin !== undefined) pmEl.innerHTML = renderPreMatchPrediction(pred);
             else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
-        }).catch(() => {
+        }).catch((err) => {
+            console.error('match-detail: predict load failed:', err);
+            if (myReqId !== _openMatchReqId) return;
             const el = document.getElementById('hud-winprob');
             if (el) el.innerHTML = `<div class="text-gray-500 text-xs text-center py-6">${tx('预测暂不可用', 'Prediction unavailable')}</div>`;
         });
@@ -167,6 +174,7 @@
         // Venue → HUD right venue
         if (knownVenue) {
             api('/api/venue/' + encodeURIComponent(knownVenue)).then(venueData => {
+                if (myReqId !== _openMatchReqId) return;
                 const el = document.getElementById('hud-venue');
                 if (el && venueData && !venueData.error && !venueData.note) el.innerHTML = MR().renderHudVenuePanel(venueData);
                 else if (el) el.innerHTML = matchData.weather ? renderMatchWeatherBlock(matchData.weather) : '';
@@ -174,7 +182,9 @@
                 const vEl = document.getElementById('detail-content-venue-tab');
                 if (vEl && venueData && !venueData.error && !venueData.note) vEl.innerHTML = renderVenueWeather(venueData);
                 else if (vEl) vEl.innerHTML = matchData.weather ? renderMatchWeatherBlock(matchData.weather) : `<div class="text-gray-500 text-xs py-4 text-center">${tx('场地资料暂不可用', 'Venue details unavailable')}</div>`;
-            }).catch(() => {
+            }).catch((err) => {
+                console.error('match-detail: venue load failed:', err);
+                if (myReqId !== _openMatchReqId) return;
                 const el = document.getElementById('hud-venue');
                 if (el && matchData.weather) el.innerHTML = renderMatchWeatherBlock(matchData.weather);
                 else if (el) el.innerHTML = '';
@@ -203,66 +213,93 @@
             const hId = mHomeId || matchData.home?.id, aId = mAwayId || matchData.away?.id;
             if (hId && aId) {
                 Promise.allSettled([api('/api/team/' + hId + '/recent-stats'), api('/api/team/' + aId + '/recent-stats')]).then(([h, a]) => {
+                    if (myReqId !== _openMatchReqId) return;
                     const el = document.getElementById('detail-content-stats'); if (!el) return;
                     const hVal = h.value?.data || h.value; const aVal = a.value?.data || a.value;
                     const hs = (h.status === 'fulfilled' && hVal?.stats) ? hVal : null;
                     const as2 = (a.status === 'fulfilled' && aVal?.stats) ? aVal : null;
                     if (!hs && !as2) { el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`; return; }
                     el.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('近期场均', 'RECENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
-                }).catch(() => { const el = document.getElementById('detail-content-stats'); if (el) el.innerHTML = ''; });
+                }).catch((err) => { console.error('match-detail: recent-stats load failed:', err); if (myReqId !== _openMatchReqId) return; const el = document.getElementById('detail-content-stats'); if (el) el.innerHTML = ''; });
             }
         }
 
         // H2H → left panel
-        withClientTimeout(api('/api/h2h/' + id), 8000).then(h2hRes => {
+        api('/api/h2h/' + id, { timeout: 8000 }).then(h2hRes => {
+            if (myReqId !== _openMatchReqId) return;
             const h2hData = h2hRes?.data || h2hRes;
             const el = document.getElementById('detail-content-h2h');
             if (el && h2hData && !h2hData.error) el.innerHTML = `<div style="padding:16px 18px">${renderHeadToHead(h2hData)}</div>`;
             else if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无交锋记录', 'No H2H data')}</div>`;
+        }).catch((err) => {
+            console.error('match-detail: h2h load failed:', err);
+            if (myReqId !== _openMatchReqId) return;
+            const el = document.getElementById('detail-content-h2h');
+            if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无交锋记录', 'No H2H data')}</div>`;
         });
 
         // News → left panel
         api('/api/match/' + id + '/news').then(newsRes => {
+            if (myReqId !== _openMatchReqId) return;
             const newsData = newsRes?.data || newsRes;
             const el = document.getElementById('detail-content-news');
             if (el && newsData && !newsData.error) el.innerHTML = `<div style="padding:16px 18px">${renderNewsList(newsData)}</div>`;
             else if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无新闻', 'No news')}</div>`;
+        }).catch((err) => {
+            console.error('match-detail: news load failed:', err);
+            if (myReqId !== _openMatchReqId) return;
+            const el = document.getElementById('detail-content-news');
+            if (el) el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('暂无新闻', 'No news')}</div>`;
         });
 
         // Bench → bottom dock
         api('/api/match/' + id + '/bench').then(benchData => {
+            if (myReqId !== _openMatchReqId) return;
             const el = document.getElementById('detail-content-bench');
             if (el && benchData && !benchData.error) {
                 el.innerHTML = MR().renderBenchAnalysis(benchData, isFinishedMatch);
                 if (benchData.realSubstitutions?.length > 0) MR().applySubstitutionsToFormation(benchData.realSubstitutions);
             } else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('替补席数据暂无', 'No bench data')}</div>`;
+        }).catch((err) => {
+            console.error('match-detail: bench load failed:', err);
+            if (myReqId !== _openMatchReqId) return;
+            const el = document.getElementById('detail-content-bench');
+            if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('替补席数据暂无', 'No bench data')}</div>`;
         });
 
         // Corners → bottom dock
         api('/api/corner-analysis/' + id).then(cornerRes => {
+            if (myReqId !== _openMatchReqId) return;
             const corner = cornerRes?.data || cornerRes;
             const el = document.getElementById('detail-content-corners');
             if (el && corner && !corner.error) el.innerHTML = renderCornerAnalysis(corner);
             else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('角球数据暂无', 'No corner data')}</div>`;
+        }).catch((err) => {
+            console.error('match-detail: corner load failed:', err);
+            if (myReqId !== _openMatchReqId) return;
+            const el = document.getElementById('detail-content-corners');
+            if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('角球数据暂无', 'No corner data')}</div>`;
         });
 
         // Review → bottom dock
         if (isFin && mHomeId && mAwayId) {
-            fetch('/api/post-match-review/' + id).then(r => r.json()).then(async review => {
+            window.WorldCup.ApiClient.get('/api/post-match-review/' + id, { timeout: 8000 }).then(r => r.data).then(async review => {
+                if (myReqId !== _openMatchReqId) return;
                 if (review && !review.error) {
                     if (!review.aiPrediction) { const pred = await api('/api/predict/' + id); if (pred && !pred.error && pred.homeWin !== undefined) { review.aiPrediction = { homeWin: Math.round((pred.homeWin || 0) * 1000) / 10, draw: Math.round((pred.draw || 0) * 1000) / 10, awayWin: Math.round((pred.awayWin || 0) * 1000) / 10, predictedScore: pred.likelyScore || '', source: 'current_model' }; } }
                     const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(review);
                 } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛后复盘暂未生成', 'Post-match review not yet available')}</div>`; }
-            }).catch(() => { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('比赛回顾暂不可用', 'Review unavailable')}</div>`; });
+            }).catch((err) => { console.error('match-detail: review load failed:', err); if (myReqId !== _openMatchReqId) return; const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('比赛回顾暂不可用', 'Review unavailable')}</div>`; });
         } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">⏳ ${tx('比赛结束后自动生成回顾', 'Auto-generated after match ends')}</div>`; }
 
         // Coach → bottom dock
         if (mHomeId && mAwayId) {
-            withClientTimeout(window.WorldCup.ApiClient.get('/api/coach-compare/' + mHomeId + '/' + mAwayId, { timeout: window.WorldCup.ApiClient.TIMEOUT_LONG }), 8000).then(res => {
+            window.WorldCup.ApiClient.get('/api/coach-compare/' + mHomeId + '/' + mAwayId, { timeout: 8000 }).then(res => {
+                if (myReqId !== _openMatchReqId) return;
                 const el = document.getElementById('detail-content-coach'); const coachData = res?.data;
                 if (el && coachData && !coachData.error) { el.innerHTML = MR().renderCoachPanel(coachData, isFinishedMatch); }
-                else if (el) { Promise.allSettled([window.WorldCup.ApiClient.get('/api/coach/' + mHomeId, { timeout: 5000 }), window.WorldCup.ApiClient.get('/api/coach/' + mAwayId, { timeout: 5000 })]).then(([homeR, awayR]) => { if (el) { const homeC = homeR.status === 'fulfilled' && homeR.value?.data && !homeR.value.data.error ? homeR.value.data : null; const awayC = awayR.status === 'fulfilled' && awayR.value?.data && !awayR.value.data.error ? awayR.value.data : null; el.innerHTML = MR().renderCoachPanel({ coachA: homeC, coachB: awayC, comparison: null, _fallback: true }, isFinishedMatch); } }).catch(() => { if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); }); }
-            }).catch(() => { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); });
+                else if (el) { Promise.allSettled([window.WorldCup.ApiClient.get('/api/coach/' + mHomeId, { timeout: 5000 }), window.WorldCup.ApiClient.get('/api/coach/' + mAwayId, { timeout: 5000 })]).then(([homeR, awayR]) => { if (el) { const homeC = homeR.status === 'fulfilled' && homeR.value?.data && !homeR.value.data.error ? homeR.value.data : null; const awayC = awayR.status === 'fulfilled' && awayR.value?.data && !awayR.value.data.error ? awayR.value.data : null; el.innerHTML = MR().renderCoachPanel({ coachA: homeC, coachB: awayC, comparison: null, _fallback: true }, isFinishedMatch); } }).catch((err) => { console.error('match-detail: inner coach load failed:', err); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); }); }
+            }).catch((err) => { console.error('match-detail: coach load failed:', err); if (myReqId !== _openMatchReqId) return; const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); });
         } else { const el = document.getElementById('detail-content-coach'); if (el) el.innerHTML = MR().renderCoachPanel(null, isFinishedMatch); }
     }
 
@@ -319,12 +356,16 @@
         let html='<div class="space-y-3">';
         const recentHome=data.recent?.home||homeSummary.recent10||[];const recentAway=data.recent?.away||awaySummary.recent10||[];
         const wdl=r10=>{if(!r10.length)return'';let w=0,d=0,l=0;r10.forEach(m=>{if(m.result==='W')w++;else if(m.result==='D')d++;else l++;});return ` <span class=\"font-mono text-[11px] text-white/40\">${w}-${d}-${l}</span>`;};
-        html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('交锋走势','H2H Trend')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">●</span><span class="text-sm">${esc(homeSummary.summaryText||homeTeam+tx(" 数据不足"," Insufficient data"))}${wdl(recentHome)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">●</span><span class="text-sm">${esc(awaySummary.summaryText||awayTeam+tx(" 数据不足"," Insufficient data"))}${wdl(recentAway)}</span></div></div></div>`;
+        const lang=window.WorldCup?.State?.uiLang||'zh';
+        const localSummary=s=>s?.summaryTextI18n?.(s.summaryTextI18n[lang]||s.summaryTextI18n.zh)||s?.summaryText||'';
+        const homeSummaryText=homeSummary.summaryTextI18n?homeSummary.summaryTextI18n[lang]||homeSummary.summaryTextI18n.zh:homeSummary.summaryText||homeTeam+tx(' 数据不足',' Insufficient data');
+        const awaySummaryText=awaySummary.summaryTextI18n?awaySummary.summaryTextI18n[lang]||awaySummary.summaryTextI18n.zh:awaySummary.summaryText||awayTeam+tx(' 数据不足',' Insufficient data');
+        html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('交锋走势','H2H Trend')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">●</span><span class="text-sm">${esc(homeSummaryText)}${wdl(recentHome)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">●</span><span class="text-sm">${esc(awaySummaryText)}${wdl(recentAway)}</span></div></div></div>`;
         html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('对阵记录','H2H History')}</div>`;
         const wc=grouped.worldCup;
-        if(wc?.matches?.length) html+=`<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>🏆</span><span class="text-sm font-bold">${esc(wc.label||tx("世界杯","World Cup"))}</span><span class="text-[11px] text-gray-500">${tx('共 ','Total ')}${esc(wc.stats?.total||0)}${tx(' 场',' matches')}</span></div>${renderH2HMatchList(wc.matches)}</div>`;
+        if(wc?.matches?.length) html+=`<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>🏆</span><span class="text-sm font-bold">${esc(wc.labelI18n?.[lang]||wc.label||tx("世界杯","World Cup"))}</span><span class="text-[11px] text-gray-500">${tx('共 ','Total ')}${esc(wc.stats?.total||0)}${tx(' 场',' matches')}</span></div>${renderH2HMatchList(wc.matches)}</div>`;
         const other=grouped.other;
-        if(other?.subGroups) for(const[subType,sub]of Object.entries(other.subGroups)) if(sub.matches?.length) html+=`<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>📁</span><span class="text-sm font-bold">${esc(sub.label||subType)}</span><span class="text-[11px] text-gray-500">${tx('共 ','Total ')}${esc(sub.stats?.total||0)}${tx(' 场',' matches')}</span></div>${renderH2HMatchList(sub.matches)}</div>`;
+        if(other?.subGroups) for(const[subType,sub]of Object.entries(other.subGroups)) if(sub.matches?.length) html+=`<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>📁</span><span class="text-sm font-bold">${esc(sub.labelI18n?.[lang]||sub.label||subType)}</span><span class="text-[11px] text-gray-500">${tx('共 ','Total ')}${esc(sub.stats?.total||0)}${tx(' 场',' matches')}</span></div>${renderH2HMatchList(sub.matches)}</div>`;
         if(!wc?.matches?.length&&!other?.subGroups) html+=recentMatches.length>0?`<div class="text-[11px] text-gray-500 mb-1">${tx('近期交锋','Recent Meetings')}</div>${renderH2HMatchList(recentMatches)}`:`<div class="text-gray-500 text-xs">${tx('暂无对阵记录','No H2H history')}</div>`;
         html+='</div>';
         if(summary.totalMatches>0) html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('交锋统计','H2H Stats')}</div><div class="grid grid-cols-3 gap-2 text-center"><div><div class="text-xs text-blue-400">${esc(homeTeam)}</div><div class="text-lg font-bold">${esc(summary.homeWins||0)}${tx(' 胜',' Wins')}</div><div class="text-[11px] text-gray-500">${esc(summary.homeWinRate||"0%")}</div></div><div><div class="text-xs text-gray-500">${tx('平局','Draws')}</div><div class="text-lg font-bold text-yellow-400">${esc(summary.draws||0)}</div><div class="text-[11px] text-gray-500">${esc(summary.drawRate||"0%")}</div></div><div><div class="text-xs text-red-400">${esc(awayTeam)}</div><div class="text-lg font-bold">${esc(summary.awayWins||0)}${tx(' 胜',' Wins')}</div><div class="text-[11px] text-gray-500">${esc(summary.awayWinRate||"0%")}</div></div></div></div>`;
@@ -352,7 +393,7 @@
         };
         const emoji = wmoEmoji(w.code);
         const tempColor = w.tC >= 32 ? 'rgba(248,113,113,.6)' : w.tC <= 10 ? 'rgba(59,130,246,.6)' : 'rgba(248,250,252,.5)';
-        return `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">
+        return `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">
             <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('比赛天气', 'MATCH WEATHER')}</div>
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
                 <span style="font-size:28px">${emoji}</span>
@@ -379,14 +420,30 @@
     }
 
     function renderVenueWeather(data) {
-        if (!data) return `<div class="text-gray-500 text-xs py-4 text-center">数据暂无</div>`;
-        const v=data,w=v.weather,impact=v.impact;
+        if (!data) return `<div class="text-gray-500 text-xs py-4 text-center">${tx('数据暂无','No data')}</div>`;
+        const v=data,w=v.weather,impact=v.impact,meta=v.meta;
         const weatherIcon=w?({Clear:'☀️',Clouds:'☁️',Rain:'🌧️',Snow:'❄️',Thunderstorm:'⛈️'}[w.condition]||'🌤️'):'🌤️';
         const impactColor=impact?.overall>10?'text-green-400':impact?.overall<-10?'text-red-400':'text-yellow-400';
         const impactEmoji=impact?.overall>10?'✅':impact?.overall<-10?'⚠️':'➡️';
-        const grassIcon=(v.grass||'').includes('人工')?'🟢':(v.grass||'').includes('混合')?'🟡':'🌿';
+        const grassDisplay=meta?.surface||v.grass||tx('未知','N/A');
+        const grassIcon=grassDisplay.includes('人工')?'🟢':grassDisplay.includes('混合')?'🟡':'🌿';
         const roofIcon=v.roof==='closed'?'🏟️':v.roof==='retractable'?'🔄':'☁️';
-        return `<div class="space-y-3"><div class="glass-light rounded-lg p-3"><div class="flex items-center gap-2 mb-2"><span class="text-lg">${roofIcon}</span><div><div class="font-bold text-sm">${esc(v.name)||'未知场馆'}</div><div class="text-[11px] text-gray-500">${esc(v.city)||''}, ${esc(v.country)||''}</div></div></div><div class="grid grid-cols-2 gap-2 text-[11px]"><div><span class="text-gray-500">容量</span><span class="font-bold ml-1">${v.capacity?.toLocaleString()||'-'}</span></div><div><span class="text-gray-500">海拔</span><span class="font-bold ml-1">${v.altitude||0}m</span></div><div><span class="text-gray-500">草皮</span><span class="ml-1">${grassIcon} ${esc(v.grass)||'未知'}</span></div><div><span class="text-gray-500">屋顶</span><span class="ml-1">${v.roof==='closed'?'封闭':v.roof==='retractable'?'可伸缩':'开放'}</span></div></div></div>${w?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">${weatherIcon} 天气状况</span><span class="text-[11px] text-gray-500">${esc(w.description)||''}</span></div><div class="grid grid-cols-3 gap-3 text-center"><div><div class="text-xl font-bold">${esc(w.temp)||'-'}°C</div><div class="text-[11px] text-gray-500">温度</div><div class="text-[11px] text-gray-600">体感 ${esc(w.feelsLike)||'-'}°C</div></div><div><div class="text-xl font-bold">${esc(w.humidity)||'-'}%</div><div class="text-[11px] text-gray-500">湿度</div></div><div><div class="text-xl font-bold">${w.windSpeed?esc(Math.round(w.windSpeed)):'-'}</div><div class="text-[11px] text-gray-500">风速 km/h</div></div></div></div>`:`<div class="glass-light rounded-lg p-3"><div class="text-center text-gray-500 text-xs"><div class="mb-1">🌤️ 天气数据</div><div>暂无实时天气</div></div></div>`}${impact?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">📊 场地影响分析</span><span class="text-xs ${impactColor} font-bold">${impactEmoji} ${impact.overall>0?'+':''}${esc(impact.overall)}</span></div><div class="grid grid-cols-2 gap-2 text-[11px] mb-2"><div><span class="text-gray-500">进攻</span><span class="font-bold ml-1 ${impact.attack>0?'text-green-400':impact.attack<0?'text-red-400':''}">${impact.attack>0?'+':''}${esc(impact.attack)}%</span></div><div><span class="text-gray-500">防守</span><span class="font-bold ml-1 ${impact.defense>0?'text-green-400':impact.defense<0?'text-red-400':''}">${impact.defense>0?'+':''}${esc(impact.defense)}%</span></div><div><span class="text-gray-500">控球</span><span class="font-bold ml-1 ${impact.possession>0?'text-green-400':impact.possession<0?'text-red-400':''}">${impact.possession>0?'+':''}${esc(impact.possession)}%</span></div><div><span class="text-gray-500">体能</span><span class="font-bold ml-1 ${impact.physical>0?'text-green-400':impact.physical<0?'text-red-400':''}">${impact.physical>0?'+':''}${esc(impact.physical)}%</span></div></div>${impact.details?.length?`<div class="border-t border-white/5 pt-2">${impact.details.map(d=>`<div class="text-[11px] text-gray-400 mb-1">• ${esc(d)}</div>`).join('')}</div>`:''}</div>`:''}</div>`;
+        let venueBlock='';
+        if(v.wikiThumb){venueBlock+=`<div class="mb-3"><img src="${esc(v.wikiThumb)}" alt="${esc(v.name||'')}" class="w-full h-32 object-cover rounded-lg opacity-85" loading="lazy"></div>`;}
+        venueBlock+=`<div class="flex items-center gap-2 mb-2"><span class="text-lg">${roofIcon}</span><div><div class="font-bold text-sm">${esc(v.name)||tx('未知场馆','Unknown Venue')}</div><div class="text-[11px] text-gray-500">${esc(v.city)||''}, ${esc(v.country)||''}</div></div></div>`;
+        const metaCards=[];
+        if(v.capacity)metaCards.push({l:tx('容量','Capacity'),v:v.capacity.toLocaleString()});
+        if(meta?.yearBuilt)metaCards.push({l:tx('建造','Built'),v:String(meta.yearBuilt)});
+        if(meta?.architect)metaCards.push({l:tx('建筑师','Architect'),v:meta.architect});
+        if(meta?.cost)metaCards.push({l:tx('造价','Cost'),v:meta.cost});
+        if(metaCards.length>0){
+            const cols=metaCards.length<=2?metaCards.length:2;
+            venueBlock+=`<div class="grid gap-2 text-[11px] mb-2" style="grid-template-columns:repeat(${cols},1fr)">`;
+            for(const mc of metaCards){venueBlock+=`<div><span class="text-gray-500">${mc.l}</span><span class="font-bold ml-1">${esc(mc.v)}</span></div>`;}
+            venueBlock+=`</div>`;
+        }
+        venueBlock+=`<div class="grid grid-cols-2 gap-2 text-[11px]"><div><span class="text-gray-500">${tx('海拔','Altitude')}</span><span class="font-bold ml-1">${v.altitude||0}m</span></div><div><span class="text-gray-500">${tx('草皮','Surface')}</span><span class="ml-1">${grassIcon} ${esc(grassDisplay)}</span></div><div><span class="text-gray-500">${tx('屋顶','Roof')}</span><span class="ml-1">${v.roof==='closed'?tx('封闭','Closed'):v.roof==='retractable'?tx('可伸缩','Retractable'):tx('开放','Open')}</span></div></div>`;
+        return `<div class="space-y-3"><div class="glass-light rounded-lg p-3">${venueBlock}</div>${w?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">${weatherIcon} ${tx('天气状况','Weather')}</span><span class="text-[11px] text-gray-500">${esc(w.description)||''}</span></div><div class="grid grid-cols-3 gap-3 text-center"><div><div class="text-xl font-bold">${esc(w.temp)||'-'}°C</div><div class="text-[11px] text-gray-500">${tx('温度','Temp')}</div><div class="text-[11px] text-gray-600">${tx('体感','Feels')} ${esc(w.feelsLike)||'-'}°C</div></div><div><div class="text-xl font-bold">${esc(w.humidity)||'-'}%</div><div class="text-[11px] text-gray-500">${tx('湿度','Humidity')}</div></div><div><div class="text-xl font-bold">${w.windSpeed?esc(Math.round(w.windSpeed)):'-'}</div><div class="text-[11px] text-gray-500">${tx('风速','Wind')} km/h</div></div></div></div>`:`<div class="glass-light rounded-lg p-3"><div class="text-center text-gray-500 text-xs"><div class="mb-1">🌤️ ${tx('天气数据','Weather')}</div><div>${tx('暂无实时天气','No weather data')}</div></div></div>`}${impact?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">📊 ${tx('场地影响分析','Venue Impact')}</span><span class="text-xs ${impactColor} font-bold">${impactEmoji} ${impact.overall>0?'+':''}${esc(impact.overall)}</span></div><div class="grid grid-cols-2 gap-2 text-[11px] mb-2"><div><span class="text-gray-500">${tx('进攻','Attack')}</span><span class="font-bold ml-1 ${impact.attack>0?'text-green-400':impact.attack<0?'text-red-400':''}">${impact.attack>0?'+':''}${esc(impact.attack)}%</span></div><div><span class="text-gray-500">${tx('防守','Defense')}</span><span class="font-bold ml-1 ${impact.defense>0?'text-green-400':impact.defense<0?'text-red-400':''}">${impact.defense>0?'+':''}${esc(impact.defense)}%</span></div><div><span class="text-gray-500">${tx('控球','Poss')}</span><span class="font-bold ml-1 ${impact.possession>0?'text-green-400':impact.possession<0?'text-red-400':''}">${impact.possession>0?'+':''}${esc(impact.possession)}%</span></div><div><span class="text-gray-500">${tx('体能','Stamina')}</span><span class="font-bold ml-1 ${impact.physical>0?'text-green-400':impact.physical<0?'text-red-400':''}">${impact.physical>0?'+':''}${esc(impact.physical)}%</span></div></div>${impact.details?.length?`<div class="border-t border-white/5 pt-2">${impact.details.map(d=>`<div class="text-[11px] text-gray-400 mb-1">• ${esc(d)}</div>`).join('')}</div>`:''}</div>`:''}</div>`;
     }
 
     function renderPreMatchPrediction(pred) {

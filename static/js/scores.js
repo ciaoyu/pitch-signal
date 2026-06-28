@@ -181,20 +181,11 @@
                     ${flagBadge(m.away, 'neutral')}
                 </div>
             </div>
-            <div class="stats-strip-dim">
-                <div class="stat-item">
-                    <span class="stat-label-dim">${tx('控球','Poss')}</span>
-                    <span class="stat-val-dim" data-stat="poss">--</span>
+            <div class="stats-strip-dim" style="justify-content: space-between;">
+                <div class="stat-item" style="color:rgba(248,250,252,.35)">
+                    <span class="stat-val-dim" data-stat="combined" style="font-size:10px;">Poss -- / Shots --</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label-dim">${tx('射门','Shots')}</span>
-                    <span class="stat-val-dim" data-stat="shots">--</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label-dim">xG</span>
-                    <span class="stat-val-dim" data-stat="xg">--</span>
-                </div>
-                <div class="stat-item" style="margin-left:auto">
                     <span style="font:300 8px/1 'Inter';color:rgba(248,250,252,.1)">${esc(m.venue || '')}</span>
                 </div>
             </div>
@@ -250,6 +241,11 @@
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1L8 4L5 7" stroke="rgba(248,250,252,.15)" stroke-width=".8"></path><circle cx="5" cy="9" r=".8" fill="rgba(248,250,252,.1)"></circle></svg>
                 <span class="venue-text">${esc(m.venue)}</span>
             </div>` : ''}
+            <div class="stats-strip-dim h2h-strip" style="justify-content: space-between; margin-top: 10px;">
+                <div class="stat-item" style="color:rgba(248,250,252,.35)">
+                    <span class="stat-val-dim" data-stat="h2h" data-loaded="false" style="font-size:10px;">${tx('交锋记录加载中...', 'Loading H2H...')}</span>
+                </div>
+            </div>
         </div>`;
     }
 
@@ -299,8 +295,9 @@
             }
 
             const d = res.data;
+            const played = d.played ?? d.matchesPlayed ?? '--';
             const items = [
-                { label: tx('已赛', 'Played'), value: d.matchesPlayed ?? '--', icon: '⚽' },
+                { label: tx('已赛', 'Played'), value: played, icon: '⚽' },
                 { label: tx('总进球', 'Goals'), value: d.totalGoals ?? '--', icon: '🥅' },
                 { label: tx('场均', 'Avg'), value: d.avgGoals != null ? Number(d.avgGoals).toFixed(1) : '--', icon: '📊' },
                 { label: tx('黄牌', 'Yellows'), value: d.yellowCards ?? '--', icon: '🟨' },
@@ -313,12 +310,7 @@
                     <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.25)">${it.label}</span>
                     <span style="font:600 13px/1 'JetBrains Mono', monospace;color:#f8fafc">${esc(String(it.value))}</span>
                 </div>
-            `).join('') + (d.biggestWin || d.fastestGoal ? `
-                <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;white-space:nowrap;flex-shrink:0;margin-left:4px">
-                    ${d.biggestWin ? `<span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2)">${tx('最大分差', 'Biggest')}: <span style="color:rgba(248,250,252,.45)">${esc(d.biggestWin)}</span></span>` : ''}
-                    ${d.fastestGoal ? `<span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);${d.biggestWin ? 'margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,.06)' : ''}">${tx('最快进球', 'Fastest')}: <span style="color:rgba(248,250,252,.45)">${esc(d.fastestGoal)}</span></span>` : ''}
-                </div>
-            ` : '');
+            `).join('');
 
             container.style.display = 'block';
         } catch {
@@ -330,13 +322,16 @@
     async function enrichMatchStats(matches) {
         const targets = matches.filter(m => m.state === 'in' || m.state === 'post');
         if (!targets.length) return;
-        const results = await Promise.allSettled(
-            targets.map(m => window.WorldCup.ApiClient.get('/api/match/' + m.id))
-        );
-        results.forEach((r, i) => {
-            if (r.status !== 'fulfilled' || !r.value?.ok) return;
-            const data = r.value.data;
-            const card = document.querySelector('[data-match-id="' + targets[i].id + '"]');
+        const ids = targets.map(m => m.id).join(',');
+        const res = await window.WorldCup.ApiClient.get('/api/matches/batch?ids=' + ids);
+        if (!res.ok || !res.data) return;
+        const matchMap = {};
+        for (const m of (res.data.matches || [])) matchMap[m.id] = m;
+        
+        targets.forEach(target => {
+            const data = matchMap[target.id];
+            if (!data) return;
+            const card = document.querySelector('[data-match-id="' + target.id + '"]');
             if (!card) return;
             const stats = {};
             for (const s of (data.teamStats || [])) {
@@ -348,6 +343,14 @@
                     if (!stats.shots) stats.shots = { h: s.home, a: s.away };
                 }
                 else if (n.includes('expect') || n === 'xg') stats.xg = { h: s.home, a: s.away };
+            }
+            if (stats.poss || stats.shots) {
+                const combE = card.querySelector('[data-stat="combined"]');
+                if (combE) {
+                    const possStr = stats.poss ? (stats.poss.h + '%-' + stats.poss.a + '%') : '--';
+                    const shotsStr = stats.shots ? (stats.shots.h + '-' + stats.shots.a) : '--';
+                    combE.textContent = `Poss ${possStr} / Shots ${shotsStr}`;
+                }
             }
             if (stats.poss) {
                 const pe = card.querySelector('[data-stat="poss"]');
@@ -364,6 +367,34 @@
             if (stats.xg) {
                 const xe = card.querySelector('[data-stat="xg"]');
                 if (xe) xe.textContent = stats.xg.h + ':' + stats.xg.a;
+            }
+        });
+    }
+
+    async function enrichPreMatchStats(matches) {
+        const { tx } = window.WorldCup.Utils;
+        const targets = matches.filter(m => m.state === 'pre');
+        if (!targets.length) return;
+        
+        targets.forEach(async target => {
+            const card = document.querySelector(`[data-match-id="${target.id}"]`);
+            if (!card) return;
+            const combE = card.querySelector('[data-stat="h2h"]');
+            if (!combE || combE.dataset.loaded === 'true') return;
+            
+            try {
+                const res = await window.WorldCup.ApiClient.get(`/api/h2h/${target.id}`);
+                if (!res.ok || !res.data || !res.data.summary) return;
+                
+                const s = res.data.summary;
+                if (s.totalMatches === 0) {
+                    combE.textContent = tx('无历史交锋记录', 'No Historical H2H');
+                } else {
+                    combE.textContent = tx(`历史战绩: ${s.homeWins}胜 ${s.draws}平 ${s.awayWins}负`, `H2H: ${s.homeWins}W ${s.draws}D ${s.awayWins}L`);
+                }
+                combE.dataset.loaded = 'true';
+            } catch (e) {
+                console.error('[H2H] Fetch failed:', e);
             }
         });
     }

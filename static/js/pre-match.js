@@ -1,7 +1,7 @@
 (function() {
     'use strict';
     const API = window.WorldCup.ApiClient;
-    const { tx, esc, withClientTimeout } = window.WorldCup.Utils;
+    const { tx, esc } = window.WorldCup.Utils;
     const { renderSpatialMatchupPanel } = window.WorldCup.SpatialMatchup;
     const { renderVenueWeather, renderCornerAnalysis } = window.WorldCup.MatchDetail;
     const { scheduleCache } = window.WorldCup.State;
@@ -66,7 +66,7 @@
             const el = document.getElementById('detail-content-stats');
             if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('统计数据加载失败', 'Failed to load stats')}</div>`;
         });
-        withClientTimeout(API.get('/api/coach-compare/' + homeId + '/' + awayId, { timeout: API.TIMEOUT_LONG }), 8000).then(res => {
+        API.get('/api/coach-compare/' + homeId + '/' + awayId, { timeout: 8000 }).then(res => {
             const el = document.getElementById('detail-content-coach');
             const coachData = res?.data;
             if (el && coachData && !coachData.error) {

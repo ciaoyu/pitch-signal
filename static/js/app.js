@@ -72,39 +72,47 @@
         if (el) el.textContent = time + (state.uiLang === 'en' ? ' CST' : '');
     }
 
-    // ========== Global AI Chat (compatibility guard) ==========
-    function _appendGlobalBubble(container, label, labelClass, bodyClass, text) {
+    // ========== Global AI Chat ==========
+    function _appendChatBubble(container, role, text) {
         const wrap = document.createElement('div');
-        wrap.className = 'flex flex-col gap-1 ' + (labelClass.includes('mr-') ? 'items-end' : 'items-start');
-        const lbl = document.createElement('span');
-        lbl.className = labelClass;
-        lbl.textContent = label;
-        const body = document.createElement('div');
-        body.className = bodyClass;
-        const parts = String(text || '').split('\n');
-        parts.forEach((part, i) => {
-            if (i > 0) body.appendChild(document.createElement('br'));
-            body.appendChild(document.createTextNode(part));
-        });
-        wrap.appendChild(lbl);
-        wrap.appendChild(body);
+        wrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;margin-bottom:12px;' +
+            (role === 'user' ? 'align-items:flex-end' : 'align-items:flex-start');
+        const label = document.createElement('span');
+        label.style.cssText = 'font:400 9px/1 \'Inter\';color:rgba(248,250,252,.3)';
+        label.textContent = role === 'user' ? 'You' : 'AI Assistant';
+        const bubble = document.createElement('div');
+        bubble.style.cssText = role === 'user'
+            ? 'background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.15);border-radius:16px 16px 4px 16px;padding:10px 14px;font:400 13px/1.5 \'Inter\';color:#f8fafc;max-width:85%;word-break:break-word'
+            : 'background:rgba(255,255,255,.06);border-radius:16px 16px 16px 4px;padding:10px 14px;font:400 13px/1.5 \'Inter\';color:rgba(248,250,252,.7);max-width:85%;word-break:break-word';
+        bubble.textContent = text || '';
+        wrap.appendChild(label);
+        wrap.appendChild(bubble);
         container.appendChild(wrap);
-        return wrap;
+        container.scrollTop = container.scrollHeight;
+        return bubble;
     }
 
-    async function sendGlobalChatMessage() {
+    function _typewriterEffect(el, text, speed) {
+        speed = speed || 18;
+        return new Promise(resolve => {
+            let i = 0;
+            const scroll = () => { el.parentElement.parentElement.scrollTop = el.parentElement.parentElement.scrollHeight; };
+            (function type() {
+                if (i < text.length) { el.textContent += text.charAt(i); i++; scroll(); setTimeout(type, speed); }
+                else resolve();
+            })();
+        });
+    }
+
+    async function sendGlobalChatMessage(question) {
         const input = document.getElementById('global-chat-input');
-        const msg = input.value.trim();
+        const msg = question || input.value.trim();
         if (!msg) return;
-        input.value = '';
+        if (!question) input.value = '';
         const container = document.getElementById('global-chat-messages');
-        _appendGlobalBubble(container, 'You', 'text-[9px] text-gray-500 mr-1',
-            'bg-purple-600 rounded-2xl rounded-tr-sm px-4 py-2 text-sm text-white', msg);
-        const loadingId = 'loading-' + Date.now();
-        const loadingWrap = _appendGlobalBubble(container, 'AI Assistant', 'text-[9px] text-gray-500 ml-1',
-            'bg-white/10 rounded-2xl rounded-tl-sm px-4 py-2 text-sm text-gray-400 italic', '...');
-        loadingWrap.id = loadingId;
-        container.scrollTop = container.scrollHeight;
+        _appendChatBubble(container, 'user', msg);
+        const aiBubble = _appendChatBubble(container, 'ai', '');
+        aiBubble.style.opacity = '0.5';
         try {
             const res = await fetch('/api/bot/ask', {
                 method: 'POST',
@@ -112,16 +120,13 @@
                 body: JSON.stringify({ question: msg, context: 'global-feedback', uiLang: state.uiLang }),
             });
             const data = await res.json();
-            document.getElementById(loadingId)?.remove();
-            _appendGlobalBubble(container, 'AI Assistant', 'text-[9px] text-gray-500 ml-1',
-                'bg-white/10 rounded-2xl rounded-tl-sm px-4 py-2 text-sm text-gray-200', data.answer || 'Error');
+            aiBubble.style.opacity = '1';
+            await _typewriterEffect(aiBubble, data.answer || data.error || 'No response', 15);
         } catch (e) {
-            document.getElementById(loadingId)?.remove();
-            _appendGlobalBubble(container, 'Error', 'text-[9px] text-red-400 ml-1',
-                'bg-red-500/20 border border-red-500/50 text-red-200 rounded-2xl rounded-tl-sm px-4 py-2 text-sm',
-                window.t('发送失败，请稍后再试。', 'Send failed. Please try again later.'));
+            aiBubble.style.opacity = '1';
+            aiBubble.style.color = 'rgba(248,113,113,.7)';
+            aiBubble.textContent = window.t('发送失败，请稍后再试。', 'Send failed. Please try again later.');
         }
-        container.scrollTop = container.scrollHeight;
     }
 
     // ========== Event Delegation: Nav Tabs ==========
@@ -141,6 +146,7 @@
         if (action === 'close-team-modal') return window.closeTeamModal();
         if (action === 'close-modal') return window.closeModal();
         if (action === 'open-match') return window.openMatch(target.dataset.matchId);
+        if (action === 'open-match-from-bracket') return window.openMatch(target.dataset.matchId);
         if (action === 'open-pre-match') {
             return window.openPreMatch(
                 target.dataset.matchId,
@@ -162,7 +168,7 @@
             const inline = ds.playerName
                 ? { name: ds.playerName, pos: ds.playerPos, jersey: ds.playerJersey, age: ds.playerAge, height: ds.playerHeight, nationality: ds.playerNationality }
                 : null;
-            return window.openPlayerDetail(ds.playerId, inline);
+            return window.openPlayerDetail(ds.playerId, inline, ds.teamId);
         }
         if (action === 'switch-detail-tab') return window.switchDetailTab(target.dataset.detailTab, target);
         if (action === 'switch-standings-tab') return window.switchStandingsSubTab(target.dataset.standingsTab, target);
@@ -175,8 +181,16 @@
             return window.askAIPreset(target.dataset.chatId, target.dataset.matchId, target.dataset.homeId, target.dataset.awayId, target.dataset.question);
         }
         if (action === 'close-global-chat') {
+            e.stopPropagation();
             document.getElementById('global-chat-modal')?.classList.add('hidden');
             document.body.style.overflow = '';
+            return;
+        }
+        if (action === 'send-global-chat') return sendGlobalChatMessage();
+        if (action === 'ask-global-preset') {
+            const q = target.dataset.question;
+            if (q) sendGlobalChatMessage(q);
+            return;
         }
     });
 
@@ -199,16 +213,9 @@
         }
     });
 
-    // ========== Global AI Chat Button (compatibility guard) ==========
-    const globalChatToggle = document.getElementById('ai-chat-toggle');
-    const globalChatSend = document.getElementById('global-chat-send');
+    // ========== Global AI Chat — Enter key in input ==========
     const globalChatInput = document.getElementById('global-chat-input');
-    if (globalChatToggle && globalChatSend && globalChatInput) {
-        globalChatToggle.addEventListener('click', () => {
-            document.getElementById('global-chat-modal')?.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        });
-        globalChatSend.addEventListener('click', sendGlobalChatMessage);
+    if (globalChatInput) {
         globalChatInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') sendGlobalChatMessage();
         });
@@ -242,7 +249,14 @@
             for (const m of liveMatches) { if (!existingIds.has(String(m.id))) cache.push(m); }
         }
     });
-    const autoRefresh = setInterval(loadScores, 120000);
+    const autoRefresh = setInterval(() => {
+        if (document.hidden) return;
+        loadScores();
+    }, 120000);
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && state.tab === 'live') loadScores();
+    });
 
     // ========== Service Worker (PWA) ==========
     if ('serviceWorker' in navigator) {

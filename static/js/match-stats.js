@@ -73,7 +73,7 @@
     }
 
     function renderMatchStatComparison(stat, label) {
-        const { esc, attr, i18nText } = window.WorldCup.Utils;
+        const { esc, attr } = window.WorldCup.Utils; const i18nText = window.WorldCup.I18n?.i18nText || ((v, fb) => (typeof v === 'string' ? v : (v?.zh || v?.en || fb || '')));
         const homeValue = String(stat.home ?? '0');
         const awayValue = String(stat.away ?? '0');
         const homeMagnitude = matchStatMagnitude(homeValue);
@@ -96,7 +96,7 @@
     }
 
     function renderMatchStats(teamStats) {
-        const { esc, i18nText, tx } = window.WorldCup.Utils;
+        const { esc, tx } = window.WorldCup.Utils; const i18nText = window.WorldCup.I18n?.i18nText || ((v, fb) => (typeof v === 'string' ? v : (v?.zh || v?.en || fb || '')));
         const statsByName = new Map(teamStats.map(stat => [stat.name, stat]));
         const groups = Object.values(MATCH_STAT_GROUPS).map(group => {
             const rows = Object.entries(group.stats)
@@ -116,7 +116,7 @@
     // Render a side-by-side comparison of recent-avg stats for two teams
     // hs/as: { stats: { "passCompletionPct": { avg: 82.5, count: 3 }, ... }, matches: N, teamId }
     function renderRecentAvgComparison(hs, as, hName, aName) {
-        const { esc, i18nText, tx } = window.WorldCup.Utils;
+        const { esc, tx } = window.WorldCup.Utils; const i18nText = window.WorldCup.I18n?.i18nText || ((v, fb) => (typeof v === 'string' ? v : (v?.zh || v?.en || fb || '')));
         if (!hs && !as) return `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`;
 
         // Known stat categories to extract

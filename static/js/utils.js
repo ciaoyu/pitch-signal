@@ -36,13 +36,7 @@
         return ApiClient.legacy(url, options);
     }
 
-    function withClientTimeout(promise, ms = 8000) {
-        // Kept for compatibility; API.get() already handles timeout internally.
-        return Promise.race([
-            promise,
-            new Promise(resolve => setTimeout(() => resolve(null), ms))
-        ]);
-    }
+
 
     // I18n-aware team name display
     function displayMaybeTeamName(...a) {
@@ -59,7 +53,7 @@
     U.attr = attr;
     U.safeUrl = safeUrl;
     U.api = api;
-    U.withClientTimeout = withClientTimeout;
+
     U.displayMaybeTeamName = displayMaybeTeamName;
     U.displayGroupName = displayGroupName;
     // t (i18n translation) is defined in i18n.js — use getter for load-order safety
@@ -71,5 +65,5 @@
     window.attr = attr;
     window.safeUrl = safeUrl;
     window.api = api;
-    window.withClientTimeout = withClientTimeout;
+
 })();

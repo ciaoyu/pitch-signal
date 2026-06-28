@@ -35,8 +35,8 @@
         // Lazy-load knockout bracket
         if (tab === 'knockout' && window.WorldCup.Utils) {
             const container = document.getElementById('bracket-container-standings');
-            if (container && container.querySelector('.text-gray-500')) {
-                window.WorldCup.Utils.api('/api/bracket').then(data => {
+            if (container && !container.querySelector('#bk-wrap')) {
+                fetch('/api/bracket').then(r => r.json()).then(data => {
                     if (container && data && !data.error && window.renderBracket) {
                         container.innerHTML = '';
                         window.renderBracket(data, container);
@@ -70,24 +70,26 @@
     }
 
     function renderTopScorers(scorers) {
-        const { esc, tx, attr, displayMaybeTeamName } = window.WorldCup.Utils;
+        const { esc, tx, attr } = window.WorldCup.Utils;
+        const playerZh = (name) => (window.WorldCup.I18n?.translatePlayerName || ((n) => n))(name);
         if (!scorers.length) return `<div class="text-center py-10 text-gray-500">${tx('暂无射手数据', 'No scorer data')}</div>`;
 
         let html = '';
-        scorers.slice(0, 50).forEach((p, i) => {
+        scorers.slice(0, 20).forEach((p, i) => {
             const rank = i + 1;
-            const nameZh = p.nameZh || p.name;
+            const nameZh = playerZh(p.name);
             const rankColor = rank <= 3 ? '#34d399' : 'rgba(248,250,252,.3)';
-            html += `<div class="schedule-row" data-action="open-player-detail" data-player-id="${attr(p.playerId)}" data-player-name="${attr(p.name)}">
+            const clickable = (p.athleteId || p.teamEspnId) ? ` data-action="open-player-detail" data-player-id="${attr(p.athleteId || '')}" data-team-id="${attr(p.teamEspnId || '')}" data-player-name="${attr(p.name)}" style="cursor:pointer"` : '';
+            html += `<div class="schedule-row"${clickable}>
                 <span style="font:600 13px/1 'JetBrains Mono', monospace;color:${rankColor};min-width:24px;text-align:center">${rank}</span>
-                ${p.teamLogo ? `<img src="${attr(p.teamLogo)}" style="width:18px;height:18px;object-fit:contain;border-radius:3px;flex-shrink:0" onerror="this.style.display='none'">` : '<span style="width:18px;height:18px;flex-shrink:0"></span>'}
+                <span style="font-size:18px;flex-shrink:0">${p.flag || '🏳️'}</span>
                 <div style="flex:1;min-width:0;overflow:hidden">
                     <div style="font:500 12px/1 'Inter';color:rgba(248,250,252,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nameZh)}</div>
                     <div style="font:400 10px/1 'Inter';color:rgba(248,250,252,.3);margin-top:2px">${esc(p.team)}</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0">
                     <div style="font:700 18px/1 'JetBrains Mono', monospace;color:#34d399">${p.goals}</div>
-                    <div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px">${p.appearances}${tx('场',' apps')}</div>
+                    <div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px">${tx('球',' goals')}</div>
                 </div>
             </div>`;
         });

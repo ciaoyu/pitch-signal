@@ -1558,13 +1558,29 @@
         return window.WorldCup.State;
     }
 
+    // Lazy-built lowercase+no-accent index for fuzzy player name lookup
+    let _zhNamesLower = null;
+    function getZhNamesLower() {
+        if (!_zhNamesLower) {
+            _zhNamesLower = {};
+            for (const [k, v] of Object.entries(ZH_NAMES)) {
+                const norm = k.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+                _zhNamesLower[norm] = v;
+            }
+        }
+        return _zhNamesLower;
+    }
+
     function translatePlayerName(name, nameZh) {
         const state = getState();
         if (!name) return name;
         if (state.uiLang === 'en') return name;
         // 优先使用后端返回的 nameZh，fallback 到本地字典
         if (nameZh) return nameZh;
-        return ZH_NAMES[name] || name;
+        if (ZH_NAMES[name]) return ZH_NAMES[name];
+        // Fuzzy fallback: case-insensitive + accent-stripped
+        const norm = name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+        return getZhNamesLower()[norm] || name;
     }
 
     function translateCoachField(val, type) {

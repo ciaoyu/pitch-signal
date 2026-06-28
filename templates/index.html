@@ -10,8 +10,13 @@
     <title>PitchSignal · 2026 世界杯</title>
     <link rel="stylesheet" href="/static/css/tailwind-output.css?v=20260628">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+    :root {
+        --glass-blur-sm: 24px;
+        --glass-blur-md: 32px;
+        --glass-blur-lg: 48px;
+    }
     * { -webkit-tap-highlight-color: transparent; }
     body { background: radial-gradient(ellipse at 50% 20%, #1e293b 0%, #0f172a 70%); color: #f8fafc; overscroll-behavior: none; margin: 0; min-height: 100vh; }
     .font-dm { font-family: 'DM Sans', system-ui, sans-serif; }
@@ -39,10 +44,10 @@
     /* Nav pill tabs — active/off handled by .tab-btn + .tab-on */
 
     /* Live score card styles */
-    .match-card-live { background: rgba(0,0,0,.35); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(52,211,153,.1); border-radius: 16px; padding: 18px 22px; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04); }
+    .match-card-live { background: rgba(0,0,0,.35); backdrop-filter: blur(var(--glass-blur-lg)); -webkit-backdrop-filter: blur(var(--glass-blur-lg)); border: 1px solid rgba(52,211,153,.1); border-radius: 16px; padding: 18px 22px; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04); }
     .match-card-live .accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(52,211,153,.3), transparent); }
-    .match-card-done { background: rgba(0,0,0,.22); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.03); }
-    .match-card-pre { background: rgba(0,0,0,.3); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03); }
+    .match-card-done { background: rgba(0,0,0,.22); backdrop-filter: blur(var(--glass-blur-lg)); -webkit-backdrop-filter: blur(var(--glass-blur-lg)); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.03); }
+    .match-card-pre { background: rgba(0,0,0,.3); backdrop-filter: blur(var(--glass-blur-lg)); -webkit-backdrop-filter: blur(var(--glass-blur-lg)); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 18px 22px; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03); }
     .section-label { font: 500 9px/1 'JetBrains Mono', monospace; color: rgba(248,250,252,.2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .section-label-live { color: rgba(52,211,153,.4); }
     .section-label-live .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: pulse-live 1.8s ease-in-out infinite; }
@@ -127,8 +132,8 @@
     .compare-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
     @media (hover:hover) { .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.12); } }
     .tab-on { background: rgba(255,255,255,.06); color: #f8fafc; }
-    .tab-btn { border: none; background: transparent; color: rgba(248,250,252,.3); transition: all .15s; }
-    .tab-btn:hover { color: rgba(248,250,252,.6); }
+    .tab-btn { border: none; background: transparent; color: rgba(248,250,252,.45); transition: all .15s; }
+    .tab-btn:hover { color: rgba(248,250,252,.7); }
 
     /* === Prediction Tab Styles === */
     .pred-section { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 14px; }
@@ -175,7 +180,7 @@
     .radar-away { fill: rgba(239,68,68,0.2); stroke: #ef4444; stroke-width: 2; }
 
     /* Match detail HUD — immersive fullscreen */
-    .hud-glass-panel { background: rgba(15,23,42,.4); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05); }
+    .hud-glass-panel { background: rgba(15,23,42,.4); backdrop-filter: blur(var(--glass-blur-lg)); -webkit-backdrop-filter: blur(var(--glass-blur-lg)); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05); }
     .hud-tab-btn { border: none; background: transparent; color: rgba(248,250,252,.3); transition: all .15s; cursor: pointer; }
     .hud-tab-btn:hover { color: rgba(248,250,252,.6); }
     .hud-tab-btn.active { color: #f8fafc; border-bottom: 2px solid #34d399; background: rgba(255,255,255,.03); }
@@ -190,15 +195,34 @@
     .animate-scale-in { animation: scaleIn 0.2s ease-out; }
     @keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
 
-    /* Fix: hide HUD layer completely when inactive to prevent click blocking */
-    .fade-out { display: none !important; }
+    /* Fix: fade out HUD layer + disable pointer events when inactive */
+    .fade-out { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
 
     /* HUD responsive: stack columns on narrow screens */
-    @media (max-width: 767px) {
-      #hud-body { flex-direction: column !important; }
-      #hud-left { width: 100% !important; }
-      #hud-center { width: 100% !important; }
-      #hud-right { width: 100% !important; }
+    @media (max-width: 640px) {
+        .hud-container {
+            flex-direction: column !important;
+        }
+        .hud-left, .hud-right {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+        .hud-center {
+            order: -1;  /* 中间栏（比分/状态）移到最上面 */
+            width: 100% !important;
+        }
+        .hud-left {
+            order: 0;   /* 左栏（统计）在中间 */
+        }
+        .hud-right {
+            order: 1;   /* 右栏（预测/天气）在最下 */
+        }
+    }
+    @media (max-width: 480px) {
+        .hud-container {
+            padding: 8px 12px 0 !important;
+        }
     }
 
     /* Prediction dual-column → stack on narrow screens */
@@ -213,6 +237,7 @@
     }
     /* Team highlight from standings click */
     .schedule-row.highlight-team { background:rgba(56,189,248,0.08); border-left:3px solid #38bdf8; }
+    #global-chat-modal:not(.hidden) { display: flex; }
     </style>
 </head>
 <body>
@@ -249,8 +274,6 @@
         <button data-tab="teams" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">球队 Teams</button>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
-        <span id="clock" style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.25)"></span>
-        <button data-action="refresh-all" id="refresh-btn" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;border:none;background:rgba(255,255,255,.03);color:rgba(248,250,252,.35);font-size:12px">🔄</button>
         <div style="display:flex;align-items:center;border-radius:4px;background:rgba(255,255,255,.04);padding:2px">
             <button data-action="set-lang" data-lang="zh" class="lang-btn" style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.35);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">中</button>
             <button data-action="set-lang" data-lang="en" class="lang-btn" style="font:400 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.15);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">EN</button>
@@ -308,9 +331,9 @@
     <section id="tab-standings" class="tab-content hidden">
         <!-- Sub-tabs: Groups / Knockout -->
         <div style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content">
-        <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛</button>
-        <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛</button>
-        <button id="standings-sub-scorers" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Top Scorers</button>
+        <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛 Groups</button>
+        <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛 Knockout</button>
+        <button id="standings-sub-scorers" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Scorers</button>
         </div>
         <div id="standings-sub-groups-content"></div>
         <div id="standings-sub-scorers-content" class="hidden"></div>
@@ -383,16 +406,16 @@
     <div id="modal-content" style="flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:max(2rem,env(safe-area-inset-bottom))"></div>
 </div>
 
-<!-- Bottom bar -->
-<div style="position:fixed;bottom:0;width:100%;z-index:30;background:rgba(15,23,42,.5);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-top:1px solid rgba(255,255,255,.06);padding-bottom:env(safe-area-inset-bottom)">
+<!-- Bottom bar — hidden per design spec -->
+<div style="display:none">
     <div id="bottom-bar-inner" style="max-width:720px;margin:0 auto;padding:6px 20px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:rgba(248,250,252,.15);transition:max-width .3s ease">
         <span data-i18n="footerDisclaimer">实验性概率模型 · 非投注建议 · ESPN 数据</span>
         <span id="update-time" style="font-family:'JetBrains Mono',monospace">--</span>
     </div>
 </div>
 
-<!-- AI Chat FAB -->
-<div id="ai-fab" class="fab-btn" title="AI 助手" onclick="var f=document.getElementById('ai-bot-fab');if(f)f.click();">
+<!-- AI Chat FAB — toggles global-chat-modal -->
+<div id="ai-fab" class="fab-btn" title="AI 助手" onclick="document.getElementById('global-chat-modal').classList.toggle('hidden')">
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M3 4C3 3.44772 3.44772 3 4 3H14C14.5523 3 15 3.44772 15 4V11C15 11.5523 14.5523 12 14 12H7L4 15V12H4C3.44772 12 3 11.5523 3 11V4Z" stroke="#34d399" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
         <circle cx="7" cy="7.5" r=".8" fill="#34d399"></circle>
@@ -406,9 +429,41 @@
 <link rel="stylesheet" href="/static/css/bot.css?v=20260628">
 <script src="/static/js/bot.js?v=20260628"></script>
 
+<!-- Global AI Chat Modal -->
+<div id="global-chat-modal" class="hidden" style="position:fixed;bottom:24px;right:24px;width:400px;max-height:600px;z-index:60;background:rgba(15,23,42,.75);backdrop-filter:blur(60px);-webkit-backdrop-filter:blur(60px);border:1px solid rgba(255,255,255,.08);border-radius:18px;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.45);overflow:hidden" data-flex-on-show>
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:10;">
+        <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">⚡</span>
+            <span style="font:600 13px/1 'DM Sans',sans-serif;color:#f8fafc">PitchSignal AI</span>
+        </div>
+        <button data-action="close-global-chat" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;border:none;background:rgba(255,255,255,.04);color:rgba(248,250,252,.4);font-size:14px;transition:all .15s;position:relative;z-index:20;pointer-events:auto;" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.4)'">✕</button>
+    </div>
+    <!-- Quick chips -->
+    <div style="display:flex;gap:6px;padding:8px 16px;overflow-x:auto" id="global-chat-chips">
+        <button data-action="ask-global-preset" data-question="今天有哪些比赛？" style="white-space:nowrap;font:500 11px/1 'Inter';color:rgba(248,250,252,.5);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:6px 12px;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.5)'">📅 今日赛程</button>
+        <button data-action="ask-global-preset" data-question="分析一下阿根廷的实力" style="white-space:nowrap;font:500 11px/1 'Inter';color:rgba(248,250,252,.5);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:6px 12px;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.5)'">⚽ 球队分析</button>
+        <button data-action="ask-global-preset" data-question="预测一下今晚的比赛结果" style="white-space:nowrap;font:500 11px/1 'Inter';color:rgba(248,250,252,.5);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:6px 12px;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.5)'">🔮 比赛预测</button>
+    </div>
+    <!-- Messages -->
+    <div id="global-chat-messages" style="flex:1;overflow-y:auto;padding:12px 16px;min-height:200px;max-height:400px">
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+            <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">AI Assistant</span>
+            <div style="background:rgba(255,255,255,.06);border-radius:16px 16px 16px 4px;padding:10px 14px;font:400 13px/1.5 'Inter';color:rgba(248,250,252,.7)">你好！我是 PitchSignal AI 助手，可以帮你分析比赛、预测结果、了解球队实力。有什么想问的？</div>
+        </div>
+    </div>
+    <!-- Input -->
+    <div style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(255,255,255,.06)">
+        <input id="global-chat-input" type="text" placeholder="输入你的问题..." style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;font:400 13px/1 'Inter';color:#f8fafc;outline:none;transition:all .15s" onfocus="this.style.borderColor='rgba(59,130,246,.3)';this.style.background='rgba(255,255,255,.06)'" onblur="this.style.borderColor='rgba(255,255,255,.06)';this.style.background='rgba(255,255,255,.04)'">
+        <button id="global-chat-send" data-action="send-global-chat" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;border:none;background:rgba(52,211,153,.15);color:#34d399;transition:all .15s" onmouseover="this.style.background='rgba(52,211,153,.25)'" onmouseout="this.style.background='rgba(52,211,153,.15)'">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 2L7 9M14 2L9.5 14L7 9M14 2L2 6.5L7 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+    </div>
+</div>
+
 <!-- Knockout Bracket Renderer -->
-<link rel="stylesheet" href="/static/css/bracket.css?v=20260627">
-<script src="/static/js/bracket.js?v=20260627"></script>
+<link rel="stylesheet" href="/static/css/bracket.css?v=20260628">
+<script src="/static/js/bracket.js?v=20260628b"></script>
 
 <script>
 function toggleQualityPopover() {
@@ -426,6 +481,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=07754b6c"></script>
+<script type="module" src="/static/js/bundle.js?v=68a460dc"></script>
 </body>
 </html>

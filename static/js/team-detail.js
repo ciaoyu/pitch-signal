@@ -58,7 +58,7 @@
                 <div style="font:500 14px/1 'Inter';color:#f8fafc;margin-bottom:2px">${esc(displayMaybeTeamName(team))}</div>
                 <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15);margin-bottom:6px">${esc(displayGroupName(team.group))}</div>
                 <div style="display:flex;justify-content:center;gap:8px;font:400 9px/1 'JetBrains Mono',monospace">
-                    <span style="padding:2px 7px;border-radius:4px;background:rgba(52,211,153,.06);color:rgba(52,211,153,.5)">${esc(tx('pointsLabel'))} <span style="font-weight:600;color:#34d399">${esc(team.pts)}</span></span>
+                    <span style="padding:2px 7px;border-radius:4px;background:rgba(52,211,153,.06);color:rgba(52,211,153,.5)">${esc(tx('积分', 'Pts'))} <span style="font-weight:600;color:#34d399">${esc(team.pts)}</span></span>
                     <span style="padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.03);color:rgba(248,250,252,.2)">${esc(team.wins)}-${esc(team.draws)}-${esc(team.losses)}</span>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             : `<span style="font:400 10px/1 'Inter';color:rgba(52,211,153,.4)">${tx('待赛','TBD')}</span>`;
         const rows = matches.map(m => {
             const opp = m.opponent;
-            const oppName = opp ? (opp.name || opp.abbreviation || '?') : '?';
+            const oppName = opp ? displayMaybeTeamName(m.opponentNameI18n || opp.nameI18n || opp.name || opp.abbreviation || '?') : '?';
             const score = (m.state === 'post' || m.state === 'in') ? `${m.score?.home ?? '-'} : ${m.score?.away ?? '-'}` : 'vs';
             const dateStr = m.dateBJT ? m.dateBJT.split(' ')[0].replace(/\//g, '-') : (m.date ? m.date.slice(0, 10) : '');
             const homeAwayLabel = m.isHome ? `<span style="font:400 9px/1 'Inter';color:rgba(52,211,153,.5)">${tx('主','H')}</span>` : `<span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2)">${tx('客','A')}</span>`;
@@ -88,7 +88,12 @@
         const completedCount = matches.filter(m => m.state === 'post').length;
         const totalCount = matches.length;
         const note = completedCount > 0 ? tx(`本届世界杯 · 共 ${totalCount} 场 · ${completedCount} 场已结束`, `World Cup · ${totalCount} matches · ${completedCount} completed`) : tx(`本届世界杯 · 共 ${totalCount} 场赛程`, `World Cup · ${totalCount} scheduled`);
-        return `<div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:12px 16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1px">📅 ${tx('本届赛程', 'WC Record')}</span><span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">${esc(note)}</span></div><div style="display:flex;flex-direction:column;gap:4px">${rows}</div><div style="margin-top:8px;font:400 8px/1 'Inter';color:rgba(248,250,252,.1)">ESPN 实时 · 仅含本届世界杯比赛</div></div>`;
+        // W/D/L summary from schedule result field (single source of truth)
+        const w = matches.filter(m => m.result === 'W').length;
+        const d = matches.filter(m => m.result === 'D').length;
+        const l = matches.filter(m => m.result === 'L').length;
+        const summaryBar = completedCount > 0 ? `<div style="display:flex;justify-content:center;gap:12px;margin-bottom:10px;font:500 12px/1 'JetBrains Mono',monospace"><span style="color:#34d399">${w}${tx('胜','W')}</span><span style="color:#f59e0b">${d}${tx('平','D')}</span><span style="color:rgba(248,113,113,.6)">${l}${tx('负','L')}</span></div>` : '';
+        return `<div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:12px 16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1px">📅 ${tx('本届赛程', 'WC Record')}</span><span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">${esc(note)}</span></div>${summaryBar}<div style="display:flex;flex-direction:column;gap:4px">${rows}</div><div style="margin-top:8px;font:400 8px/1 'Inter';color:rgba(248,250,252,.1)">ESPN 实时 · 仅含本届世界杯比赛</div></div>`;
     }
 
     function getRosterRole(p, posGroup, rankInGroup) {
@@ -183,7 +188,22 @@
         const liveGroupRecord = groupRecordFromStanding(standingTeam);
         const [enhancedData, wcMatches] = await window.WorldCup.ApiClient.allData(['/api/team/' + teamId + '/enhanced', '/api/team/' + teamId + '/recent-matches']);
         if (enhancedData && !enhancedData.error) {
-            if (liveGroupRecord) { enhancedData.overview ||= {}; enhancedData.overview.group = liveGroup; enhancedData.overview.groupRecord = liveGroupRecord; }
+            // Compute group record from wcMatches (more up-to-date than standings)
+            const wcGroupRecord = (() => {
+                const ms = wcMatches?.matches?.filter(m => m.stage === 'group' && m.state === 'post');
+                if (!ms?.length) return null;
+                const w = ms.filter(m => m.result === 'W').length;
+                const d = ms.filter(m => m.result === 'D').length;
+                const l = ms.filter(m => m.result === 'L').length;
+                let gf = 0, ga = 0;
+                ms.forEach(m => {
+                    const hs = Number(m.score?.home || 0), as_ = Number(m.score?.away || 0);
+                    if (m.isHome) { gf += hs; ga += as_; } else { gf += as_; ga += hs; }
+                });
+                return { w, d, l, gf, ga, gd: gf - ga, pts: w * 3 + d };
+            })();
+            const finalGroupRecord = wcGroupRecord || liveGroupRecord;
+            if (finalGroupRecord) { enhancedData.overview ||= {}; enhancedData.overview.group = liveGroup; enhancedData.overview.groupRecord = finalGroupRecord; }
             content.innerHTML = renderTeamEnhanced(enhancedData, liveGroup, wcMatches);
             setTimeout(() => {
                 const r = enhancedData.radar;

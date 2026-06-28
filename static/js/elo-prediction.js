@@ -21,7 +21,7 @@
         </div>`;
 
         // Table header
-        h += `<div style="display:grid;grid-template-columns:28px 1fr 64px 72px;gap:6px;align-items:center;padding:4px 8px;margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,.04)">
+        h += `<div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:6px;align-items:center;padding:4px 8px;margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,.04)">
             <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">#</span>
             <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15)">${esc(tx('球队','Team'))}</span>
             <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15);text-align:right">Elo</span>
@@ -42,7 +42,7 @@
             const eloFlag = t.flag || '🏳️';
             const qualifyPct = t.qualifyProb ? Math.round(t.qualifyProb * 100) : null;
 
-            h += `<div style="display:grid;grid-template-columns:28px 1fr 64px 72px;gap:6px;align-items:center;padding:5px 8px;border-radius:6px;transition:background .15s" class="hover:bg-white/[0.03]">
+            h += `<div style="display:grid;grid-template-columns:36px 1fr 70px 80px;gap:6px;align-items:center;padding:5px 8px;border-radius:6px;transition:background .15s" class="hover:bg-white/[0.03]">
                 <span style="font:600 11px/1 'JetBrains Mono', monospace;color:${rankColor}">${t.rank}</span>
                 <div style="display:flex;align-items:center;gap:6px;min-width:0">
                     <span style="font-size:14px;width:18px;flex-shrink:0;text-align:center">${eloFlag}</span>

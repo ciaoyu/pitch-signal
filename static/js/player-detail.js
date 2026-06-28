@@ -3,7 +3,7 @@
     const { tx, esc, api } = window.WorldCup.Utils;
     const { translatePlayerName } = window.WorldCup.I18n;
     
-    function openPlayerDetail(id, inlineData) {
+    function openPlayerDetail(id, inlineData, teamId) {
         if (!id && !inlineData) return;
         const modal = document.getElementById('match-modal');
         const content = document.getElementById('modal-content');
@@ -32,17 +32,50 @@
             </div>`;
         };
         if (inlineData) showInline();
-        if (!id) return;
-        api('/api/player/' + id + '/enhanced').then(d => {
-            if (!d || d.error) {
+        if (!id && !teamId) return;
+
+        const fallbackRosterSearch = () => {
+            if (!teamId || !inlineData || !inlineData.name) {
                 api('/api/player/' + id).then(basic => {
                     if (!basic || basic.error) { if (!inlineData) showInline(); return; }
                     content.innerHTML = renderPlayerBasic(basic);
-                });
+                }).catch(() => { if (!inlineData) showInline(); });
                 return;
             }
+            api('/api/team/' + teamId).then(t => {
+                if (!t || !t.roster) throw new Error('no roster');
+                const p = t.roster.find(x => x.name.toLowerCase() === inlineData.name.toLowerCase() || x.name.toLowerCase().includes(inlineData.name.toLowerCase()) || inlineData.name.toLowerCase().includes(x.name.toLowerCase()));
+                if (p && p.id && String(p.id) !== String(id)) {
+                    api('/api/player/' + p.id + '/enhanced').then(d2 => {
+                        if (d2 && !d2.error) content.innerHTML = renderPlayerEnhanced(d2);
+                        else showInline();
+                    }).catch(showInline);
+                } else {
+                    api('/api/player/' + id).then(basic => {
+                        if (!basic || basic.error) { if (!inlineData) showInline(); return; }
+                        content.innerHTML = renderPlayerBasic(basic);
+                    }).catch(() => { if (!inlineData) showInline(); });
+                }
+            }).catch(() => showInline());
+        };
+
+        if (!id) {
+            fallbackRosterSearch();
+            return;
+        }
+
+        api('/api/player/' + id + '/enhanced').then(d => {
+            if (!d || d.error) { fallbackRosterSearch(); return; }
+            // Name mismatch means wrong ESPN ID (bridge data issue) — use roster fallback
+            if (inlineData?.name && d.name) {
+                const normA = inlineData.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+                const normB = d.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+                if (!normB.includes(normA.split(' ')[0]) && !normA.includes(normB.split(' ')[0])) {
+                    fallbackRosterSearch(); return;
+                }
+            }
             content.innerHTML = renderPlayerEnhanced(d);
-        }).catch(() => { if (!inlineData) showInline(); });
+        }).catch(() => fallbackRosterSearch());
     }
     
     function renderPlayerBasic(d) {

@@ -196,8 +196,7 @@ window.WorldCup.MatchRenderers = (() => {
         };
     }
 
-    // ─── Task 1: Responsive SVG Tactical Board ───
-    function renderTacticalBoard(matchupData) {
+    function renderTacticalBoard(matchupData, matchData) {
         const hasData = matchupData
             && matchupData.home?.players?.length >= 11
             && matchupData.away?.players?.length >= 11;
@@ -372,7 +371,8 @@ window.WorldCup.MatchRenderers = (() => {
                 else gradId = 'tb-m-critical-home';
             }
 
-            svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round"/>`;
+            let dashArray = m.key || m.type === 'critical' ? '1.5,1.5' : '3,3';
+            svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round" stroke-dasharray="${dashArray}"/>`;
 
             if (dot) {
                 const mx = (hC.cx + aC.cx) / 2, my = (hC.cy + aC.cy) / 2;
@@ -382,53 +382,60 @@ window.WorldCup.MatchRenderers = (() => {
         }
         svg += `</g>`;
 
-        // ── 头像渲染（统一函数：home=蓝 / away=红） ──
-        // 圆点半径 r=3.2（直径 6.4），头像区 r=2.8
-        const R = 3.2;
-        const R_INNER = 2.8;
+        // ── Avatar rendering ──
         const TEAM_STYLE = {
-            home: { ring: '#3b82f6', ringDark: '#1e3a5f', badge: '#2563eb' },
-            away: { ring: '#ef4444', ringDark: '#5c1a1a', badge: '#dc2626' },
+            home: { fill: 'rgba(59,130,246,0.6)', text: 'white' },
+            away: { fill: 'rgba(239,68,68,0.6)', text: 'white' },
         };
+        const R = 2.6; // 2.6 * 5.4px = 14.04px radius -> 28px diameter
+        const goals = matchData?.goals || [];
 
         const renderPlayerNode = (p, side, idx) => {
             if (!p) return '';
             const { cx, cy } = coord(p, idx, side);
             const st = TEAM_STYLE[side] || TEAM_STYLE.home;
-            const jersey = p.number ?? p.jersey ?? '?';
-            const photo = p.photo || p.headshot || null;
+            const jersey = p.number ?? p.jersey ?? '';
             const playerId = p.playerId || p.id || p.espnId || '';
-            const name = p.name || '';
-            // 首字母（无头像时占位）
-            const initial = name ? name.charAt(0).toUpperCase() : '?';
+            const rawName = p.name || '';
+            const nameZh = window.WorldCup.I18n?.translatePlayerName(rawName) || rawName;
+            const shortName = nameZh.includes('·') ? nameZh.split('·').pop() : nameZh.split(' ').pop();
+            
+            // Check if player scored
+            const pNameNorm = normalizeName(rawName);
+            const scoredGoals = goals.filter(g => {
+                const gn = normalizeName(g.player);
+                return gn === pNameNorm || pNameNorm.includes(gn) || gn.includes(pNameNorm);
+            }).length;
 
-            // 换人叠加：被换下 → 半透明 + 下箭头 + 分钟
             const sideMap = subOffMap.get(side);
-            const subOff = sideMap ? sideMap.get(normalizeName(name)) : null;
+            const subOff = sideMap ? sideMap.get(normalizeName(rawName)) : null;
             const opacityAttr = subOff ? '0.45' : '0.97';
 
-            let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(name)}" style="cursor:pointer">`;
+            let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
             node += `<g transform="translate(${cx},${cy})" opacity="${opacityAttr}">`;
-            // 队色外环
-            node += `<circle r="${R}" fill="${st.ringDark}" stroke="${st.ring}" stroke-width="0.6"/>`;
-            // 头像 or 首字母
-            if (photo) {
-                node += `<image href="${attr(photo)}" x="${-R_INNER}" y="${-R_INNER}" width="${R_INNER * 2}" height="${R_INNER * 2}" clip-path="url(#tb-avatar-clip)" preserveAspectRatio="xMidYMid slice"/>`;
-            } else {
-                node += `<text x="0" y="0.6" text-anchor="middle" font-size="2.4" font-weight="bold" fill="white" dominant-baseline="middle" style="pointer-events:none">${esc(initial)}</text>`;
+            
+            // Translucent circle with jersey number
+            node += `<circle r="${R}" fill="${st.fill}" stroke="white" stroke-width="0.3"/>`;
+            node += `<text x="0" y="0.8" text-anchor="middle" font-size="2.2" font-weight="bold" fill="${st.text}" dominant-baseline="middle" style="pointer-events:none">${esc(String(jersey))}</text>`;
+            
+            // Short name text below
+            let nameText = esc(shortName);
+            if (scoredGoals > 0) {
+                nameText += ' ⚽'.repeat(scoredGoals);
             }
-            // 号码角标（右上）
-            node += `<circle cx="${R - 0.4}" cy="${-R + 0.4}" r="1.4" fill="${st.badge}" stroke="white" stroke-width="0.25"/>`;
-            node += `<text x="${R - 0.4}" y="${-R + 0.7}" text-anchor="middle" font-size="1.5" font-weight="bold" fill="white" dominant-baseline="middle" style="pointer-events:none">${esc(String(jersey))}</text>`;
+            const nameColor = scoredGoals > 0 ? '#FFD600' : 'white';
+            const nameY = side === 'home' ? R + 2.5 : -R - 1.5;
+            node += `<text x="0" y="${nameY}" text-anchor="middle" font-size="2" font-weight="bold" fill="${nameColor}" style="pointer-events:none">${nameText}</text>`;
+            
             node += `</g>`;
 
-            // 换人箭头叠加（被换下）
+            // Sub-off indicator
             if (subOff) {
-                node += `<g transform="translate(${cx},${cy + R + 1.5})">`;
-                node += `<circle r="1.8" fill="#ef4444" stroke="white" stroke-width="0.25"/>`;
-                node += `<text x="0" y="0.5" text-anchor="middle" font-size="2" font-weight="bold" fill="white" dominant-baseline="middle">↓</text>`;
+                node += `<g transform="translate(${cx},${cy + R + 2.5})">`;
+                node += `<circle r="1.5" fill="#ef4444" stroke="white" stroke-width="0.2"/>`;
+                node += `<text x="0" y="0.5" text-anchor="middle" font-size="1.8" font-weight="bold" fill="white" dominant-baseline="middle">↓</text>`;
                 node += `</g>`;
-                node += `<text x="${cx}" y="${cy + R + 4.8}" text-anchor="middle" font-size="1.7" font-weight="bold" fill="#ef4444">${esc(String(subOff.minute))}'</text>`;
+                node += `<text x="${cx}" y="${cy + R + 5.5}" text-anchor="middle" font-size="1.5" font-weight="bold" fill="#ef4444">${esc(String(subOff.minute))}'</text>`;
             }
             node += `</g>`;
             return node;
@@ -656,7 +663,7 @@ window.WorldCup.MatchRenderers = (() => {
         
         <!-- SVG Tactical Board -->
         <div class="pitch w-full overflow-hidden" id="pitch-canvas">
-            ${renderTacticalBoard(matchupData)}
+            ${renderTacticalBoard(matchupData, matchData)}
         </div>`;
 
         // Key matchups list (from pairs if available, or from matchups)
@@ -1185,7 +1192,7 @@ window.WorldCup.MatchRenderers = (() => {
         const y2 = cy - r * Math.sin(Math.PI - arcAngle);
         const largeArc = hw > 50 ? 1 : 0;
 
-        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
+        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
         html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx('胜率预测', 'WIN PROBABILITY')}</div>`;
 
         // SVG arc
@@ -1230,20 +1237,46 @@ window.WorldCup.MatchRenderers = (() => {
         const v = venueData;
         const w = v.weather;
         const impact = v.impact;
+        const meta = v.meta;
 
-        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
-        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('场地条件', 'VENUE CONDITIONS')}</div>`;
+        let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;padding:16px 18px 12px">${tx('场地条件', 'VENUE CONDITIONS')}</div>`;
 
-        html += `<div style="font:italic 400 15px/1 'Instrument Serif',serif;color:rgba(248,250,252,.6);margin-bottom:3px">${esc(v.name || '')}</div>`;
-        html += `<div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:14px">${esc(v.city || '')}, ${esc(v.country || '')}</div>`;
+        // Wikipedia thumbnail
+        if (v.wikiThumb) {
+            html += `<div style="padding:0 18px;margin-bottom:12px"><img src="${esc(v.wikiThumb)}" alt="${esc(v.name || '')}" style="width:100%;height:120px;object-fit:cover;border-radius:10px;opacity:.85" loading="lazy"></div>`;
+        }
 
+        html += `<div style="padding:0 18px"><div style="font:italic 400 15px/1 'Instrument Serif',serif;color:rgba(248,250,252,.6);margin-bottom:3px">${esc(v.name || '')}</div>`;
+        html += `<div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:14px">${esc(v.city || '')}, ${esc(v.country || '')}</div></div>`;
+
+        // Meta cards (yearBuilt, architect, cost) + capacity from venues.json
+        const metaCards = [];
+        if (v.capacity) metaCards.push({ label: tx('容量', 'Capacity'), value: v.capacity.toLocaleString(), color: 'rgba(248,250,252,.5)' });
+        if (meta?.yearBuilt) metaCards.push({ label: tx('建造', 'Built'), value: String(meta.yearBuilt), color: 'rgba(167,139,250,.6)' });
+        if (meta?.architect) metaCards.push({ label: tx('建筑师', 'Architect'), value: meta.architect, color: 'rgba(251,191,36,.5)' });
+        if (meta?.cost) metaCards.push({ label: tx('造价', 'Cost'), value: meta.cost, color: 'rgba(52,211,153,.5)' });
+
+        if (metaCards.length > 0) {
+            const cols = metaCards.length <= 2 ? metaCards.length : 2;
+            html += `<div style="padding:0 18px;margin-bottom:14px;display:grid;grid-template-columns:${'1fr '.repeat(cols).trim()};gap:8px">`;
+            for (const c of metaCards) {
+                html += `<div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+                    <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${c.label}</div>
+                    <div style="font:500 12px/1.2 'JetBrains Mono',monospace;color:${c.color}">${esc(c.value)}</div>
+                </div>`;
+            }
+            html += `</div>`;
+        }
+
+        // Weather cards: altitude, temp, surface, humidity
         const alt = v.altitude || 0;
         const altWarn = alt > 1500;
         const temp = w?.temp || '--';
         const hum = w?.humidity || '--';
-        const grass = v.grass || tx('天然草', 'Natural');
+        const grass = meta?.surface || v.grass || tx('天然草', 'Natural');
 
-        html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        html += `<div style="padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
                 <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx('海拔', 'Altitude')}</div>
                 <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.6)">${alt.toLocaleString()}<span style="font-size:9px;color:rgba(251,146,60,.3)">m</span></div>

@@ -1,0 +1,98 @@
+{
+  "1": {
+    "yearBuilt": 2020,
+    "architect": "HKS Inc",
+    "cost": "$5.5B",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "2": {
+    "yearBuilt": 2017,
+    "architect": "HOK",
+    "cost": "$1.6B",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "3": {
+    "yearBuilt": 2002,
+    "architect": "Ellerbe Becket",
+    "cost": "$430M",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "4": {
+    "yearBuilt": 1966,
+    "architect": "Pedro Ramírez Vázquez",
+    "cost": "$260M",
+    "surface": "Natural grass (hybrid)"
+  },
+  "5": {
+    "yearBuilt": 2015,
+    "architect": "Populous",
+    "cost": "$200M",
+    "surface": "Natural grass"
+  },
+  "6": {
+    "yearBuilt": 2007,
+    "architect": "Populous",
+    "cost": "$62.5M",
+    "surface": "Natural grass (hybrid)"
+  },
+  "7": {
+    "yearBuilt": 1983,
+    "architect": "Studio Phillips Barratt",
+    "cost": "$126M (2011 renovation)",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "8": {
+    "yearBuilt": 2003,
+    "architect": "NBBJ",
+    "cost": "$512M",
+    "surface": "Natural grass (hybrid)"
+  },
+  "9": {
+    "yearBuilt": 2002,
+    "architect": "Populous",
+    "cost": "$325M",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "10": {
+    "yearBuilt": 2002,
+    "architect": "Populous",
+    "cost": "$352M",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "11": {
+    "yearBuilt": 2010,
+    "architect": "Populous",
+    "cost": "$200M",
+    "surface": "Natural grass"
+  },
+  "12": {
+    "yearBuilt": 1972,
+    "architect": "Kivett and Myers",
+    "cost": "$43M",
+    "surface": "Natural grass"
+  },
+  "13": {
+    "yearBuilt": 2014,
+    "architect": "HNTB",
+    "cost": "$1.3B",
+    "surface": "Natural grass"
+  },
+  "14": {
+    "yearBuilt": 1987,
+    "architect": "HOK",
+    "cost": "$115M",
+    "surface": "Natural Bermuda grass"
+  },
+  "15": {
+    "yearBuilt": 2009,
+    "architect": "HKS Inc",
+    "cost": "$1.3B",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "16": {
+    "yearBuilt": 2010,
+    "architect": "360 Architecture (HOK)",
+    "cost": "$1.6B",
+    "surface": "Grass (temporary for WC2026)"
+  }
+}

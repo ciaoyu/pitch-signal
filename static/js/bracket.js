@@ -18,7 +18,7 @@ const BK = {
   CARD_H: 38,      // px – match card height (2 teams × ~19px each)
   COL_GAP: 16,     // px – horizontal gap between columns
   ROW_GAP: 4,      // px – vertical gap between sibling match cards
-  SIDE_PAD: 8,     // px – outer horizontal padding
+  SIDE_PAD: 40,    // px – outer horizontal padding (MUST be >= CARD_W/2 to avoid left truncation)
   TOP_PAD: 28,     // px – top padding (room for round labels)
 };
 
@@ -110,6 +110,7 @@ function bkCardPos(colIndex, itemIndex, count, totalSlots, totalHeight, isLeft, 
 /* ─── Main renderer ───────────────────────────────────────────────────── */
 
 function renderBracket(data, container) {
+  const _uid = Math.random().toString(36).slice(2, 7);
   if (!data || !data.matches || !data.tree) {
     const en = (window.uiLang === 'en');
     container.innerHTML = `<div class="text-gray-500 py-10 text-center text-sm">${en ? 'Failed to load bracket data' : '淘汰赛对阵图数据加载失败'}</div>`;
@@ -133,15 +134,14 @@ function renderBracket(data, container) {
   const ROW_SLOT_H = BK.CARD_H + BK.ROW_GAP * 2 + 4; // ~50px per slot
   const totalH = R32_COUNT * ROW_SLOT_H;
 
+  // Calculate base X positions
+  const leftSfX = BK.SIDE_PAD + (numLeftCols - 1) * (BK.CARD_W + BK.COL_GAP);
+  const finalX = leftSfX + BK.CARD_W + BK.COL_GAP;
+  const rightSfX = finalX + BK.CARD_W + BK.COL_GAP;
+  
   // Total SVG width
-  const leftW  = numLeftCols  * (BK.CARD_W + BK.COL_GAP);
-  const rightW = numRightCols * (BK.CARD_W + BK.COL_GAP);
-  const centerW = BK.CARD_W + BK.COL_GAP * 2; // Final card + breathing room
-  const totalW  = leftW + centerW + rightW;
+  const totalW = rightSfX + (numRightCols - 1) * (BK.CARD_W + BK.COL_GAP) + BK.CARD_W / 2 + BK.SIDE_PAD;
   const totalSvgH = totalH + BK.TOP_PAD + 16;
-
-  // Center X position of the FINAL card
-  const finalCX = leftW + BK.COL_GAP + BK.CARD_W / 2;
 
   /* ── Build position map { matchId → {x, y} } ── */
   const posMap = {};
@@ -163,7 +163,7 @@ function renderBracket(data, container) {
     col.forEach((node, ni) => {
       const count = col.length;
       // col 0 = SF (closest to final), col 3 = R32 (rightmost)
-      const x = leftW + centerW + ci * (BK.CARD_W + BK.COL_GAP);
+      const x = rightSfX + ci * (BK.CARD_W + BK.COL_GAP);
       const slotH = totalH / count;
       const y = slotH * (ni + 0.5) + BK.TOP_PAD;
       posMap[node.id] = { x, y };
@@ -171,7 +171,7 @@ function renderBracket(data, container) {
   });
 
   // Final position
-  posMap['FINAL'] = { x: leftW + BK.COL_GAP, y: totalH / 2 + BK.TOP_PAD };
+  posMap['FINAL'] = { x: finalX, y: totalH / 2 + BK.TOP_PAD };
 
   /* ── Build connector lines (SVG paths) ── */
   const svgLines = [];
@@ -199,7 +199,7 @@ function renderBracket(data, container) {
         // Cubic bezier: from child right edge → curve → parent left edge
         svgLines.push(
           `<path d="M ${childEdgeX} ${childPos.y} C ${midX} ${childPos.y} ${midX} ${parentPos.y} ${parentEdgeX} ${parentPos.y}"
-            fill="none" stroke="url(#connGrad)" stroke-width="1.5" stroke-opacity="0.45" />`
+            fill="none" stroke="url(#connGrad-${_uid})" stroke-width="1.5" stroke-opacity="0.45" />`
         );
 
         walk(child);
@@ -222,7 +222,7 @@ function renderBracket(data, container) {
     const midX = (sfEdgeX + finEdgeX) / 2;
     svgLines.push(
       `<path d="M ${sfEdgeX} ${sfPos.y} C ${midX} ${sfPos.y} ${midX} ${finPos.y} ${finEdgeX} ${finPos.y}"
-        fill="none" stroke="url(#goldGrad)" stroke-width="2" stroke-opacity="0.6" />`
+        fill="none" stroke="url(#goldGrad-${_uid})" stroke-width="2" stroke-opacity="0.6" />`
     );
   });
 
@@ -255,7 +255,7 @@ function renderBracket(data, container) {
         ? 'border border-yellow-400/40 shadow-[0_0_18px_rgba(250,189,0,0.25)]'
         : 'border border-white/10';
 
-      const matchId = m.matchId || '';
+      const matchId = m.espnMatchId || m.matchId || '';
       const cardStyle = `position:absolute;left:${pos.x - BK.CARD_W / 2}px;top:${pos.y - BK.CARD_H / 2}px;width:${BK.CARD_W}px;cursor:pointer;`;
 
       // Round label header
@@ -294,11 +294,11 @@ function renderBracket(data, container) {
   /* ── Assemble HTML ── */
   const svgDefs = `
     <defs>
-      <linearGradient id="connGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <linearGradient id="connGrad-${_uid}" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%"   stop-color="#3b82f6" stop-opacity="0.7"/>
         <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.7"/>
       </linearGradient>
-      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <linearGradient id="goldGrad-${_uid}" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%"   stop-color="#f59e0b" stop-opacity="0.9"/>
         <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.9"/>
       </linearGradient>
@@ -306,7 +306,7 @@ function renderBracket(data, container) {
   `;
 
   container.innerHTML = `
-    <div id="bk-wrap" style="position:relative;width:${totalW}px;height:${totalSvgH}px;min-width:${totalW}px;margin:0 auto;">
+    <div id="bk-wrap" style="position:relative;width:${totalW + 32}px;height:${totalSvgH}px;min-width:${totalW + 32}px;margin:0 16px;box-sizing:border-box;">
       <!-- Connector SVG layer -->
       <svg style="position:absolute;left:0;top:0;width:${totalW}px;height:${totalSvgH}px;overflow:visible;pointer-events:none;" viewBox="0 0 ${totalW} ${totalSvgH}">
         ${svgDefs}

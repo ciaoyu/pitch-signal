@@ -60,12 +60,17 @@
                 if (!dates.includes(todayStr)) defaultDate = d;
             }
             
+            const monthMap = { '01':'Jan', '02':'Feb', '03':'Mar', '04':'Apr', '05':'May', '06':'Jun', '07':'Jul', '08':'Aug', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dec' };
+            const enMonth = monthMap[month] || month;
+            const monthStr = state.uiLang === 'zh' ? month + '月' : enMonth;
+            const matchCountStr = state.uiLang === 'zh' ? n + '场' : n + ' M';
+
             return `<button data-d="${attr(d)}" data-action="filter-date" data-date="${attr(d)}"
                 class="date-btn snap-center shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-lg transition-all duration-150
                 ${extraCls}">
-                <span style="font:400 9px/1 'Inter'">${specialLabel ? esc(specialLabel) : month+'月'}</span>
+                <span style="font:400 9px/1 'Inter'">${specialLabel ? esc(specialLabel) : monthStr}</span>
                 <span style="font:600 16px/1 'JetBrains Mono', monospace">${esc(day)}</span>
-                <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">${n}场</span>
+                <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">${matchCountStr}</span>
             </button>`;
         }).join('');
 
