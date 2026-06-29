@@ -5,12 +5,12 @@
  * 构建 id_bridge.json，连接 FIFA code/id ↔ ESPN id ↔ 国家名
  * 
  * 输入：
- * - data/wc2026/teams.json (FIFA 数据)
+ * - data/sources/seed/wc2026/teams.json (FIFA 数据)
  * - data/id_map_center.json (ESPN 数据)
  * 
  * 输出：
- * - data/wc2026/id_bridge.json
- * - data/wc2026/unmatched.txt (无法匹配的球队)
+ * - data/sources/seed/wc2026/id_bridge.json
+ * - data/sources/seed/wc2026/unmatched.txt (无法匹配的球队)
  */
 
 const fs = require('fs');
@@ -18,7 +18,7 @@ const path = require('path');
 
 const TEAMS_PATH = path.join(__dirname, '..', 'data', 'wc2026', 'teams.json');
 const ID_MAP_PATH = path.join(__dirname, '..', 'data', 'id_map_center.json');
-const BRIDGE_PATH = path.join(__dirname, '..', 'data', 'wc2026', 'id_bridge.json');
+const BRIDGE_PATH = path.join(__dirname, '..', 'data', 'sources', 'seed', 'wc2026', 'id_bridge.json');
 const UNMATCHED_PATH = path.join(__dirname, '..', 'data', 'wc2026', 'unmatched.txt');
 
 /**

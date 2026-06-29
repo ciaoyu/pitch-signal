@@ -5,11 +5,11 @@
  * 构建比赛 ID 桥：ESPN match ID ↔ FIFA match ID
  *
  * 输入：
- * - data/wc2026/matches.json (26worldcup，FIFA match ID + home/away code + date)
+ * - data/sources/seed/wc2026/matches.json (26worldcup，FIFA match ID + home/away code + date)
  * - data/match_snapshot_schedule.json (ESPN scoreboard，ESPN match ID + home/away abbreviation + kickoffUtc)
  *
  * 输出：
- * - data/wc2026/match_id_bridge.json
+ * - data/sources/seed/wc2026/match_id_bridge.json
  *
  * 匹配策略：按 home code + away code + 日期(±1天容差) join
  */
@@ -20,7 +20,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const MATCHES_PATH = path.join(ROOT, 'data', 'wc2026', 'matches.json');
 const SCHEDULE_PATH = path.join(ROOT, 'data', 'match_snapshot_schedule.json');
-const BRIDGE_PATH = path.join(ROOT, 'data', 'wc2026', 'match_id_bridge.json');
+const BRIDGE_PATH = path.join(ROOT, 'data', 'sources', 'seed', 'wc2026', 'match_id_bridge.json');
 const REPORT_PATH = path.join(ROOT, 'data', 'wc2026', 'match_id_bridge_report.txt');
 
 /**
@@ -196,7 +196,7 @@ function main() {
   const output = {
     generatedAt: new Date().toISOString(),
     source: {
-      fifa: 'data/wc2026/matches.json (26worldcup)',
+      fifa: 'data/sources/seed/wc2026/matches.json (26worldcup)',
       espn: 'data/match_snapshot_schedule.json (ESPN scoreboard)',
     },
     totalFifa: fifaMatches.length,

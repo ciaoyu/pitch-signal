@@ -2,7 +2,7 @@
 
 /**
  * sync-fifa-data.js
- * 从 26worldcup GitHub 仓库拉取 9 个 JSON 数据文件到 data/wc2026/
+ * 从 26worldcup GitHub 仓库拉取 9 个 JSON 数据文件到 data/sources/seed/wc2026/
  * 
  * 数据源：
  * - public/data/: teams, squads, lineups, probs, venues, weather, wc-history
@@ -14,7 +14,7 @@ const path = require('path');
 const https = require('https');
 
 const BASE_URL = 'https://raw.githubusercontent.com/26worldcup/26worldcup.github.io/main';
-const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'wc2026');
+const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'sources', 'seed', 'wc2026');
 
 // 10 个需要下载的文件及其源路径
 const FILES_TO_SYNC = [

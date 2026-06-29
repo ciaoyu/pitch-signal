@@ -8,13 +8,13 @@
  * 匹配到 squads 中的球员，构建双向桥接。
  *
  * 输入：
- * - data/wc2026/lineups.json  (ESPN athlete ID + name + number + fieldPos)
- * - data/wc2026/squads.json   (本地 slug ID + name + no + pos)
- * - data/wc2026/matches.json  (home.code / away.code)
+ * - data/sources/seed/wc2026/lineups.json  (ESPN athlete ID + name + number + fieldPos)
+ * - data/sources/seed/wc2026/squads.json   (本地 slug ID + name + no + pos)
+ * - data/sources/seed/wc2026/matches.json  (home.code / away.code)
  *
  * 输出：
- * - data/wc2026/player_id_bridge.json
- * - data/wc2026/player_id_bridge_report.txt
+ * - data/sources/seed/wc2026/player_id_bridge.json
+ * - data/sources/seed/wc2026/player_id_bridge_report.txt
  */
 
 const fs = require('fs');
