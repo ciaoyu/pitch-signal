@@ -73,7 +73,7 @@
             </div>
             <div style="min-width:140px;text-align:center;padding:0 20px;flex-shrink:0">
                 <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
-                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">FT</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx('待赛', 'TBD')}</div>`}
+                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">${matchData.hasPenalties ? tx('点球决出', 'FT-Pens') : 'FT'}</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx('待赛', 'TBD')}</div>`}
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:16px">
                 ${awayLogo ? `<img src="${attr(awayLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(awayFlag)}</div>`}
@@ -86,6 +86,61 @@
                 </div>
             </div>
         </div>`;
+
+        // ── Scorers row (below score header, only when goals exist) ──
+        if (matchData.goals?.length) {
+          const homeRawName = matchData.home?.name || '';
+          const awayRawName = matchData.away?.name || '';
+          const homeGoals = matchData.goals.filter(g => g.team === homeRawName);
+          const awayGoals = matchData.goals.filter(g => g.team === awayRawName);
+          const goalChip = (g) => {
+            const icon = g.type && /own.goal|OG|乌龙/i.test(g.type) ? '⚽️' : g.type && /penalty|PK|点球/i.test(g.type) ? '⚽P' : '⚽';
+            return `<span style="display:inline-flex;align-items:center;gap:3px;font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.55)">${esc(g.player)}<span style="color:rgba(248,250,252,.25)">${esc(g.minute)}</span></span>`;
+          };
+          html += `<div style="display:flex;align-items:flex-start;justify-content:center;padding:0 24px 10px;gap:20px">
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">
+              ${homeGoals.map(goalChip).join('')}
+            </div>
+            <div style="min-width:140px;padding:0 20px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start">
+              ${awayGoals.map(goalChip).join('')}
+            </div>
+          </div>`;
+        }
+
+        // ── Penalty shootout section ──
+        if (matchData.hasPenalties) {
+          const pH = matchData.penaltyHomeScore ?? '?';
+          const pA = matchData.penaltyAwayScore ?? '?';
+          const kicks = matchData.penaltyKicks || [];
+          const homeKicks = kicks.filter(k => k.side === 'home');
+          const awayKicks = kicks.filter(k => k.side === 'away');
+          const kickIcon = (k) => k.result === 'scored' ? '⚽' : k.result === 'saved' ? '🧤' : '✗';
+          const kickStyle = (k) => k.result === 'scored'
+            ? 'color:rgba(52,211,153,.9)'
+            : 'color:rgba(248,113,113,.7)';
+          const kickItem = (k, align) => `<div style="display:flex;align-items:center;gap:4px;justify-content:${align};font:400 10px/1.4 'JetBrains Mono',monospace">
+              <span style="${kickStyle(k)}">${kickIcon(k)}</span>
+              <span style="color:rgba(248,250,252,.6)">${esc(k.player)}</span>
+            </div>`;
+          html += `<div style="padding:6px 24px 12px">
+            <div style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:12px 16px">
+              <div style="text-align:center;margin-bottom:10px">
+                <span style="font:500 11px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.8)">${tx('点球大战', 'Penalty Shootout')}</span>
+                <span style="margin:0 10px;font:800 20px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(pH))} – ${esc(String(pA))}</span>
+              </div>
+              <div style="display:flex;gap:16px">
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+                  ${homeKicks.map(k => kickItem(k, 'flex-end')).join('') || `<span style="color:rgba(248,250,252,.2);font-size:10px">—</span>`}
+                </div>
+                <div style="width:1px;background:rgba(255,255,255,.06)"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:flex-start">
+                  ${awayKicks.map(k => kickItem(k, 'flex-start')).join('') || `<span style="color:rgba(248,250,252,.2);font-size:10px">—</span>`}
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }
 
         // ── 3-column HUD body (design: 300 / flex center 540 max / 280) ──
         html += `<div id="hud-body" class="hud-container" style="display:flex;gap:12px;padding:8px 24px 0;align-items:flex-start;min-height:360px">`;

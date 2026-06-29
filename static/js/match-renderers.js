@@ -50,62 +50,114 @@ window.WorldCup.MatchRenderers = (() => {
      * @returns {Array<{x,y,pos,line}>} 11 人坐标（GK→DEF→MID→FWD 序）
      */
     function formationTemplate(formation, side, opponentFormation = '') {
-        const f = parseFormationStr(formation);
         const isHome = side === 'home';
-        const normalizedFormation = String(formation || '').trim();
-        const normalizedOpponent = String(opponentFormation || '').trim();
-        // yBase 与后端 calcFormationCoords 一致，仅 fwd 按用户要求调到相邻两层中点：
-        //   红前锋(away fwd) 在 蓝后卫(35.2) 与 蓝中场(72.0) 中点 → cy=53.6 → y=33.5
-        //   蓝前锋(home fwd) 在 红中场(88.0) 与 红后卫(124.8) 中点 → cy=106.4 → y=66.5
-        const yBase = isHome
-            ? { gk: 6, def: 22, mid: 45, fwd: 66.5 }
-            : { gk: 94, def: 78, mid: 55, fwd: 33.5 };
-        // 4 段阵型（如 4-2-3-1）的双层中场 y
-        // AM 层从 66/34 撤到 60/40，避免与前锋层(66.5/33.5)重叠（间距 10.4 > 6.4 直径）
-        let yDm = isHome ? 44 : 56;
-        let yAm = isHome ? 60 : 40;
-
-        // 当前全场交错视图的两个常见四段阵型需要独立层距：
-        // 4-2-3-1：单前锋必须清楚地位于三名攻击中场下方。
-        if (isHome && normalizedFormation === '4-2-3-1' && normalizedOpponent === '4-1-2-3') {
-            yBase.fwd = 71;
-        }
-        // 客队 4-1-2-3 从上向下应为 3前锋→2中场→1后腰→4后卫。
-        // 在交错视图中，2 位于蓝方“双后腰/三前腰”之间，1 位于蓝方三前腰下方。
-        if (!isHome && normalizedFormation === '4-1-2-3' && normalizedOpponent === '4-2-3-1') {
-            yAm = 52;
-            yDm = 66;
+        // Parse formation into parts
+        const parts = String(formation || '4-3-3').split('-').map(Number);
+        
+        // Ensure valid parts
+        let defCount = parts[0] || 4;
+        let fwdCount = parts[parts.length - 1] || 3;
+        let midLines = parts.slice(1, parts.length - 1);
+        if (midLines.length === 0) {
+            midLines = [3]; // Default to single midfield line of 3
         }
 
         const out = [];
-        // GK
-        out.push({ x: 50, y: yBase.gk, pos: 'GK', line: 'gk' });
-        // DEF
-        for (let i = 0; i < f.def; i++) {
-            const x = f.def === 1 ? 50 : Math.round(20 + (60 / (f.def - 1)) * i);
-            out.push({ x, y: yBase.def, pos: 'D', line: 'def' });
-        }
-        // MID（4 段走 DM+AM 双层，3 段走单层）
-        if (f.midDM && f.midAM) {
-            for (let i = 0; i < f.midDM; i++) {
-                const x = f.midDM === 1 ? 50 : Math.round(20 + (60 / (f.midDM - 1)) * i);
-                out.push({ x, y: yDm, pos: 'DM', line: 'mid' });
+
+        // 1. GK
+        const gkY = 6;
+        out.push({
+            x: 50,
+            y: isHome ? gkY : 100 - gkY,
+            pos: 'GK',
+            line: 'gk'
+        });
+
+        // 2. DEF Line
+        const defYBase = 22;
+        for (let i = 0; i < defCount; i++) {
+            let x = 50;
+            let dy = 0;
+            if (defCount === 2) {
+                x = i === 0 ? 35 : 65;
+            } else if (defCount === 3) {
+                x = i === 0 ? 28 : i === 1 ? 50 : 72;
+                if (i === 1) dy = -2.5; // Center CB slightly deeper
+            } else if (defCount === 4) {
+                x = i === 0 ? 14 : i === 1 ? 36 : i === 2 ? 64 : 86;
+                if (i === 0 || i === 3) dy = 3.5; // Fullbacks pushed up
+            } else {
+                // 5 or more
+                const step = 76 / (defCount - 1);
+                x = Math.round(12 + step * i);
+                if (i === 0 || i === defCount - 1) dy = 5.0; // Wingbacks pushed up
             }
-            for (let i = 0; i < f.midAM; i++) {
-                const x = f.midAM === 1 ? 50 : Math.round(20 + (60 / (f.midAM - 1)) * i);
-                out.push({ x, y: yAm, pos: 'AM', line: 'mid' });
-            }
-        } else {
-            for (let i = 0; i < f.mid; i++) {
-                const x = f.mid === 1 ? 50 : Math.round(20 + (60 / (f.mid - 1)) * i);
-                out.push({ x, y: yBase.mid, pos: 'M', line: 'mid' });
+
+            const y = isHome ? (defYBase + dy) : (100 - defYBase - dy);
+            out.push({ x, y, pos: 'D', line: 'def' });
+        }
+
+        // 3. Midfield Lines
+        const fwdYBase = 70;
+        const totalMidLines = midLines.length;
+        for (let l = 0; l < totalMidLines; l++) {
+            const count = midLines[l] || 3;
+            // Interpolate y base for this midfield line
+            const midYBase = defYBase + (fwdYBase - defYBase) * ((l + 1) / (totalMidLines + 1));
+            
+            for (let i = 0; i < count; i++) {
+                let x = 50;
+                let dy = 0;
+                if (count === 1) {
+                    x = 50;
+                } else if (count === 2) {
+                    x = i === 0 ? 34 : 66;
+                } else if (count === 3) {
+                    x = i === 0 ? 26 : i === 1 ? 50 : 74;
+                    // Check if it's attacking mid or defensive mid
+                    if (l === totalMidLines - 1) {
+                        // AM style: center advanced
+                        if (i === 1) dy = 2.5;
+                    } else {
+                        // DM style: center deeper
+                        if (i === 1) dy = -2.5;
+                    }
+                } else if (count === 4) {
+                    x = i === 0 ? 16 : i === 1 ? 36 : i === 2 ? 64 : 84;
+                    if (i === 0 || i === 3) dy = 2.0; // Wide mids slightly advanced
+                } else {
+                    const step = 72 / (count - 1);
+                    x = Math.round(14 + step * i);
+                    if (i === 0 || i === count - 1) dy = 3.0; // Outer mids slightly advanced
+                }
+
+                const y = isHome ? (midYBase + dy) : (100 - midYBase - dy);
+                out.push({ x, y, pos: 'M', line: 'mid' });
             }
         }
-        // FWD
-        for (let i = 0; i < f.fwd; i++) {
-            const x = f.fwd === 1 ? 50 : Math.round(20 + (60 / (f.fwd - 1)) * i);
-            out.push({ x, y: yBase.fwd, pos: 'F', line: 'fwd' });
+
+        // 4. FWD Line
+        for (let i = 0; i < fwdCount; i++) {
+            let x = 50;
+            let dy = 0;
+            if (fwdCount === 1) {
+                x = 50;
+            } else if (fwdCount === 2) {
+                x = i === 0 ? 36 : 64;
+            } else if (fwdCount === 3) {
+                x = i === 0 ? 18 : i === 1 ? 50 : 82;
+                if (i === 1) dy = 4.0; // Striker advanced
+            } else {
+                // 4 or more
+                const step = 68 / (fwdCount - 1);
+                x = Math.round(16 + step * i);
+                if (i > 0 && i < fwdCount - 1) dy = 4.0; // Inner strikers advanced
+            }
+
+            const y = isHome ? (fwdYBase + dy) : (100 - fwdYBase - dy);
+            out.push({ x, y, pos: 'F', line: 'fwd' });
         }
+
         return out;
     }
 
@@ -254,7 +306,34 @@ window.WorldCup.MatchRenderers = (() => {
             <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
                 <feGaussianBlur stdDeviation="1.2"/>
             </filter>
-        </defs>`;
+            <radialGradient id="halo-glow-home" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="1.0"/>
+                <stop offset="35%" stop-color="#3b82f6" stop-opacity="0.85"/>
+                <stop offset="70%" stop-color="#3b82f6" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="halo-glow-away" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="1.0"/>
+                <stop offset="35%" stop-color="#ef4444" stop-opacity="0.85"/>
+                <stop offset="70%" stop-color="#ef4444" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <style>
+            .pitch-player-group {
+                cursor: pointer;
+            }
+            .ability-halo {
+                transition: opacity 0.2s ease;
+            }
+            .pitch-player-group:hover .ability-halo {
+                opacity: 1.0 !important;
+            }
+            .pitch-player-group:hover .player-core {
+                stroke-width: 0.7px !important;
+                filter: drop-shadow(0 0.8px 1.5px rgba(0,0,0,0.5)) !important;
+            }
+        </style>`;
 
         // ── Pitch background ──
         svg += `<rect width="100" height="160" fill="url(#tb-pitch)"/>`;
@@ -352,17 +431,39 @@ window.WorldCup.MatchRenderers = (() => {
 
         // ── 换人索引：off 球员 → {minute, on}；on 球员 → {minute, off} ──
         // 兼容字段：off||playerOut, on||playerIn, minute
-        const subOffMap = new Map(); // side -> Map(nameKey -> sub)
+        const subOffMap = new Map(); // side -> Map(nameKey/idKey -> sub)
         const subOnMap = new Map();
         const ensureSideMap = (m, side) => { if (!m.has(side)) m.set(side, new Map()); return m.get(side); };
         for (const s of substitutions) {
             if (!s) continue;
             const side = s.side || 'home';
-            const offName = s.off || s.playerOut;
-            const onName = s.on || s.playerIn;
+            const offName = s.offName || s.playerOut;
+            const offId = s.off;
+            const onName = s.onName || s.playerIn;
+            const onId = s.on;
             const minute = s.minute ?? s.minutePlayed ?? '?';
-            if (offName) ensureSideMap(subOffMap, side).set(normalizeName(offName), { minute, on: onName, raw: s });
-            if (onName) ensureSideMap(subOnMap, side).set(normalizeName(onName), { minute, off: offName, raw: s });
+            
+            const subData = {
+                minute,
+                onId,
+                onName,
+                onNameZh: s.onNameZh || null,
+                onRating: s.onRating || 70,
+                onJersey: s.onJersey || '?',
+                offId,
+                offName,
+                offNameZh: s.offNameZh || null,
+                offRating: s.offRating || 70,
+                raw: s
+            };
+
+            const offMap = ensureSideMap(subOffMap, side);
+            if (offId) offMap.set(String(offId).toLowerCase(), subData);
+            if (offName) offMap.set(normalizeName(offName), subData);
+
+            const onMap = ensureSideMap(subOnMap, side);
+            if (onId) onMap.set(String(onId).toLowerCase(), subData);
+            if (onName) onMap.set(normalizeName(onName), subData);
         }
 
         // ── 统一坐标帧：cy = y*1.6 不翻转，cx = x 不镜像 ──
@@ -372,6 +473,41 @@ window.WorldCup.MatchRenderers = (() => {
         //   蓝GK→蓝后卫→红前锋→蓝中场→红中场→蓝前锋→红后卫→红GK
         const homeTemplate = formationTemplate(home.formation || '4-3-3', 'home', away.formation || '4-3-3');
         const awayTemplate = formationTemplate(away.formation || '4-3-3', 'away', home.formation || '4-3-3');
+
+        // Resolve overlaps between home and away players
+        const MIN_DIST = 9.0;
+        for (let iter = 0; iter < 10; iter++) {
+            let adjusted = false;
+            for (let i = 0; i < homeTemplate.length; i++) {
+                const h = homeTemplate[i];
+                for (let j = 0; j < awayTemplate.length; j++) {
+                    const a = awayTemplate[j];
+                    const dx = h.x - a.x;
+                    const dy = (h.y * 1.6) - (a.y * 1.6);
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < MIN_DIST) {
+                        adjusted = true;
+                        const overlap = MIN_DIST - dist;
+                        const angle = dist > 0.1 ? Math.atan2(dy, dx) : (Math.random() * 2 * Math.PI);
+                        const pushAmount = overlap / 2;
+                        
+                        const hPushX = Math.cos(angle) * pushAmount;
+                        const hPushY = (Math.sin(angle) * pushAmount) / 1.6;
+                        
+                        h.x += hPushX;
+                        h.y += hPushY;
+                        a.x -= hPushX;
+                        a.y -= hPushY;
+                        
+                        // Clamp coordinates to stay within pitch boundaries [10, 90]
+                        h.x = Math.max(10, Math.min(90, h.x));
+                        a.x = Math.max(10, Math.min(90, a.x));
+                    }
+                }
+            }
+            if (!adjusted) break;
+        }
+
         const coord = (p, idx, side) => {
             const tmpl = side === 'home' ? homeTemplate : awayTemplate;
             const t = tmpl[idx] || tmpl[tmpl.length - 1] || { x: 50, y: 50 };
@@ -386,23 +522,109 @@ window.WorldCup.MatchRenderers = (() => {
         const R = 2.6; // 2.6 * 5.4px = 14.04px radius -> 28px diameter
         const goals = matchData?.goals || [];
 
+        const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : (nameZh || name);
+
+        const playerMatchesName = (pName, eventName) => {
+            if (!pName || !eventName) return false;
+            const pn = normalizeName(pName);
+            const en = normalizeName(eventName);
+            return pn === en || pn.includes(en) || en.includes(pn);
+        };
+
+        const getPlayerGoals = (pName, side) => {
+            const teamName = side === 'home' ? (home?.team || '') : (away?.team || '');
+            return goals.filter(g => {
+                const teamMatches = String(g.team || '').toLowerCase().includes(String(teamName).toLowerCase()) || 
+                                    String(teamName).toLowerCase().includes(String(g.team || '').toLowerCase());
+                return teamMatches && playerMatchesName(pName, g.player);
+            });
+        };
+
+        const renderEventBadge = (x, y, icon, text, isSubOn) => {
+            const displayStr = `${icon}${text}`;
+            const w = displayStr.length * 1.3 + 1.8;
+            const bg = isSubOn ? 'rgba(16,185,129,0.85)' : 'rgba(0,0,0,0.65)';
+            return `<g transform="translate(${x},${y})">
+                <rect x="-${w/2}" y="-2.3" width="${w}" height="3.2" rx="0.8" fill="${bg}" stroke="rgba(255,255,255,0.15)" stroke-width="0.2"/>
+                <text x="0" y="-0.7" text-anchor="middle" dominant-baseline="middle" font-size="1.8" fill="white" font-weight="800">${esc(displayStr)}</text>
+            </g>`;
+        };
+
         const renderPlayerNode = (p, side, idx) => {
             if (!p) return '';
             const { cx, cy } = coord(p, idx, side);
             const st = TEAM_STYLE[side] || TEAM_STYLE.home;
             const playerId = p.playerId || p.id || p.espnId || '';
             const rawName = p.name || '';
-            const jersey = p.jersey || p.number || '?';
-            const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
-            const radius = 2.6 + (rating - 50) * 0.055;
+            const pIdLower = String(playerId).toLowerCase();
+            const pNameNorm = normalizeName(rawName);
+            
+            const sideSubOff = subOffMap.get(side);
+            const subOff = sideSubOff ? (sideSubOff.get(pIdLower) || sideSubOff.get(pNameNorm)) : null;
 
-            let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
-            node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.halo}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
-            node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.halo}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
-            node += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${st.solid}" stroke="${st.stroke}" stroke-width="0.45"/>`;
-            node += `<text x="${cx}" y="${cy + 0.15}" text-anchor="middle" dominant-baseline="middle" fill="${st.text}" font-size="2.45" font-weight="800">${esc(String(jersey))}</text>`;
-            node += `</g>`;
-            return node;
+            // Determine active player parameters
+            let activePlayerId = playerId;
+            let activeName = rawName;
+            let activeJersey = p.jersey || p.number || '?';
+            let activeRating = Number(p.rating) || 65;
+            let activeNameZh = p.nameZh || null;
+            let isSubOn = false;
+            let subOffDetails = null;
+
+            if (subOff) {
+                activePlayerId = subOff.onId || '';
+                activeName = subOff.onName;
+                activeJersey = subOff.onJersey || '?';
+                activeRating = Number(subOff.onRating) || 65;
+                activeNameZh = subOff.onNameZh || null;
+                isSubOn = true;
+                subOffDetails = {
+                    minute: subOff.minute,
+                    starterName: translatePlayerName(rawName, p.nameZh)
+                };
+            }
+
+            const pGoals = getPlayerGoals(activeName, side);
+            const hasGoals = pGoals.length > 0;
+            const goalMinutesJoin = pGoals.map(g => String(g.minute).replace(/'/g, '') + "'").join(',');
+
+            const rating = Math.max(50, Math.min(100, activeRating));
+            const ratingDiff = Math.max(0, rating - 50);
+            const radius = 2.8 + Math.pow(ratingDiff, 1.25) * 0.10;
+            const pNameZh = translatePlayerName(activeName, activeNameZh);
+            const pTeamName = side === 'home' ? (home?.team || '') : (away?.team || '');
+
+            let statusText = '';
+            if (isSubOn) {
+                statusText = esc(tx(`替补上场 ${subOffDetails.minute} ← ${subOffDetails.starterName}`, `Sub On ${subOffDetails.minute} ← ${subOffDetails.starterName}`));
+            } else {
+                statusText = esc(tx('首发', 'Starting'));
+            }
+
+            let htmlNode = '';
+
+            // Draw Active Player Group
+            const goalsText = hasGoals ? goalMinutesJoin : '';
+            htmlNode += `<g class="pitch-player-group pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(activePlayerId))}" data-player-name="${attr(activeName)}" style="cursor:pointer" data-player-tip="true" data-name="${attr(pNameZh)}" data-pos="${attr(p.pos || '')}" data-rating="${(rating/10).toFixed(1)}" data-team="${attr(pTeamName)}" data-status="${statusText}" data-goals="${attr(goalsText)}">`;
+            
+            // Radial Gradient Glow Halo
+            htmlNode += `<circle class="ability-halo" cx="${cx}" cy="${cy}" r="${radius}" fill="url(#halo-glow-${side})" opacity="0.8" filter="url(#tb-ability-blur)"/>`;
+            
+            // Core player circle
+            const strokeDash = isSubOn ? 'stroke-dasharray="0.8 0.4"' : '';
+            htmlNode += `<circle class="player-core" cx="${cx}" cy="${cy}" r="${R}" fill="${st.solid}" stroke="${st.stroke}" stroke-width="0.45" ${strokeDash}/>`;
+            htmlNode += `<text x="${cx}" y="${cy + 0.15}" text-anchor="middle" dominant-baseline="middle" fill="${st.text}" font-size="2.45" font-weight="800">${esc(String(activeJersey))}</text>`;
+            htmlNode += `</g>`;
+
+            // Draw Badges
+            if (isSubOn) {
+                htmlNode += renderEventBadge(cx - 3.8, cy - 2.8, '↑', subOffDetails.minute, true);
+            }
+            if (hasGoals) {
+                htmlNode += renderEventBadge(cx + 3.8, cy - 2.8, '⚽', goalMinutesJoin, false);
+            }
+
+            return htmlNode;
         };
 
         // ── Home XI ──

@@ -117,7 +117,7 @@
     .rating-low { background:#ef4444; color:#fff; }
 
     /* Player tooltip */
-    .player-tip { position:absolute; z-index:50; background:#1a1a25; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.5); pointer-events:none; opacity:0; transition:opacity 0.15s; }
+    .player-tip { position:fixed; z-index:200; background:#1a1a25; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px; min-width:180px; max-width:220px; box-shadow:0 8px 32px rgba(0,0,0,0.5); pointer-events:none; opacity:0; transition:opacity 0.15s; }
     .player-tip.show { opacity:1; pointer-events:auto; }
 
     /* Odds trend arrows */
@@ -481,6 +481,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=67a41f32"></script>
+<script type="module" src="/static/js/bundle.js?v=f23feea5"></script>
 </body>
 </html>

@@ -319,12 +319,20 @@
 
     // ========== Event Delegation: Player Tooltips ==========
     document.addEventListener('mouseover', (e) => {
-        const target = e.target.closest('[data-action="show-player-tip"]');
-        if (target) window.showTipFromDataset(target);
+        const target = e.target.closest('[data-action="show-player-tip"], [data-player-tip="true"]');
+        if (target) {
+            const related = e.relatedTarget ? e.relatedTarget.closest('[data-action="show-player-tip"], [data-player-tip="true"]') : null;
+            if (related === target) return;
+            window.showTipFromDataset(target);
+        }
     });
     document.addEventListener('mouseout', (e) => {
-        const target = e.target.closest('[data-action="show-player-tip"]');
-        if (target) window.hideTip();
+        const target = e.target.closest('[data-action="show-player-tip"], [data-player-tip="true"]');
+        if (target) {
+            const related = e.relatedTarget ? e.relatedTarget.closest('[data-action="show-player-tip"], [data-player-tip="true"]') : null;
+            if (related === target) return;
+            window.hideTip();
+        }
     });
 
     // ========== Event Delegation: Keyboard ==========

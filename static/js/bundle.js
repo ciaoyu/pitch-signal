@@ -3198,7 +3198,7 @@ var require_match_detail = __commonJS({
             </div>
             <div style="min-width:140px;text-align:center;padding:0 20px;flex-shrink:0">
                 <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
-                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">FT</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx("\u5F85\u8D5B", "TBD")}</div>`}
+                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">${matchData2.hasPenalties ? tx("\u70B9\u7403\u51B3\u51FA", "FT-Pens") : "FT"}</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx("\u5F85\u8D5B", "TBD")}</div>`}
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:16px">
                 ${awayLogo ? `<img src="${attr(awayLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(awayFlag)}</div>`}
@@ -3211,6 +3211,55 @@ var require_match_detail = __commonJS({
                 </div>
             </div>
         </div>`;
+        if (matchData2.goals?.length) {
+          const homeRawName = matchData2.home?.name || "";
+          const awayRawName = matchData2.away?.name || "";
+          const homeGoals = matchData2.goals.filter((g) => g.team === homeRawName);
+          const awayGoals = matchData2.goals.filter((g) => g.team === awayRawName);
+          const goalChip = (g) => {
+            const icon = g.type && /own.goal|OG|乌龙/i.test(g.type) ? "\u26BD\uFE0F" : g.type && /penalty|PK|点球/i.test(g.type) ? "\u26BDP" : "\u26BD";
+            return `<span style="display:inline-flex;align-items:center;gap:3px;font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.55)">${esc(g.player)}<span style="color:rgba(248,250,252,.25)">${esc(g.minute)}</span></span>`;
+          };
+          html += `<div style="display:flex;align-items:flex-start;justify-content:center;padding:0 24px 10px;gap:20px">
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">
+              ${homeGoals.map(goalChip).join("")}
+            </div>
+            <div style="min-width:140px;padding:0 20px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start">
+              ${awayGoals.map(goalChip).join("")}
+            </div>
+          </div>`;
+        }
+        if (matchData2.hasPenalties) {
+          const pH = matchData2.penaltyHomeScore ?? "?";
+          const pA = matchData2.penaltyAwayScore ?? "?";
+          const kicks = matchData2.penaltyKicks || [];
+          const homeKicks = kicks.filter((k) => k.side === "home");
+          const awayKicks = kicks.filter((k) => k.side === "away");
+          const kickIcon = (k) => k.result === "scored" ? "\u26BD" : k.result === "saved" ? "\u{1F9E4}" : "\u2717";
+          const kickStyle = (k) => k.result === "scored" ? "color:rgba(52,211,153,.9)" : "color:rgba(248,113,113,.7)";
+          const kickItem = (k, align) => `<div style="display:flex;align-items:center;gap:4px;justify-content:${align};font:400 10px/1.4 'JetBrains Mono',monospace">
+              <span style="${kickStyle(k)}">${kickIcon(k)}</span>
+              <span style="color:rgba(248,250,252,.6)">${esc(k.player)}</span>
+            </div>`;
+          html += `<div style="padding:6px 24px 12px">
+            <div style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:12px 16px">
+              <div style="text-align:center;margin-bottom:10px">
+                <span style="font:500 11px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.8)">${tx("\u70B9\u7403\u5927\u6218", "Penalty Shootout")}</span>
+                <span style="margin:0 10px;font:800 20px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(pH))} \u2013 ${esc(String(pA))}</span>
+              </div>
+              <div style="display:flex;gap:16px">
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:flex-end">
+                  ${homeKicks.map((k) => kickItem(k, "flex-end")).join("") || `<span style="color:rgba(248,250,252,.2);font-size:10px">\u2014</span>`}
+                </div>
+                <div style="width:1px;background:rgba(255,255,255,.06)"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px;align-items:flex-start">
+                  ${awayKicks.map((k) => kickItem(k, "flex-start")).join("") || `<span style="color:rgba(248,250,252,.2);font-size:10px">\u2014</span>`}
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }
         html += `<div id="hud-body" class="hud-container" style="display:flex;gap:12px;padding:8px 24px 0;align-items:flex-start;min-height:360px">`;
         html += `<div id="hud-left" class="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
             <div class="hud-glass-panel">
@@ -5106,7 +5155,8 @@ var require_ui_helpers = __commonJS({
         panel.querySelectorAll(".pitch-away").forEach((el) => el.style.display = mode === "home" ? "none" : "");
         panel.querySelectorAll(".pitch-pair").forEach((el) => el.style.display = mode === "both" ? "" : "none");
       }
-      function showTip(el, name, pos, rating, team, status) {
+      const POS_ZH = { GK: "\u95E8\u5C06", CB: "\u4E2D\u540E\u536B", LB: "\u5DE6\u540E\u536B", RB: "\u53F3\u540E\u536B", LWB: "\u5DE6\u7FFC\u536B", RWB: "\u53F3\u7FFC\u536B", DF: "\u540E\u536B", DM: "\u540E\u8170", CM: "\u4E2D\u573A", AM: "\u653B\u51FB\u4E2D\u573A", LM: "\u5DE6\u4E2D\u573A", RM: "\u53F3\u4E2D\u573A", MF: "\u4E2D\u573A", LW: "\u5DE6\u7FFC", RW: "\u53F3\u7FFC", SS: "\u5F71\u5B50\u524D\u950B", CF: "\u4E2D\u950B", ST: "\u524D\u950B", FW: "\u524D\u950B" };
+      function showTip(el, name, pos, rating, team, status, goals) {
         let tip = document.getElementById("player-tip");
         if (!tip) {
           tip = document.createElement("div");
@@ -5114,21 +5164,28 @@ var require_ui_helpers = __commonJS({
           tip.className = "player-tip";
           document.body.appendChild(tip);
         }
+        const tx = window.WorldCup?.I18n?.tx || ((zh) => zh);
+        const lang = window.WorldCup?.State?.uiLang || "zh";
         const cls = rating >= 7.5 ? "text-green-400" : rating >= 6.5 ? "text-yellow-400" : "text-red-400";
-        const st = status || "\u9996\u53D1";
-        const sCls = st === "\u9996\u53D1" ? "text-green-400" : st === "\u66FF\u8865" ? "text-yellow-400" : "text-red-400";
+        const defaultStatus = tx("\u9996\u53D1", "Starting");
+        const st = status || defaultStatus;
+        const isSub = st !== defaultStatus && st !== "\u9996\u53D1" && st !== "Starting";
+        const sCls = isSub ? "text-amber-400" : "text-green-400";
+        const posLabel = lang === "zh" ? POS_ZH[pos] || pos : pos;
+        const goalsHtml = goals ? `<div class="text-[11px] text-emerald-400 mt-1">\u26BD ${esc(goals)}</div>` : "";
         tip.innerHTML = `
-            <div class="text-sm font-bold">${esc(name)}</div>
-            <div class="text-[11px] text-gray-500 mb-2">${esc(team)} \xB7 ${esc(pos)}</div>
-            <div class="flex items-center justify-between mb-1">
-                <span class="text-xs text-gray-400">\u72B6\u6001</span>
-                <span class="text-xs font-bold ${sCls}">${esc(st)}</span>
+            <div class="text-sm font-bold mb-0.5">${esc(name)}</div>
+            <div class="text-[11px] text-gray-500 mb-2">${esc(team)} \xB7 ${esc(posLabel)}</div>
+            <div class="mb-1.5">
+                <div class="text-[10px] text-gray-500 mb-0.5">${tx("\u72B6\u6001", "Status")}</div>
+                <div class="text-xs font-bold ${sCls}" style="line-height:1.4;word-break:break-word">${esc(st)}</div>
             </div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs text-gray-400">\u8BC4\u5206</span>
-                <span class="text-lg font-bold ${cls}">${esc(rating)}</span>
+            ${goalsHtml}
+            <div class="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-white/5">
+                <span class="text-[10px] text-gray-500">${tx("\u8BC4\u5206", "Rating")}</span>
+                <span class="text-base font-bold font-mono ${cls}">${esc(rating)}</span>
             </div>
-            <div class="text-[11px] text-gray-600">\u70B9\u51FB\u67E5\u770B\u7403\u5458\u8BE6\u60C5 \u2192</div>
+            <div class="text-[10px] text-gray-600 mt-1">${tx("\u70B9\u51FB\u67E5\u770B\u7403\u5458\u8BE6\u60C5", "Click for details")} \u2192</div>
         `;
         const rect = el.getBoundingClientRect();
         tip.style.left = Math.min(rect.right + 8, window.innerWidth - 200) + "px";
@@ -5144,8 +5201,9 @@ var require_ui_helpers = __commonJS({
         const pos = el.dataset.pos || "";
         const rating = parseFloat(el.dataset.rating) || 0;
         const team = el.dataset.team || "";
-        const status = el.dataset.status || "\u9996\u53D1";
-        showTip(el, name, pos, rating, team, status);
+        const status = el.dataset.status || "";
+        const goals = el.dataset.goals || "";
+        showTip(el, name, pos, rating, team, status, goals);
       }
       window.WorldCup.UIHelpers = { setPitchView, showTip, hideTip, showTipFromDataset };
       Object.assign(window, { setPitchView, showTip, hideTip, showTipFromDataset });
@@ -5171,44 +5229,90 @@ var require_match_renderers = __commonJS({
       };
       const FORMATION_POSITIONS = {};
       function formationTemplate(formation, side, opponentFormation = "") {
-        const f = parseFormationStr(formation);
         const isHome = side === "home";
-        const normalizedFormation = String(formation || "").trim();
-        const normalizedOpponent = String(opponentFormation || "").trim();
-        const yBase = isHome ? { gk: 6, def: 22, mid: 45, fwd: 66.5 } : { gk: 94, def: 78, mid: 55, fwd: 33.5 };
-        let yDm = isHome ? 44 : 56;
-        let yAm = isHome ? 60 : 40;
-        if (isHome && normalizedFormation === "4-2-3-1" && normalizedOpponent === "4-1-2-3") {
-          yBase.fwd = 71;
-        }
-        if (!isHome && normalizedFormation === "4-1-2-3" && normalizedOpponent === "4-2-3-1") {
-          yAm = 52;
-          yDm = 66;
+        const parts = String(formation || "4-3-3").split("-").map(Number);
+        let defCount = parts[0] || 4;
+        let fwdCount = parts[parts.length - 1] || 3;
+        let midLines = parts.slice(1, parts.length - 1);
+        if (midLines.length === 0) {
+          midLines = [3];
         }
         const out = [];
-        out.push({ x: 50, y: yBase.gk, pos: "GK", line: "gk" });
-        for (let i = 0; i < f.def; i++) {
-          const x = f.def === 1 ? 50 : Math.round(20 + 60 / (f.def - 1) * i);
-          out.push({ x, y: yBase.def, pos: "D", line: "def" });
+        const gkY = 6;
+        out.push({
+          x: 50,
+          y: isHome ? gkY : 100 - gkY,
+          pos: "GK",
+          line: "gk"
+        });
+        const defYBase = 22;
+        for (let i = 0; i < defCount; i++) {
+          let x = 50;
+          let dy = 0;
+          if (defCount === 2) {
+            x = i === 0 ? 35 : 65;
+          } else if (defCount === 3) {
+            x = i === 0 ? 28 : i === 1 ? 50 : 72;
+            if (i === 1) dy = -2.5;
+          } else if (defCount === 4) {
+            x = i === 0 ? 14 : i === 1 ? 36 : i === 2 ? 64 : 86;
+            if (i === 0 || i === 3) dy = 3.5;
+          } else {
+            const step = 76 / (defCount - 1);
+            x = Math.round(12 + step * i);
+            if (i === 0 || i === defCount - 1) dy = 5;
+          }
+          const y = isHome ? defYBase + dy : 100 - defYBase - dy;
+          out.push({ x, y, pos: "D", line: "def" });
         }
-        if (f.midDM && f.midAM) {
-          for (let i = 0; i < f.midDM; i++) {
-            const x = f.midDM === 1 ? 50 : Math.round(20 + 60 / (f.midDM - 1) * i);
-            out.push({ x, y: yDm, pos: "DM", line: "mid" });
-          }
-          for (let i = 0; i < f.midAM; i++) {
-            const x = f.midAM === 1 ? 50 : Math.round(20 + 60 / (f.midAM - 1) * i);
-            out.push({ x, y: yAm, pos: "AM", line: "mid" });
-          }
-        } else {
-          for (let i = 0; i < f.mid; i++) {
-            const x = f.mid === 1 ? 50 : Math.round(20 + 60 / (f.mid - 1) * i);
-            out.push({ x, y: yBase.mid, pos: "M", line: "mid" });
+        const fwdYBase = 70;
+        const totalMidLines = midLines.length;
+        for (let l = 0; l < totalMidLines; l++) {
+          const count = midLines[l] || 3;
+          const midYBase = defYBase + (fwdYBase - defYBase) * ((l + 1) / (totalMidLines + 1));
+          for (let i = 0; i < count; i++) {
+            let x = 50;
+            let dy = 0;
+            if (count === 1) {
+              x = 50;
+            } else if (count === 2) {
+              x = i === 0 ? 34 : 66;
+            } else if (count === 3) {
+              x = i === 0 ? 26 : i === 1 ? 50 : 74;
+              if (l === totalMidLines - 1) {
+                if (i === 1) dy = 2.5;
+              } else {
+                if (i === 1) dy = -2.5;
+              }
+            } else if (count === 4) {
+              x = i === 0 ? 16 : i === 1 ? 36 : i === 2 ? 64 : 84;
+              if (i === 0 || i === 3) dy = 2;
+            } else {
+              const step = 72 / (count - 1);
+              x = Math.round(14 + step * i);
+              if (i === 0 || i === count - 1) dy = 3;
+            }
+            const y = isHome ? midYBase + dy : 100 - midYBase - dy;
+            out.push({ x, y, pos: "M", line: "mid" });
           }
         }
-        for (let i = 0; i < f.fwd; i++) {
-          const x = f.fwd === 1 ? 50 : Math.round(20 + 60 / (f.fwd - 1) * i);
-          out.push({ x, y: yBase.fwd, pos: "F", line: "fwd" });
+        for (let i = 0; i < fwdCount; i++) {
+          let x = 50;
+          let dy = 0;
+          if (fwdCount === 1) {
+            x = 50;
+          } else if (fwdCount === 2) {
+            x = i === 0 ? 36 : 64;
+          } else if (fwdCount === 3) {
+            x = i === 0 ? 18 : i === 1 ? 50 : 82;
+            if (i === 1) dy = 4;
+          } else {
+            const step = 68 / (fwdCount - 1);
+            x = Math.round(16 + step * i);
+            if (i > 0 && i < fwdCount - 1) dy = 4;
+          }
+          const y = isHome ? fwdYBase + dy : 100 - fwdYBase - dy;
+          out.push({ x, y, pos: "F", line: "fwd" });
         }
         return out;
       }
@@ -5336,7 +5440,34 @@ var require_match_renderers = __commonJS({
             <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
                 <feGaussianBlur stdDeviation="1.2"/>
             </filter>
-        </defs>`;
+            <radialGradient id="halo-glow-home" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="1.0"/>
+                <stop offset="35%" stop-color="#3b82f6" stop-opacity="0.85"/>
+                <stop offset="70%" stop-color="#3b82f6" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="halo-glow-away" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="1.0"/>
+                <stop offset="35%" stop-color="#ef4444" stop-opacity="0.85"/>
+                <stop offset="70%" stop-color="#ef4444" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <style>
+            .pitch-player-group {
+                cursor: pointer;
+            }
+            .ability-halo {
+                transition: opacity 0.2s ease;
+            }
+            .pitch-player-group:hover .ability-halo {
+                opacity: 1.0 !important;
+            }
+            .pitch-player-group:hover .player-core {
+                stroke-width: 0.7px !important;
+                filter: drop-shadow(0 0.8px 1.5px rgba(0,0,0,0.5)) !important;
+            }
+        </style>`;
         svg += `<rect width="100" height="160" fill="url(#tb-pitch)"/>`;
         for (let i = 0; i < 20; i += 2) svg += `<rect x="0" y="${i * 8}" width="100" height="8" fill="rgba(255,255,255,0.03)"/>`;
         svg += `<line x1="0" y1="80" x2="100" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>`;
@@ -5413,14 +5544,61 @@ var require_match_renderers = __commonJS({
         for (const s of substitutions) {
           if (!s) continue;
           const side = s.side || "home";
-          const offName = s.off || s.playerOut;
-          const onName = s.on || s.playerIn;
+          const offName = s.offName || s.playerOut;
+          const offId = s.off;
+          const onName = s.onName || s.playerIn;
+          const onId = s.on;
           const minute = s.minute ?? s.minutePlayed ?? "?";
-          if (offName) ensureSideMap(subOffMap, side).set(normalizeName(offName), { minute, on: onName, raw: s });
-          if (onName) ensureSideMap(subOnMap, side).set(normalizeName(onName), { minute, off: offName, raw: s });
+          const subData = {
+            minute,
+            onId,
+            onName,
+            onNameZh: s.onNameZh || null,
+            onRating: s.onRating || 70,
+            onJersey: s.onJersey || "?",
+            offId,
+            offName,
+            offNameZh: s.offNameZh || null,
+            offRating: s.offRating || 70,
+            raw: s
+          };
+          const offMap = ensureSideMap(subOffMap, side);
+          if (offId) offMap.set(String(offId).toLowerCase(), subData);
+          if (offName) offMap.set(normalizeName(offName), subData);
+          const onMap = ensureSideMap(subOnMap, side);
+          if (onId) onMap.set(String(onId).toLowerCase(), subData);
+          if (onName) onMap.set(normalizeName(onName), subData);
         }
         const homeTemplate = formationTemplate(home.formation || "4-3-3", "home", away.formation || "4-3-3");
         const awayTemplate = formationTemplate(away.formation || "4-3-3", "away", home.formation || "4-3-3");
+        const MIN_DIST = 9;
+        for (let iter = 0; iter < 10; iter++) {
+          let adjusted = false;
+          for (let i = 0; i < homeTemplate.length; i++) {
+            const h = homeTemplate[i];
+            for (let j = 0; j < awayTemplate.length; j++) {
+              const a = awayTemplate[j];
+              const dx = h.x - a.x;
+              const dy = h.y * 1.6 - a.y * 1.6;
+              const dist = Math.hypot(dx, dy);
+              if (dist < MIN_DIST) {
+                adjusted = true;
+                const overlap = MIN_DIST - dist;
+                const angle = dist > 0.1 ? Math.atan2(dy, dx) : Math.random() * 2 * Math.PI;
+                const pushAmount = overlap / 2;
+                const hPushX = Math.cos(angle) * pushAmount;
+                const hPushY = Math.sin(angle) * pushAmount / 1.6;
+                h.x += hPushX;
+                h.y += hPushY;
+                a.x -= hPushX;
+                a.y -= hPushY;
+                h.x = Math.max(10, Math.min(90, h.x));
+                a.x = Math.max(10, Math.min(90, a.x));
+              }
+            }
+          }
+          if (!adjusted) break;
+        }
         const coord = (p, idx, side) => {
           const tmpl = side === "home" ? homeTemplate : awayTemplate;
           const t = tmpl[idx] || tmpl[tmpl.length - 1] || { x: 50, y: 50 };
@@ -5432,22 +5610,87 @@ var require_match_renderers = __commonJS({
         };
         const R = 2.6;
         const goals = matchData2?.goals || [];
+        const translatePlayerName2 = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : nameZh || name;
+        const playerMatchesName = (pName, eventName) => {
+          if (!pName || !eventName) return false;
+          const pn = normalizeName(pName);
+          const en = normalizeName(eventName);
+          return pn === en || pn.includes(en) || en.includes(pn);
+        };
+        const getPlayerGoals = (pName, side) => {
+          const teamName = side === "home" ? home?.team || "" : away?.team || "";
+          return goals.filter((g) => {
+            const teamMatches = String(g.team || "").toLowerCase().includes(String(teamName).toLowerCase()) || String(teamName).toLowerCase().includes(String(g.team || "").toLowerCase());
+            return teamMatches && playerMatchesName(pName, g.player);
+          });
+        };
+        const renderEventBadge = (x, y, icon, text, isSubOn) => {
+          const displayStr = `${icon}${text}`;
+          const w = displayStr.length * 1.3 + 1.8;
+          const bg = isSubOn ? "rgba(16,185,129,0.85)" : "rgba(0,0,0,0.65)";
+          return `<g transform="translate(${x},${y})">
+                <rect x="-${w / 2}" y="-2.3" width="${w}" height="3.2" rx="0.8" fill="${bg}" stroke="rgba(255,255,255,0.15)" stroke-width="0.2"/>
+                <text x="0" y="-0.7" text-anchor="middle" dominant-baseline="middle" font-size="1.8" fill="white" font-weight="800">${esc(displayStr)}</text>
+            </g>`;
+        };
         const renderPlayerNode = (p, side, idx) => {
           if (!p) return "";
           const { cx, cy } = coord(p, idx, side);
           const st = TEAM_STYLE[side] || TEAM_STYLE.home;
           const playerId = p.playerId || p.id || p.espnId || "";
           const rawName = p.name || "";
-          const jersey = p.jersey || p.number || "?";
-          const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
-          const radius = 2.6 + (rating - 50) * 0.055;
-          let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
-          node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.halo}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
-          node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.halo}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
-          node += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${st.solid}" stroke="${st.stroke}" stroke-width="0.45"/>`;
-          node += `<text x="${cx}" y="${cy + 0.15}" text-anchor="middle" dominant-baseline="middle" fill="${st.text}" font-size="2.45" font-weight="800">${esc(String(jersey))}</text>`;
-          node += `</g>`;
-          return node;
+          const pIdLower = String(playerId).toLowerCase();
+          const pNameNorm = normalizeName(rawName);
+          const sideSubOff = subOffMap.get(side);
+          const subOff = sideSubOff ? sideSubOff.get(pIdLower) || sideSubOff.get(pNameNorm) : null;
+          let activePlayerId = playerId;
+          let activeName = rawName;
+          let activeJersey = p.jersey || p.number || "?";
+          let activeRating = Number(p.rating) || 65;
+          let activeNameZh = p.nameZh || null;
+          let isSubOn = false;
+          let subOffDetails = null;
+          if (subOff) {
+            activePlayerId = subOff.onId || "";
+            activeName = subOff.onName;
+            activeJersey = subOff.onJersey || "?";
+            activeRating = Number(subOff.onRating) || 65;
+            activeNameZh = subOff.onNameZh || null;
+            isSubOn = true;
+            subOffDetails = {
+              minute: subOff.minute,
+              starterName: translatePlayerName2(rawName, p.nameZh)
+            };
+          }
+          const pGoals = getPlayerGoals(activeName, side);
+          const hasGoals = pGoals.length > 0;
+          const goalMinutesJoin = pGoals.map((g) => String(g.minute).replace(/'/g, "") + "'").join(",");
+          const rating = Math.max(50, Math.min(100, activeRating));
+          const ratingDiff = Math.max(0, rating - 50);
+          const radius = 2.8 + Math.pow(ratingDiff, 1.25) * 0.1;
+          const pNameZh = translatePlayerName2(activeName, activeNameZh);
+          const pTeamName = side === "home" ? home?.team || "" : away?.team || "";
+          let statusText = "";
+          if (isSubOn) {
+            statusText = esc(tx(`\u66FF\u8865\u4E0A\u573A ${subOffDetails.minute} \u2190 ${subOffDetails.starterName}`, `Sub On ${subOffDetails.minute} \u2190 ${subOffDetails.starterName}`));
+          } else {
+            statusText = esc(tx("\u9996\u53D1", "Starting"));
+          }
+          let htmlNode = "";
+          const goalsText = hasGoals ? goalMinutesJoin : "";
+          htmlNode += `<g class="pitch-player-group pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(activePlayerId))}" data-player-name="${attr(activeName)}" style="cursor:pointer" data-player-tip="true" data-name="${attr(pNameZh)}" data-pos="${attr(p.pos || "")}" data-rating="${(rating / 10).toFixed(1)}" data-team="${attr(pTeamName)}" data-status="${statusText}" data-goals="${attr(goalsText)}">`;
+          htmlNode += `<circle class="ability-halo" cx="${cx}" cy="${cy}" r="${radius}" fill="url(#halo-glow-${side})" opacity="0.8" filter="url(#tb-ability-blur)"/>`;
+          const strokeDash = isSubOn ? 'stroke-dasharray="0.8 0.4"' : "";
+          htmlNode += `<circle class="player-core" cx="${cx}" cy="${cy}" r="${R}" fill="${st.solid}" stroke="${st.stroke}" stroke-width="0.45" ${strokeDash}/>`;
+          htmlNode += `<text x="${cx}" y="${cy + 0.15}" text-anchor="middle" dominant-baseline="middle" fill="${st.text}" font-size="2.45" font-weight="800">${esc(String(activeJersey))}</text>`;
+          htmlNode += `</g>`;
+          if (isSubOn) {
+            htmlNode += renderEventBadge(cx - 3.8, cy - 2.8, "\u2191", subOffDetails.minute, true);
+          }
+          if (hasGoals) {
+            htmlNode += renderEventBadge(cx + 3.8, cy - 2.8, "\u26BD", goalMinutesJoin, false);
+          }
+          return htmlNode;
         };
         svg += `<g class="pitch-home">`;
         home.players.forEach((p, i) => {
@@ -6516,12 +6759,20 @@ var require_app = __commonJS({
         if (action === "switch-ai-mode") return switchGlobalChatMode(target.dataset.mode);
       });
       document.addEventListener("mouseover", (e) => {
-        const target = e.target.closest('[data-action="show-player-tip"]');
-        if (target) window.showTipFromDataset(target);
+        const target = e.target.closest('[data-action="show-player-tip"], [data-player-tip="true"]');
+        if (target) {
+          const related = e.relatedTarget ? e.relatedTarget.closest('[data-action="show-player-tip"], [data-player-tip="true"]') : null;
+          if (related === target) return;
+          window.showTipFromDataset(target);
+        }
       });
       document.addEventListener("mouseout", (e) => {
-        const target = e.target.closest('[data-action="show-player-tip"]');
-        if (target) window.hideTip();
+        const target = e.target.closest('[data-action="show-player-tip"], [data-player-tip="true"]');
+        if (target) {
+          const related = e.relatedTarget ? e.relatedTarget.closest('[data-action="show-player-tip"], [data-player-tip="true"]') : null;
+          if (related === target) return;
+          window.hideTip();
+        }
       });
       document.addEventListener("keydown", (e) => {
         const target = e.target.closest("[data-key-action]");
