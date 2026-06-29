@@ -1,6 +1,8 @@
 const { JSDOM, VirtualConsole } = require('jsdom');
 const { spawn } = require('child_process');
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 
 const PORT = 5098;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
@@ -27,8 +29,16 @@ async function waitForServer(url, timeoutMs = 15000) {
 
 async function runTests() {
   console.log(`🚀 Starting server on port ${PORT}...`);
+
+  // Use a copy of the predictions database to avoid writing to the real db
+  const tmpDbPath = path.join(__dirname, '../data/ui_tmp.db');
+  const sourceDbPath = path.join(__dirname, '../data/predictions.db');
+  if (fs.existsSync(sourceDbPath)) {
+    fs.copyFileSync(sourceDbPath, tmpDbPath);
+  }
+
   const serverProcess = spawn('node', ['server.js'], {
-    env: { ...process.env, PORT, NODE_ENV: 'test', TEST_MODE: '1', TEST_DB_PATH: ':memory:' }
+    env: { ...process.env, PORT, NODE_ENV: 'test', TEST_DB_PATH: tmpDbPath }
   });
   serverProcess.stdout.pipe(process.stdout);
   serverProcess.stderr.pipe(process.stderr);
@@ -39,7 +49,7 @@ async function runTests() {
 
     const virtualConsole = new VirtualConsole();
     let uncaughtErrors = 0;
-    
+
     virtualConsole.on("error", (err) => {
       // Ignore scrollTo error which is a known JSDOM limitation
       if (err?.message?.includes('scrollTo is not a function')) return;
@@ -66,7 +76,7 @@ async function runTests() {
       beforeParse(window) {
         // Polyfill CSS.escape for JSDOM
         window.CSS = { escape: (str) => str.replace(/(["\\])/g, '\\$1') };
-        
+
         window.fetch = async (url, options = {}) => {
           if (typeof url === 'string' && url.startsWith('/')) {
             url = BASE_URL + url;
@@ -86,14 +96,14 @@ async function runTests() {
     console.log('1. Loading homepage...');
     const dom = await JSDOM.fromURL(BASE_URL, jsdomOptions);
     console.log('✅ 1. Homepage loaded successfully.');
-    
+
     // JSDOM does not execute <script type="module"> by default, so we fetch bundle.js manually,
     // strip the export statement, and inject it as inline script.
     const doc = dom.window.document;
     const bundleRes = await fetch(`${BASE_URL}/static/js/bundle.js`);
     let bundleText = await bundleRes.text();
     bundleText = bundleText.replace(/export default\s+([^;]+);/g, '$1;');
-    
+
     try {
       dom.window.eval(bundleText);
       console.log('💻 [JSDOM] bundle.js evaluated successfully');
@@ -121,7 +131,7 @@ async function runTests() {
     const liveMatches = doc.querySelectorAll('.match-card-live');
     const emptyStateLive = doc.querySelectorAll('.empty-state');
     if (liveMatches.length === 0 && emptyStateLive.length === 0) {
-      console.warn('⚠️ Live tab might not render standard classes, but moving on.');
+      throw new Error('Live tab is empty and missing standard classes.');
     }
     console.log('✅ 3. Live tab verified.');
 
@@ -141,7 +151,7 @@ async function runTests() {
     console.log('4. Switching to Schedule tab...');
     dom.window.eval("switchTab('schedule')");
     const scheduleContent = await waitForDOM('schedule-list', c => c.includes('match-card') || c.includes('flag-badge') || c.includes('暂无') || c.includes('No match'));
-    
+
     console.log('5. Checking Schedule tab...');
     if (!scheduleContent.includes('match-card') && !scheduleContent.includes('flag-badge') && !scheduleContent.includes('暂无') && !scheduleContent.includes('No match')) {
       console.error("Schedule Content Dump:", scheduleContent.substring(0, 1000));
@@ -152,7 +162,7 @@ async function runTests() {
     console.log('5. Switching to Standings tab...');
     dom.window.eval("switchTab('standings')");
     const standingsContent = await waitForDOM('tab-standings', c => c.includes('group-table') || c.includes('暂无') || c.includes('No standings') || c.includes('standings-table') || c.includes('Group'));
-    
+
     console.log('6. Checking Standings tab...');
     if (!standingsContent.includes('group-table') && !standingsContent.includes('暂无') && !standingsContent.includes('No standings') && !standingsContent.includes('standings-table') && !standingsContent.includes('Group')) {
       console.error("Standings Content Dump:", standingsContent.substring(0, 1000));
@@ -196,9 +206,10 @@ async function runTests() {
     console.log('✅ 10. AI Panel interaction verified.');
 
     console.log('12. Checking Match Detail Modal...');
-    // In bundle.js, matches use 'onclick="window.WorldCup.openMatchDetail(...)"'
-    // Let's just find an element with that onclick or any match-card
-    const matchCards = doc.querySelectorAll('[onclick*="openMatchDetail"]');
+    dom.window.eval("switchTab('schedule')");
+    await new Promise(r => setTimeout(r, 1000));
+    
+    const matchCards = doc.querySelectorAll('[data-match-id]');
     if (matchCards.length > 0) {
       matchCards[0].click();
       await new Promise(r => setTimeout(r, 500));
@@ -209,7 +220,7 @@ async function runTests() {
       doc.getElementById('match-modal-close')?.click();
       console.log('✅ 11. Match Detail Modal verified.');
     } else {
-      console.log('⚠️ 11. No match cards found to click, skipping modal test.');
+      throw new Error('No match cards found to click. Critical test failed.');
     }
 
     console.log('10. Checking Language Switch...');
@@ -230,8 +241,8 @@ async function runTests() {
     process.exitCode = 1;
   } finally {
     serverProcess.kill('SIGTERM');
-    // Force exit to prevent jsdom/timers from hanging the process
-    setTimeout(() => process.exit(process.exitCode || 0), 1000).unref();
+    if (fs.existsSync(tmpDbPath)) fs.unlinkSync(tmpDbPath);
+    process.exit(process.exitCode || 0);
   }
 }
 
