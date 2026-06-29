@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-06-26T17:49:36.093Z",
+  "totalSlots": 16,
+  "knockoutMatchesInSchedule": 34,
+  "matched": 16,
+  "unmatched": 0,
+  "matches": {
+    "R16-1": {
+      "espnMatchId": "760502",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 3 Winner at Round of 32 1 Winner"
+    },
+    "R16-2": {
+      "espnMatchId": "760503",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 5 Winner at Round of 32 2 Winner"
+    },
+    "R16-3": {
+      "espnMatchId": "760504",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 6 Winner at Round of 32 4 Winner"
+    },
+    "R16-4": {
+      "espnMatchId": "760505",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 8 Winner at Round of 32 7 Winner"
+    },
+    "R16-5": {
+      "espnMatchId": "760506",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 12 Winner at Round of 32 11 Winner"
+    },
+    "R16-6": {
+      "espnMatchId": "760507",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 10 Winner at Round of 32 9 Winner"
+    },
+    "R16-7": {
+      "espnMatchId": "760509",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 16 Winner at Round of 32 14 Winner"
+    },
+    "R16-8": {
+      "espnMatchId": "760508",
+      "shortName": "RD32 @ RD32",
+      "name": "Round of 32 15 Winner at Round of 32 13 Winner"
+    },
+    "QF-1": {
+      "espnMatchId": "760510",
+      "shortName": "RD16 W2 @ RD16 W1",
+      "name": "Round of 16 2 Winner at Round of 16 1 Winner"
+    },
+    "QF-2": {
+      "espnMatchId": "760511",
+      "shortName": "RD16 W6 @ RD16 W5",
+      "name": "Round of 16 6 Winner at Round of 16 5 Winner"
+    },
+    "QF-3": {
+      "espnMatchId": "760512",
+      "shortName": "RD16 W4 @ RD16 W3",
+      "name": "Round of 16 4 Winner at Round of 16 3 Winner"
+    },
+    "QF-4": {
+      "espnMatchId": "760513",
+      "shortName": "RD16 W8 @ RD16 W7",
+      "name": "Round of 16 8 Winner at Round of 16 7 Winner"
+    },
+    "SF-1": {
+      "espnMatchId": "760514",
+      "shortName": "QFW2 @ QFW1",
+      "name": "Quarterfinal 2 Winner at Quarterfinal 1 Winner"
+    },
+    "SF-2": {
+      "espnMatchId": "760515",
+      "shortName": "QW4 @ QFW3",
+      "name": "Quarterfinal 4 Winner at Quarterfinal 3 Winner"
+    },
+    "FINAL": {
+      "espnMatchId": "760517",
+      "shortName": "SFW2 @ SFW1",
+      "name": "Semifinal 2 Winner at Semifinal 1 Winner"
+    },
+    "3RD-PLACE": {
+      "espnMatchId": "760516",
+      "shortName": "SF L2 @ SF L1",
+      "name": "Semifinal 2 Loser at Semifinal 1 Loser",
+      "note": "Third-place match (not in bracket structure)"
+    }
+  }
+}

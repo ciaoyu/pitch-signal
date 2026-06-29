@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    @keyframes pulse-glow { 0%,100%{ opacity:0.6 } 50%{ opacity:1 } }
+    @keyframes shimmer { 0%{ background-position:-200% 0 } 100%{ background-position:200% 0 } }
+  </style>
+</helmet>
+
+<!-- ============================================================ -->
+<!-- SECTION HEADER: Overview -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:80px;top:30px">
+  <div style="font:600 28px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.85);letter-spacing:-0.5px">PitchSignal — 3 Visual Directions</div>
+  <div style="font:400 13px/1.5 'DM Sans', sans-serif;color:rgba(60,50,40,.45);margin-top:6px">2026 FIFA World Cup Real-Time Analysis Dashboard · Quick Explorations</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION A: BROADCAST NOIR -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:80px;top:100px">
+  <div data-drags-parent="1" style="font:600 11px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.7);letter-spacing:2px;text-transform:uppercase">Direction A · Broadcast Noir</div>
+  <div style="font:400 11px/1.4 'DM Sans', sans-serif;color:rgba(60,50,40,.4);margin-top:4px;max-width:420px">电影级转播质感 · Playfair Display + DM Sans · 金黑配色 · 克制奢华</div>
+</div>
+
+<!-- A: Schedule View -->
+<div style="position:absolute;left:80px;top:155px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">Schedule View</div>
+  <div style="background:#0a0a0a;border-radius:4px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3)">
+    <!-- Nav -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(201,168,76,.12)">
+      <div style="font:600 15px/1 'Playfair Display', serif;color:#c9a84c;letter-spacing:1px">PITCH<span style="color:#e8e4dc;font-weight:400">SIGNAL</span></div>
+      <div style="display:flex;gap:20px">
+        <div style="font:500 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);letter-spacing:1.5px;text-transform:uppercase">Live</div>
+        <div style="font:500 11px/1 'DM Sans', sans-serif;color:#e8e4dc;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid #c9a84c;padding-bottom:4px">Schedule</div>
+        <div style="font:500 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);letter-spacing:1.5px;text-transform:uppercase">Predict</div>
+        <div style="font:500 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);letter-spacing:1.5px;text-transform:uppercase">Table</div>
+        <div style="font:500 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);letter-spacing:1.5px;text-transform:uppercase">Teams</div>
+      </div>
+      <div style="font:400 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">中 / EN</div>
+    </div>
+    <!-- Date strip -->
+    <div style="display:flex;gap:4px;padding:14px 24px;border-bottom:1px solid rgba(255,255,255,.04)">
+      <div style="padding:6px 14px;border-radius:2px;font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Jun 24</div>
+      <div style="padding:6px 14px;border-radius:2px;font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Jun 25</div>
+      <div style="padding:6px 14px;border-radius:2px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);font:500 11px/1 'DM Sans', sans-serif;color:#c9a84c">Jun 26</div>
+      <div style="padding:6px 14px;border-radius:2px;font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Jun 27</div>
+      <div style="padding:6px 14px;border-radius:2px;font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Jun 28</div>
+    </div>
+    <!-- Match cards -->
+    <div style="padding:16px 24px;display:flex;flex-direction:column;gap:8px">
+      <!-- Match 1 - Live -->
+      <div style="background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12);border-radius:3px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:#c9a84c">🇦🇷</div>
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:#e8e4dc;letter-spacing:0.3px">Argentina</div>
+        </div>
+        <div style="text-align:center;min-width:80px">
+          <div style="font:300 28px/1 'Playfair Display', serif;color:#e8e4dc;letter-spacing:-1px">2 — 1</div>
+          <div style="font:500 8px/1 'DM Sans', sans-serif;color:#c9a84c;letter-spacing:2px;margin-top:5px;animation:pulse-glow 2s ease-in-out infinite">● LIVE 67'</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:#e8e4dc;letter-spacing:0.3px">Mexico</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:#c9a84c">🇲🇽</div>
+        </div>
+      </div>
+      <!-- Match 2 -->
+      <div style="border:1px solid rgba(255,255,255,.05);border-radius:3px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">🇩🇪</div>
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.7);letter-spacing:0.3px">Germany</div>
+        </div>
+        <div style="text-align:center;min-width:80px">
+          <div style="font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">21:00</div>
+          <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.2);margin-top:3px">Group E</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.7);letter-spacing:0.3px">Japan</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">🇯🇵</div>
+        </div>
+      </div>
+      <!-- Match 3 -->
+      <div style="border:1px solid rgba(255,255,255,.05);border-radius:3px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">🇫🇷</div>
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.7);letter-spacing:0.3px">France</div>
+        </div>
+        <div style="text-align:center;min-width:80px">
+          <div style="font:300 28px/1 'Playfair Display', serif;color:rgba(232,228,220,.5);letter-spacing:-1px">0 — 0</div>
+          <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.25);margin-top:3px">FT</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+          <div style="font:500 13px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.7);letter-spacing:0.3px">Brazil</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font:600 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">🇧🇷</div>
+        </div>
+      </div>
+    </div>
+    <!-- Pitch texture at bottom -->
+    <div style="height:40px;background:linear-gradient(180deg, #0a0a0a 0%, rgba(16,42,28,.3) 100%);position:relative;overflow:hidden">
+      <svg width="420" height="40" viewBox="0 0 420 40" style="position:absolute;top:0;left:0;opacity:0.08">
+        <line x1="210" y1="0" x2="210" y2="40" stroke="#c9a84c" stroke-width="0.5"></line>
+        <circle cx="210" cy="20" r="15" fill="none" stroke="#c9a84c" stroke-width="0.5"></circle>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- A: HUD Match Detail -->
+<div style="position:absolute;left:80px;top:640px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">HUD Match Detail</div>
+  <div style="background:#0a0a0a;border-radius:4px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3);position:relative">
+    <!-- Pitch background layer -->
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg, rgba(16,42,28,.4) 0%, rgba(10,10,10,.95) 50%, rgba(16,42,28,.2) 100%)">
+      <svg width="420" height="520" viewBox="0 0 420 520" style="position:absolute;top:0;left:0;opacity:0.06">
+        <rect x="60" y="40" width="300" height="440" fill="none" stroke="#c9a84c" stroke-width="0.5"></rect>
+        <line x1="60" y1="260" x2="360" y2="260" stroke="#c9a84c" stroke-width="0.5"></line>
+        <circle cx="210" cy="260" r="50" fill="none" stroke="#c9a84c" stroke-width="0.5"></circle>
+        <rect x="130" y="40" width="160" height="70" fill="none" stroke="#c9a84c" stroke-width="0.5"></rect>
+        <rect x="130" y="410" width="160" height="70" fill="none" stroke="#c9a84c" stroke-width="0.5"></rect>
+      </svg>
+    </div>
+    <!-- Top bar -->
+    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(201,168,76,.08)">
+      <div style="font:400 11px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.4);cursor:pointer">← Back</div>
+      <div style="font:500 9px/1 'DM Sans', sans-serif;color:#c9a84c;letter-spacing:2px;text-transform:uppercase">Group A · Matchday 2</div>
+      <div style="width:40px"></div>
+    </div>
+    <!-- Score header -->
+    <div style="position:relative;padding:24px 20px;text-align:center">
+      <div style="display:flex;align-items:center;justify-content:center;gap:32px">
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto">🇦🇷</div>
+          <div style="font:500 12px/1 'DM Sans', sans-serif;color:#e8e4dc;margin-top:8px;letter-spacing:0.5px">Argentina</div>
+          <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);margin-top:3px">ELO 2048</div>
+        </div>
+        <div>
+          <div style="font:300 48px/1 'Playfair Display', serif;color:#e8e4dc;letter-spacing:-2px">2 <span style="color:rgba(201,168,76,.4);font-size:24px">—</span> 1</div>
+          <div style="font:500 9px/1 'DM Sans', sans-serif;color:#c9a84c;letter-spacing:2px;margin-top:8px;animation:pulse-glow 2s ease-in-out infinite">● 67:23</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto">🇲🇽</div>
+          <div style="font:500 12px/1 'DM Sans', sans-serif;color:#e8e4dc;margin-top:8px;letter-spacing:0.5px">Mexico</div>
+          <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.3);margin-top:3px">ELO 1794</div>
+        </div>
+      </div>
+      <!-- Goal scorers -->
+      <div style="display:flex;justify-content:center;gap:40px;margin-top:14px">
+        <div style="font:italic 10px/1.4 'Playfair Display', serif;color:rgba(201,168,76,.6)">Messi 23' · Álvarez 55'</div>
+        <div style="font:italic 10px/1.4 'Playfair Display', serif;color:rgba(232,228,220,.3)">Lozano 38'</div>
+      </div>
+    </div>
+    <!-- HUD panels row -->
+    <div style="position:relative;display:flex;gap:8px;padding:0 12px;margin-bottom:12px">
+      <!-- Left: Stats -->
+      <div style="flex:1;background:rgba(10,10,10,.6);border:1px solid rgba(201,168,76,.08);border-radius:3px;padding:14px">
+        <div style="font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Match Stats</div>
+        <!-- Stat bars -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:#e8e4dc">58%</span>
+              <span style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Possession</span>
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.5)">42%</span>
+            </div>
+            <div style="height:2px;background:rgba(255,255,255,.06);border-radius:1px;display:flex">
+              <div style="width:58%;background:linear-gradient(90deg, #c9a84c, rgba(201,168,76,.4));border-radius:1px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:#e8e4dc">12</span>
+              <span style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">Shots</span>
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.5)">7</span>
+            </div>
+            <div style="height:2px;background:rgba(255,255,255,.06);border-radius:1px;display:flex">
+              <div style="width:63%;background:linear-gradient(90deg, #c9a84c, rgba(201,168,76,.4));border-radius:1px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:#e8e4dc">2.14</span>
+              <span style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">xG</span>
+              <span style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.5)">0.87</span>
+            </div>
+            <div style="height:2px;background:rgba(255,255,255,.06);border-radius:1px;display:flex">
+              <div style="width:71%;background:linear-gradient(90deg, #c9a84c, rgba(201,168,76,.4));border-radius:1px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Prediction -->
+      <div style="flex:1;background:rgba(10,10,10,.6);border:1px solid rgba(201,168,76,.08);border-radius:3px;padding:14px">
+        <div style="font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Win Probability</div>
+        <!-- Probability arc visualization -->
+        <div style="text-align:center;margin-bottom:8px">
+          <svg width="120" height="65" viewBox="0 0 120 65">
+            <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="6" stroke-linecap="round"></path>
+            <path d="M10 60 A50 50 0 0 1 78 12" fill="none" stroke="#c9a84c" stroke-width="6" stroke-linecap="round"></path>
+            <text x="60" y="52" text-anchor="middle" fill="#e8e4dc" font-family="Playfair Display" font-size="18" font-weight="300">68%</text>
+            <text x="60" y="63" text-anchor="middle" fill="rgba(201,168,76,.5)" font-family="DM Sans" font-size="7" font-weight="500" letter-spacing="1">ARG WIN</text>
+          </svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.35)">
+          <span>Draw 18%</span>
+          <span>MEX 14%</span>
+        </div>
+        <!-- Venue -->
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">
+          <div style="font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Venue</div>
+          <div style="font:italic 11px/1 'Playfair Display', serif;color:rgba(232,228,220,.6)">Estadio Azteca</div>
+          <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.25);margin-top:3px">2,240m · Hybrid Grass · 28°C</div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom dock -->
+    <div style="position:relative;background:rgba(10,10,10,.7);border-top:1px solid rgba(201,168,76,.08);padding:12px 20px">
+      <div style="font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Bench Impact</div>
+      <div style="display:flex;gap:12px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.6)">DM</div>
+          <div>
+            <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">Di María</div>
+            <div style="font:400 8px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.25)">7.8 rating</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font:600 8px/1 'DM Sans', sans-serif;color:rgba(201,168,76,.6)">GP</div>
+          <div>
+            <div style="font:400 9px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.6)">G. Pizarro</div>
+            <div style="font:400 8px/1 'DM Sans', sans-serif;color:rgba(232,228,220,.25)">6.9 rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- DIRECTION B: AURORA FIELD -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:580px;top:100px">
+  <div data-drags-parent="1" style="font:600 11px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.7);letter-spacing:2px;text-transform:uppercase">Direction B · Aurora Field</div>
+  <div style="font:400 11px/1.4 'DM Sans', sans-serif;color:rgba(60,50,40,.4);margin-top:4px;max-width:420px">球场暮光氛围 · Cormorant Garamond + Inter · 青蓝暖琥珀 · 柔和大气</div>
+</div>
+
+<!-- B: Schedule View -->
+<div style="position:absolute;left:580px;top:155px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">Schedule View</div>
+  <div style="background:linear-gradient(170deg, #0c1f2e 0%, #132e3d 40%, #1a2a35 100%);border-radius:8px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3)">
+    <!-- Nav -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px">
+      <div style="font:500 17px/1 'Cormorant Garamond', serif;color:#c4dfe6;letter-spacing:2px">Pitch<span style="font-weight:300;color:#4ecdc4">Signal</span></div>
+      <div style="display:flex;gap:4px;background:rgba(78,205,196,.06);border-radius:20px;padding:3px">
+        <div style="font:500 10px/1 'Inter', sans-serif;color:rgba(196,223,230,.35);padding:6px 12px;border-radius:16px">Live</div>
+        <div style="font:500 10px/1 'Inter', sans-serif;color:#c4dfe6;padding:6px 12px;border-radius:16px;background:rgba(78,205,196,.12)">Schedule</div>
+        <div style="font:500 10px/1 'Inter', sans-serif;color:rgba(196,223,230,.35);padding:6px 12px;border-radius:16px">Predict</div>
+        <div style="font:500 10px/1 'Inter', sans-serif;color:rgba(196,223,230,.35);padding:6px 12px;border-radius:16px">Table</div>
+        <div style="font:500 10px/1 'Inter', sans-serif;color:rgba(196,223,230,.35);padding:6px 12px;border-radius:16px">Teams</div>
+      </div>
+      <div style="font:400 10px/1 'Inter', sans-serif;color:rgba(196,223,230,.3)">中 / EN</div>
+    </div>
+    <!-- Date strip -->
+    <div style="display:flex;gap:6px;padding:10px 24px 14px">
+      <div style="padding:8px 14px;border-radius:12px;font:400 10px/1.4 'Inter', sans-serif;color:rgba(196,223,230,.3);text-align:center"><div style="font-size:14px;font-weight:500;color:rgba(196,223,230,.4)">24</div>Jun</div>
+      <div style="padding:8px 14px;border-radius:12px;font:400 10px/1.4 'Inter', sans-serif;color:rgba(196,223,230,.3);text-align:center"><div style="font-size:14px;font-weight:500;color:rgba(196,223,230,.4)">25</div>Jun</div>
+      <div style="padding:8px 14px;border-radius:12px;font:400 10px/1.4 'Inter', sans-serif;color:#4ecdc4;text-align:center;background:rgba(78,205,196,.08);border:1px solid rgba(78,205,196,.15)"><div style="font-size:14px;font-weight:600">26</div>Jun</div>
+      <div style="padding:8px 14px;border-radius:12px;font:400 10px/1.4 'Inter', sans-serif;color:rgba(196,223,230,.3);text-align:center"><div style="font-size:14px;font-weight:500;color:rgba(196,223,230,.4)">27</div>Jun</div>
+      <div style="padding:8px 14px;border-radius:12px;font:400 10px/1.4 'Inter', sans-serif;color:rgba(196,223,230,.3);text-align:center"><div style="font-size:14px;font-weight:500;color:rgba(196,223,230,.4)">28</div>Jun</div>
+    </div>
+    <!-- Match cards -->
+    <div style="padding:4px 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <!-- Match 1 - Live -->
+      <div style="background:rgba(78,205,196,.04);backdrop-filter:blur(12px);border:1px solid rgba(78,205,196,.12);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at 100% 0%, rgba(244,162,97,.08) 0%, transparent 70%)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;position:relative">
+          <div style="display:flex;align-items:center;gap:10px;flex:1">
+            <div style="font-size:22px">🇦🇷</div>
+            <div>
+              <div style="font:500 13px/1 'Inter', sans-serif;color:#c4dfe6">Argentina</div>
+              <div style="font:300 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.3);margin-top:3px">ELO 2048</div>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="font:300 32px/1 'Cormorant Garamond', serif;color:#c4dfe6">2 <span style="color:rgba(78,205,196,.3)">:</span> 1</div>
+            <div style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:3px 10px;border-radius:10px;background:rgba(78,205,196,.12)">
+              <div style="width:5px;height:5px;border-radius:50%;background:#4ecdc4;animation:pulse-glow 1.5s ease-in-out infinite"></div>
+              <span style="font:500 9px/1 'Inter', sans-serif;color:#4ecdc4">67'</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+            <div style="text-align:right">
+              <div style="font:500 13px/1 'Inter', sans-serif;color:#c4dfe6">Mexico</div>
+              <div style="font:300 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.3);margin-top:3px">ELO 1794</div>
+            </div>
+            <div style="font-size:22px">🇲🇽</div>
+          </div>
+        </div>
+        <!-- Mini progress bar -->
+        <div style="margin-top:12px;height:2px;background:rgba(78,205,196,.08);border-radius:1px;overflow:hidden">
+          <div style="width:74%;height:100%;background:linear-gradient(90deg, #4ecdc4, rgba(244,162,97,.6));border-radius:1px"></div>
+        </div>
+      </div>
+      <!-- Match 2 -->
+      <div style="background:rgba(255,255,255,.02);backdrop-filter:blur(8px);border:1px solid rgba(196,223,230,.06);border-radius:14px;padding:16px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:10px;flex:1">
+            <div style="font-size:22px">🇩🇪</div>
+            <div style="font:500 13px/1 'Inter', sans-serif;color:rgba(196,223,230,.6)">Germany</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font:400 13px/1 'Inter', sans-serif;color:rgba(196,223,230,.3)">21:00</div>
+            <div style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.2);margin-top:2px">Group E</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+            <div style="font:500 13px/1 'Inter', sans-serif;color:rgba(196,223,230,.6)">Japan</div>
+            <div style="font-size:22px">🇯🇵</div>
+          </div>
+        </div>
+      </div>
+      <!-- Match 3 -->
+      <div style="background:rgba(255,255,255,.02);backdrop-filter:blur(8px);border:1px solid rgba(196,223,230,.06);border-radius:14px;padding:16px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:10px;flex:1">
+            <div style="font-size:22px">🇫🇷</div>
+            <div style="font:500 13px/1 'Inter', sans-serif;color:rgba(196,223,230,.6)">France</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font:300 24px/1 'Cormorant Garamond', serif;color:rgba(196,223,230,.4)">0 <span style="color:rgba(78,205,196,.2)">:</span> 0</div>
+            <div style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.2);margin-top:2px">FT</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end">
+            <div style="font:500 13px/1 'Inter', sans-serif;color:rgba(196,223,230,.6)">Brazil</div>
+            <div style="font-size:22px">🇧🇷</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B: HUD Match Detail -->
+<div style="position:absolute;left:580px;top:640px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">HUD Match Detail</div>
+  <div style="background:linear-gradient(170deg, #0c1f2e 0%, #132e3d 50%, #1a2a35 100%);border-radius:8px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3);position:relative">
+    <!-- Aurora gradient overlay -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%, rgba(78,205,196,.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(244,162,97,.04) 0%, transparent 50%);pointer-events:none"></div>
+    <!-- Pitch texture -->
+    <div style="position:absolute;inset:0;opacity:0.04;pointer-events:none">
+      <svg width="420" height="520" viewBox="0 0 420 520">
+        <rect x="60" y="60" width="300" height="400" fill="none" stroke="#4ecdc4" stroke-width="0.8" rx="2"></rect>
+        <line x1="60" y1="260" x2="360" y2="260" stroke="#4ecdc4" stroke-width="0.8"></line>
+        <circle cx="210" cy="260" r="45" fill="none" stroke="#4ecdc4" stroke-width="0.8"></circle>
+      </svg>
+    </div>
+    <!-- Back -->
+    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
+      <div style="font:400 11px/1 'Inter', sans-serif;color:rgba(196,223,230,.35)">← Back</div>
+      <div style="font:400 10px/1 'Cormorant Garamond', serif;color:rgba(78,205,196,.5);letter-spacing:1px">Group A · Matchday 2</div>
+      <div style="width:40px"></div>
+    </div>
+    <!-- Score -->
+    <div style="position:relative;padding:20px 20px 24px;text-align:center">
+      <div style="display:flex;align-items:center;justify-content:center;gap:36px">
+        <div style="text-align:center">
+          <div style="font-size:32px">🇦🇷</div>
+          <div style="font:500 13px/1 'Inter', sans-serif;color:#c4dfe6;margin-top:8px">Argentina</div>
+        </div>
+        <div>
+          <div style="font:300 56px/1 'Cormorant Garamond', serif;color:#c4dfe6">2<span style="color:rgba(78,205,196,.25);margin:0 4px">:</span>1</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 14px;border-radius:12px;background:rgba(78,205,196,.1);border:1px solid rgba(78,205,196,.15)">
+            <div style="width:6px;height:6px;border-radius:50%;background:#4ecdc4;animation:pulse-glow 1.5s ease-in-out infinite"></div>
+            <span style="font:500 10px/1 'Inter', sans-serif;color:#4ecdc4">67:23</span>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:32px">🇲🇽</div>
+          <div style="font:500 13px/1 'Inter', sans-serif;color:#c4dfe6;margin-top:8px">Mexico</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:48px;margin-top:12px">
+        <div style="font:italic 300 11px/1 'Cormorant Garamond', serif;color:rgba(78,205,196,.5)">Messi 23' · Álvarez 55'</div>
+        <div style="font:italic 300 11px/1 'Cormorant Garamond', serif;color:rgba(244,162,97,.4)">Lozano 38'</div>
+      </div>
+    </div>
+    <!-- Panels -->
+    <div style="position:relative;display:flex;gap:10px;padding:0 14px 14px">
+      <!-- Stats -->
+      <div style="flex:1;background:rgba(12,31,46,.5);backdrop-filter:blur(16px);border:1px solid rgba(78,205,196,.08);border-radius:12px;padding:14px">
+        <div style="font:500 9px/1 'Inter', sans-serif;color:rgba(78,205,196,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Stats</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font:500 11px/1 'Inter', sans-serif;color:#c4dfe6">58%</span>
+              <span style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.3)">Possession</span>
+              <span style="font:500 11px/1 'Inter', sans-serif;color:rgba(196,223,230,.45)">42%</span>
+            </div>
+            <div style="height:3px;background:rgba(255,255,255,.04);border-radius:2px;display:flex">
+              <div style="width:58%;background:linear-gradient(90deg, #4ecdc4, rgba(78,205,196,.3));border-radius:2px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font:500 11px/1 'Inter', sans-serif;color:#c4dfe6">2.14</span>
+              <span style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.3)">xG</span>
+              <span style="font:500 11px/1 'Inter', sans-serif;color:rgba(196,223,230,.45)">0.87</span>
+            </div>
+            <div style="height:3px;background:rgba(255,255,255,.04);border-radius:2px;display:flex">
+              <div style="width:71%;background:linear-gradient(90deg, #4ecdc4, rgba(244,162,97,.4));border-radius:2px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font:500 11px/1 'Inter', sans-serif;color:#c4dfe6">12</span>
+              <span style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.3)">Shots</span>
+              <span style="font:500 11px/1 'Inter', sans-serif;color:rgba(196,223,230,.45)">7</span>
+            </div>
+            <div style="height:3px;background:rgba(255,255,255,.04);border-radius:2px;display:flex">
+              <div style="width:63%;background:linear-gradient(90deg, #4ecdc4, rgba(78,205,196,.3));border-radius:2px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Prediction -->
+      <div style="flex:1;background:rgba(12,31,46,.5);backdrop-filter:blur(16px);border:1px solid rgba(78,205,196,.08);border-radius:12px;padding:14px">
+        <div style="font:500 9px/1 'Inter', sans-serif;color:rgba(78,205,196,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Prediction</div>
+        <div style="text-align:center">
+          <svg width="130" height="70" viewBox="0 0 130 70">
+            <path d="M10 65 A55 55 0 0 1 120 65" fill="none" stroke="rgba(78,205,196,.1)" stroke-width="8" stroke-linecap="round"></path>
+            <path d="M10 65 A55 55 0 0 1 85 12" fill="none" stroke="url(#auroraGrad)" stroke-width="8" stroke-linecap="round"></path>
+            <defs><linearGradient id="auroraGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4ecdc4"></stop><stop offset="100%" stop-color="#f4a261"></stop></linearGradient></defs>
+            <text x="65" y="52" text-anchor="middle" fill="#c4dfe6" font-family="Cormorant Garamond" font-size="22" font-weight="300">68%</text>
+            <text x="65" y="64" text-anchor="middle" fill="rgba(78,205,196,.45)" font-family="Inter" font-size="7" font-weight="500">ARG WIN</text>
+          </svg>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(78,205,196,.06)">
+          <div style="font:500 9px/1 'Inter', sans-serif;color:rgba(78,205,196,.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Venue</div>
+          <div style="font:italic 400 12px/1 'Cormorant Garamond', serif;color:rgba(196,223,230,.6)">Estadio Azteca</div>
+          <div style="font:400 9px/1 'Inter', sans-serif;color:rgba(196,223,230,.2);margin-top:3px">2,240m · 28°C · Hybrid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- DIRECTION C: SIGNAL GRID -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:1080px;top:100px">
+  <div data-drags-parent="1" style="font:600 11px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.7);letter-spacing:2px;text-transform:uppercase">Direction C · Signal Grid</div>
+  <div style="font:400 11px/1.4 'DM Sans', sans-serif;color:rgba(60,50,40,.4);margin-top:4px;max-width:420px">编辑式数据美学 · Instrument Serif + JetBrains Mono · 深海军蓝+电子青 · 精密克制</div>
+</div>
+
+<!-- C: Schedule View -->
+<div style="position:absolute;left:1080px;top:155px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">Schedule View</div>
+  <div style="background:#0d1117;border-radius:3px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3);border:1px solid rgba(0,212,170,.06)">
+    <!-- Nav -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid rgba(0,212,170,.06)">
+      <div style="display:flex;align-items:baseline;gap:2px">
+        <span style="font:400 16px/1 'Instrument Serif', serif;color:#f0efe8">Pitch</span>
+        <span style="font:400 16px/1 'Instrument Serif', serif;color:#00d4aa;font-style:italic">Signal</span>
+      </div>
+      <div style="display:flex;gap:0">
+        <div style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25);padding:8px 12px;border-bottom:2px solid transparent">LIVE</div>
+        <div style="font:400 10px/1 'JetBrains Mono', monospace;color:#f0efe8;padding:8px 12px;border-bottom:2px solid #00d4aa">SCHED</div>
+        <div style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25);padding:8px 12px;border-bottom:2px solid transparent">PRED</div>
+        <div style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25);padding:8px 12px;border-bottom:2px solid transparent">TABLE</div>
+        <div style="font:400 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25);padding:8px 12px;border-bottom:2px solid transparent">TEAMS</div>
+      </div>
+      <div style="font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">中/EN</div>
+    </div>
+    <!-- Date strip -->
+    <div style="display:flex;padding:12px 24px;border-bottom:1px solid rgba(0,212,170,.04)">
+      <div style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:6px 12px">06.24</div>
+      <div style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:6px 12px">06.25</div>
+      <div style="font:500 10px/1 'JetBrains Mono', monospace;color:#00d4aa;padding:6px 12px;border:1px solid rgba(0,212,170,.2);border-radius:2px">06.26</div>
+      <div style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:6px 12px">06.27</div>
+      <div style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:6px 12px">06.28</div>
+    </div>
+    <!-- Match list -->
+    <div style="padding:0">
+      <!-- Match 1 - Live -->
+      <div style="padding:14px 24px;border-bottom:1px solid rgba(0,212,170,.04);display:flex;align-items:center;background:rgba(0,212,170,.02)">
+        <div style="width:52px;font:300 9px/1 'JetBrains Mono', monospace;color:#00d4aa">
+          <div style="display:flex;align-items:center;gap:4px">
+            <div style="width:4px;height:4px;border-radius:50%;background:#00d4aa;animation:pulse-glow 1.5s ease-in-out infinite"></div>
+            67'
+          </div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">🇦🇷</span>
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:#f0efe8">Argentina</span>
+        </div>
+        <div style="font:300 22px/1 'JetBrains Mono', monospace;color:#f0efe8;min-width:60px;text-align:center">2<span style="color:rgba(0,212,170,.3);margin:0 2px">:</span>1</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end">
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:#f0efe8">Mexico</span>
+          <span style="font-size:16px">🇲🇽</span>
+        </div>
+        <div style="width:60px;text-align:right;font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">GRP A</div>
+      </div>
+      <!-- Match 2 -->
+      <div style="padding:14px 24px;border-bottom:1px solid rgba(0,212,170,.04);display:flex;align-items:center">
+        <div style="width:52px;font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25)">21:00</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">🇩🇪</span>
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:rgba(240,239,232,.6)">Germany</span>
+        </div>
+        <div style="font:300 13px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);min-width:60px;text-align:center">— : —</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end">
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:rgba(240,239,232,.6)">Japan</span>
+          <span style="font-size:16px">🇯🇵</span>
+        </div>
+        <div style="width:60px;text-align:right;font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">GRP E</div>
+      </div>
+      <!-- Match 3 -->
+      <div style="padding:14px 24px;border-bottom:1px solid rgba(0,212,170,.04);display:flex;align-items:center">
+        <div style="width:52px;font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">FT</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">🇫🇷</span>
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:rgba(240,239,232,.5)">France</span>
+        </div>
+        <div style="font:300 22px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.35);min-width:60px;text-align:center">0<span style="color:rgba(0,212,170,.15);margin:0 2px">:</span>0</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end">
+          <span style="font:400 12px/1 'Instrument Serif', serif;color:rgba(240,239,232,.5)">Brazil</span>
+          <span style="font-size:16px">🇧🇷</span>
+        </div>
+        <div style="width:60px;text-align:right;font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">GRP F</div>
+      </div>
+    </div>
+    <!-- Pitch texture footer -->
+    <div style="height:6px;background:linear-gradient(90deg, transparent, rgba(0,212,170,.06), transparent)"></div>
+  </div>
+</div>
+
+<!-- C: HUD Match Detail -->
+<div style="position:absolute;left:1080px;top:640px;width:420px">
+  <div data-drags-parent="1" style="position:absolute;top:-20px;font:500 10px/1 'DM Sans', sans-serif;color:rgba(60,50,40,.4);letter-spacing:1px;text-transform:uppercase">HUD Match Detail</div>
+  <div style="background:#0d1117;border-radius:3px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.3);border:1px solid rgba(0,212,170,.06);position:relative">
+    <!-- Grid texture -->
+    <div style="position:absolute;inset:0;opacity:0.03;pointer-events:none;background-image:linear-gradient(rgba(0,212,170,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,170,.5) 1px, transparent 1px);background-size:40px 40px"></div>
+    <!-- Back -->
+    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid rgba(0,212,170,.06)">
+      <div style="font:300 10px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.3)">← BACK</div>
+      <div style="font:300 9px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.35)">GRP_A // MD_02</div>
+      <div style="font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">LIVE</div>
+    </div>
+    <!-- Score -->
+    <div style="position:relative;padding:28px 24px;text-align:center;border-bottom:1px solid rgba(0,212,170,.04)">
+      <div style="display:flex;align-items:center;justify-content:center;gap:40px">
+        <div style="text-align:center">
+          <div style="font-size:36px">🇦🇷</div>
+          <div style="font:400 14px/1 'Instrument Serif', serif;color:#f0efe8;margin-top:8px">Argentina</div>
+          <div style="font:300 9px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.35);margin-top:4px">ELO 2048</div>
+        </div>
+        <div>
+          <div style="font:300 64px/1 'JetBrains Mono', monospace;color:#f0efe8;letter-spacing:-4px">2<span style="color:rgba(0,212,170,.2);font-size:32px;margin:0 6px">:</span>1</div>
+          <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px">
+            <div style="width:6px;height:6px;border-radius:50%;background:#00d4aa;animation:pulse-glow 1.5s ease-in-out infinite"></div>
+            <span style="font:400 10px/1 'JetBrains Mono', monospace;color:#00d4aa">67:23</span>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:36px">🇲🇽</div>
+          <div style="font:400 14px/1 'Instrument Serif', serif;color:#f0efe8;margin-top:8px">Mexico</div>
+          <div style="font:300 9px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);margin-top:4px">ELO 1794</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:48px;margin-top:14px">
+        <div style="font:italic 11px/1 'Instrument Serif', serif;color:rgba(0,212,170,.45)">Messi 23' · Álvarez 55'</div>
+        <div style="font:italic 11px/1 'Instrument Serif', serif;color:rgba(240,239,232,.25)">Lozano 38'</div>
+      </div>
+    </div>
+    <!-- Data grid panels -->
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(0,212,170,.04)">
+      <!-- Stats -->
+      <div style="padding:16px 20px;border-right:1px solid rgba(0,212,170,.04)">
+        <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.3);letter-spacing:1px;margin-bottom:14px">MATCH_STATS</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:#f0efe8">58<span style="font-size:9px;color:rgba(240,239,232,.3)">%</span></span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">POSS</span>
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.4)">42<span style="font-size:9px;color:rgba(240,239,232,.15)">%</span></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:#f0efe8">2.14</span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">xG</span>
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.4)">0.87</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:#f0efe8">12</span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">SHOTS</span>
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.4)">7</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:#f0efe8">87<span style="font-size:9px;color:rgba(240,239,232,.3)">%</span></span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2)">PASS</span>
+            <span style="font:400 14px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.4)">79<span style="font-size:9px;color:rgba(240,239,232,.15)">%</span></span>
+          </div>
+        </div>
+      </div>
+      <!-- Prediction -->
+      <div style="padding:16px 20px">
+        <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.3);letter-spacing:1px;margin-bottom:14px">WIN_PROB</div>
+        <!-- Horizontal bar -->
+        <div style="margin-bottom:12px">
+          <div style="display:flex;height:20px;border-radius:2px;overflow:hidden;gap:1px">
+            <div style="width:68%;background:linear-gradient(90deg, rgba(0,212,170,.25), rgba(0,212,170,.15));display:flex;align-items:center;padding-left:6px">
+              <span style="font:500 9px/1 'JetBrains Mono', monospace;color:#00d4aa">68%</span>
+            </div>
+            <div style="width:18%;background:rgba(240,239,232,.06);display:flex;align-items:center;justify-content:center">
+              <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25)">18</span>
+            </div>
+            <div style="width:14%;background:rgba(240,239,232,.03);display:flex;align-items:center;justify-content:center">
+              <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">14</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px">
+            <span style="font:300 7px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.25)">ARG</span>
+            <span style="font:300 7px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">DRAW</span>
+            <span style="font:300 7px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.1)">MEX</span>
+          </div>
+        </div>
+        <!-- Venue -->
+        <div style="border-top:1px solid rgba(0,212,170,.04);padding-top:10px">
+          <div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.25);letter-spacing:1px;margin-bottom:6px">VENUE</div>
+          <div style="font:italic 12px/1 'Instrument Serif', serif;color:rgba(240,239,232,.6)">Estadio Azteca</div>
+          <div style="display:flex;gap:8px;margin-top:5px">
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:2px 5px;border:1px solid rgba(0,212,170,.06);border-radius:1px">2240m</span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:2px 5px;border:1px solid rgba(0,212,170,.06);border-radius:1px">28°C</span>
+            <span style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.2);padding:2px 5px;border:1px solid rgba(0,212,170,.06);border-radius:1px">HYBRID</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom -->
+    <div style="position:relative;padding:10px 24px">
+      <div style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.2);letter-spacing:1px">BENCH // SUBS_AVAILABLE</div>
+      <div style="display:flex;gap:16px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:20px;height:20px;border-radius:2px;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.08);display:flex;align-items:center;justify-content:center;font:500 7px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.5)">DM</div>
+          <div>
+            <div style="font:400 9px/1 'Instrument Serif', serif;color:rgba(240,239,232,.5)">Di María</div>
+            <div style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(0,212,170,.25)">7.8</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:20px;height:20px;border-radius:2px;background:rgba(240,239,232,.03);border:1px solid rgba(240,239,232,.06);display:flex;align-items:center;justify-content:center;font:500 7px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.25)">GP</div>
+          <div>
+            <div style="font:400 9px/1 'Instrument Serif', serif;color:rgba(240,239,232,.35)">G. Pizarro</div>
+            <div style="font:300 8px/1 'JetBrains Mono', monospace;color:rgba(240,239,232,.15)">6.9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- POST-IT: Design Notes -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:80px;top:1230px;width:300px;background:#fef9e7;padding:16px;font:12px/1.5 'DM Sans', sans-serif;color:rgba(40,35,25,.7);box-shadow:0 1px 4px rgba(0,0,0,.08);transform:rotate(-0.5deg);border-radius:2px">
+  <div style="font-weight:600;color:rgba(40,35,25,.85);margin-bottom:6px">📌 Design Notes</div>
+  <div style="font-size:11px;line-height:1.5">
+    <b>A · Broadcast Noir</b> — 电影质感，金黑极简，Playfair 衬线体赋予奢华感。适合追求品质感的用户。<br><br>
+    <b>B · Aurora Field</b> — 暮光球场氛围，青蓝暖琥珀渐变，柔和毛玻璃面板。感性，有温度。<br><br>
+    <b>C · Signal Grid</b> — 数据终端美学，等宽字体+衬线混搭，网格纹理。理性，专业，精密。
+  </div>
+</div>
+
+<div style="position:absolute;left:440px;top:1230px;width:260px;background:#e8f4f0;padding:16px;font:12px/1.5 'DM Sans', sans-serif;color:rgba(20,50,40,.7);box-shadow:0 1px 4px rgba(0,0,0,.08);transform:rotate(0.3deg);border-radius:2px">
+  <div style="font-weight:600;color:rgba(20,50,40,.85);margin-bottom:6px">🎯 Next Steps</div>
+  <div style="font-size:11px;line-height:1.5">
+    选定方向后，我会：<br>
+    1. 全流程精细化设计<br>
+    2. 所有 5 个 Tab 完整视图<br>
+    3. 移动端适配方案<br>
+    4. 交互动效演示<br>
+    5. 球队 Modal / AI 聊天面板
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

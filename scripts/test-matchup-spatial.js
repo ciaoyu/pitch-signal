@@ -143,6 +143,28 @@ check(typeof result.composite.home === 'number', 'composite.home is number');
 check(Math.abs(result.composite.home + result.composite.away - 100) < 0.5, 'Composite home+away ≈ 100');
 check(['high', 'medium', 'low'].includes(result.composite.confidence), 'composite.confidence is valid');
 
+// ── Lineup Input & Fuzzy Matching ──
+console.log('\n📊 Lineup Input & Fuzzy Matching:');
+const lineupResult = matchup.buildSpatialMatchup('Brazil', 'Germany', mockRatings, {
+  homeLineup: [
+    { name: 'Alisson', pos: 'GK', jersey: 1, x: 50, y: 10 },
+    { name: 'Vini Jr', pos: 'LW', jersey: 7, x: 20, y: 80 }
+  ],
+  awayLineup: [
+    { name: 'Neuer', pos: 'GK', jersey: 1 }
+  ]
+});
+
+const lineupHome = lineupResult.home.players;
+const lineupAway = lineupResult.away.players;
+check(lineupHome.find(p => p.pos === 'GK').y === 10, 'Real coordinates used for homeLineup (y=10)');
+check(lineupHome.find(p => p.pos === 'LW').rating === 91, 'Fuzzy match derived rating 91 for Vini Jr -> Vinicius');
+check(lineupHome.find(p => p.pos === 'LW').name === 'Vinicius', 'Fuzzy match updated name to Vinicius');
+
+const neuer = lineupAway.find(p => p.pos === 'GK');
+check(neuer.y !== undefined && neuer.y > 80, 'Fallback coords used for awayLineup (no coords provided)');
+check(neuer.rating === 89, 'Exact match rating applied for Neuer');
+
 // ── Error cases ──
 console.log('\n📊 buildSpatialMatchup error cases:');
 const err1 = matchup.buildSpatialMatchup('Atlantis', 'Germany', mockRatings);

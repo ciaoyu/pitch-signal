@@ -2,6 +2,7 @@
 
 const DEFAULT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
 const DEFAULT_MAX = Number(process.env.RATE_LIMIT_MAX || 240);
+const MAX_BUCKETS = 10000;
 const buckets = new Map();
 
 function clientKey(req) {
@@ -20,6 +21,17 @@ function rateLimit(req, res, options = {}) {
   if (!bucket || bucket.resetAt <= now) {
     bucket = { count: 0, resetAt: now + windowMs };
     buckets.set(key, bucket);
+  }
+
+  // 防止 Map 无限增长
+  if (buckets.size > MAX_BUCKETS) {
+    cleanupExpiredBuckets();
+    if (buckets.size > MAX_BUCKETS) {
+      // 仍然溢出，拒绝新 IP 的请求
+      res.writeHead(429, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Server busy, try again later' }));
+      return true;
+    }
   }
 
   bucket.count += 1;

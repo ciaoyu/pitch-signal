@@ -12,8 +12,18 @@ data/match_snapshot_runs.json
 .git
 reports/
 *.log
+logs/
 workbuddy/
 docs/archive/
 scripts/test-*.js
 .consolidate-state.json
 DREAMS.md
+# Additional exclusions
+scratch/
+data/sources/world-cup-history/
+data/wc2026/
+.codebuddy/
+.workbuddy/
+*.bak
+test-*.js
+test_*.js

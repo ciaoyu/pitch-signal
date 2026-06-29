@@ -5,19 +5,44 @@
 const PoissonModel = require('../lib/poisson');
 
 const model = new PoissonModel({ globalAvgGoals: 2.5, homeAdvantage: 1.2 });
+let passed = 0;
+let failed = 0;
+
+function assert(condition, label) {
+  if (condition) { console.log(`  ✅ ${label}`); passed++; }
+  else { console.error(`  ❌ ${label}`); failed++; }
+}
+
+function assertNear(actual, expected, epsilon, label) {
+  const ok = Math.abs(actual - expected) <= epsilon;
+  if (ok) { console.log(`  ✅ ${label} (${actual.toFixed(4)})`); passed++; }
+  else { console.error(`  ❌ ${label}: expected ~${expected}, got ${actual}`); failed++; }
+}
+
+function failIfNoAssert() {
+  // No-op; assertions are explicit.
+}
 
 console.log('=== Poisson 回归模型测试 ===\n');
 
 // 1. PMF 测试
 console.log('📊 Poisson PMF (λ=2.5):');
-for (let k = 0; k <= 5; k++) {
-  console.log(`  P(X=${k}) = ${model.poissonPMF(k, 2.5).toFixed(4)} (${(model.poissonPMF(k, 2.5) * 100).toFixed(1)}%)`);
-}
+assertNear(model.poissonPMF(0, 2.5), 0.0821, 0.001, 'P(X=0) ≈ 0.0821');
+assertNear(model.poissonPMF(1, 2.5), 0.2052, 0.001, 'P(X=1) ≈ 0.2052');
+assertNear(model.poissonPMF(2, 2.5), 0.2565, 0.001, 'P(X=2) ≈ 0.2565');
+
+// Sum of PMF 0–5 should be close to 1 (rest is tail)
+let pmfSum = 0;
+for (let k = 0; k <= 10; k++) pmfSum += model.poissonPMF(k, 2.5);
+assertNear(pmfSum, 1, 0.01, 'PMF sum ≈ 1');
 
 // 2. 进球期望值
 console.log('\n📊 进球期望值 λ:');
-console.log(`  强队攻(1.3) vs 弱队守(1.2), 主场: ${model.calculateLambda(1.3, 1.2, true).toFixed(3)}`);
-console.log(`  弱队攻(0.8) vs 强队守(0.7), 客场: ${model.calculateLambda(0.8, 0.7, false).toFixed(3)}`);
+const lambdaStrong = model.calculateLambda(1.3, 1.2, true);
+const lambdaWeak = model.calculateLambda(0.8, 0.7, false);
+assert(lambdaStrong > 2.0, 'Strong attack vs weak defense → λ > 2');
+assert(lambdaWeak < 1.5, 'Weak attack vs strong defense → λ < 1.5');
+assert(lambdaStrong > lambdaWeak, 'Stronger attack → higher lambda');
 
 // 3. 概率矩阵
 console.log('\n📊 Brazil (atk=1.3, def=0.8) vs Germany (atk=1.2, def=0.9):');
@@ -25,16 +50,11 @@ const prediction = model.predictMatch(
   { attack_strength: 1.3, defense_strength: 0.8 },
   { attack_strength: 1.2, defense_strength: 0.9 }
 );
-console.log(`  主队 λ: ${prediction.homeLambda}`);
-console.log(`  客队 λ: ${prediction.awayLambda}`);
-console.log(`  主胜: ${(prediction.homeWinProb * 100).toFixed(1)}%`);
-console.log(`  平局: ${(prediction.drawProb * 100).toFixed(1)}%`);
-console.log(`  客胜: ${(prediction.awayWinProb * 100).toFixed(1)}%`);
-console.log(`  最可能比分: ${prediction.likelyScore} (${(prediction.likelyScoreProb * 100).toFixed(1)}%)`);
-console.log('  Top 5 比分:');
-prediction.topScores.forEach(s => {
-  console.log(`    ${s.score}: ${(s.prob * 100).toFixed(1)}%`);
-});
+assert(prediction.homeLambda > prediction.awayLambda, 'Home λ > Away λ (home advantage + stronger attack)');
+assertNear(prediction.homeWinProb + prediction.drawProb + prediction.awayWinProb, 1, 0.01, 'Probabilities sum to ~1');
+assert(prediction.homeWinProb > prediction.awayWinProb, 'Home team more likely to win');
+assert(prediction.topScores.length >= 3, 'At least 3 top scores returned');
+assert(typeof prediction.likelyScore === 'string', 'likelyScore is a string');
 
 // 4. 势均力敌比赛
 console.log('\n📊 Argentina (atk=1.1, def=0.9) vs France (atk=1.1, def=0.9):');
@@ -42,10 +62,8 @@ const even = model.predictMatch(
   { attack_strength: 1.1, defense_strength: 0.9 },
   { attack_strength: 1.1, defense_strength: 0.9 }
 );
-console.log(`  主胜: ${(even.homeWinProb * 100).toFixed(1)}%`);
-console.log(`  平局: ${(even.drawProb * 100).toFixed(1)}%`);
-console.log(`  客胜: ${(even.awayWinProb * 100).toFixed(1)}%`);
-console.log(`  最可能比分: ${even.likelyScore}`);
+assertNear(even.homeWinProb + even.drawProb + even.awayWinProb, 1, 0.01, 'Probabilities sum to ~1');
+assert(even.homeWinProb > even.awayWinProb, 'Home advantage gives edge in even match');
 
 // 5. 历史数据训练测试
 console.log('\n📊 历史数据训练测试:');
@@ -62,9 +80,20 @@ const mockMatches = [
   { home_team: 'France', away_team: 'Argentina', home_score: 3, away_score: 2 },
 ];
 const strengths = model.trainFromMatches(mockMatches);
-console.log(`  全局场均进球: ${model.globalAvgGoals.toFixed(2)}`);
-for (const [team, s] of Object.entries(strengths)) {
-  console.log(`  ${team}: 攻=${s.attack_strength}, 守=${s.defense_strength}, 场均进=${s.avgGoalsFor}, 场均失=${s.avgGoalsAgainst}`);
-}
+assert(Object.keys(strengths).length === 4, '4 teams trained');
+assert(strengths['Brazil'].avgGoalsFor > 0, 'Brazil has positive avg goals');
+assert(typeof strengths['Brazil'].attack_strength === 'number', 'Attack strength is number');
+assert(typeof strengths['Brazil'].defense_strength === 'number', 'Defense strength is number');
 
-console.log('\n✅ Poisson 测试完成!');
+// 6. λ单调性检查
+console.log('\n📊 λ单调性检查:');
+const λhiHi = model.calculateLambda(2.0, 0.5, true);
+const λloLo = model.calculateLambda(0.5, 2.0, false);
+const λmid = model.calculateLambda(1.0, 1.0, true);
+assert(λhiHi > λloLo, 'Strong offense/weak defense yields higher λ than weak/strong');
+assert(λmid > λloLo, 'Average matchup yields higher λ than worst-case');
+
+console.log(`\n============================`);
+console.log(`Results: ${passed} passed, ${failed} failed, ${passed + failed} total`);
+console.log('============================');
+process.exit(failed > 0 ? 1 : 0);

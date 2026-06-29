@@ -312,3 +312,4 @@ const Fmt = (() => {
 
 // Freeze to prevent accidental mutation
 Object.freeze(Fmt);
+window.Fmt = Fmt;

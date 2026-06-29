@@ -1,0 +1,9 @@
+FIFA Code: CPV
+FIFA ID: 43850
+ISO2: CV
+English Name: Cabo Verde
+Chinese Name: 佛得角
+Group: H
+Ranking: 67
+Reason: 名称无法匹配
+---

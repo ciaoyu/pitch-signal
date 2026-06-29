@@ -1,0 +1,112 @@
+Player ID Bridge 构建报告
+============================================================
+生成时间: 2026-06-25T17:10:11.205Z
+比赛场次: 54
+
+匹配统计
+----------------------------------------
+  唯一球员总计: 1245
+  匹配成功: 1179 (94.7%)
+  未匹配:   66
+  唯一 slug: 1178
+  唯一 espnId: 1179
+
+首发 XI 匹配率
+----------------------------------------
+  XI 球员: 1142/1188 (96.1%)
+
+分位置 XI 匹配率
+----------------------------------------
+  GK: 106/108 (98.1%)
+  DF: 441/456 (96.7%)
+  MF: 354/369 (95.9%)
+  FW: 241/255 (94.5%)
+
+未匹配球员清单
+----------------------------------------
+  KOR (2):
+    #14 CHO Wije (DF) 主 400021441
+    #23 CASTROP Jens (DF) 主 400021441
+  QAT (2):
+    #25 ALHASHMI ALHUSSEIN (DF) 主 400021447
+    #24 TAHSIN MOHAMMED (FW) 主 400021447
+  MAR (1):
+    #12 Munir EL KAJOUI (GK) 主 400021452
+  HAI (2):
+    #13 Markhus LACROIX (DF) 客 400021452
+    #7 Derrick ETIENNE (FW) 客 400021452
+  BRA (3):
+    #13 DANILO (DF) 客 400021455
+    #23 EDERSON (GK) 客 400021455
+    #10 NEYMAR JR (FW) 客 400021455
+  USA (1):
+    #26 Alex ZENDEJAS (FW) 主 400021458
+  PAR (1):
+    #17 Alejandro ROMERO GAMARRA (FW) 客 400021458
+  TUR (3):
+    #11 Kenan YILDIZ (FW) 主 400021460
+    #12 Altay BAYINDIR (GK) 主 400021460
+    #21 Baris Alper YILMAZ (FW) 主 400021460
+  AUS (1):
+    #14 Cameron DEVLIN (MF) 客 400021462
+  GER (1):
+    #13 Pascal GROSS (MF) 主 400021464
+  TUN (2):
+    #25 Anis SLIMANE (MF) 客 400021474
+    #15 Mohamed HADJ MAHMOUD (MF) 客 400021474
+  IRN (2):
+    #13 Hossein KANANI (DF) 主 400021476
+    #24 Dennis DARGAHI (FW) 主 400021476
+  EGY (4):
+    #23 MOSTAFA SHOUBIR (GK) 客 400021478
+    #17 MOHANAD LASHIN (MF) 客 400021478
+    #16 MAHDY SOLIMAN (GK) 客 400021478
+    #18 NABIL DONGA (MF) 客 400021478
+  ESP (10):
+    #5 M. LLORENTE (DF) 主 400021482
+    #24 CUCURELLA (DF) 主 400021482
+    #8 FABIAN (MF) 主 400021482
+    #16 RODRIGO (MF) 主 400021482
+    #7 FERRAN (FW) 主 400021482
+    ... 还有 5 人
+  CPV (5):
+    #3 DINEY BORGES (DF) 客 400021482
+    #4 PICO LOPES (DF) 客 400021482
+    #20 Ryan Mendes Da Graça (FW) 客 400021482
+    #11 Rodrigues (MF) 客 400021482
+    #21 Da Costa (MF) 客 400021482
+  KSA (4):
+    #9 FERAS ALBRIKAN (FW) 客 400021483
+    #13 NAWAF BU WASHL (DF) 客 400021483
+    #18 ALA ALHAJJI (MF) 客 400021483
+    #19 ABDULLAH ALHAMDDAN (FW) 客 400021483
+  URU (1):
+    #20 Maxi ARAUJO (MF) 客 400021486
+  IRQ (1):
+    #6 MUNAF YOUNUS (DF) 主 400021488
+  NOR (2):
+    #20 Antonio NUSA (FW) 客 400021488
+    #26 Julian RYERSON (FW) 客 400021488
+  SEN (1):
+    #5 Idrissa Gana GUEYE (MF) 客 400021490
+  ARG (1):
+    #15 Nico GONZALEZ (MF) 主 400021494
+  ALG (1):
+    #24 Yassine TITRAOUI (MF) 客 400021496
+  JOR (9):
+    #16 MOHAMMAD ABUALNADI (DF) 客 400021498
+    #10 MOUSA ALTAMARI (FW) 客 400021498
+    #11 ODEH FAKHOURY (FW) 客 400021498
+    #12 NOUR BANIATEYAH (GK) 客 400021498
+    #2 MOHAMMAD ABUHASHEESH (DF) 客 400021498
+    ... 还有 4 人
+  COL (1):
+    #20 Juan QUINTERO (MF) 主 400021501
+  UZB (1):
+    #24 Behruzjon KARIMOV (DF) 客 400021503
+  GHA (2):
+    #17 Baba RAHMAN (DF) 客 400021506
+    #25 Prince ADU (FW) 客 400021506
+  PAN (2):
+    #23 Amir MURILLO (DF) 客 400021510
+    #11 Edgar Yoel BARCENAS (MF) 客 400021510

@@ -29,7 +29,33 @@ snapshots/*/data/*.db
 # Runtime caches (regenerated at startup)
 data/roster_cache.json
 
+# JS build artifact (source is in static/js/*.js, run `npm run build:js` to regenerate)
+static/js/bundle.js
+
+# Local runtime outputs
+logs/
+
 # Broaden DB ignores
 *.db
 *.sqlite
 *.sqlite3
+
+# Historical source CSVs (support H2H import, not for public repo)
+data/sources/world-cup-history/
+
+# Temporary / exploratory files
+scratch/
+
+# Data exploration outputs
+data/lineups_sync_runs.json
+data/wc2026/
+
+# AI tooling local config
+.codebuddy/
+.workbuddy/
+
+# Temp / backup files
+*.bak
+scratch/previews/
+docs/archive/
+docs/deployment-strategy.md

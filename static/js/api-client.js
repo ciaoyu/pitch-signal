@@ -219,3 +219,6 @@ const API = (() => {
 
 // Freeze to prevent accidental mutation
 Object.freeze(API.STATUS);
+window.API = API;
+window.WorldCup = window.WorldCup || {};
+window.WorldCup.ApiClient = API;

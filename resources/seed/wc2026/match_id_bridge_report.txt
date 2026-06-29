@@ -1,0 +1,12 @@
+Match ID Bridge 构建报告
+生成时间: 2026-06-27T05:35:05.396Z
+
+FIFA matches: 104
+ESPN matches: 104
+匹配成功: 104
+未匹配: 0
+
+--- Lineups 覆盖率 ---
+  总 lineups: 66
+  已桥接: 66
+  未桥接: 0

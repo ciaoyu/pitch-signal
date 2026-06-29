@@ -1,0 +1,98 @@
+{
+  "1": {
+    "yearBuilt": 2020,
+    "architect": "HKS Inc",
+    "cost": "$5.5B",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "2": {
+    "yearBuilt": 2017,
+    "architect": "HOK",
+    "cost": "$1.6B",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "3": {
+    "yearBuilt": 2002,
+    "architect": "Ellerbe Becket",
+    "cost": "$430M",
+    "surface": "Grass (temporary for WC2026)"
+  },
+  "4": {
+    "yearBuilt": 1966,
+    "architect": "Pedro Ramírez Vázquez",
+    "cost": "$260M",
+    "surface": "Natural grass (hybrid)"
+  },
+  "5": {
+    "yearBuilt": 2015,
+    "architect": "Populous",
+    "cost": "$200M",
+    "surface": "Natural grass"
+  },
+  "6": {
+    "yearBuilt": 2002,
+    "architect": "Ellerbe Becket",
+    "cost": "$430M",
+    "surface": "FieldTurf"
+  },
+  "7": {
+    "yearBuilt": 2002,
+    "architect": "HOK Sport",
+    "cost": "$325M",
+    "surface": "FieldTurf"
+  },
+  "8": {
+    "yearBuilt": 2003,
+    "architect": "HOK Sport",
+    "cost": "$512M",
+    "surface": "FieldTurf"
+  },
+  "9": {
+    "yearBuilt": 2002,
+    "architect": "HOK Sport",
+    "cost": "$352M",
+    "surface": "FieldTurf"
+  },
+  "10": {
+    "yearBuilt": 1972,
+    "architect": "Charles Deaton",
+    "cost": "$43M",
+    "surface": "Grass"
+  },
+  "11": {
+    "yearBuilt": 2014,
+    "architect": "HNTB",
+    "cost": "$1.2B",
+    "surface": "FieldTurf"
+  },
+  "12": {
+    "yearBuilt": 2016,
+    "architect": "Populous",
+    "cost": "$583M",
+    "surface": "FieldTurf"
+  },
+  "13": {
+    "yearBuilt": 1983,
+    "architect": "Phillips Farevaag Smallenberg",
+    "cost": "$126M",
+    "surface": "FieldTurf"
+  },
+  "14": {
+    "yearBuilt": 1966,
+    "architect": "Pedro Ramírez Vázquez",
+    "cost": "$260M",
+    "surface": "Natural grass (hybrid)"
+  },
+  "15": {
+    "yearBuilt": 2015,
+    "architect": "Populous",
+    "cost": "$200M",
+    "surface": "Natural grass"
+  },
+  "16": {
+    "yearBuilt": 2010,
+    "architect": "Populous",
+    "cost": "$170M",
+    "surface": "Natural grass"
+  }
+}

@@ -1,107 +1,160 @@
 #!/usr/bin/env node
 /**
- * 预测融合引擎测试 - v3
+ * 预测融合引擎测试 - v4
  * 使用真实 ratings.json（从 2018+2022 历史数据生成的 Elo）
  */
 const PredictionEngine = require('../lib/prediction');
-const QualificationSimulator = require('../lib/qualification');
+let QualificationSimulator = null;
+try {
+  QualificationSimulator = require('../lib/qualification');
+} catch (e) {
+  if (e.message && (e.message.includes('NODE_MODULE_VERSION') || e.message.includes('better_sqlite3') || e.message.includes('better-sqlite3'))) {
+    // DB unavailable
+  } else {
+    throw e;
+  }
+}
+
+let passed = 0;
+let failed = 0;
+
+function assert(condition, label) {
+  if (condition) { console.log(`  ✅ ${label}`); passed++; }
+  else { console.error(`  ❌ ${label}`); failed++; }
+}
+
+function assertNear(actual, expected, epsilon, label) {
+  const ok = Math.abs(actual - expected) <= epsilon;
+  if (ok) { console.log(`  ✅ ${label} (${actual.toFixed(4)})`); passed++; }
+  else { console.error(`  ❌ ${label}: expected ~${expected}, got ${actual}`); failed++; }
+}
 
 const engine = new PredictionEngine();
 const ratings = require('../data/ratings.json').teams;
 
-console.log('=== 预测融合引擎测试 (v3) ===\n');
+// PRECHECK: ratings must be loaded
+assert(Object.keys(ratings).length >= 40, `Ratings loaded: ${Object.keys(ratings).length} teams`);
 
-// ========== 测试 1: 真实比赛预测 ==========
-console.log('📊 测试 1: Australia vs Türkiye (真实结果 2-0)');
+console.log('=== 预测融合引擎测试 (v4) ===\n');
+
+// ========== 1. 真实比赛预测 ==========
+console.log('📊 Test 1: Australia vs Türkiye');
 const aus = ratings['Australia'];
 const tur = ratings['Türkiye'];
+assert(aus && tur, 'Both teams found in ratings');
 const pred1 = engine.predict({
   homeId: 'Australia', awayId: 'Türkiye',
   homeRating: aus, awayRating: tur,
 });
+assert(pred1 && typeof pred1 === 'object', 'Prediction result is object');
+assert(typeof pred1.homeWin === 'number', 'homeWin is number');
+assert(typeof pred1.draw === 'number', 'draw is number');
+assert(typeof pred1.awayWin === 'number', 'awayWin is number');
+assertNear(pred1.homeWin + pred1.draw + pred1.awayWin, 1, 0.01, 'Probabilities sum to ~1');
+assert(typeof pred1.likelyScore === 'string', 'likelyScore is string');
+assert(pred1.goals && typeof pred1.goals.homeExpected === 'number', 'homeExpected goals is number');
+assert(pred1.goals && typeof pred1.goals.awayExpected === 'number', 'awayExpected goals is number');
+assert(pred1.components && typeof pred1.components === 'object', 'components object exists');
+assert(typeof pred1.components.poisson === 'object', 'poisson component exists');
 
-console.log(`  主胜: ${(pred1.homeWin * 100).toFixed(1)}%`);
-console.log(`  平局: ${(pred1.draw * 100).toFixed(1)}%`);
-console.log(`  客胜: ${(pred1.awayWin * 100).toFixed(1)}%`);
-console.log(`  最可能比分: ${pred1.likelyScore}`);
-console.log(`  Expected Goals: ${pred1.goals.homeExpected} - ${pred1.goals.awayExpected}`);
-console.log(`  Poisson 有效: ${pred1.components.poisson.valid}`);
-
-// ========== 测试 2: 强队 vs 弱队 ==========
-console.log('\n📊 测试 2: Germany vs Haiti');
+// ========== 2. 强队 vs 弱队 ==========
+console.log('\n📊 Test 2: Germany vs Haiti');
 const ger = ratings['Germany'];
 const hai = ratings['Haiti'];
+assert(ger && hai, 'Both teams found');
 const pred2 = engine.predict({
   homeId: 'Germany', awayId: 'Haiti',
   homeRating: ger, awayRating: hai,
 });
-console.log(`  Germany: Elo=${ger.rating} attack=${ger.attack_strength} defense=${ger.defense_strength}`);
-console.log(`  Haiti: Elo=${hai.rating} attack=${hai.attack_strength} defense=${hai.defense_strength}`);
-console.log(`  主胜: ${(pred2.homeWin * 100).toFixed(1)}%`);
-console.log(`  平局: ${(pred2.draw * 100).toFixed(1)}%`);
-console.log(`  客胜: ${(pred2.awayWin * 100).toFixed(1)}%`);
-console.log(`  最可能比分: ${pred2.likelyScore}`);
-console.log(`  Expected Goals: ${pred2.goals.homeExpected} - ${pred2.goals.awayExpected}`);
+assert(pred2.homeWin > pred2.awayWin, 'Stronger team has higher win probability');
+assert(pred2.homeWin > 0.5, 'Germany strong favorite (homeWin > 50%)');
+assert(pred2.awayWin < 0.3, 'Haiti heavy underdog (awayWin < 30%)');
 
-// ========== 测试 3: 势均力敌 ==========
-console.log('\n📊 测试 3: Switzerland vs Sweden (势均力敌)');
+// ========== 3. 势均力敌 ==========
+console.log('\n📊 Test 3: Switzerland vs Sweden (势均力敌)');
 const swi = ratings['Switzerland'];
 const swe = ratings['Sweden'];
+assert(swi && swe, 'Both teams found');
 const pred3 = engine.predict({
   homeId: 'Switzerland', awayId: 'Sweden',
   homeRating: swi, awayRating: swe,
 });
-console.log(`  主胜: ${(pred3.homeWin * 100).toFixed(1)}%`);
-console.log(`  平局: ${(pred3.draw * 100).toFixed(1)}%`);
-console.log(`  客胜: ${(pred3.awayWin * 100).toFixed(1)}%`);
-console.log(`  最可能比分: ${pred3.likelyScore}`);
+const maxDiff = Math.max(pred3.homeWin, pred3.draw, pred3.awayWin) - Math.min(pred3.homeWin, pred3.draw, pred3.awayWin);
+assert(maxDiff < 0.5, 'Balanced match: probabilities within 0.5 range');
 
-// ========== 测试 4: Elo 引导 vs 纯 Poisson ==========
-console.log('\n📊 测试 4: Elo 引导效果对比');
-console.log('  Australia vs Türkiye（Elo 几乎相等）：');
-const poissonComponent = pred1.components.poisson;
-console.log(`    Poisson 原始 λ: ${poissonComponent.homeLambda} - ${poissonComponent.awayLambda}`);
-console.log(`    Elo 引导 λ: ${pred1.goals.homeExpected} - ${pred1.goals.awayExpected}`);
+// ========== 4. Elo 引导效果 ==========
+console.log('\n📊 Test 4: Elo 引导效果');
+assert(pred1.components.poisson.valid !== undefined, 'Poisson valid flag exists');
 
-console.log('\n  Germany vs Haiti（Elo 差 349）：');
-const poissonComponent2 = pred2.components.poisson;
-console.log(`    Poisson 原始 λ: ${poissonComponent2.homeLambda} - ${poissonComponent2.awayLambda}`);
-console.log(`    Elo 引导 λ: ${pred2.goals.homeExpected} - ${pred2.goals.awayExpected}`);
-
-// ========== 测试 5: 出线模拟 ==========
-console.log('\n📊 测试 5: 小组出线模拟 (1000 次)');
-const qs = new QualificationSimulator({
-  simulations: 1000,
-  predictionEngine: engine,
-});
-
-const groups = qs.loadGroupsFromDB();
-console.log(`  加载了 ${groups.length} 个分组`);
-
-// 展示 D 组（已有 Australia 2-0 结果）
-const groupD = groups.find(g => g.name === 'Group D');
-if (groupD) {
-  console.log('\n  Group D 出线概率:');
-  const result = qs.simulateGroup(groupD);
-  for (const r of result.results) {
-    console.log(`    ${r.name.padEnd(15)} 出线=${(r.qualifyProb*100).toFixed(1)}% 均位=${r.avgPosition}`);
+// ========== 5. 出线模拟 (requires DB) ==========
+console.log('\n📊 Test 5: 小组出线模拟');
+let dbAvailable = false;
+try {
+  // require db to test whether the native module loads
+  require('../lib/db').db;
+  dbAvailable = true;
+} catch (e) {
+  if (e.message && (e.message.includes('NODE_MODULE_VERSION') || e.message.includes('better_sqlite3') || e.message.includes('better-sqlite3'))) {
+    // expected: better-sqlite3 native binding mismatch
+  } else {
+    throw e;
   }
 }
 
-// ========== 融合权重 ==========
-console.log('\n📊 融合权重（Dynamic Weights）:');
-console.log('  ', pred1.weights);
+if (dbAvailable && QualificationSimulator) {
+  const qs = new QualificationSimulator({ simulations: 1000, predictionEngine: engine });
+  let groups = qs.loadGroupsFromDB();
 
-// ========== 评分分布 ==========
-console.log('\n📊 评分 Top 10:');
-const sorted = Object.entries(ratings).sort((a,b) => b[1].rating - a[1].rating);
-sorted.slice(0, 10).forEach(([name, data]) => {
-  console.log(`  ${name.padEnd(20)} Elo=${data.rating} 攻=${data.attack_strength} 防=${data.defense_strength}`);
-});
-console.log('\n📊 评分 Bottom 5:');
-sorted.slice(-5).forEach(([name, data]) => {
-  console.log(`  ${name.padEnd(20)} Elo=${data.rating} 攻=${data.attack_strength} 防=${data.defense_strength}`);
-});
+  if (groups.length === 0) {
+    console.log('  ℹ️  DB loaded but returned 0 groups. Injecting a fixed fixture group.');
+    groups = [{
+      name: 'Group Test',
+      teams: [
+        { id: 'Australia', name: 'Australia', pts: 0, gf: 0, ga: 0, played: 0 },
+        { id: 'Türkiye', name: 'Türkiye', pts: 0, gf: 0, ga: 0, played: 0 },
+        { id: 'Germany', name: 'Germany', pts: 0, gf: 0, ga: 0, played: 0 },
+        { id: 'Haiti', name: 'Haiti', pts: 0, gf: 0, ga: 0, played: 0 },
+      ],
+      matches: [
+        { homeId: 'Australia', awayId: 'Türkiye', played: false },
+        { homeId: 'Germany', awayId: 'Haiti', played: false },
+        { homeId: 'Australia', awayId: 'Germany', played: false },
+        { homeId: 'Türkiye', awayId: 'Haiti', played: false },
+        { homeId: 'Haiti', awayId: 'Australia', played: false },
+        { homeId: 'Türkiye', awayId: 'Germany', played: false },
+      ]
+    }];
+  }
 
-console.log('\n✅ 全部测试完成!');
-console.log(`  球队数量: ${Object.keys(ratings).length}`);
+  assert(groups.length > 0, `Using ${groups.length} groups for simulation test`);
+  const group = groups[0];
+  const result = qs.simulateGroup(group);
+  assert(Array.isArray(result.results), `${group.name} simulation has results array`);
+  assert(result.results.length === 4, `${group.name} has 4 teams`);
+  for (const r of result.results) {
+    assert(r.qualifyProb >= 0 && r.qualifyProb <= 1, `${r.name} qualifyProb in [0,1]`);
+  }
+} else {
+  console.log('  ⚠️  SKIP: Database unavailable (better-sqlite3 NODE_MODULE_VERSION mismatch)');
+}
+
+// ========== 6. Weights ==========
+console.log('\n📊 Test 6: Fusion weights');
+assert(pred1.weights && typeof pred1.weights === 'object', 'Weights object exists');
+
+// ========== 7. Ratings integrity ==========
+console.log('\n📊 Test 7: Ratings integrity');
+const sorted = Object.entries(ratings).sort((a, b) => b[1].rating - a[1].rating);
+assert(sorted.length >= 40, `${sorted.length} teams in ratings`);
+assert(sorted[0][1].rating > sorted[sorted.length - 1][1].rating, 'Top rating > bottom rating (differentiation exists)');
+// Check attack/defense ranges are reasonable (not all identical)
+const attacks = sorted.map(([, d]) => d.attack_strength);
+const defenses = sorted.map(([, d]) => d.defense_strength);
+assert(Math.max(...attacks) > Math.min(...attacks), 'Attack strengths have variance');
+assert(Math.max(...defenses) > Math.min(...defenses), 'Defense strengths have variance');
+
+console.log(`\n============================`);
+console.log(`Results: ${passed} passed, ${failed} failed, ${passed + failed} total`);
+console.log(`Teams: ${Object.keys(ratings).length}`);
+console.log('============================');
+process.exit(failed > 0 ? 1 : 0);

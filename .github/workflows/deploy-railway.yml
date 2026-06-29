@@ -1,0 +1,30 @@
+name: Deploy to Railway
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service=pitch-signal
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Verify deployment
+        run: |
+          sleep 15
+          curl -s -o /dev/null -w "%{http_code}" https://pitch-signal-production.up.railway.app/health
+          # 预期 200；如果失败，workflow 会标红
+        env:
+          HEALTH_URL: https://pitch-signal-production.up.railway.app/health

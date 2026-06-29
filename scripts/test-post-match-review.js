@@ -11,7 +11,7 @@
  *   7. evidence.events rendering in key events
  *
  * Run: node scripts/test-post-match-review.js
- * Requires: server running on localhost:5099
+ * This script spawns its own server on port 5091 (port 5091).
  */
 
 const cp = require('child_process');
@@ -25,6 +25,12 @@ const TEST_DB_PATH = path.join(__dirname, '..', 'data', 'test-post-match-review.
 process.env.NODE_ENV = 'test';
 delete process.env.TEST_MODE;
 process.env.TEST_DB_PATH = TEST_DB_PATH;
+
+// Clear lib/db.js module cache — when running via `npm test`, earlier test files
+// (e.g. test-services.js) may have loaded lib/db.js with TEST_DB_PATH=:memory:,
+// caching a :memory: connection. We need to force a fresh load with our file path.
+const dbModulePath = require.resolve('../lib/db');
+delete require.cache[dbModulePath];
 
 const PORT = 5091;
 const BASE = `http://localhost:${PORT}`;
@@ -51,12 +57,19 @@ async function request(method, path, body, headers = {}) {
 function startTestServer() {
   return new Promise((resolve, reject) => {
     console.log(`🚀 Starting server.js on port ${PORT}...`);
-    // Delete test database before server starts to keep it clean
-    for (const suffix of ['', '-wal', '-shm']) {
-      try { fs.unlinkSync(TEST_DB_PATH + suffix); } catch (e) {}
-    }
+    // Clean test database rows (don't delete the file — parent's DB connection
+    // holds an fd; if we delete and recreate the file, the child process opens
+    // a *new* empty DB while the parent writes to the deleted fd, causing the
+    // child to never see the parent's snapshots).
+    try {
+      const { db: testDb } = require('../lib/db');
+      testDb.prepare('DELETE FROM post_match_reviews').run();
+      testDb.prepare('DELETE FROM prediction_snapshots').run();
+      // Also WAL checkpoint to flush any pending writes
+      testDb.pragma('wal_checkpoint(TRUNCATE)');
+    } catch (_) {}
 
-    serverProcess = cp.spawn('node', [path.join(__dirname, '..', 'server.js')], {
+    serverProcess = cp.spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
       env: {
         ...process.env,
         PORT: String(PORT),
@@ -64,31 +77,35 @@ function startTestServer() {
         ADMIN_TOKEN: 'test-token-123'
       }
     });
-
-    let started = false;
-    serverProcess.stdout.on('data', (data) => {
-      const str = data.toString();
-      if (str.includes('PitchSignal: http://') && !started) {
-        started = true;
-        resolve();
-      }
-    });
-
-    serverProcess.stderr.on('data', (data) => {
-      // Suppress stderr logs in tests
-    });
-
     serverProcess.on('error', (err) => {
       reject(err);
     });
 
-    // Timeout fallback: resolve after 2.5 seconds anyway
-    setTimeout(() => {
-      if (!started) {
-        started = true;
-        resolve();
-      }
-    }, 2500);
+    // Poll GET /health until server is ready (200ms interval, 10s max)
+    const startTime = Date.now();
+    const poll = () => {
+      fetch(`http://localhost:${PORT}/health`, { signal: AbortSignal.timeout(500) })
+        .then(res => res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`)))
+        .then(data => {
+          if (data && data.status === 'ok') {
+            console.log('✅ Test server is ready');
+            resolve();
+          } else if (Date.now() - startTime < 10000) {
+            setTimeout(poll, 200);
+          } else {
+            resolve(); // Timeout: proceed anyway
+          }
+        })
+        .catch(() => {
+          if (Date.now() - startTime < 10000) {
+            setTimeout(poll, 200);
+          } else {
+            console.log('⚠️ Health check timed out, proceeding anyway');
+            resolve();
+          }
+        });
+    };
+    poll();
   });
 }
 
@@ -408,61 +425,54 @@ async function testEvidenceEventsRendering() {
 }
 
 // ===== Run all tests =====
+async function cleanup() {
+  if (serverProcess) {
+    console.log('\n🛑 Stopping test server...');
+    serverProcess.kill('SIGTERM');
+    // Wait for process to exit (graceful shutdown) or force after 5s
+    try {
+      await new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          if (serverProcess && !serverProcess.killed) {
+            serverProcess.kill('SIGKILL');
+          }
+          resolve();
+        }, 5000);
+        serverProcess.on('exit', () => { clearTimeout(timeout); resolve(); });
+      });
+    } catch (e) {}
+  }
+  // Close db connection if open
+  try {
+    const { db } = require('../lib/db');
+    db.close();
+  } catch (e) {}
+}
+
 async function main() {
   console.log('🧪 Post-Match Review Smoke Tests');
   console.log('================================\n');
 
   try {
     await startTestServer();
-  } catch (err) {
-    console.error('Failed to start test server:', err);
-    process.exit(1);
-  }
 
-  try {
-    await testSnapshotImmutability();
-  } catch (e) { console.error('  💥 Test 1 crashed:', e.message); failed++; }
+    // Run all tests
+    try { await testSnapshotImmutability(); } catch (e) { console.error('  💥 Test 1 crashed:', e.message); failed++; }
+    try { await testPostReviewNoMatchId(); } catch (e) { console.error('  💥 Test 2 crashed:', e.message); failed++; }
+    try { await testPostReviewWithMatchId(); } catch (e) { console.error('  💥 Test 3 crashed:', e.message); failed++; }
+    try { await testPostMergeAiPostmortem(); } catch (e) { console.error('  💥 Test 4 crashed:', e.message); failed++; }
+    try { await testExactScore(); } catch (e) { console.error('  💥 Test 5 crashed:', e.message); failed++; }
+    try { await testZeroZeroScore(); } catch (e) { console.error('  💥 Test 6 crashed:', e.message); failed++; }
+    try { await testEvidenceEventsRendering(); } catch (e) { console.error('  💥 Test 7 crashed:', e.message); failed++; }
 
-  try {
-    await testPostReviewNoMatchId();
-  } catch (e) { console.error('  💥 Test 2 crashed:', e.message); failed++; }
-
-  try {
-    await testPostReviewWithMatchId();
-  } catch (e) { console.error('  💥 Test 3 crashed:', e.message); failed++; }
-
-  try {
-    await testPostMergeAiPostmortem();
-  } catch (e) { console.error('  💥 Test 4 crashed:', e.message); failed++; }
-
-  try {
-    await testExactScore();
-  } catch (e) { console.error('  💥 Test 5 crashed:', e.message); failed++; }
-
-  try {
-    await testZeroZeroScore();
-  } catch (e) { console.error('  💥 Test 6 crashed:', e.message); failed++; }
-
-  try {
-    await testEvidenceEventsRendering();
-  } catch (e) { console.error('  💥 Test 7 crashed:', e.message); failed++; }
-
-  // Test 8: Verify authorization gate (anonymous/wrong token returns 401)
-  try {
-    console.log('\n📋 Test 8: Anonymous request authorization gate');
-    const { status, data } = await request('POST', '/api/post-match-review', {}, { 'X-Admin-Token': 'wrong-token' });
-    assert(status === 401, `HTTP ${status} (expected 401)`);
-  } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
-
-  // Kill test server
-  if (serverProcess) {
-    console.log('\n🛑 Stopping test server...');
-    serverProcess.kill('SIGKILL');
-  }
-
-  // Cleanup DB files
-  for (const suffix of ['', '-wal', '-shm']) {
-    try { fs.unlinkSync(TEST_DB_PATH + suffix); } catch (e) {}
+    // Test 8: Authorization gate
+    try {
+      console.log('\n📋 Test 8: Anonymous request authorization gate');
+      const { status, data } = await request('POST', '/api/post-match-review', {}, { 'X-Admin-Token': 'wrong-token' });
+      assert(status === 401, `HTTP ${status} (expected 401)`);
+    } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
+  } finally {
+    await cleanup();
   }
 
   console.log(`\n================================`);

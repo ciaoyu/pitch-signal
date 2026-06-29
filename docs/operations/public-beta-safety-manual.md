@@ -338,7 +338,7 @@ grep POLYMARKET_ENABLED .env
 
 **验证**：
 ```bash
-curl http://localhost:5099/api/predict/760429 | jq '.polymarketFusion.applied'
+curl http://localhost:5099/api/predict/760429 | jq '.marketSignalFusion.applied'
 # 期望: false
 ```
 
@@ -423,7 +423,7 @@ grep -n "Polymarket\|polymarket\|击败\|准确率\|accuracy\|Brier" static/js/a
 curl -s http://localhost:5099/health | jq .
 
 # 2. 预测接口返回不包含 Polymarket
-curl -s http://localhost:5099/api/predict/760429 | jq '.polymarketFusion.applied'  # 应为 false
+curl -s http://localhost:5099/api/predict/760429 | jq '.marketSignalFusion.applied'  # 应为 false
 
 # 3. Bot 接口不可公开访问
 curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:5099/api/bot/chat \

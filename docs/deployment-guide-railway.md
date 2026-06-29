@@ -154,9 +154,10 @@ curl -s -o /dev/null -w "%{http_code}" -X POST $BASE/api/post-match-review/76043
 ### 验收 3.5：功能闸门 = false
 
 ```bash
-curl -s $BASE/api/predict/760432 | jq '.polymarketFusion'
-# 预期：{"applied": false}
-# ⚠️ 当前代码返回 { applied: false }，不是 null 也不是字段缺失。
+curl -s $BASE/api/predict/760432 | jq '.marketSignalFusion, .externalOddsUsed'
+# 预期：{"applied": false} 和 false
+# ⚠️ 字段名为 marketSignalFusion（旧文档曾写 polymarketFusion）。
+#    当前代码返回 { applied: false }，externalOddsUsed=false。
 ```
 
 ### 验收 3.6：单实例
@@ -199,7 +200,7 @@ curl -s $BASE/health | jq .status # "healthy"
 | C2 | .dockerignore 排除 node_modules/.env/.db/test/密钥 | 文件存在 |
 | C3 | .env.example 含全部变量 + 令牌三级 + 功能闸门 | 文件存在 |
 | C4 | 部署指南有可执行的验收命令 | 本文档第 3 节 |
-| C5 | 验收断言与当前代码行为一致 | polymarketFusion → `{applied:false}` 等 |
+| C5 | 验收断言与当前代码行为一致 | marketSignalFusion → `{applied:false}` 等 |
 | C6 | server.js 通过 DATA_PATH / PORT 读取平台 env | L29-30 |
 | C7 | db.js 启用 SQLite WAL + foreign_keys | L28-29 |
 | C8 | health.js throw statusCode:503 → server.js 返回 503 | 代码链已审查 |
@@ -221,12 +222,46 @@ curl -s $BASE/health | jq .status # "healthy"
 
 | # | 验收项 | 命令参考 | 结果 |
 |---|--------|---------|:---:|
-| V1 | Health 200 + status "healthy" | §3.1 | ⬜ |
-| V2 | 预测接口正常 | §3.2 | ⬜ |
-| V3 | 持久卷 — Shell checksum 比对 | §3.3 | ⬜ |
-| V4 | 匿名写接口 403 + 三令牌全不设 | §3.4 | ⬜ |
-| V5 | polymarketFusion.applied === false | §3.5 | ⬜ |
-| V6 | numReplicas = 1 | §3.6 | ⬜ |
+| V1 | Health 200 + status "healthy" | §3.1 | ✅ |
+| V2 | 预测接口正常 | §3.2 | ✅ |
+| V3 | 持久卷 — Shell checksum 比对 | §3.3 | ⬜（转 public 前做活体验证） |
+| V4 | 匿名写接口 403 + 三令牌全不设 | §3.4 | ✅ |
+| V5 | marketSignalFusion.applied === false | §3.5 | ✅ |
+| V6 | numReplicas = 1 | §3.6 | ⬜（Dashboard 确认） |
 | V7 | 回滚演练 | §3.7 | ⬜ |
 
 > **全部 ⬜ 变为 ✅ 后，受控公开 Beta 放行。**
+
+---
+
+## 6. 线上验收记录 — 2026-06-25
+
+> 首次真实部署到 Railway 并通过验收。环境变量全部在 Railway 后台配置，未上传 `.env`。
+
+**部署目标**
+- Service：`pitch-signal`（项目 `sparkling-contentment`）
+- URL：`https://pitch-signal-production.up.railway.app`
+- Repo：`ciao-zbbb/pitch-signal`（私有，GitHub 连接自动构建）
+- 持久卷：`pitch-signal-sqlite-data` → 挂载 `/data`
+
+**关键修复（commit `9540565`）**
+- 现象：Railway 把卷 `/data` 挂载为 root 所有，而 Dockerfile `USER node`（非 root）→ `unable to open database file`，`/health` 为 `degraded / db down`，且 DB down 期间匿名写接口异常返回 200。
+- 修复：新增 `docker-entrypoint.sh`——容器以 root 启动，`mkdir -p` + `chown node:node` 数据目录后，用 `su-exec` 降权，应用进程以 `node` 运行（**不长期 root**）。Dockerfile 装 `su-exec`、去掉常驻 `USER node`、改用 `ENTRYPOINT`，HEALTHCHECK 改用 `$PORT`。
+- 配置：`DATA_PATH=/usr/src/app/data`（源数据从镜像加载）+ `DB_PATH=/data/predictions.db`（SQLite 落在持久卷）。
+
+**验收结果**
+
+| 项 | 结果 | 证据 |
+|---|:---:|------|
+| V1 /health | ✅ | `status: healthy`（修复前为 `degraded/db down`） |
+| V2 /api/predict/760432 | ✅ | `homeWin 0.668 + draw 0.211 + awayWin 0.121 = 1.0` |
+| V4 匿名写 | ✅ | `POST /api/bot/chat → 401`、`POST /api/post-match-review → 403`；三令牌均未设 |
+| V5 市场信号闸门 | ✅ | `marketSignalFusion={applied:false}`、`externalOddsUsed=false` |
+| 四闸门（启动日志） | ✅ | GATE-1 Polymarket / GATE-2 Pundit / GATE-3 Auto-calibration / GATE-4 AI_POSTMORTEM 均 `=false 已确认` |
+| DB 可写 | ✅ | 全部路由模块注册成功、`Started 2 background job(s)`（AI postmortem worker 已关，本地为 3） |
+| DATA_PATH 持久化（配置层） | ✅ | `DB_PATH=/data/predictions.db` == `RAILWAY_VOLUME_MOUNT_PATH=/data` |
+| V3 持久化活体验证 | ⬜ 待办 | 转 public 前执行 §3.3「写哨兵 → redeploy → md5 比对」 |
+| V6 单实例 | ⬜ 待办 | `railway.toml` 设 `numReplicas=1`；Dashboard 确认生效 |
+| V7 回滚演练 | ⬜ 待办 | §3.7 |
+
+**备注**：§3.5 字段名由旧文档的 `polymarketFusion` 更正为当前代码的 `marketSignalFusion`。
