@@ -10,10 +10,10 @@
  * 做法：
  *   遍历 status='completed' 的复盘行，逐个取出 → 把 review.status 设为 'ready_for_ai'、
  *   注入最新 aiPromptContext（instruction + requiredOutputFormat）→ savePostMatchReview
- *   写回，让后台 worker（server.js runAndSchedule）用 MiMo 逐批复生成。
+ *   写回，让后台 worker（server.js runAndSchedule）用 DeepSeek 逐批复生成。
  *
  * 成本与限速：
- *   N 行 = N 次 MiMo 调用。后台 worker 每轮 LIMIT 10 + nextAnalysisDelay 间隔
+ *   N 行 = N 次 DeepSeek 调用。后台 worker 每轮 LIMIT 10 + nextAnalysisDelay 间隔
  *   （最少 1 min，闲时 2 h），天然限速。建议先 dry-run 确认数据量再实跑。
  *
  * 用法：
@@ -104,7 +104,7 @@ async function main() {
 
   if (DRY_RUN) {
     log('\n🔍 --dry-run 模式，不做任何写入。要实跑请去掉 --dry-run。');
-    log(`预计产生 ${toProcess.length} 次 MiMo 重生成请求。`);
+    log(`预计产生 ${toProcess.length} 次 DeepSeek 重生成请求。`);
     return;
   }
 
