@@ -31,14 +31,23 @@ function parseFormationStr(f) {
     return { def: 4, mid: 3, fwd: 3 };
 }
 
-function formationTemplate(formation, side) {
+function formationTemplate(formation, side, opponentFormation = '') {
     const f = parseFormationStr(formation);
     const isHome = side === 'home';
+    const normalizedFormation = String(formation || '').trim();
+    const normalizedOpponent = String(opponentFormation || '').trim();
     const yBase = isHome
         ? { gk: 6, def: 22, mid: 45, fwd: 66.5 }
         : { gk: 94, def: 78, mid: 55, fwd: 33.5 };
-    const yDm = isHome ? 44 : 56;
-    const yAm = isHome ? 60 : 40;
+    let yDm = isHome ? 44 : 56;
+    let yAm = isHome ? 60 : 40;
+    if (isHome && normalizedFormation === '4-2-3-1' && normalizedOpponent === '4-1-2-3') {
+        yBase.fwd = 71;
+    }
+    if (!isHome && normalizedFormation === '4-1-2-3' && normalizedOpponent === '4-2-3-1') {
+        yAm = 52;
+        yDm = 66;
+    }
 
     const out = [];
     out.push({ x: 50, y: yBase.gk, pos: 'GK', line: 'gk' });
@@ -73,7 +82,7 @@ const R = 3.2; // 圆点半径
 const DIAMETER = R * 2; // 6.4
 const renderCoord = (p) => ({ cx: p.x, cy: p.y * 1.6 });
 
-const FORMATIONS = ['4-3-3', '4-2-3-1', '3-5-2', '3-4-2-1', '4-1-4-1', '5-3-2', '4-4-2', '3-4-3', '4-5-1'];
+const FORMATIONS = ['4-3-3', '4-2-3-1', '4-1-2-3', '3-5-2', '3-4-2-1', '4-1-4-1', '5-3-2', '4-4-2', '3-4-3', '4-5-1'];
 
 console.log('=== 战术板交错布局自测 ===\n');
 
@@ -106,8 +115,8 @@ const overlapCombos = [];
 for (const hf of FORMATIONS) {
     for (const af of FORMATIONS) {
         combos++;
-        const home = formationTemplate(hf, 'home').map(renderCoord);
-        const away = formationTemplate(af, 'away').map(renderCoord);
+        const home = formationTemplate(hf, 'home', af).map(renderCoord);
+        const away = formationTemplate(af, 'away', hf).map(renderCoord);
         const all = [...home.map(p => ({ ...p, side: 'home', form: hf })),
                      ...away.map(p => ({ ...p, side: 'away', form: af }))];
         const overlap = findOverlapDetailed(all);

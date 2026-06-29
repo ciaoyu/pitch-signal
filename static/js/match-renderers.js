@@ -49,9 +49,11 @@ window.WorldCup.MatchRenderers = (() => {
      * @param {'home'|'away'} side
      * @returns {Array<{x,y,pos,line}>} 11 人坐标（GK→DEF→MID→FWD 序）
      */
-    function formationTemplate(formation, side) {
+    function formationTemplate(formation, side, opponentFormation = '') {
         const f = parseFormationStr(formation);
         const isHome = side === 'home';
+        const normalizedFormation = String(formation || '').trim();
+        const normalizedOpponent = String(opponentFormation || '').trim();
         // yBase 与后端 calcFormationCoords 一致，仅 fwd 按用户要求调到相邻两层中点：
         //   红前锋(away fwd) 在 蓝后卫(35.2) 与 蓝中场(72.0) 中点 → cy=53.6 → y=33.5
         //   蓝前锋(home fwd) 在 红中场(88.0) 与 红后卫(124.8) 中点 → cy=106.4 → y=66.5
@@ -60,8 +62,20 @@ window.WorldCup.MatchRenderers = (() => {
             : { gk: 94, def: 78, mid: 55, fwd: 33.5 };
         // 4 段阵型（如 4-2-3-1）的双层中场 y
         // AM 层从 66/34 撤到 60/40，避免与前锋层(66.5/33.5)重叠（间距 10.4 > 6.4 直径）
-        const yDm = isHome ? 44 : 56;
-        const yAm = isHome ? 60 : 40;
+        let yDm = isHome ? 44 : 56;
+        let yAm = isHome ? 60 : 40;
+
+        // 当前全场交错视图的两个常见四段阵型需要独立层距：
+        // 4-2-3-1：单前锋必须清楚地位于三名攻击中场下方。
+        if (isHome && normalizedFormation === '4-2-3-1' && normalizedOpponent === '4-1-2-3') {
+            yBase.fwd = 71;
+        }
+        // 客队 4-1-2-3 从上向下应为 3前锋→2中场→1后腰→4后卫。
+        // 在交错视图中，2 位于蓝方“双后腰/三前腰”之间，1 位于蓝方三前腰下方。
+        if (!isHome && normalizedFormation === '4-1-2-3' && normalizedOpponent === '4-2-3-1') {
+            yAm = 52;
+            yDm = 66;
+        }
 
         const out = [];
         // GK
@@ -210,7 +224,7 @@ window.WorldCup.MatchRenderers = (() => {
             && matchupData.home?.players?.length >= 1
             && matchupData.away?.players?.length >= 1;
 
-        let svg = `<svg viewBox="0 0 100 160" class="w-full h-auto max-h-[500px] rounded-xl border-2 border-white/10">`;
+        let svg = `<svg viewBox="0 0 100 160" class="w-full rounded-xl border-2 border-white/10" style="display:block;max-width:420px;margin:0 auto">`;
 
         // ── Defs: gradients + avatar clip ──
         svg += `<defs>
@@ -353,8 +367,8 @@ window.WorldCup.MatchRenderers = (() => {
         // 覆盖后端传来的 x/y（后端 player 顺序已是 GK→DEF→MID→FWD，按 index 映射）。
         // 后端 y 已是交错序，两队都直接用，从上到下自然呈现
         //   蓝GK→蓝后卫→红前锋→蓝中场→红中场→蓝前锋→红后卫→红GK
-        const homeTemplate = formationTemplate(home.formation || '4-3-3', 'home');
-        const awayTemplate = formationTemplate(away.formation || '4-3-3', 'away');
+        const homeTemplate = formationTemplate(home.formation || '4-3-3', 'home', away.formation || '4-3-3');
+        const awayTemplate = formationTemplate(away.formation || '4-3-3', 'away', home.formation || '4-3-3');
         const coord = (p, idx, side) => {
             const tmpl = side === 'home' ? homeTemplate : awayTemplate;
             const t = tmpl[idx] || tmpl[tmpl.length - 1] || { x: 50, y: 50 };
@@ -368,6 +382,10 @@ window.WorldCup.MatchRenderers = (() => {
             : matchups;
 
         for (const m of pairsToRender) {
+            // Goalkeeper ratings remain part of the aggregate comparison, but
+            // a full-pitch GK-to-GK line is not a real spatial matchup and puts
+            // a misleading advantage dot on the center spot.
+            if (m.zone === '门将' || m.zone === 'Goalkeeper') continue;
             const hName = m.home?.name || m.homePlayer;
             const aName = m.away?.name || m.awayPlayer;
             const hp = findPlayer(home.players, hName);
@@ -379,28 +397,25 @@ window.WorldCup.MatchRenderers = (() => {
             const hC = coord(hp, hIdx, 'home');
             const aC = coord(ap, aIdx, 'away');
 
+            const isKey = m.key || m.type === 'critical';
             let gradId = 'tb-m-key';
-            let strokeW = 0.5;
-            let opacity = 0.18;
-            let dot = false;
+            let strokeW = isKey ? 1.2 : 0.5;
+            let opacity = isKey ? 0.75 : 0.22;
 
-            if (m.key || m.type === 'critical') {
-                strokeW = 1.0;
-                opacity = 0.6;
-                dot = true;
+            if (isKey) {
                 if (m.advantage === 'home') gradId = 'tb-m-critical-home';
                 else if (m.advantage === 'away') gradId = 'tb-m-critical-away';
-                else if (m.advantage === 'even') gradId = 'tb-m-even';
-                else gradId = 'tb-m-critical-home';
+                else gradId = 'tb-m-even';
             }
 
-            let dashArray = m.key || m.type === 'critical' ? '1.5,1.5' : '3,3';
-            svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round" stroke-dasharray="${dashArray}"/>`;
+            // Key lines: solid; non-key: subtle dash
+            const dashArray = isKey ? 'none' : '2,3';
+            svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round"${dashArray !== 'none' ? ` stroke-dasharray="${dashArray}"` : ''}/>`;
 
-            if (dot) {
+            if (isKey) {
                 const mx = (hC.cx + aC.cx) / 2, my = (hC.cy + aC.cy) / 2;
-                const dotColor = m.advantage === 'home' ? '#3b82f6' : (m.advantage === 'away' ? '#ef4444' : '#9ca3af');
-                svg += `<circle cx="${mx}" cy="${my}" r="1.0" fill="${dotColor}" opacity="0.9"/>`;
+                const dotColor = m.advantage === 'home' ? '#60a5fa' : (m.advantage === 'away' ? '#f87171' : '#fbbf24');
+                svg += `<circle cx="${mx}" cy="${my}" r="1.2" fill="${dotColor}" opacity="1"/>`;
             }
         }
         svg += `</g>`;
@@ -687,7 +702,7 @@ window.WorldCup.MatchRenderers = (() => {
         </div>
         
         <!-- SVG Tactical Board -->
-        <div class="pitch w-full overflow-hidden" id="pitch-canvas">
+        <div class="w-full" id="pitch-canvas">
             ${renderTacticalBoard(matchupData, matchData)}
         </div>`;
 

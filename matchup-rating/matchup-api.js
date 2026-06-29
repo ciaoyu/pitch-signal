@@ -11,20 +11,27 @@ const fs = require('fs');
 function parseFormation(f) {
   const parts = f.split('-').map(Number);
   if (parts.length === 3) return { def: parts[0], mid: parts[1], fwd: parts[2] };
-  if (parts.length === 4) return { def: parts[0], midDM: parts[1], midAM: parts[2], fwd: parts[3] };
+  if (parts.length === 4) return {
+    def: parts[0],
+    midDM: parts[1],
+    midAM: parts[2],
+    mid: parts[1] + parts[2],
+    fwd: parts[3]
+  };
   return { def: 4, mid: 3, fwd: 3 }; // fallback
 }
 
 // 从 roster 中按位置分组，取评分最高的 N 人
-function pickLineup(roster, ratings, formation, count, posKey) {
+function pickLineup(roster, ratings, formation, count, posKey, usedIds = new Set()) {
   // roster: [{id, name, pos, jersey}] from ESPN
   // ratings: {playerId: {name, pos, rating}} from ratings.json
   // formation: "4-3-3"
   // count: 需要几个人
   // posKey: 'G' | 'D' | 'M' | 'F'
   
-  const candidates = roster
+  let candidates = roster
     .filter(p => {
+      if (usedIds.has(p.id)) return false;
       const r = ratings[p.id];
       if (!r) return false;
       // 位置匹配
@@ -43,7 +50,26 @@ function pickLineup(roster, ratings, formation, count, posKey) {
     }))
     .sort((a, b) => b.rating - a.rating);
 
-  return candidates.slice(0, count);
+  candidates = candidates.slice(0, count);
+
+  if (candidates.length < count && posKey !== 'G') {
+    const selectedIds = new Set(candidates.map(p => p.id));
+    const fallback = roster
+      .filter(p => !usedIds.has(p.id) && !selectedIds.has(p.id))
+      .filter(p => ratings[p.id] && ratings[p.id].pos !== 'GK')
+      .slice(0, count - candidates.length)
+      .map(p => ({
+        id: p.id,
+        name: ratings[p.id]?.name || p.name,
+        pos: posKey === 'D' ? 'CB' : posKey === 'M' ? 'CM' : 'ST',
+        jersey: p.jersey,
+        rating: ratings[p.id]?.rating || 65
+      }));
+    candidates = [...candidates, ...fallback];
+  }
+
+  candidates.forEach(p => usedIds.add(p.id));
+  return candidates;
 }
 
 // 横向均匀分布坐标
@@ -118,11 +144,28 @@ function pairPlayers(homeCoords, awayCoords) {
 }
 
 function pairLines(homePlayers, awayPlayers, pairs, zone) {
-  const len = Math.max(homePlayers.length, awayPlayers.length);
-  for (let i = 0; i < len; i++) {
-    const hp = homePlayers[i] || homePlayers[homePlayers.length - 1];
-    const ap = awayPlayers[awayPlayers.length - 1 - i] || awayPlayers[0];
-    if (hp && ap) {
+  if (!homePlayers.length || !awayPlayers.length) return;
+
+  // The full-pitch renderer keeps both teams in the same x coordinate frame.
+  // Pair by the nearest horizontal lane; reversing array order creates
+  // misleading cross-pitch diagonals after the old x-mirroring was removed.
+  const homeByLane = [...homePlayers].sort((a, b) => (a.x ?? 50) - (b.x ?? 50));
+  const awayByLane = [...awayPlayers].sort((a, b) => (a.x ?? 50) - (b.x ?? 50));
+  const proportionalIndex = (index, sourceLength, targetLength) => {
+    if (targetLength <= 1 || sourceLength <= 1) return 0;
+    return Math.round(index * (targetLength - 1) / (sourceLength - 1));
+  };
+
+  if (homeByLane.length >= awayByLane.length) {
+    for (let i = 0; i < homeByLane.length; i++) {
+      const hp = homeByLane[i];
+      const ap = awayByLane[proportionalIndex(i, homeByLane.length, awayByLane.length)];
+      pairs.push(makePair(hp, ap, zone));
+    }
+  } else {
+    for (let i = 0; i < awayByLane.length; i++) {
+      const ap = awayByLane[i];
+      const hp = homeByLane[proportionalIndex(i, awayByLane.length, homeByLane.length)];
       pairs.push(makePair(hp, ap, zone));
     }
   }
@@ -207,17 +250,19 @@ function handleMatchupFormation(req, matchId, homeTeam, awayTeam, ratingsData, o
   const awayFormation = awayRatings.formation || '4-3-3';
 
   // 按阵型选首发
+  const homeUsed = new Set();
+  const awayUsed = new Set();
   const homeLineup = [
-    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, 1, 'G'),
-    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).def, 'D'),
-    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).mid, 'M'),
-    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).fwd, 'F'),
+    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, 1, 'G', homeUsed),
+    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).def, 'D', homeUsed),
+    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).mid, 'M', homeUsed),
+    ...pickLineup(homeRoster, homeRatings.players || {}, homeFormation, parseFormation(homeFormation).fwd, 'F', homeUsed),
   ];
   const awayLineup = [
-    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, 1, 'G'),
-    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).def, 'D'),
-    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).mid, 'M'),
-    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).fwd, 'F'),
+    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, 1, 'G', awayUsed),
+    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).def, 'D', awayUsed),
+    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).mid, 'M', awayUsed),
+    ...pickLineup(awayRoster, awayRatings.players || {}, awayFormation, parseFormation(awayFormation).fwd, 'F', awayUsed),
   ];
 
   // 计算坐标

@@ -108,7 +108,7 @@
 
         // CENTER: Tactical board (flex:1, max-width:540px, aspect-ratio:1.45/1)
         html += `<div id="hud-center" class="hud-center" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;min-width:0">
-            <div id="pitch-canvas" style="width:100%;max-width:540px;aspect-ratio:1.45/1;position:relative;background:linear-gradient(180deg,rgba(16,42,28,.25) 0%,rgba(22,58,36,.2) 100%);border-radius:12px;border:1px solid rgba(52,211,153,.08);overflow:hidden">
+            <div id="pitch-canvas" style="width:100%;position:relative;overflow:visible">
                 ${MR().renderTacticalBoard(matchupData, matchData)}
             </div>
             <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
