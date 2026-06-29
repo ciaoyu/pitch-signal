@@ -44,6 +44,7 @@ async function runTests() {
   serverProcess.stdout.pipe(process.stdout);
   serverProcess.stderr.pipe(process.stderr);
 
+  let dom;
   try {
     await waitForServer(`${BASE_URL}/health`);
     console.log('✅ Server is ready. Launching JSDOM...');
@@ -100,7 +101,7 @@ async function runTests() {
     };
 
     console.log('1. Loading homepage...');
-    const dom = await JSDOM.fromURL(BASE_URL, jsdomOptions);
+    dom = await JSDOM.fromURL(BASE_URL, jsdomOptions);
     console.log('✅ 1. Homepage loaded successfully.');
 
     // JSDOM does not execute <script type="module"> by default, so we fetch bundle.js manually,
@@ -218,7 +219,7 @@ async function runTests() {
     const matchCards = doc.querySelectorAll('[data-match-id]');
     if (matchCards.length > 0) {
       matchCards[0].click();
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 2000));
       const matchModal = doc.getElementById('match-modal')?.className || '';
       if (matchModal.includes('hidden')) {
          throw new Error('Match detail modal did not open');
@@ -228,6 +229,9 @@ async function runTests() {
     } else {
       throw new Error('No match cards found to click. Critical test failed.');
     }
+
+    // Wait for any remaining background fetches (like news, stats) to complete or fail
+    await new Promise(r => setTimeout(r, 3000));
 
     console.log('10. Checking Language Switch...');
     const langBtn = doc.querySelector('button[data-lang="en"]');
@@ -239,6 +243,10 @@ async function runTests() {
       }
     }
     console.log('✅ 10. Language switch did not crash the page.');
+
+    if (uncaughtErrors > 0) {
+      throw new Error(`Test finished with ${uncaughtErrors} unhandled exceptions (like 500 errors).`);
+    }
 
     console.log('🎉 UI Smoke Test Passed!');
 
@@ -252,7 +260,11 @@ async function runTests() {
       serverProcess.on('exit', () => resolve());
     });
     if (fs.existsSync(tmpDbPath)) fs.unlinkSync(tmpDbPath);
+    if (dom) {
+      dom.window.close();
+    }
     console.log('👋 Test run complete.');
+    process.exit(process.exitCode || 0);
   }
 }
 

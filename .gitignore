@@ -47,7 +47,6 @@ data/sources/world-cup-history/
 scratch/
 
 # Data exploration outputs
-data/sources/seed/
 data/lineups_sync_runs.json
 
 # AI tooling local config

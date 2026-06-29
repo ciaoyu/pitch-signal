@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-06-29T18:44:53.653Z",
+  "results": [
+    {
+      "name": "lineups.json",
+      "source": "public/data/lineups.json",
+      "size": "1092.0 KB",
+      "success": true
+    },
+    {
+      "name": "matches.json",
+      "source": "public/data/matches.json",
+      "size": "153.9 KB",
+      "success": true
+    }
+  ],
+  "errors": [],
+  "total": 2,
+  "success": 2,
+  "failed": 0
+}
