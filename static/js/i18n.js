@@ -1670,6 +1670,7 @@
         state.uiLang = lang;
         localStorage.setItem('worldcup_lang', state.uiLang);
         applyLanguage();
+        if (window.syncGlobalChatLanguage) window.syncGlobalChatLanguage();
         // Reload current tab content
         if (state.tab === 'live') loadScores();
         if (state.tab === 'schedule') {

@@ -107,28 +107,149 @@
         });
     }
 
+    let globalChatState = { history: [], mode: 'ask' };
+
+    function getPageContext() {
+        const hash = window.location.hash || '#live';
+        const ctx = { currentRoute: hash, uiLang: state.uiLang };
+
+        if (hash.startsWith('#predict/')) {
+            ctx.matchId = hash.split('/')[1];
+            const home = document.querySelector('#pred-home-team .pred-team-name');
+            const away = document.querySelector('#pred-away-team .pred-team-name');
+            if (home && away) ctx.teams = `${home.textContent} vs ${away.textContent}`;
+        } else if (hash.startsWith('#match/')) {
+            ctx.matchId = hash.split('/')[1];
+        }
+
+        const modal = document.getElementById('match-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            const modalMatchId = modal.dataset?.currentMatchId || modal.getAttribute('data-current-match-id');
+            if (modalMatchId) ctx.matchId = modalMatchId;
+        }
+
+        return ctx;
+    }
+
+    function switchGlobalChatMode(mode) {
+        if (globalChatState.mode === mode) return;
+        globalChatState.mode = mode;
+        globalChatState.history = [];
+        
+        const btnAsk = document.getElementById('global-chat-mode-ask');
+        const btnMsg = document.getElementById('global-chat-mode-message');
+        const input = document.getElementById('global-chat-input');
+        const container = document.getElementById('global-chat-messages');
+        const chips = document.getElementById('global-chat-chips');
+        
+        if (!btnAsk || !btnMsg || !input || !container) return;
+
+        if (mode === 'ask') {
+            btnAsk.style.background = 'rgba(255,255,255,.1)';
+            btnAsk.style.color = '#f8fafc';
+            btnMsg.style.background = 'transparent';
+            btnMsg.style.color = 'rgba(248,250,252,.5)';
+            input.placeholder = state.uiLang === 'zh' ? '输入你的问题...' : 'Type your question...';
+            if (chips) chips.style.display = 'flex';
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+                    <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">AI Assistant</span>
+                    <div style="background:rgba(255,255,255,.06);border-radius:16px 16px 16px 4px;padding:10px 14px;font:400 13px/1.5 'Inter';color:rgba(248,250,252,.7)">${state.uiLang === 'zh' ? '你好！我是 PitchSignal AI 助手，可以帮你分析比赛、预测结果、了解球队实力。有什么想问的？' : 'Hi! I am the PitchSignal AI assistant. How can I help you today?'}</div>
+                </div>
+            `;
+        } else {
+            btnMsg.style.background = 'rgba(255,255,255,.1)';
+            btnMsg.style.color = '#f8fafc';
+            btnAsk.style.background = 'transparent';
+            btnAsk.style.color = 'rgba(248,250,252,.5)';
+            input.placeholder = state.uiLang === 'zh' ? '留下您的想法或意见...' : 'Share your thoughts or feedback...';
+            if (chips) chips.style.display = 'none';
+            container.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+                    <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">AI Assistant</span>
+                    <div style="background:rgba(255,255,255,.06);border-radius:16px 16px 16px 4px;padding:10px 14px;font:400 13px/1.5 'Inter';color:rgba(248,250,252,.7)">${state.uiLang === 'zh' ? '欢迎留言！您对赛事预测、数据展示或产品体验有任何想法，都可以在这里告诉我们。留言会被汇总供团队参考，不会有 AI 实时回复。' : 'Welcome! Feel free to leave any thoughts. Messages are collected for the team — there is no live AI reply here.'}</div>
+                </div>
+            `;
+        }
+    }
+
+    function syncGlobalChatLanguage() {
+        const title = document.getElementById('global-chat-title');
+        const btnAsk = document.getElementById('global-chat-mode-ask');
+        const btnMsg = document.getElementById('global-chat-mode-message');
+        if (title) title.textContent = state.uiLang === 'zh' ? 'PitchSignal AI' : 'PitchSignal AI';
+        if (btnAsk) btnAsk.textContent = state.uiLang === 'zh' ? 'AI 问答' : 'Ask AI';
+        if (btnMsg) btnMsg.textContent = state.uiLang === 'zh' ? '留言 / 意见' : 'Leave Note';
+        
+        const mode = globalChatState.mode;
+        globalChatState.mode = null;
+        switchGlobalChatMode(mode || 'ask');
+    }
+    window.syncGlobalChatLanguage = syncGlobalChatLanguage;
+
     async function sendGlobalChatMessage(question) {
         const input = document.getElementById('global-chat-input');
+        const sendBtn = document.getElementById('global-chat-send');
         const msg = question || input.value.trim();
         if (!msg) return;
+        
         if (!question) input.value = '';
+        input.disabled = true;
+        if (sendBtn) sendBtn.disabled = true;
+        
         const container = document.getElementById('global-chat-messages');
         _appendChatBubble(container, 'user', msg);
         const aiBubble = _appendChatBubble(container, 'ai', '');
         aiBubble.style.opacity = '0.5';
+        
         try {
-            const res = await fetch('/api/bot/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: msg, context: 'global-feedback', uiLang: state.uiLang }),
-            });
-            const data = await res.json();
-            aiBubble.style.opacity = '1';
-            await _typewriterEffect(aiBubble, data.answer || data.error || 'No response', 15);
+            if (globalChatState.mode === 'ask') {
+                globalChatState.history.push({ role: 'user', content: msg });
+                const res = await fetch('/api/bot/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: globalChatState.history, context: getPageContext() }),
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) throw new Error(data.error || 'Request failed');
+                
+                aiBubble.style.opacity = '1';
+                const answer = data.response || data.answer || 'No response';
+                await _typewriterEffect(aiBubble, answer, 15);
+                globalChatState.history.push({ role: 'assistant', content: answer });
+            } else {
+                const res = await fetch('/api/bot/message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        content: msg, 
+                        uiLang: state.uiLang, 
+                        pageUrl: window.location.href, 
+                        context: getPageContext() 
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) throw new Error(data.error || 'Request failed');
+                
+                aiBubble.style.opacity = '1';
+                await _typewriterEffect(aiBubble, data.response || (state.uiLang === 'zh' ? '感谢您的留言，我们已收到！' : 'Thanks! Your message has been received.'), 15);
+            }
         } catch (e) {
             aiBubble.style.opacity = '1';
             aiBubble.style.color = 'rgba(248,113,113,.7)';
-            aiBubble.textContent = window.t('发送失败，请稍后再试。', 'Send failed. Please try again later.');
+            if (globalChatState.mode === 'ask') {
+                aiBubble.textContent = state.uiLang === 'zh' 
+                    ? 'AI 助理暂不可用，公测期间智能问答功能尚未开放。' 
+                    : 'AI assistant is temporarily unavailable during public beta.';
+            } else {
+                aiBubble.textContent = state.uiLang === 'zh' 
+                    ? '发送失败，请稍后再试。' 
+                    : 'Send failed. Please try again later.';
+            }
+        } finally {
+            input.disabled = false;
+            if (sendBtn) sendBtn.disabled = false;
+            if (!question) input.focus();
         }
     }
 
@@ -195,6 +316,7 @@
             if (q) sendGlobalChatMessage(q);
             return;
         }
+        if (action === 'switch-ai-mode') return switchGlobalChatMode(target.dataset.mode);
     });
 
     // ========== Event Delegation: Player Tooltips ==========

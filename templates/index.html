@@ -424,20 +424,20 @@
     </svg>
 </div>
 
-<!-- AI Bot -->
-<div id="ai-bot-root"></div>
-<link rel="stylesheet" href="/static/css/bot.css?v=20260628">
-<script src="/static/js/bot.js?v=20260628"></script>
-
 <!-- Global AI Chat Modal -->
 <div id="global-chat-modal" class="hidden" style="position:fixed;bottom:24px;right:24px;width:400px;max-height:600px;z-index:60;background:rgba(15,23,42,.75);backdrop-filter:blur(60px);-webkit-backdrop-filter:blur(60px);border:1px solid rgba(255,255,255,.08);border-radius:18px;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.45);overflow:hidden" data-flex-on-show>
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);position:relative;z-index:10;">
         <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:16px">⚡</span>
-            <span style="font:600 13px/1 'DM Sans',sans-serif;color:#f8fafc">PitchSignal AI</span>
+            <span style="font:600 13px/1 'DM Sans',sans-serif;color:#f8fafc" id="global-chat-title">PitchSignal AI</span>
         </div>
         <button data-action="close-global-chat" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;border:none;background:rgba(255,255,255,.04);color:rgba(248,250,252,.4);font-size:14px;transition:all .15s;position:relative;z-index:20;pointer-events:auto;" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#f8fafc'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.color='rgba(248,250,252,.4)'">✕</button>
+    </div>
+    <!-- Mode Switcher -->
+    <div style="display:flex;gap:4px;padding:8px 16px;background:rgba(0,0,0,.2);border-bottom:1px solid rgba(255,255,255,.06)">
+        <button data-action="switch-ai-mode" data-mode="ask" id="global-chat-mode-ask" style="flex:1;padding:6px;font:500 12px/1 'Inter';border-radius:6px;border:none;cursor:pointer;background:rgba(255,255,255,.1);color:#f8fafc;transition:all .15s">AI 问答</button>
+        <button data-action="switch-ai-mode" data-mode="message" id="global-chat-mode-message" style="flex:1;padding:6px;font:500 12px/1 'Inter';border-radius:6px;border:none;cursor:pointer;background:transparent;color:rgba(248,250,252,.5);transition:all .15s">留言 / 意见</button>
     </div>
     <!-- Quick chips -->
     <div style="display:flex;gap:6px;padding:8px 16px;overflow-x:auto" id="global-chat-chips">
@@ -481,6 +481,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=7726872f"></script>
+<script type="module" src="/static/js/bundle.js?v=5f1551b9"></script>
 </body>
 </html>
