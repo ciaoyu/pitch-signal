@@ -11,6 +11,7 @@
     "check:env": "node scripts/check-env.js",
     "generate:ai-postmortem": "node scripts/generate-ai-postmortem.js",
     "test": "node scripts/test-runner.js",
+    "test:ui": "node test/ui.spec.js",
     "start": "node server.js"
   },
   "keywords": [],
