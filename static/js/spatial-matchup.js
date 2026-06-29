@@ -65,28 +65,18 @@
         svg += `<path d="M ${W-35} 20 A 15 15 0 0 0 ${W-20} 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
         svg += `<path d="M ${W-20} ${H-35} A 15 15 0 0 0 ${W-35} ${H-20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
         svg += `<path d="M 20 ${H-35} A 15 15 0 0 1 35 ${H-20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
-        for (const p of data.pairs) {
-            const hx = p.home.x * 6.8, hy = (100 - p.home.y) * 10.5, ax = p.away.x * 6.8, ay = (100 - p.away.y) * 10.5;
-            let color = '#9E9E9E', width = 1, dash = '4,4';
-            if (p.advantage === 'home') { color = '#4CAF50'; width = 2.5; dash = 'none'; } else if (p.advantage === 'away') { color = '#F44336'; width = 2; dash = '6,4'; }
-            svg += `<line class="pitch-pair" x1="${hx}" y1="${hy}" x2="${ax}" y2="${ay}" stroke="${color}" stroke-width="${width}" stroke-dasharray="${dash}" opacity="0.6"/>`;
-        }
-        for (const p of data.home.players) {
-            const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-            svg += `<circle class="pitch-home" cx="${px}" cy="${py}" r="14" fill="rgba(239,68,68,0.6)" stroke="#fff" stroke-width="2"/>`;
-            svg += `<text class="pitch-home" x="${px}" y="${py+5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
-            const nm = translatePlayerName(p.name, p.nameZh); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
-            svg += `<text class="pitch-home" x="${px}" y="${py+28}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-            svg += `<text class="pitch-home" x="${px}" y="${py+40}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
-        }
-        for (const p of data.away.players) {
-            const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-            svg += `<circle class="pitch-away" cx="${px}" cy="${py}" r="14" fill="rgba(59,130,246,0.6)" stroke="#fff" stroke-width="2"/>`;
-            svg += `<text class="pitch-away" x="${px}" y="${py+5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey||''}</text>`;
-            const nm = translatePlayerName(p.name, p.nameZh); const sn = nm.includes('·') ? nm.split('·').pop() : nm.split(' ').pop();
-            svg += `<text class="pitch-away" x="${px}" y="${py-20}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-            svg += `<text class="pitch-away" x="${px}" y="${py-32}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
-        }
+        svg += `<defs><filter id="ability-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs>`;
+        const renderBubbles = (players, color, className) => {
+            for (const p of (players || [])) {
+                const px = p.x * 6.8, py = (100 - p.y) * 10.5;
+                const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
+                const radius = 12 + (rating - 50) * 0.48;
+                svg += `<circle class="${className}" cx="${px}" cy="${py}" r="${radius * 1.3}" fill="${color}" opacity="0.2" filter="url(#ability-blur)"/>`;
+                svg += `<circle class="${className}" cx="${px}" cy="${py}" r="${radius}" fill="${color}" opacity="0.48" filter="url(#ability-blur)"/>`;
+            }
+        };
+        renderBubbles(data.home?.players, 'rgb(59,130,246)', 'pitch-home');
+        renderBubbles(data.away?.players, 'rgb(239,68,68)', 'pitch-away');
         return svg + '</svg>';
     }
 

@@ -288,7 +288,12 @@
                 if (review && !review.error) {
                     if (!review.aiPrediction) { const pred = await api('/api/predict/' + id); if (pred && !pred.error && pred.homeWin !== undefined) { review.aiPrediction = { homeWin: Math.round((pred.homeWin || 0) * 1000) / 10, draw: Math.round((pred.draw || 0) * 1000) / 10, awayWin: Math.round((pred.awayWin || 0) * 1000) / 10, predictedScore: pred.likelyScore || '', source: 'current_model' }; } }
                     const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(review);
-                } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛后复盘暂未生成', 'Post-match review not yet available')}</div>`; }
+                } else {
+                    const generated = await api('/api/match-review/' + id).catch(() => null);
+                    const el = document.getElementById('detail-content-review');
+                    if (el && generated && !generated.error) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(generated);
+                    else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('赛后复盘生成失败，请稍后重试', 'Post-match review generation failed. Please try again.')}</div>`;
+                }
             }).catch((err) => { console.error('match-detail: review load failed:', err); if (myReqId !== _openMatchReqId) return; const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('比赛回顾暂不可用', 'Review unavailable')}</div>`; });
         } else { const el = document.getElementById('detail-content-review'); if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">⏳ ${tx('比赛结束后自动生成回顾', 'Auto-generated after match ends')}</div>`; }
 

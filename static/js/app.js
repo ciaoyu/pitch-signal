@@ -135,13 +135,13 @@
         if (globalChatState.mode === mode) return;
         globalChatState.mode = mode;
         globalChatState.history = [];
-        
+
         const btnAsk = document.getElementById('global-chat-mode-ask');
         const btnMsg = document.getElementById('global-chat-mode-message');
         const input = document.getElementById('global-chat-input');
         const container = document.getElementById('global-chat-messages');
         const chips = document.getElementById('global-chat-chips');
-        
+
         if (!btnAsk || !btnMsg || !input || !container) return;
 
         if (mode === 'ask') {
@@ -180,7 +180,7 @@
         if (title) title.textContent = state.uiLang === 'zh' ? 'PitchSignal AI' : 'PitchSignal AI';
         if (btnAsk) btnAsk.textContent = state.uiLang === 'zh' ? 'AI 问答' : 'Ask AI';
         if (btnMsg) btnMsg.textContent = state.uiLang === 'zh' ? '留言 / 意见' : 'Leave Note';
-        
+
         const mode = globalChatState.mode;
         globalChatState.mode = null;
         switchGlobalChatMode(mode || 'ask');
@@ -192,16 +192,16 @@
         const sendBtn = document.getElementById('global-chat-send');
         const msg = question || input.value.trim();
         if (!msg) return;
-        
+
         if (!question) input.value = '';
         input.disabled = true;
         if (sendBtn) sendBtn.disabled = true;
-        
+
         const container = document.getElementById('global-chat-messages');
         _appendChatBubble(container, 'user', msg);
         const aiBubble = _appendChatBubble(container, 'ai', '');
         aiBubble.style.opacity = '0.5';
-        
+
         try {
             if (globalChatState.mode === 'ask') {
                 globalChatState.history.push({ role: 'user', content: msg });
@@ -212,7 +212,7 @@
                 });
                 const data = await res.json();
                 if (!res.ok || data.error) throw new Error(data.error || 'Request failed');
-                
+
                 aiBubble.style.opacity = '1';
                 const answer = data.response || data.answer || 'No response';
                 await _typewriterEffect(aiBubble, answer, 15);
@@ -221,16 +221,16 @@
                 const res = await fetch('/api/bot/message', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        content: msg, 
-                        uiLang: state.uiLang, 
-                        pageUrl: window.location.href, 
-                        context: getPageContext() 
+                    body: JSON.stringify({
+                        content: msg,
+                        uiLang: state.uiLang,
+                        pageUrl: window.location.href,
+                        context: getPageContext()
                     }),
                 });
                 const data = await res.json();
                 if (!res.ok || data.error) throw new Error(data.error || 'Request failed');
-                
+
                 aiBubble.style.opacity = '1';
                 await _typewriterEffect(aiBubble, data.response || (state.uiLang === 'zh' ? '感谢您的留言，我们已收到！' : 'Thanks! Your message has been received.'), 15);
             }
@@ -238,12 +238,10 @@
             aiBubble.style.opacity = '1';
             aiBubble.style.color = 'rgba(248,113,113,.7)';
             if (globalChatState.mode === 'ask') {
-                aiBubble.textContent = state.uiLang === 'zh' 
-                    ? 'AI 助理暂不可用，公测期间智能问答功能尚未开放。' 
-                    : 'AI assistant is temporarily unavailable during public beta.';
+                aiBubble.textContent = 'AI 服务暂时连接失败，请稍后重试。\n\nThe AI service could not be reached. Please try again shortly.';
             } else {
-                aiBubble.textContent = state.uiLang === 'zh' 
-                    ? '发送失败，请稍后再试。' 
+                aiBubble.textContent = state.uiLang === 'zh'
+                    ? '发送失败，请稍后再试。'
                     : 'Send failed. Please try again later.';
             }
         } finally {

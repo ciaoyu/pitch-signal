@@ -85,13 +85,18 @@
                 const awayName = displayMaybeTeamName(pred.match?.awayNameI18n || pred.match?.awayName || m.away);
                 const homeFlag = m.home.flag || pred.match?.homeFlag || '🏳️';
                 const awayFlag = m.away.flag || pred.match?.awayFlag || '🏳️';
-                const score = pred.likelyScore != null && pred.likelyScore !== '' ? pred.likelyScore : '? - ?';
+                const expectedHome = Number(p.goals?.homeExpected);
+                const expectedAway = Number(p.goals?.awayExpected);
+                const fallbackScore = Number.isFinite(expectedHome) && Number.isFinite(expectedAway)
+                    ? `${Math.max(0, Math.round(expectedHome))}-${Math.max(0, Math.round(expectedAway))}`
+                    : `${hw > aw ? 1 : 0}-${aw > hw ? 1 : 0}`;
+                const score = pred.likelyScore != null && pred.likelyScore !== '' ? pred.likelyScore : fallbackScore;
                 const confCls = conf > 70 ? 'bg-green-500/20 text-green-400' : conf > 50 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400';
                 const eloPred = p.components?.elo || { home: 0, draw: 0, away: 0 };
                 const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
                 const coachPred = p.components?.coach || {};
                 const weights = pred.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.10, odds: 0.20 };
-                const topScores = p.likelyScore != null && p.likelyScore !== '' ? `${p.likelyScore} ${Fmt().pct(p.likelyScoreProb)}` : '?';
+                const topScores = `${score}${p.likelyScoreProb != null ? ` ${Fmt().pct(p.likelyScoreProb)}` : ''}`;
                 const confLabel = conf > 70 ? tx('高', 'High') : conf > 50 ? tx('中', 'Medium') : tx('低', 'Low');
 
                 let headerText = '';
@@ -195,10 +200,10 @@
 
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some(m => m.stage && m.stage !== 'group');
-        
+
         // Find upcoming matches: today's pre matches first, then next day's if empty
         let upcoming = allMatches.filter(m => m.state === 'pre').slice(0, 6);
-        
+
         // If no upcoming matches today, find the next date with pre matches
         if (upcoming.length === 0) {
             const now = new Date();
@@ -207,10 +212,10 @@
                 .filter(m => m.date && m.date.slice(0, 10) > todayStr && m.state === 'pre')
                 .map(m => m.date.slice(0, 10))
             )].sort();
-            
+
             if (futureDates.length > 0) {
                 const nextDate = futureDates[0];
-                upcoming = allMatches.filter(m => 
+                upcoming = allMatches.filter(m =>
                     m.date && m.date.slice(0, 10) === nextDate && m.state === 'pre'
                 ).slice(0, 6);
             }

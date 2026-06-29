@@ -3395,8 +3395,10 @@ var require_match_detail = __commonJS({
               const el = document.getElementById("detail-content-review");
               if (el) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(review);
             } else {
+              const generated = await api("/api/match-review/" + id).catch(() => null);
               const el = document.getElementById("detail-content-review");
-              if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u8D5B\u540E\u590D\u76D8\u6682\u672A\u751F\u6210", "Post-match review not yet available")}</div>`;
+              if (el && generated && !generated.error) el.innerHTML = window.WorldCup.MatchReview.renderMatchReview(generated);
+              else if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u8D5B\u540E\u590D\u76D8\u751F\u6210\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5", "Post-match review generation failed. Please try again.")}</div>`;
             }
           }).catch((err) => {
             console.error("match-detail: review load failed:", err);
@@ -4004,13 +4006,16 @@ var require_elo_prediction = __commonJS({
             const awayName = displayMaybeTeamName(pred.match?.awayNameI18n || pred.match?.awayName || m.away);
             const homeFlag = m.home.flag || pred.match?.homeFlag || "\u{1F3F3}\uFE0F";
             const awayFlag = m.away.flag || pred.match?.awayFlag || "\u{1F3F3}\uFE0F";
-            const score = pred.likelyScore != null && pred.likelyScore !== "" ? pred.likelyScore : "? - ?";
+            const expectedHome = Number(p.goals?.homeExpected);
+            const expectedAway = Number(p.goals?.awayExpected);
+            const fallbackScore = Number.isFinite(expectedHome) && Number.isFinite(expectedAway) ? `${Math.max(0, Math.round(expectedHome))}-${Math.max(0, Math.round(expectedAway))}` : `${hw > aw ? 1 : 0}-${aw > hw ? 1 : 0}`;
+            const score = pred.likelyScore != null && pred.likelyScore !== "" ? pred.likelyScore : fallbackScore;
             const confCls = conf > 70 ? "bg-green-500/20 text-green-400" : conf > 50 ? "bg-yellow-500/20 text-yellow-400" : "bg-gray-500/20 text-gray-400";
             const eloPred = p.components?.elo || { home: 0, draw: 0, away: 0 };
             const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
             const coachPred = p.components?.coach || {};
             const weights = pred.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.1, odds: 0.2 };
-            const topScores = p.likelyScore != null && p.likelyScore !== "" ? `${p.likelyScore} ${Fmt2().pct(p.likelyScoreProb)}` : "?";
+            const topScores = `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
             const confLabel = conf > 70 ? tx("\u9AD8", "High") : conf > 50 ? tx("\u4E2D", "Medium") : tx("\u4F4E", "Low");
             let headerText = "";
             if (m.group && m.matchday !== void 0) headerText = `${m.group} \xB7 ${tx("\u7B2C", "MD")} ${m.matchday}`;
@@ -4341,38 +4346,18 @@ var require_spatial_matchup = __commonJS({
         svg += `<path d="M ${W - 35} 20 A 15 15 0 0 0 ${W - 20} 35" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
         svg += `<path d="M ${W - 20} ${H - 35} A 15 15 0 0 0 ${W - 35} ${H - 20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
         svg += `<path d="M 20 ${H - 35} A 15 15 0 0 1 35 ${H - 20}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>`;
-        for (const p of data.pairs) {
-          const hx = p.home.x * 6.8, hy = (100 - p.home.y) * 10.5, ax = p.away.x * 6.8, ay = (100 - p.away.y) * 10.5;
-          let color = "#9E9E9E", width = 1, dash = "4,4";
-          if (p.advantage === "home") {
-            color = "#4CAF50";
-            width = 2.5;
-            dash = "none";
-          } else if (p.advantage === "away") {
-            color = "#F44336";
-            width = 2;
-            dash = "6,4";
+        svg += `<defs><filter id="ability-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs>`;
+        const renderBubbles = (players, color, className) => {
+          for (const p of players || []) {
+            const px = p.x * 6.8, py = (100 - p.y) * 10.5;
+            const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
+            const radius = 12 + (rating - 50) * 0.48;
+            svg += `<circle class="${className}" cx="${px}" cy="${py}" r="${radius * 1.3}" fill="${color}" opacity="0.2" filter="url(#ability-blur)"/>`;
+            svg += `<circle class="${className}" cx="${px}" cy="${py}" r="${radius}" fill="${color}" opacity="0.48" filter="url(#ability-blur)"/>`;
           }
-          svg += `<line class="pitch-pair" x1="${hx}" y1="${hy}" x2="${ax}" y2="${ay}" stroke="${color}" stroke-width="${width}" stroke-dasharray="${dash}" opacity="0.6"/>`;
-        }
-        for (const p of data.home.players) {
-          const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-          svg += `<circle class="pitch-home" cx="${px}" cy="${py}" r="14" fill="rgba(239,68,68,0.6)" stroke="#fff" stroke-width="2"/>`;
-          svg += `<text class="pitch-home" x="${px}" y="${py + 5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey || ""}</text>`;
-          const nm = translatePlayerName(p.name, p.nameZh);
-          const sn = nm.includes("\xB7") ? nm.split("\xB7").pop() : nm.split(" ").pop();
-          svg += `<text class="pitch-home" x="${px}" y="${py + 28}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-          svg += `<text class="pitch-home" x="${px}" y="${py + 40}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
-        }
-        for (const p of data.away.players) {
-          const px = p.x * 6.8, py = (100 - p.y) * 10.5;
-          svg += `<circle class="pitch-away" cx="${px}" cy="${py}" r="14" fill="rgba(59,130,246,0.6)" stroke="#fff" stroke-width="2"/>`;
-          svg += `<text class="pitch-away" x="${px}" y="${py + 5}" text-anchor="middle" font-size="12" font-weight="bold" fill="white">${p.jersey || ""}</text>`;
-          const nm = translatePlayerName(p.name, p.nameZh);
-          const sn = nm.includes("\xB7") ? nm.split("\xB7").pop() : nm.split(" ").pop();
-          svg += `<text class="pitch-away" x="${px}" y="${py - 20}" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">${sn}</text>`;
-          svg += `<text class="pitch-away" x="${px}" y="${py - 32}" text-anchor="middle" font-size="11" font-weight="bold" fill="#FFD600">${p.rating}</text>`;
-        }
+        };
+        renderBubbles(data.home?.players, "rgb(59,130,246)", "pitch-home");
+        renderBubbles(data.away?.players, "rgb(239,68,68)", "pitch-away");
         return svg + "</svg>";
       }
       function renderSpatialMatchupPanel(data) {
@@ -5888,16 +5873,15 @@ var require_match_renderers = __commonJS({
                 </div>
             </div>
 
-            <!-- Home Bench -->
-            <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-blue-400 mb-2">\u{1F535} ${esc(teamLabel(home))} ${tx("\u66FF\u8865\u5E2D", "Bench")}</div>
-                ${home.bench?.map((p) => renderBenchPlayer(p, "text-blue-400", teamLabel(home))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
-            </div>
-
-            <!-- Away Bench -->
-            <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-red-400 mb-2">\u{1F534} ${esc(teamLabel(away))} ${tx("\u66FF\u8865\u5E2D", "Bench")}</div>
-                ${away.bench?.map((p) => renderBenchPlayer(p, "text-red-400", teamLabel(away))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
+            <div class="grid grid-cols-2 gap-2">
+                <div class="glass-light rounded-lg p-2 min-w-0">
+                    <div class="text-xs font-bold text-blue-400 mb-2">\u{1F535} ${esc(teamLabel(home))}</div>
+                    ${home.bench?.map((p) => renderBenchPlayer(p, "text-blue-400", teamLabel(home))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
+                </div>
+                <div class="glass-light rounded-lg p-2 min-w-0">
+                    <div class="text-xs font-bold text-red-400 mb-2 text-right">${esc(teamLabel(away))} \u{1F534}</div>
+                    ${away.bench?.map((p) => renderBenchPlayer(p, "text-red-400", teamLabel(away))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
+                </div>
             </div>
 
             <!-- Substitution Matrix -->
@@ -6488,7 +6472,7 @@ var require_app = __commonJS({
           aiBubble.style.opacity = "1";
           aiBubble.style.color = "rgba(248,113,113,.7)";
           if (globalChatState.mode === "ask") {
-            aiBubble.textContent = state.uiLang === "zh" ? "AI \u52A9\u7406\u6682\u4E0D\u53EF\u7528\uFF0C\u516C\u6D4B\u671F\u95F4\u667A\u80FD\u95EE\u7B54\u529F\u80FD\u5C1A\u672A\u5F00\u653E\u3002" : "AI assistant is temporarily unavailable during public beta.";
+            aiBubble.textContent = "AI \u670D\u52A1\u6682\u65F6\u8FDE\u63A5\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5\u3002\n\nThe AI service could not be reached. Please try again shortly.";
           } else {
             aiBubble.textContent = state.uiLang === "zh" ? "\u53D1\u9001\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5\u3002" : "Send failed. Please try again later.";
           }
