@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pitchsignal-v20260629';
+const CACHE_NAME = 'pitchsignal-v20260630-2';
 const STATIC_ASSETS = [
   '/static/manifest.json',
   '/static/icon-192-v3.png',
@@ -23,12 +23,16 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Fetch: Network-first for API, Cache-first for static
+// Fetch: keep application code network-first so deployments are visible immediately.
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // API calls: network first, fallback to cache
-  if (url.pathname.startsWith('/api/')) {
+  if (
+    e.request.mode === 'navigate' ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css')
+  ) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
@@ -43,7 +47,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Static: cache first
+  // Versioned icons and manifest can remain cache-first.
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );

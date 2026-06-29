@@ -6595,7 +6595,7 @@ var require_app = __commonJS({
         if (!document.hidden && state.tab === "live") loadScores();
       });
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/sw.js?v=20260629").catch(() => {
+        navigator.serviceWorker.register("/static/sw.js?v=20260630-2", { updateViaCache: "none" }).catch(() => {
         });
       }
     })();

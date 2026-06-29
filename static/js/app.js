@@ -383,6 +383,6 @@
 
     // ========== Service Worker (PWA) ==========
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/static/sw.js?v=20260629').catch(() => {});
+        navigator.serviceWorker.register('/static/sw.js?v=20260630-2', { updateViaCache: 'none' }).catch(() => {});
     }
 })();

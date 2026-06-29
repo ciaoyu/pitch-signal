@@ -70,7 +70,9 @@ function serveStatic(res, filePath) {
   const ext = path.extname(filePath);
   const mime = MIME[ext] || 'application/octet-stream';
   const base = path.basename(filePath);
-  const cacheControl = ext === '.html' || base === 'sw.js' ? 'no-store' : 'public, max-age=3600';
+  const cacheControl = ext === '.html' || ext === '.js' || ext === '.css' || base === 'sw.js'
+    ? 'no-cache, must-revalidate'
+    : 'public, max-age=3600';
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) { 
       res.writeHead(404); 
