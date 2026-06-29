@@ -378,10 +378,10 @@ window.WorldCup.MatchRenderers = (() => {
             return { cx: t.x, cy: t.y * 1.6 };
         };
 
-        // ── Ability bubble rendering: no matchup lines, labels, or point markers ──
+        // ── Ability halo + identifiable player marker; matchup lines stay removed ──
         const TEAM_STYLE = {
-            home: { fill: 'rgba(59,130,246,0.6)', text: 'white' },
-            away: { fill: 'rgba(239,68,68,0.6)', text: 'white' },
+            home: { halo: 'rgba(59,130,246,0.6)', solid: '#2563eb', stroke: '#93c5fd', text: 'white' },
+            away: { halo: 'rgba(239,68,68,0.6)', solid: '#dc2626', stroke: '#fca5a5', text: 'white' },
         };
         const R = 2.6; // 2.6 * 5.4px = 14.04px radius -> 28px diameter
         const goals = matchData?.goals || [];
@@ -392,12 +392,15 @@ window.WorldCup.MatchRenderers = (() => {
             const st = TEAM_STYLE[side] || TEAM_STYLE.home;
             const playerId = p.playerId || p.id || p.espnId || '';
             const rawName = p.name || '';
+            const jersey = p.jersey || p.number || '?';
             const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
             const radius = 2.6 + (rating - 50) * 0.055;
 
             let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
-            node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.fill}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
-            node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.fill}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
+            node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.halo}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
+            node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.halo}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
+            node += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${st.solid}" stroke="${st.stroke}" stroke-width="0.45"/>`;
+            node += `<text x="${cx}" y="${cy + 0.15}" text-anchor="middle" dominant-baseline="middle" fill="${st.text}" font-size="2.45" font-weight="800">${esc(String(jersey))}</text>`;
             node += `</g>`;
             return node;
         };
