@@ -6,26 +6,28 @@
 
 ```
 pitch-signal/
-├── server.js          # 主进程(Express-like HTTP, ~2390 行) — 路由注册/ESPN fetch/缓存/渲染
+├── server.js          # 主进程 (Express-like HTTP) — 路由/中间件集成
 ├── lib/
-│   ├── elo.js         # Elo 评分引擎(K 值动态调整,主场优势)
-│   ├── poisson.js     # Poisson/Dixon-Coles 进球模型(λ 参数训练)
-│   ├── prediction.js  # 预测融合引擎(Poisson × Elo × HomeAdv × Odds fallback)
-│   ├── backtest.js    # Walk-forward 回测(按 kickoff 排序)
-│   ├── db.js          # SQLite(better-sqlite3,同步 API)
-│   ├── team_resolver.js  # 球队名称多源匹配(ESPN/Odds/中文别名/模糊)
-│   ├── matchup-spatial.js  # 空间对位模拟(阵型→坐标→球员配对)
-│   ├── roster_cache.js  # 阵容三级缓存(ESPN→本地→降级)
-│   ├── output-rules.js  # 概率融合+置信度+外部信号闸门(公测版全关)
-│   ├── security.js       # constantTimeEqual(token 防时序)
-│   ├── services/PredictionService.js  # 预测服务编排
-│   └── routes/        # 10 模块 42+ API 端点(entities/prediction/news/matchup/odds/...)
-├── static/js/app.js   # 前端 SPA(4297 行)
-├── templates/index.html
-├── scripts/           # 9 测试脚本(~230 断言)+ 运维/工具脚本
-├── data/              # SQLite + ratings.json + 静态 JSON + source inputs
-├── docs/              # 共享文档/治理规则/运营安全手册
-└── middleware/         # CORS/CSP/缓存/限流
+│   ├── logger.js      # 结构化日志模块
+│   ├── app.js         # HTTP Server 与中间件装配
+│   ├── elo.js         # Elo 评分引擎 (K 值动态调整, 主场优势)
+│   ├── poisson.js     # Poisson/Dixon-Coles 进球模型 (λ 参数训练)
+│   ├── prediction.js  # 预测融合引擎 (Poisson × Elo × HomeAdv × Odds fallback)
+│   ├── backtest.js    # Walk-forward 回测
+│   ├── db.js          # SQLite (better-sqlite3)
+│   ├── team_resolver.js  # 球队名称多源匹配 (ESPN/Odds/中文别名/模糊)
+│   ├── matchup-spatial.js  # 空间对位模拟 (阵型→坐标→球员配对)
+│   ├── roster_cache.js  # 阵容三级缓存 (ESPN→本地→降级)
+│   ├── output-rules.js  # 概率融合+置信度+外部信号闸门
+│   ├── security.js      # 安全相关功能
+│   ├── services/      # 服务编排层 (PredictionService, ReviewService)
+│   └── routes/        # API 端点模块 (entities, prediction, news, matchup, odds 等)
+├── static/js/         # 前端 SPA 模块 (多文件结构, app.js 为主入口)
+├── templates/         # HTML 模板
+├── scripts/           # 测试脚本与运维/工具脚本
+├── data/              # SQLite DB 与静态数据 (ratings, cache)
+├── docs/              # 项目文档与治理规则
+└── middleware/        # 请求与安全中间件 (CORS, Rate Limit)
 ```
 
 ## Prediction Pipeline
