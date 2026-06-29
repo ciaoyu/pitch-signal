@@ -5,23 +5,22 @@
  * 构建比赛 ID 桥：ESPN match ID ↔ FIFA match ID
  *
  * 输入：
- * - data/sources/seed/wc2026/matches.json (26worldcup，FIFA match ID + home/away code + date)
+ * - runtime 或 resources/seed/wc2026/matches.json (FIFA match ID + home/away code + date)
  * - data/match_snapshot_schedule.json (ESPN scoreboard，ESPN match ID + home/away abbreviation + kickoffUtc)
  *
  * 输出：
- * - data/sources/seed/wc2026/match_id_bridge.json
+ * - $DATA_PATH/wc2026/match_id_bridge.json
  *
  * 匹配策略：按 home code + away code + 日期(±1天容差) join
  */
 
 const fs = require('fs');
 const path = require('path');
+const { resolveDataPath, writeJsonAtomic, writeTextAtomic } = require('../lib/data-resolver');
 
 const ROOT = path.join(__dirname, '..');
-const MATCHES_PATH = path.join(ROOT, 'data', 'wc2026', 'matches.json');
+const MATCHES_PATH = resolveDataPath('matches.json');
 const SCHEDULE_PATH = path.join(ROOT, 'data', 'match_snapshot_schedule.json');
-const BRIDGE_PATH = path.join(ROOT, 'data', 'sources', 'seed', 'wc2026', 'match_id_bridge.json');
-const REPORT_PATH = path.join(ROOT, 'data', 'wc2026', 'match_id_bridge_report.txt');
 
 /**
  * 加载 JSON 文件
@@ -196,7 +195,7 @@ function main() {
   const output = {
     generatedAt: new Date().toISOString(),
     source: {
-      fifa: 'data/sources/seed/wc2026/matches.json (26worldcup)',
+      fifa: `${MATCHES_PATH} (26worldcup)`,
       espn: 'data/match_snapshot_schedule.json (ESPN scoreboard)',
     },
     totalFifa: fifaMatches.length,
@@ -207,7 +206,7 @@ function main() {
     reverseBridge, // fifaId → espnId 反向查询
   };
 
-  fs.writeFileSync(BRIDGE_PATH, JSON.stringify(output, null, 2), 'utf8');
+  const BRIDGE_PATH = writeJsonAtomic('match_id_bridge.json', output);
   console.log(`✅ 已写入: ${BRIDGE_PATH}`);
   console.log(`   匹配成功: ${matched}/${fifaMatches.length}`);
 
@@ -233,7 +232,7 @@ function main() {
 
   // 覆盖率（对于 lineups 已存在的场次）
   try {
-    const lineups = loadJSON(path.join(ROOT, 'data', 'wc2026', 'lineups.json'));
+    const lineups = loadJSON(resolveDataPath('lineups.json'));
     const lineupIds = Object.keys(lineups);
     const bridgedLineups = lineupIds.filter(fid => reverseBridge[fid]);
     reportLines.push('--- Lineups 覆盖率 ---');
@@ -249,7 +248,7 @@ function main() {
   } catch { /* lineups.json 不存在 */ }
 
   const report = reportLines.join('\n');
-  fs.writeFileSync(REPORT_PATH, report, 'utf8');
+  const REPORT_PATH = writeTextAtomic('match_id_bridge_report.txt', report);
   console.log(`📝 报告已写入: ${REPORT_PATH}`);
 
   // 6. 汇总

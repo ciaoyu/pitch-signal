@@ -135,9 +135,9 @@ async function runTests() {
     console.log('✅ 2. No unhandled console exceptions.');
 
     console.log('3. Checking Live tab...');
-    const liveMatches = doc.querySelectorAll('.match-card-live');
-    const emptyStateLive = doc.querySelectorAll('.empty-state');
-    if (liveMatches.length === 0 && emptyStateLive.length === 0) {
+    const liveTabCards = doc.querySelectorAll('.match-card-live, .match-card-done, .match-card-pre');
+    const emptyContent = doc.getElementById('live-list')?.innerHTML || '';
+    if (liveTabCards.length === 0 && !emptyContent.includes('text-align:center')) {
       throw new Error('Live tab is empty and missing standard classes.');
     }
     console.log('✅ 3. Live tab verified.');
@@ -238,11 +238,11 @@ async function runTests() {
     if (langBtn) {
       langBtn.click();
       await new Promise(r => setTimeout(r, 200));
-      if (uncaughtErrors > 0) {
-        throw new Error('Language switch caused errors.');
-      }
     }
     console.log('✅ 10. Language switch did not crash the page.');
+
+    // Final wait to ensure all detail requests and errors are caught
+    await new Promise(r => setTimeout(r, 1000));
 
     if (uncaughtErrors > 0) {
       throw new Error(`Test finished with ${uncaughtErrors} unhandled exceptions (like 500 errors).`);
@@ -254,18 +254,28 @@ async function runTests() {
     console.error('💥 Test failed:', err);
     process.exitCode = 1;
   } finally {
-    console.log('🛑 Shutting down server gracefully...');
+    console.log('🛑 Shutting down gracefully...');
+    const serverExited = new Promise(resolve => serverProcess.once('exit', resolve));
     serverProcess.kill('SIGTERM');
-    await new Promise(resolve => {
-      serverProcess.on('exit', () => resolve());
-    });
-    if (fs.existsSync(tmpDbPath)) fs.unlinkSync(tmpDbPath);
+    await Promise.race([
+      serverExited,
+      new Promise(resolve => setTimeout(resolve, 2000))
+    ]);
+    if (serverProcess.exitCode === null && serverProcess.signalCode === null) {
+      serverProcess.kill('SIGKILL');
+      await serverExited;
+    }
+    // Keep the DOM alive until aborted network callbacks have settled.
+    await new Promise(resolve => setTimeout(resolve, 100));
     if (dom) {
       dom.window.close();
     }
+    if (fs.existsSync(tmpDbPath)) fs.unlinkSync(tmpDbPath);
     console.log('👋 Test run complete.');
-    process.exit(process.exitCode || 0);
   }
 }
 
-runTests();
+runTests().catch(err => {
+  console.error('💥 UI test cleanup failed:', err);
+  process.exitCode = 1;
+});

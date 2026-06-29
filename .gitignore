@@ -48,6 +48,7 @@ scratch/
 
 # Data exploration outputs
 data/lineups_sync_runs.json
+data/wc2026/
 
 # AI tooling local config
 .codebuddy/

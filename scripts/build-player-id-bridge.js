@@ -8,25 +8,23 @@
  * 匹配到 squads 中的球员，构建双向桥接。
  *
  * 输入：
- * - data/sources/seed/wc2026/lineups.json  (ESPN athlete ID + name + number + fieldPos)
- * - data/sources/seed/wc2026/squads.json   (本地 slug ID + name + no + pos)
- * - data/sources/seed/wc2026/matches.json  (home.code / away.code)
+ * - runtime 或 resources/seed/wc2026/lineups.json (ESPN athlete ID + name + number + fieldPos)
+ * - runtime 或 resources/seed/wc2026/squads.json  (本地 slug ID + name + no + pos)
+ * - runtime 或 resources/seed/wc2026/matches.json (home.code / away.code)
  *
  * 输出：
- * - data/sources/seed/wc2026/player_id_bridge.json
- * - data/sources/seed/wc2026/player_id_bridge_report.txt
+ * - $DATA_PATH/wc2026/player_id_bridge.json
+ * - $DATA_PATH/wc2026/player_id_bridge_report.txt
  */
 
 const fs = require('fs');
 const path = require('path');
 const { fuzzyMatchPlayer } = require('../lib/fuzzy-match');
+const { resolveDataPath, writeJsonAtomic, writeTextAtomic } = require('../lib/data-resolver');
 
-const DATA_DIR = path.join(__dirname, '..', 'data', 'wc2026');
-const LINEUPS_PATH = path.join(DATA_DIR, 'lineups.json');
-const SQUADS_PATH = path.join(DATA_DIR, 'squads.json');
-const MATCHES_PATH = path.join(DATA_DIR, 'matches.json');
-const BRIDGE_PATH = path.join(DATA_DIR, 'player_id_bridge.json');
-const REPORT_PATH = path.join(DATA_DIR, 'player_id_bridge_report.txt');
+const LINEUPS_PATH = resolveDataPath('lineups.json');
+const SQUADS_PATH = resolveDataPath('squads.json');
+const MATCHES_PATH = resolveDataPath('matches.json');
 
 /** fieldPos → squad pos 映射 */
 const FIELDPOS_TO_POS = { 0: 'GK', 1: 'DF', 2: 'MF', 3: 'FW' };
@@ -228,7 +226,7 @@ function main() {
     unmatched,
   };
 
-  fs.writeFileSync(BRIDGE_PATH, JSON.stringify(bridge, null, 2), 'utf8');
+  const BRIDGE_PATH = writeJsonAtomic('player_id_bridge.json', bridge);
   console.log(`\n✅ 已写入: ${BRIDGE_PATH}`);
 
   // ─── 报告 ───
@@ -306,7 +304,7 @@ function main() {
   }
 
   const report = lines.join('\n');
-  fs.writeFileSync(REPORT_PATH, report, 'utf8');
+  const REPORT_PATH = writeTextAtomic('player_id_bridge_report.txt', report);
   console.log(`✅ 已写入报告: ${REPORT_PATH}`);
 
   // 终端汇总

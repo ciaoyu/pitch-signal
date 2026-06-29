@@ -67,7 +67,8 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 |----------|----------|---------|-------|
 | `PORT` | No | `5099` | Server port |
 | `NODE_ENV` | No | `development` | `production` enables stricter security |
-| `DATA_PATH` | No | `./data` | SQLite + snapshots directory. Must be on a persistent volume in deployed environments. |
+| `DATA_PATH` | No | `./data` | SQLite、snapshots 和可变 WC2026 数据目录。部署时必须挂载持久卷。 |
+| `SEED_DATA_PATH` | No | `./resources/seed/wc2026` | 只读 WC2026 seed 覆盖路径，通常无需设置。 |
 | `DB_PATH` | No | `${DATA_PATH}/predictions.db` | Override SQLite database path |
 | `CORS_ORIGINS` | No | `localhost:5099` | Comma-separated allowed browser origins |
 | `RATE_LIMIT_MAX` | No | `100` | Max requests per rate-limit window |

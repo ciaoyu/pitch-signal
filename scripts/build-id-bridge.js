@@ -5,21 +5,20 @@
  * 构建 id_bridge.json，连接 FIFA code/id ↔ ESPN id ↔ 国家名
  * 
  * 输入：
- * - data/sources/seed/wc2026/teams.json (FIFA 数据)
+ * - runtime 或 resources/seed/wc2026/teams.json (FIFA 数据)
  * - data/id_map_center.json (ESPN 数据)
  * 
  * 输出：
- * - data/sources/seed/wc2026/id_bridge.json
- * - data/sources/seed/wc2026/unmatched.txt (无法匹配的球队)
+ * - $DATA_PATH/wc2026/id_bridge.json
+ * - $DATA_PATH/wc2026/unmatched.txt (无法匹配的球队)
  */
 
 const fs = require('fs');
 const path = require('path');
+const { resolveDataPath, writeJsonAtomic, writeTextAtomic } = require('../lib/data-resolver');
 
-const TEAMS_PATH = path.join(__dirname, '..', 'data', 'wc2026', 'teams.json');
+const TEAMS_PATH = resolveDataPath('teams.json');
 const ID_MAP_PATH = path.join(__dirname, '..', 'data', 'id_map_center.json');
-const BRIDGE_PATH = path.join(__dirname, '..', 'data', 'sources', 'seed', 'wc2026', 'id_bridge.json');
-const UNMATCHED_PATH = path.join(__dirname, '..', 'data', 'wc2026', 'unmatched.txt');
 
 /**
  * 加载 JSON 文件
@@ -131,7 +130,7 @@ function main() {
   }
   
   // 写入 bridge.json
-  fs.writeFileSync(BRIDGE_PATH, JSON.stringify(bridge, null, 2), 'utf8');
+  const BRIDGE_PATH = writeJsonAtomic('id_bridge.json', bridge);
   console.log(`\n✅ 已写入: ${BRIDGE_PATH}`);
   console.log(`   匹配成功: ${Object.keys(bridge).length} 支球队`);
   
@@ -151,7 +150,7 @@ function main() {
       ].join('\n');
     }).join('\n');
     
-    fs.writeFileSync(UNMATCHED_PATH, unmatchedContent, 'utf8');
+    const UNMATCHED_PATH = writeTextAtomic('unmatched.txt', unmatchedContent);
     console.log(`\n⚠️  未匹配球队: ${UNMATCHED_PATH}`);
     console.log(`   未匹配: ${unmatched.length} 支球队`);
   } else {

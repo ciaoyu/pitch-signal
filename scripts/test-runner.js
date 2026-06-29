@@ -20,6 +20,7 @@ const TEST_DIR = path.join(ROOT, 'scripts');
 const TEST_FILES = [
   'test-backtest-sort.js',
   'test-bracket-updater.js',
+  'test-data-resolver.js',
   'test-elo.js',
   'test-eventFilter.js',
   'test-final-round-context.js',

@@ -2,7 +2,7 @@
 
 /**
  * sync-fifa-data.js
- * 从 26worldcup GitHub 仓库拉取 9 个 JSON 数据文件到 data/sources/seed/wc2026/
+ * 从 26worldcup GitHub 仓库拉取 JSON 数据文件到 $DATA_PATH/wc2026/
  * 
  * 数据源：
  * - public/data/: teams, squads, lineups, probs, venues, weather, wc-history
@@ -10,11 +10,14 @@
  */
 
 const fs = require('fs');
-const path = require('path');
 const https = require('https');
+const {
+  getRuntimeDataDir,
+  writeJsonAtomic,
+} = require('../lib/data-resolver');
 
 const BASE_URL = 'https://raw.githubusercontent.com/26worldcup/26worldcup.github.io/main';
-const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'sources', 'seed', 'wc2026');
+const OUTPUT_DIR = getRuntimeDataDir();
 
 // 10 个需要下载的文件及其源路径
 const FILES_TO_SYNC = [
@@ -76,13 +79,11 @@ async function main() {
   // 逐个下载文件
   for (const file of FILES_TO_SYNC) {
     const url = `${BASE_URL}/${file.source}`;
-    const outputPath = path.join(OUTPUT_DIR, file.name);
-    
     console.log(`📥 下载 ${file.name}...`);
     
     try {
       const data = await downloadJSON(url);
-      fs.writeFileSync(outputPath, JSON.stringify(data, null, 2), 'utf8');
+      const outputPath = writeJsonAtomic(file.name, data);
       
       const stats = fs.statSync(outputPath);
       const sizeKB = (stats.size / 1024).toFixed(1);
@@ -115,7 +116,6 @@ async function main() {
   }
 
   // 写入同步日志
-  const logPath = path.join(OUTPUT_DIR, 'sync-log.json');
   const log = {
     timestamp: new Date().toISOString(),
     results,
@@ -124,7 +124,7 @@ async function main() {
     success: results.length,
     failed: errors.length
   };
-  fs.writeFileSync(logPath, JSON.stringify(log, null, 2), 'utf8');
+  const logPath = writeJsonAtomic('sync-log.json', log);
   console.log(`\n📝 同步日志: ${logPath}`);
 
   // 返回成功状态
@@ -148,11 +148,9 @@ async function syncSelected(names) {
 
   for (const file of selected) {
     const url = `${BASE_URL}/${file.source}`;
-    const outputPath = path.join(OUTPUT_DIR, file.name);
-
     try {
       const data = await downloadJSON(url);
-      fs.writeFileSync(outputPath, JSON.stringify(data, null, 2), 'utf8');
+      const outputPath = writeJsonAtomic(file.name, data);
       const stats = fs.statSync(outputPath);
       const sizeKB = (stats.size / 1024).toFixed(1);
       results.push({ name: file.name, source: file.source, size: `${sizeKB} KB`, success: true });
@@ -162,7 +160,6 @@ async function syncSelected(names) {
   }
 
   // 写入同步日志
-  const logPath = path.join(OUTPUT_DIR, 'sync-log.json');
   const log = {
     timestamp: new Date().toISOString(),
     results,
@@ -171,7 +168,7 @@ async function syncSelected(names) {
     success: results.length,
     failed: errors.length,
   };
-  fs.writeFileSync(logPath, JSON.stringify(log, null, 2), 'utf8');
+  writeJsonAtomic('sync-log.json', log);
 
   return { results, errors };
 }

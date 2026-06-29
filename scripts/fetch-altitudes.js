@@ -7,10 +7,10 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const { resolveDataPath, writeJsonAtomic } = require('../lib/data-resolver');
 
-const WC2026_DIR = path.join(__dirname, '..', 'data', 'wc2026');
-const TEAMS_PATH = path.join(WC2026_DIR, 'teams.json');
-const VENUES_PATH = path.join(WC2026_DIR, 'venues.json');
+const TEAMS_READ_PATH = resolveDataPath('teams.json');
+const VENUES_READ_PATH = resolveDataPath('venues.json');
 
 const OPEN_ELEVATION_URL = 'https://api.open-elevation.com/api/v1/lookup';
 
@@ -71,8 +71,8 @@ async function main() {
   console.log('🏔️  获取海拔数据...\n');
   
   // 加载数据
-  const teams = JSON.parse(fs.readFileSync(TEAMS_PATH, 'utf8'));
-  const venues = JSON.parse(fs.readFileSync(VENUES_PATH, 'utf8'));
+  const teams = JSON.parse(fs.readFileSync(TEAMS_READ_PATH, 'utf8'));
+  const venues = JSON.parse(fs.readFileSync(VENUES_READ_PATH, 'utf8'));
   
   // 收集需要查询的位置
   const teamLocations = [];
@@ -125,8 +125,8 @@ async function main() {
   }
   
   // 写入文件
-  fs.writeFileSync(TEAMS_PATH, JSON.stringify(teams, null, 2), 'utf8');
-  fs.writeFileSync(VENUES_PATH, JSON.stringify(venues, null, 2), 'utf8');
+  const TEAMS_WRITE_PATH = writeJsonAtomic('teams.json', teams);
+  const VENUES_WRITE_PATH = writeJsonAtomic('venues.json', venues);
   
   // 统计
   const teamsWithAlt = Object.values(teams.teams).filter(t => t.baseCamp?.altitude != null).length;

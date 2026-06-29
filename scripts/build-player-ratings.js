@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { derivePlayerRating } = require('../lib/fuzzy-match');
+const { resolveDataPath, writeJsonAtomic } = require('../lib/data-resolver');
 
-const dataDir = path.join(__dirname, '..', 'data', 'wc2026');
-const squadsFile = path.join(dataDir, 'squads.json');
-const idBridgeFile = path.join(dataDir, 'id_bridge.json');
-const outFile = path.join(dataDir, 'player-ratings.json');
+const squadsFile = resolveDataPath('squads.json');
+const idBridgeFile = resolveDataPath('id_bridge.json');
 
 const squads = JSON.parse(fs.readFileSync(squadsFile, 'utf8'));
 const id_bridge = JSON.parse(fs.readFileSync(idBridgeFile, 'utf8'));
@@ -57,5 +56,5 @@ for (const [code, squad] of Object.entries(squads)) {
   outData.data[code] = teamObj;
 }
 
-fs.writeFileSync(outFile, JSON.stringify(outData, null, 2));
+const outFile = writeJsonAtomic('player-ratings.json', outData);
 console.log(`Wrote player ratings with fallback to ${outFile}`);

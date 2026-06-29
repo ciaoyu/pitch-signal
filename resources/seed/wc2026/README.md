@@ -2,6 +2,10 @@
 
 本目录包含从 [26worldcup/26worldcup.github.io](https://github.com/26worldcup/26worldcup.github.io) 同步的 2026 年世界杯数据文件。
 
+本目录是版本控制内的只读基线。应用读取时优先使用
+`$DATA_PATH/wc2026/` 中的运行数据，文件不存在时才回退到这里。同步和构建脚本
+只能写入运行目录，不得直接修改本目录。
+
 ## 数据来源
 
 - **GitHub 仓库**: `26worldcup/26worldcup.github.io`
