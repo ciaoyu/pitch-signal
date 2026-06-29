@@ -11,18 +11,36 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Trigger Render Deploy Hook
+      - name: Check Render configuration
+        id: render-config
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          RENDER_APP_URL: ${{ secrets.RENDER_APP_URL }}
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}" \
+          if [ -n "$RENDER_DEPLOY_HOOK" ] && [ -n "$RENDER_APP_URL" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Render secrets are not configured; skipping backup deployment."
+          fi
+
+      - name: Trigger Render Deploy Hook
+        if: ${{ steps.render-config.outputs.configured == 'true' }}
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          curl -X POST "$RENDER_DEPLOY_HOOK" \
             -H "Content-Type: application/json" \
             --silent --show-error --fail
 
       - name: Wait for Render deployment
+        if: ${{ steps.render-config.outputs.configured == 'true' }}
         run: sleep 30
 
       - name: Verify deployment
+        if: ${{ steps.render-config.outputs.configured == 'true' }}
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_APP_URL }}/health)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$RENDER_APP_URL/health")
           echo "Health check status: $STATUS"
           if [ "$STATUS" != "200" ]; then
             echo "❌ Health check failed"
