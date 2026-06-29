@@ -4762,7 +4762,7 @@ var require_player_detail = __commonJS({
                     <div class="text-xs text-gray-500">${d.position || ""} \xB7 ${d.team || ""} \xB7 ${d.nationality || ""}</div>
                 </div>
             </div>
-
+            
             <!-- Basic Info -->
             <div class="grid grid-cols-2 gap-2 text-xs">
                 ${d.age ? `<div class="glass-light rounded-lg p-2"><div class="text-gray-500">\u5E74\u9F84</div><div class="font-bold">${d.age}\u5C81</div></div>` : ""}
@@ -5682,7 +5682,7 @@ var require_match_renderers = __commonJS({
             </div>
             <div class="text-xs font-bold text-red-300 flex items-center gap-1.5 justify-end">${teamLabel(away)} (${away.formation || "4-3-3"}) ${teamFlagHtml(away, "bg-red-600")} \u{1F534}</div>
         </div>
-
+        
         <!-- Segmented Score Bar -->
         <div class="glass-light rounded-lg p-3 mb-2">
             <div class="flex items-center justify-between mb-2">
@@ -5707,7 +5707,7 @@ var require_match_renderers = __commonJS({
                 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500/80"></span>${tx("\u5BA2\u961F\u5360\u4F18", "Away Edge")}</span>
             </div>
         </div>
-
+        
         <!-- SVG Tactical Board -->
         <div class="w-full" id="pitch-canvas">
             ${renderTacticalBoard(matchupData, matchData)}
@@ -5810,12 +5810,12 @@ var require_match_renderers = __commonJS({
                         <span class="text-xs font-bold ${getStrengthColor(player.rating)}">${esc(player.rating) || "-"}</span>
                     </div>
                 </div>
-
+                
                 <div class="flex items-center gap-2 text-[11px] mb-1">
                     <span class="text-gray-500">${tx("\u7279\u8272:", "Traits:")}</span>
                     ${player.traits?.map((t) => `<span class="bg-white/5 px-1.5 py-0.5 rounded">${esc(t)}</span>`).join("") || '<span class="text-gray-600">-</span>'}
                 </div>
-
+                
                 <div class="flex items-center justify-between text-[11px]">
                     <div>
                         <span class="text-gray-500">${tx("\u66FF\u4EE3:", "Sub for:")}</span>
@@ -5842,24 +5842,24 @@ var require_match_renderers = __commonJS({
                     <span class="text-xs font-bold text-gray-400">\u{1F504} \u66FF\u8865\u5E2D\u5BF9\u6BD4</span>
                     <span class="text-[11px] text-gray-500">\u677F\u51F3\u6DF1\u5EA6</span>
                 </div>
-
+                
                 <div class="flex items-center gap-3">
                     <div class="flex-1">
                         <div class="text-sm font-bold ${getStrengthColor(comparison.homeStrength)}">\u{1F535} ${teamLabel(home)}</div>
                         <div class="text-lg font-bold ${getStrengthColor(comparison.homeStrength)}">${comparison.homeStrength || "-"}</div>
                     </div>
-
+                    
                     <div class="text-center">
                         <div class="text-xs text-gray-500">VS</div>
                         <div class="text-[11px] font-bold ${comparison.advantage === "home" ? "text-blue-400" : comparison.advantage === "away" ? "text-red-400" : "text-gray-400"}">${comparison.advantage === "home" ? "\u{1F535} \u4F18\u52BF" : comparison.advantage === "away" ? "\u{1F534} \u4F18\u52BF" : "\u2696\uFE0F \u5747\u52BF"}</div>
                     </div>
-
+                    
                     <div class="flex-1 text-right">
                         <div class="text-sm font-bold ${getStrengthColor(comparison.awayStrength)}">${teamLabel(away)} \u{1F534}</div>
                         <div class="text-lg font-bold ${getStrengthColor(comparison.awayStrength)}">${comparison.awayStrength || "-"}</div>
                     </div>
                 </div>
-
+                
                 <div class="grid grid-cols-2 gap-2 text-[11px] mt-2">
                     <div>
                         <span class="text-gray-500">\u8D85\u7EA7\u66FF\u8865:</span>
@@ -5887,19 +5887,19 @@ var require_match_renderers = __commonJS({
                     </div>
                 </div>
             </div>
-
+            
             <!-- Home Bench -->
             <div class="glass-light rounded-lg p-3">
                 <div class="text-xs font-bold text-blue-400 mb-2">\u{1F535} ${esc(teamLabel(home))} ${tx("\u66FF\u8865\u5E2D", "Bench")}</div>
                 ${home.bench?.map((p) => renderBenchPlayer(p, "text-blue-400", teamLabel(home))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
             </div>
-
+            
             <!-- Away Bench -->
             <div class="glass-light rounded-lg p-3">
                 <div class="text-xs font-bold text-red-400 mb-2">\u{1F534} ${esc(teamLabel(away))} ${tx("\u66FF\u8865\u5E2D", "Bench")}</div>
                 ${away.bench?.map((p) => renderBenchPlayer(p, "text-red-400", teamLabel(away))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
             </div>
-
+            
             <!-- Substitution Matrix -->
             ${home.substitutionMatrix && Object.keys(home.substitutionMatrix).length > 0 ? `
             <div class="glass-light rounded-lg p-3">
@@ -5922,7 +5922,7 @@ var require_match_renderers = __commonJS({
                 </div>
             </div>
             ` : ""}
-
+            
             ${away.substitutionMatrix && Object.keys(away.substitutionMatrix).length > 0 ? `
             <div class="glass-light rounded-lg p-3">
                 <div class="text-xs font-bold text-red-400 mb-3 flex items-center gap-1">
