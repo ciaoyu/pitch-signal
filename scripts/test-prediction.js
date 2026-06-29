@@ -5,7 +5,15 @@
  */
 const PredictionEngine = require('../lib/prediction');
 let QualificationSimulator = null;
-try { QualificationSimulator = require('../lib/qualification'); } catch (e) { /* DB unavailable */ }
+try {
+  QualificationSimulator = require('../lib/qualification');
+} catch (e) {
+  if (e.message && (e.message.includes('NODE_MODULE_VERSION') || e.message.includes('better_sqlite3') || e.message.includes('better-sqlite3'))) {
+    // DB unavailable
+  } else {
+    throw e;
+  }
+}
 
 let passed = 0;
 let failed = 0;
@@ -86,7 +94,11 @@ try {
   require('../lib/db').db;
   dbAvailable = true;
 } catch (e) {
-  // expected: better-sqlite3 NODE_MODULE_VERSION mismatch
+  if (e.message && (e.message.includes('NODE_MODULE_VERSION') || e.message.includes('better_sqlite3') || e.message.includes('better-sqlite3'))) {
+    // expected: better-sqlite3 native binding mismatch
+  } else {
+    throw e;
+  }
 }
 
 if (dbAvailable && QualificationSimulator) {
