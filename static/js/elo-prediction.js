@@ -94,10 +94,17 @@
                 const topScores = p.likelyScore != null && p.likelyScore !== '' ? `${p.likelyScore} ${Fmt().pct(p.likelyScoreProb)}` : '?';
                 const confLabel = conf > 70 ? tx('高', 'High') : conf > 50 ? tx('中', 'Medium') : tx('低', 'Low');
 
+                let headerText = '';
+                if (m.group && m.matchday !== undefined) headerText = `${m.group} · ${tx('第','MD')} ${m.matchday}`;
+                else if (m.group && m.stage && !m.stage.includes('Group')) headerText = `${m.group} · ${m.stage}`;
+                else if (m.group) headerText = m.group;
+                else if (m.stage) headerText = m.stage;
+                else headerText = tx('比赛', 'Match');
+
                 // Group info line
                 h += `<div class="pred-card" style="margin-bottom:10px;background:rgba(255,255,255,.03);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px 16px">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                        <span style="font:400 9px/1 'JetBrains Mono', monospace;letter-spacing:1px;color:rgba(248,250,252,.15)">${esc(m.group||'')} · ${esc(tx('第','MD')+(' '+(m.matchday||'?')))}</span>
+                        <span style="font:400 9px/1 'JetBrains Mono', monospace;letter-spacing:1px;color:rgba(248,250,252,.15)">${esc(headerText)}</span>
                         <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.12)">${esc(m.timeBJT||m.dateBJT||'')}</span>
                     </div>`;
 
@@ -153,9 +160,16 @@
                     <div style="font-size:9px;color:rgba(248,250,252,.12);margin-top:8px">${tx('权重','Weights')}: Elo ${(weights.elo*100).toFixed(0)}% · Poisson ${(weights.poisson*100).toFixed(0)}% · ${tx('赔率','Odds')} ${(weights.odds*100).toFixed(0)}% · ${tx('教练','Coach')} ${(weights.coach*100).toFixed(0)}% · ${tx('场馆','Venue')} ${(weights.venue*100).toFixed(0)}%</div>
                 </div></div>`;
             } else {
+                let headerText = '';
+                if (m.group && m.matchday !== undefined) headerText = `${m.group} · ${tx('第','MD')} ${m.matchday}`;
+                else if (m.group && m.stage && !m.stage.includes('Group')) headerText = `${m.group} · ${m.stage}`;
+                else if (m.group) headerText = m.group;
+                else if (m.stage) headerText = m.stage;
+                else headerText = tx('比赛', 'Match');
+
                 h += `<div class="pred-card" style="margin-bottom:10px;opacity:.5;background:rgba(255,255,255,.03);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px 16px">
                     <div style="display:flex;align-items:center;justify-content:space-between">
-                        <span style="font:400 9px/1 'JetBrains Mono', monospace;letter-spacing:1px;color:rgba(248,250,252,.15)">${esc(m.group||'')} · ${esc(tx('第','MD')+(' '+(m.matchday||'?')))}</span>
+                        <span style="font:400 9px/1 'JetBrains Mono', monospace;letter-spacing:1px;color:rgba(248,250,252,.15)">${esc(headerText)}</span>
                     </div>
                     <div style="display:flex;align-items:center;justify-content:center;margin-top:8px">
                         <div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px">${m.home.flag||'🏳️'}</span><span style="font:500 12px/1 'Inter';color:rgba(248,250,252,.5)">${esc(displayMaybeTeamName(m.home))}</span></div>

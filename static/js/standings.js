@@ -115,7 +115,7 @@
             <div style="background:rgba(15,23,42,.4);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04)">
                 <div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:space-between">
                     <span style="font:600 11px/1 'DM Sans',sans-serif;color:rgba(248,250,252,.5);letter-spacing:.5px">${esc(displayGroupName(g.name))}</span>
-                    <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">MD ${g.matchday||'?'}/3</span>
+                    <span style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">MD ${g.matchday !== undefined ? g.matchday : 0}/3</span>
                 </div>
                 <table style="width:100%;table-layout:fixed;font-size:12px;border-collapse:separate;border-spacing:0">
                     <colgroup>
