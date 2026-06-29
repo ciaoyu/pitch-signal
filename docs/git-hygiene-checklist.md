@@ -97,7 +97,7 @@ feat: update prediction, matchup-spatial, and bot knowledge base
 ## 问题 3：未 tracked 目录/文件缺少 .gitignore 条目
 
 **现状：**
-- `scratch/`、`docs/archive/`、`data/wc2026/`、`data/lineups_sync_runs.json` 未 tracked 也未 ignore
+- `scratch/`、`docs/archive/`、`data/sources/seed/`、`data/lineups_sync_runs.json` 未 tracked 也未 ignore
 - 容易被 `git add .` 误提交
 
 **方案：`.gitignore` 中追加**
@@ -107,7 +107,7 @@ scratch/
 docs/archive/
 
 # 数据探索产物
-data/wc2026/
+data/sources/seed/
 data/lineups_sync_runs.json
 
 # AI 工具本地配置

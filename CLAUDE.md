@@ -39,6 +39,7 @@ Integration tests (`test-post-match-review.js`) start a temporary server — the
 - **i18n** — team names in Chinese/English via `lib/team-data.js` → `getTeamNameZh()`, `getTeamNameI18n()`. Frontend renders both.
 - **DB** — SQLite via `better-sqlite3` (synchronous). WAL mode. Single-instance only. `lib/db.js` exports a singleton connection.
 - **No secrets in code** — all API keys and tokens come from env vars. `.env.example` is the source of truth for what's needed.
+- **Repository layout** — follow [docs/repository-layout.md](docs/repository-layout.md) before adding or moving files.
 
 ## Data Flow
 

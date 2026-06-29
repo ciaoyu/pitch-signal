@@ -47,7 +47,7 @@ data/sources/world-cup-history/
 scratch/
 
 # Data exploration outputs
-data/wc2026/
+data/sources/seed/
 data/lineups_sync_runs.json
 
 # AI tooling local config

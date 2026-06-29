@@ -1,8 +1,8 @@
 const CACHE_NAME = 'pitchsignal-v20260629';
 const STATIC_ASSETS = [
   '/static/manifest.json',
-  '/static/icon-192.png',
-  '/static/icon-512.png',
+  '/static/icon-192-v3.png',
+  '/static/icon-512-v3.png',
 ];
 
 // Install

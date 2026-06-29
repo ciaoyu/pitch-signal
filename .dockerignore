@@ -21,6 +21,7 @@ DREAMS.md
 # Additional exclusions
 scratch/
 data/sources/world-cup-history/
+data/sources/seed/
 .codebuddy/
 .workbuddy/
 *.bak

@@ -77,9 +77,6 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 | `BALLDONTLIE_API_KEY` | No | — | balldontlie.io roster/stats enrichment |
 | `TAVILY_API_KEY` | No | — | Tavily search (AI post-match research) |
 | `ANTHROPIC_API_KEY` | No | — | AI post-match review (experimental, beta disabled) |
-| `POSTMORTEM_API_KEY` | No | — | Override provider for post-match review |
-| `POSTMORTEM_BASE_URL` | No | — | Override provider base URL |
-| `POSTMORTEM_MODEL` | No | — | Override provider model name |
 | `ADMIN_TOKEN` | **Beta: must be unset** | — | Fallback token for protected endpoints |
 | `BOT_API_TOKEN` | **Beta: must be unset** | — | Bot chat endpoint token |
 | `WRITE_API_TOKEN` | **Beta: must be unset** | — | Write endpoint token |
@@ -116,6 +113,7 @@ Quick overview:
 
 ## 📚 Documentation
 
+- **[docs/repository-layout.md](docs/repository-layout.md)** - Where to put new files and which docs stay internal
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture overview
 - **[ENVIRONMENT.md](ENVIRONMENT.md)** - Environment variables and key hygiene
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history

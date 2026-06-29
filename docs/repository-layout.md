@@ -2,6 +2,15 @@
 
 This repository has a clear split between runtime code, versioned source data, and local-only working artifacts. New files should follow these placement rules so the project root stays stable and readable.
 
+## Where To Look First
+
+- Start with this file when deciding where a new file belongs.
+- Use `README.md` for the product overview and setup flow.
+- Use `ARCHITECTURE.md` for runtime boundaries and major code areas.
+- Use `CLAUDE.md` for agent-facing working conventions.
+- Use `docs/archive/` for internal reports, handoffs, and non-runtime deliverables that should not be published.
+- Use `design_handoff_pitchsignal/` for the canonical design handoff package and UI audit material.
+
 ## Root Contract
 
 Only keep these categories at the repository root:
