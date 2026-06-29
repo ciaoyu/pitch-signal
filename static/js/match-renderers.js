@@ -251,6 +251,9 @@ window.WorldCup.MatchRenderers = (() => {
                 <stop offset="100%" stop-color="#f87171" stop-opacity="0.2"/>
             </linearGradient>
             <clipPath id="tb-avatar-clip"><circle r="2.8" cx="0" cy="0"/></clipPath>
+            <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="1.2"/>
+            </filter>
         </defs>`;
 
         // ── Pitch background ──
@@ -375,52 +378,7 @@ window.WorldCup.MatchRenderers = (() => {
             return { cx: t.x, cy: t.y * 1.6 };
         };
 
-        // ── Key matchup lines（坐标与球员点统一） ──
-        svg += `<g class="pitch-pair">`;
-        const pairsToRender = (matchupData.pairs && matchupData.pairs.length > 0)
-            ? matchupData.pairs
-            : matchups;
-
-        for (const m of pairsToRender) {
-            // Goalkeeper ratings remain part of the aggregate comparison, but
-            // a full-pitch GK-to-GK line is not a real spatial matchup and puts
-            // a misleading advantage dot on the center spot.
-            if (m.zone === '门将' || m.zone === 'Goalkeeper') continue;
-            const hName = m.home?.name || m.homePlayer;
-            const aName = m.away?.name || m.awayPlayer;
-            const hp = findPlayer(home.players, hName);
-            const ap = findPlayer(away.players, aName);
-            if (!hp || !ap) continue;
-
-            const hIdx = home.players.indexOf(hp);
-            const aIdx = away.players.indexOf(ap);
-            const hC = coord(hp, hIdx, 'home');
-            const aC = coord(ap, aIdx, 'away');
-
-            const isKey = m.key || m.type === 'critical';
-            let gradId = 'tb-m-key';
-            let strokeW = isKey ? 1.2 : 0.5;
-            let opacity = isKey ? 0.75 : 0.22;
-
-            if (isKey) {
-                if (m.advantage === 'home') gradId = 'tb-m-critical-home';
-                else if (m.advantage === 'away') gradId = 'tb-m-critical-away';
-                else gradId = 'tb-m-even';
-            }
-
-            // Key lines: solid; non-key: subtle dash
-            const dashArray = isKey ? 'none' : '2,3';
-            svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round"${dashArray !== 'none' ? ` stroke-dasharray="${dashArray}"` : ''}/>`;
-
-            if (isKey) {
-                const mx = (hC.cx + aC.cx) / 2, my = (hC.cy + aC.cy) / 2;
-                const dotColor = m.advantage === 'home' ? '#60a5fa' : (m.advantage === 'away' ? '#f87171' : '#fbbf24');
-                svg += `<circle cx="${mx}" cy="${my}" r="1.2" fill="${dotColor}" opacity="1"/>`;
-            }
-        }
-        svg += `</g>`;
-
-        // ── Avatar rendering ──
+        // ── Ability bubble rendering: no matchup lines, labels, or point markers ──
         const TEAM_STYLE = {
             home: { fill: 'rgba(59,130,246,0.6)', text: 'white' },
             away: { fill: 'rgba(239,68,68,0.6)', text: 'white' },
@@ -432,49 +390,14 @@ window.WorldCup.MatchRenderers = (() => {
             if (!p) return '';
             const { cx, cy } = coord(p, idx, side);
             const st = TEAM_STYLE[side] || TEAM_STYLE.home;
-            const jersey = p.number ?? p.jersey ?? '';
             const playerId = p.playerId || p.id || p.espnId || '';
             const rawName = p.name || '';
-            const nameZh = window.WorldCup.I18n?.translatePlayerName(rawName) || rawName;
-            const shortName = nameZh.includes('·') ? nameZh.split('·').pop() : nameZh.split(' ').pop();
-
-            // Check if player scored
-            const pNameNorm = normalizeName(rawName);
-            const scoredGoals = goals.filter(g => {
-                const gn = normalizeName(g.player);
-                return gn === pNameNorm || pNameNorm.includes(gn) || gn.includes(pNameNorm);
-            }).length;
-
-            const sideMap = subOffMap.get(side);
-            const subOff = sideMap ? sideMap.get(normalizeName(rawName)) : null;
-            const opacityAttr = subOff ? '0.45' : '0.97';
+            const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
+            const radius = 2.6 + (rating - 50) * 0.055;
 
             let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
-            node += `<g transform="translate(${cx},${cy})" opacity="${opacityAttr}">`;
-
-            // Translucent circle with jersey number
-            node += `<circle r="${R}" fill="${st.fill}" stroke="white" stroke-width="0.3"/>`;
-            node += `<text x="0" y="0.8" text-anchor="middle" font-size="2.2" font-weight="bold" fill="${st.text}" dominant-baseline="middle" style="pointer-events:none">${esc(String(jersey))}</text>`;
-
-            // Short name text below
-            let nameText = esc(shortName);
-            if (scoredGoals > 0) {
-                nameText += ' ⚽'.repeat(scoredGoals);
-            }
-            const nameColor = scoredGoals > 0 ? '#FFD600' : 'white';
-            const nameY = side === 'home' ? R + 2.5 : -R - 1.5;
-            node += `<text x="0" y="${nameY}" text-anchor="middle" font-size="2" font-weight="bold" fill="${nameColor}" style="pointer-events:none">${nameText}</text>`;
-
-            node += `</g>`;
-
-            // Sub-off indicator
-            if (subOff) {
-                node += `<g transform="translate(${cx},${cy + R + 2.5})">`;
-                node += `<circle r="1.5" fill="#ef4444" stroke="white" stroke-width="0.2"/>`;
-                node += `<text x="0" y="0.5" text-anchor="middle" font-size="1.8" font-weight="bold" fill="white" dominant-baseline="middle">↓</text>`;
-                node += `</g>`;
-                node += `<text x="${cx}" y="${cy + R + 5.5}" text-anchor="middle" font-size="1.5" font-weight="bold" fill="#ef4444">${esc(String(subOff.minute))}'</text>`;
-            }
+            node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.fill}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
+            node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.fill}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
             node += `</g>`;
             return node;
         };

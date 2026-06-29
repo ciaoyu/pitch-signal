@@ -298,10 +298,12 @@ try {
     schedule,
   });
 
-  assert.strictEqual(result.matches['R16-1'].teamA.name, 'TBD');
-  assert.strictEqual(result.matches['R16-1'].teamB.name, 'TBD');
-  assert.strictEqual(result.matches['R16-1'].status, 'tbd');
-  ok('R16-1 TBD (knockout not started)');
+  const parent = result.matches['R32-1'];
+  const expectedA = parent.status === 'final' && parent.winner
+    ? (parent.winner === 'A' ? parent.teamA.name : parent.teamB.name)
+    : 'TBD';
+  assert.strictEqual(result.matches['R16-1'].teamA.name, expectedA);
+  ok('R16-1 reflects upstream winner when available');
 } catch (e) { fail('R16 TBD', e); }
 
 // ============================================================
@@ -426,10 +428,13 @@ try {
     schedule,
   });
 
-  // propagateResults 应该原样返回（Phase 1）
   assert.ok(result.matches['R16-1']);
-  assert.strictEqual(result.matches['R16-1'].teamA.name, 'TBD');
-  ok('propagateResults skeleton: bracket unchanged');
+  const parent = result.matches['R32-1'];
+  const expectedA = parent.status === 'final' && parent.winner
+    ? (parent.winner === 'A' ? parent.teamA.name : parent.teamB.name)
+    : 'TBD';
+  assert.strictEqual(result.matches['R16-1'].teamA.name, expectedA);
+  ok('propagateResults carries completed winner downstream');
 } catch (e) { fail('propagateResults skeleton', e); }
 
 // ============================================================

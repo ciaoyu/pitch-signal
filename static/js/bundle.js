@@ -3492,6 +3492,7 @@ var require_match_detail = __commonJS({
         let html = '<div class="space-y-3">';
         const recentHome = data.recent?.home || homeSummary.recent10 || [];
         const recentAway = data.recent?.away || awaySummary.recent10 || [];
+        const groupForm = data.groupForm || {};
         const wdl = (r10) => {
           if (!r10.length) return "";
           let w = 0, d = 0, l = 0;
@@ -3502,11 +3503,13 @@ var require_match_detail = __commonJS({
           });
           return ` <span class="font-mono text-[11px] text-white/40">${w}-${d}-${l}</span>`;
         };
+        const groupWdl = (form) => form && form.played ? ` <span class="font-mono text-[11px] text-white/60">${form.wins}-${form.draws}-${form.losses}</span>` : "";
         const lang = window.WorldCup?.State?.uiLang || "zh";
         const localSummary = (s) => s?.summaryTextI18n?.(s.summaryTextI18n[lang] || s.summaryTextI18n.zh) || s?.summaryText || "";
         const homeSummaryText = homeSummary.summaryTextI18n ? homeSummary.summaryTextI18n[lang] || homeSummary.summaryTextI18n.zh : homeSummary.summaryText || homeTeam + tx(" \u6570\u636E\u4E0D\u8DB3", " Insufficient data");
         const awaySummaryText = awaySummary.summaryTextI18n ? awaySummary.summaryTextI18n[lang] || awaySummary.summaryTextI18n.zh : awaySummary.summaryText || awayTeam + tx(" \u6570\u636E\u4E0D\u8DB3", " Insufficient data");
-        html += `<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx("\u4EA4\u950B\u8D70\u52BF", "H2H Trend")}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">\u25CF</span><span class="text-sm">${esc(homeSummaryText)}${wdl(recentHome)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">\u25CF</span><span class="text-sm">${esc(awaySummaryText)}${wdl(recentAway)}</span></div></div></div>`;
+        html += `<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx("\u672C\u5C4A\u5C0F\u7EC4\u8D5B\u6218\u7EE9", "Current Group Record")}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">\u25CF</span><span class="text-sm">${esc(homeTeam)}${groupWdl(groupForm.home)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">\u25CF</span><span class="text-sm">${esc(awayTeam)}${groupWdl(groupForm.away)}</span></div></div></div>`;
+        if (recentHome.length || recentAway.length) html += `<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx("\u5386\u53F2\u4EA4\u950B\u8D70\u52BF", "Historical H2H Trend")}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">\u25CF</span><span class="text-sm">${esc(homeSummaryText)}${wdl(recentHome)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">\u25CF</span><span class="text-sm">${esc(awaySummaryText)}${wdl(recentAway)}</span></div></div></div>`;
         html += `<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx("\u5BF9\u9635\u8BB0\u5F55", "H2H History")}</div>`;
         const wc = grouped.worldCup;
         if (wc?.matches?.length) html += `<div class="mb-3"><div class="flex items-center gap-2 mb-1"><span>\u{1F3C6}</span><span class="text-sm font-bold">${esc(wc.labelI18n?.[lang] || wc.label || tx("\u4E16\u754C\u676F", "World Cup"))}</span><span class="text-[11px] text-gray-500">${tx("\u5171 ", "Total ")}${esc(wc.stats?.total || 0)}${tx(" \u573A", " matches")}</span></div>${renderH2HMatchList(wc.matches)}</div>`;
@@ -5330,6 +5333,9 @@ var require_match_renderers = __commonJS({
                 <stop offset="100%" stop-color="#f87171" stop-opacity="0.2"/>
             </linearGradient>
             <clipPath id="tb-avatar-clip"><circle r="2.8" cx="0" cy="0"/></clipPath>
+            <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="1.2"/>
+            </filter>
         </defs>`;
         svg += `<rect width="100" height="160" fill="url(#tb-pitch)"/>`;
         for (let i = 0; i < 20; i += 2) svg += `<rect x="0" y="${i * 8}" width="100" height="8" fill="rgba(255,255,255,0.03)"/>`;
@@ -5420,37 +5426,6 @@ var require_match_renderers = __commonJS({
           const t = tmpl[idx] || tmpl[tmpl.length - 1] || { x: 50, y: 50 };
           return { cx: t.x, cy: t.y * 1.6 };
         };
-        svg += `<g class="pitch-pair">`;
-        const pairsToRender = matchupData.pairs && matchupData.pairs.length > 0 ? matchupData.pairs : matchups;
-        for (const m of pairsToRender) {
-          if (m.zone === "\u95E8\u5C06" || m.zone === "Goalkeeper") continue;
-          const hName = m.home?.name || m.homePlayer;
-          const aName = m.away?.name || m.awayPlayer;
-          const hp = findPlayer(home.players, hName);
-          const ap = findPlayer(away.players, aName);
-          if (!hp || !ap) continue;
-          const hIdx = home.players.indexOf(hp);
-          const aIdx = away.players.indexOf(ap);
-          const hC = coord(hp, hIdx, "home");
-          const aC = coord(ap, aIdx, "away");
-          const isKey = m.key || m.type === "critical";
-          let gradId = "tb-m-key";
-          let strokeW = isKey ? 1.2 : 0.5;
-          let opacity = isKey ? 0.75 : 0.22;
-          if (isKey) {
-            if (m.advantage === "home") gradId = "tb-m-critical-home";
-            else if (m.advantage === "away") gradId = "tb-m-critical-away";
-            else gradId = "tb-m-even";
-          }
-          const dashArray = isKey ? "none" : "2,3";
-          svg += `<line x1="${hC.cx}" y1="${hC.cy}" x2="${aC.cx}" y2="${aC.cy}" stroke="url(#${gradId})" stroke-width="${strokeW}" opacity="${opacity}" stroke-linecap="round"${dashArray !== "none" ? ` stroke-dasharray="${dashArray}"` : ""}/>`;
-          if (isKey) {
-            const mx = (hC.cx + aC.cx) / 2, my = (hC.cy + aC.cy) / 2;
-            const dotColor = m.advantage === "home" ? "#60a5fa" : m.advantage === "away" ? "#f87171" : "#fbbf24";
-            svg += `<circle cx="${mx}" cy="${my}" r="1.2" fill="${dotColor}" opacity="1"/>`;
-          }
-        }
-        svg += `</g>`;
         const TEAM_STYLE = {
           home: { fill: "rgba(59,130,246,0.6)", text: "white" },
           away: { fill: "rgba(239,68,68,0.6)", text: "white" }
@@ -5461,38 +5436,13 @@ var require_match_renderers = __commonJS({
           if (!p) return "";
           const { cx, cy } = coord(p, idx, side);
           const st = TEAM_STYLE[side] || TEAM_STYLE.home;
-          const jersey = p.number ?? p.jersey ?? "";
           const playerId = p.playerId || p.id || p.espnId || "";
           const rawName = p.name || "";
-          const nameZh = window.WorldCup.I18n?.translatePlayerName(rawName) || rawName;
-          const shortName = nameZh.includes("\xB7") ? nameZh.split("\xB7").pop() : nameZh.split(" ").pop();
-          const pNameNorm = normalizeName(rawName);
-          const scoredGoals = goals.filter((g) => {
-            const gn = normalizeName(g.player);
-            return gn === pNameNorm || pNameNorm.includes(gn) || gn.includes(pNameNorm);
-          }).length;
-          const sideMap = subOffMap.get(side);
-          const subOff = sideMap ? sideMap.get(normalizeName(rawName)) : null;
-          const opacityAttr = subOff ? "0.45" : "0.97";
+          const rating = Math.max(50, Math.min(100, Number(p.rating) || 65));
+          const radius = 2.6 + (rating - 50) * 0.055;
           let node = `<g class="pitch-${side}-player" data-action="open-player-detail" data-player-id="${attr(String(playerId))}" data-player-name="${attr(rawName)}" style="cursor:pointer">`;
-          node += `<g transform="translate(${cx},${cy})" opacity="${opacityAttr}">`;
-          node += `<circle r="${R}" fill="${st.fill}" stroke="white" stroke-width="0.3"/>`;
-          node += `<text x="0" y="0.8" text-anchor="middle" font-size="2.2" font-weight="bold" fill="${st.text}" dominant-baseline="middle" style="pointer-events:none">${esc(String(jersey))}</text>`;
-          let nameText = esc(shortName);
-          if (scoredGoals > 0) {
-            nameText += " \u26BD".repeat(scoredGoals);
-          }
-          const nameColor = scoredGoals > 0 ? "#FFD600" : "white";
-          const nameY = side === "home" ? R + 2.5 : -R - 1.5;
-          node += `<text x="0" y="${nameY}" text-anchor="middle" font-size="2" font-weight="bold" fill="${nameColor}" style="pointer-events:none">${nameText}</text>`;
-          node += `</g>`;
-          if (subOff) {
-            node += `<g transform="translate(${cx},${cy + R + 2.5})">`;
-            node += `<circle r="1.5" fill="#ef4444" stroke="white" stroke-width="0.2"/>`;
-            node += `<text x="0" y="0.5" text-anchor="middle" font-size="1.8" font-weight="bold" fill="white" dominant-baseline="middle">\u2193</text>`;
-            node += `</g>`;
-            node += `<text x="${cx}" y="${cy + R + 5.5}" text-anchor="middle" font-size="1.5" font-weight="bold" fill="#ef4444">${esc(String(subOff.minute))}'</text>`;
-          }
+          node += `<circle cx="${cx}" cy="${cy}" r="${radius * 1.35}" fill="${st.fill}" opacity="0.22" filter="url(#tb-ability-blur)"/>`;
+          node += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.fill}" opacity="0.55" filter="url(#tb-ability-blur)"/>`;
           node += `</g>`;
           return node;
         };
