@@ -4,12 +4,39 @@
         const { tx, esc, attr } = window.WorldCup.Utils;
         const t = window.t;
         const state = window.WorldCup.State;
-        const res = await window.WorldCup.ApiClient.get('/api/schedule');
-        if (!res.ok || !res.data?.matches) {
-            document.getElementById('schedule-list').innerHTML = `<div class="text-center py-10 text-gray-500">${tx('赛程加载失败', 'Failed to load schedule')}</div>`;
+
+        if (state.scheduleLoaded) return;
+        if (state.scheduleLoadPromise) {
+            try { await state.scheduleLoadPromise; } catch (e) {}
             return;
         }
-        state.scheduleCache = res.data.matches;
+
+        const doLoad = async () => {
+            const res = await window.WorldCup.ApiClient.get('/api/schedule');
+            if (!res.ok || !res.data?.matches) {
+                document.getElementById('schedule-list').innerHTML = `<div class="text-center py-10 text-gray-500">${tx('赛程加载失败', 'Failed to load schedule')}</div>`;
+                state.scheduleLoaded = false;
+                throw new Error('Failed to load schedule');
+            }
+            const matchMap = new Map();
+            state.scheduleCache.forEach(m => matchMap.set(String(m.id), m));
+            res.data.matches.forEach(m => matchMap.set(String(m.id), Object.assign(matchMap.get(String(m.id)) || {}, m)));
+            // To ensure matches are sorted by date or whatever order the API returns
+            // It's probably better to use the API's sorting order but populate missing from cache
+            // Actually the requirement is: "用完整结果替换或规范合并临时缓存"
+            state.scheduleCache = Array.from(matchMap.values());
+            state.scheduleLoaded = true;
+        };
+
+        state.scheduleLoadPromise = doLoad().finally(() => {
+            state.scheduleLoadPromise = null;
+        });
+
+        try {
+            await state.scheduleLoadPromise;
+        } catch (e) {
+            return;
+        }
 
         const byDate = {};
         state.scheduleCache.forEach(m => {

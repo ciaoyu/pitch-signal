@@ -36,7 +36,7 @@
         const bb = document.getElementById('bottom-bar-inner');
         if (bb) bb.style.maxWidth = w;
 
-        if (state.tab === 'schedule' && !state.scheduleCache.length) loadSchedule();
+        if (state.tab === 'schedule' && !state.scheduleLoaded) loadSchedule();
         if (state.tab === 'standings') loadStandings();
         if (state.tab === 'teams') {
             document.getElementById('team-detail').classList.add('hidden');
@@ -58,7 +58,10 @@
         btn.style.animation = 'spin 0.5s linear';
         setTimeout(() => (btn.style.animation = ''), 500);
         loadScores();
-        if (state.tab === 'schedule') loadSchedule();
+        if (state.tab === 'schedule') {
+            state.scheduleLoaded = false;
+            loadSchedule();
+        }
         if (state.tab === 'standings') loadStandings();
     }
 

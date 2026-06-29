@@ -11,10 +11,12 @@ window.WorldCup.Utils = {};
 // ========== State ==========
 let tab = 'live';
 let scheduleCache = [];
+let scheduleLoaded = false;
+let scheduleLoadPromise = null;
 let uiLang = localStorage.getItem('worldcup_lang') || 'zh';
 let pitchViewMode = 'both'; // 'home', 'away', 'both'
 // Mount state
-window.WorldCup.State = { tab, scheduleCache, uiLang, pitchViewMode };
+window.WorldCup.State = { tab, scheduleCache, scheduleLoaded, scheduleLoadPromise, uiLang, pitchViewMode };
 
 const I18N = {
     zh: {
