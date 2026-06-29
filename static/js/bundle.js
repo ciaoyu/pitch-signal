@@ -6077,30 +6077,46 @@ var require_match_renderers = __commonJS({
       }
       function renderHudStatsPanel(matchData2, pred) {
         const stats = matchData2?.teamStats;
-        if (!stats || stats.length < 2) {
+        if (!stats || stats.length === 0) {
           return `<div class="text-gray-500 text-xs text-center py-6">${tx("\u6682\u65E0\u7EDF\u8BA1\u6570\u636E", "No stats available")}</div>`;
         }
-        const hs = stats[0]?.statistics || [];
-        const as = stats[1]?.statistics || [];
-        const findStat = (arr, key) => {
-          const s = arr.find((x) => x.name === key || x.abbreviation === key);
-          return s ? String(s.displayValue || s.value || "0") : "0";
+        const isFlat = stats.some((stat) => stat && ("home" in stat || "away" in stat));
+        const hs = isFlat ? [] : stats[0]?.statistics || [];
+        const as = isFlat ? [] : stats[1]?.statistics || [];
+        const flatMap = new Map(stats.map((stat) => [stat.name || stat.abbreviation, stat]));
+        const findStat = (side, keys) => {
+          const candidates = Array.isArray(keys) ? keys : [keys];
+          if (isFlat) {
+            for (const key of candidates) {
+              const stat2 = flatMap.get(key);
+              if (stat2 && stat2[side] != null) return String(stat2[side]);
+            }
+            return "0";
+          }
+          const arr = side === "home" ? hs : as;
+          const stat = arr.find((item) => candidates.includes(item.name) || candidates.includes(item.abbreviation));
+          return stat ? String(stat.displayValue ?? stat.value ?? "0") : "0";
         };
         const pct = (v) => parseFloat(v) || 0;
+        const pctDisplay = (v) => {
+          const n = pct(v);
+          const normalized = n > 0 && n <= 1 ? n * 100 : n;
+          return `${Math.round(normalized * 10) / 10}%`;
+        };
         const statRows = [
-          { key: "Possession", label: tx("\u63A7\u7403\u7387", "Possession"), fmt: (v) => v.includes("%") ? v : v + "%" },
-          { key: "Total Shots", label: tx("\u5C04\u95E8", "Shots"), fmt: (v) => v },
-          { key: "Shots on Target", label: tx("\u5C04\u6B63", "On Target"), fmt: (v) => v },
-          { key: "PassAccuracy", label: tx("\u4F20\u7403\u6210\u529F", "Pass Acc."), fmt: (v) => v.includes("%") ? v : v + "%" },
-          { key: "Corners", label: tx("\u89D2\u7403", "Corners"), fmt: (v) => v },
-          { key: "Fouls Committed", label: tx("\u72AF\u89C4", "Fouls"), fmt: (v) => v }
+          { keys: ["possessionPct", "Possession"], label: tx("\u63A7\u7403\u7387", "Possession"), fmt: pctDisplay },
+          { keys: ["totalShots", "Total Shots"], label: tx("\u5C04\u95E8", "Shots"), fmt: (v) => v },
+          { keys: ["shotsOnTarget", "Shots on Target"], label: tx("\u5C04\u6B63", "On Target"), fmt: (v) => v },
+          { keys: ["passPct", "PassAccuracy"], label: tx("\u4F20\u7403\u6210\u529F", "Pass Acc."), fmt: pctDisplay },
+          { keys: ["wonCorners", "Corners"], label: tx("\u89D2\u7403", "Corners"), fmt: (v) => v },
+          { keys: ["foulsCommitted", "Fouls Committed"], label: tx("\u72AF\u89C4", "Fouls"), fmt: (v) => v }
         ];
         let html = `<div style="padding:16px 18px">`;
         html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx("\u6BD4\u8D5B\u7EDF\u8BA1", "MATCH STATISTICS")}</div>`;
         html += `<div style="display:flex;flex-direction:column;gap:12px">`;
         for (const row of statRows) {
-          const hRaw = findStat(hs, row.key);
-          const aRaw = findStat(as, row.key);
+          const hRaw = findStat("home", row.keys);
+          const aRaw = findStat("away", row.keys);
           const hVal = row.fmt(hRaw);
           const aVal = row.fmt(aRaw);
           const hNum = pct(hRaw);
@@ -6142,8 +6158,12 @@ var require_match_renderers = __commonJS({
         const hw = Math.round((pred.homeWin || 0) * 100);
         const dr = Math.round((pred.draw || 0) * 100);
         const aw = 100 - hw - dr;
-        const score = pred.likelyScore || "? : ?";
-        const [sH, sA] = score.includes(":") ? score.split(":").map((s) => s.trim()) : ["?", "?"];
+        const expectedHome = Number(pred.goals?.homeExpected);
+        const expectedAway = Number(pred.goals?.awayExpected);
+        const fallbackScore = Number.isFinite(expectedHome) && Number.isFinite(expectedAway) ? `${Math.max(0, Math.round(expectedHome))}-${Math.max(0, Math.round(expectedAway))}` : `${hw > aw ? 1 : 0}-${aw > hw ? 1 : 0}`;
+        const score = String(pred.likelyScore || fallbackScore);
+        const scoreParts = score.split(/[-:]/).map((s) => s.trim());
+        const [sH, sA] = scoreParts.length >= 2 ? scoreParts : ["?", "?"];
         const arcAngle = hw / 100 * Math.PI;
         const r = 75;
         const cx = 90, cy = 85;
