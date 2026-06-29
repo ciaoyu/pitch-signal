@@ -10,7 +10,7 @@
     "healthcheck:native": "node scripts/runtime-healthcheck.js --native-only",
     "check:env": "node scripts/check-env.js",
     "generate:ai-postmortem": "node scripts/generate-ai-postmortem.js",
-    "test": "TEST_MODE=1 TEST_DB_PATH=:memory: NODE_ENV=test sh -c 'for f in scripts/test-*.js; do echo \"Running $f\"; node \"$f\" || exit 1; done'",
+    "test": "node scripts/test-runner.js",
     "start": "node server.js"
   },
   "keywords": [],

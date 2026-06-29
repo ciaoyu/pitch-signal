@@ -2,8 +2,7 @@
 'use strict';
 
 /**
- * node:test 测试运行器
- * 替代旧的手工 testAssert 模式，使用 Node.js 内置测试框架。
+ * 统一测试运行器 — PitchSignal Test Suite
  *
  * 用法:
  *   node scripts/test-runner.js                    # 运行所有
@@ -17,17 +16,28 @@ const fs = require('fs');
 const ROOT = path.join(__dirname, '..');
 const TEST_DIR = path.join(ROOT, 'scripts');
 
-// 测试文件列表（按依赖顺序）
+// 所有测试文件（字母序，含核心+边界）
 const TEST_FILES = [
-  'test-elo.js',
-  'test-poisson.js',
-  'test-prediction.js',
   'test-backtest-sort.js',
-  'test-pre-match-snapshot-guard.js',
-  'test-same-day-leakage.js',
+  'test-bracket-updater.js',
+  'test-elo.js',
   'test-eventFilter.js',
+  'test-final-round-context.js',
+  'test-fuzzy-match.js',
+  'test-matchup-spatial.js',
+  'test-output-rules.js',
+  'test-parse-event-stage.js',
+  'test-poisson.js',
   'test-post-match-review.js',
+  'test-pre-match-snapshot-guard.js',
+  'test-prediction.js',
+  'test-roster-cache.js',
+  'test-same-day-leakage.js',
+  'test-security.js',
   'test-services.js',
+  'test-tactical-board.js',
+  'test-team-resolver.js',
+  'test-venueFactors.js',
 ];
 
 const filter = process.argv.includes('--match')
@@ -36,9 +46,12 @@ const filter = process.argv.includes('--match')
 
 let totalPassed = 0;
 let totalFailed = 0;
+let totalSkipped = 0;
 const failures = [];
+let totalAssertions = 0;
+let totalFailedAssertions = 0;
 
-console.log('=== PitchSignal Test Suite (node:test) ===\n');
+console.log('=== PitchSignal Test Suite ===\n');
 
 for (const file of TEST_FILES) {
   if (filter && !file.toLowerCase().includes(filter.toLowerCase())) continue;
@@ -54,47 +67,57 @@ for (const file of TEST_FILES) {
     const env = {
       ...process.env,
       TEST_MODE: '1',
-      TEST_DB_PATH: ':memory:',
+      TEST_DB_PATH: path.join(ROOT, 'data', 'test.db'),
       NODE_ENV: 'test',
     };
-    execSync(`node "${filePath}"`, {
+    const output = execSync(`node "${filePath}"`, {
       cwd: ROOT,
       env,
       stdio: 'pipe',
-      timeout: 30000,
-    });
-    console.log('✅ PASS');
-    totalPassed++;
+      timeout: 60000,
+    }).toString();
+
+    // Parse assertion counts from output (lines containing "passed" and "failed")
+    const passMatch = output.match(/(\d+)\s+passed/);
+    const failMatch = output.match(/(\d+)\s+failed/);
+    if (passMatch) totalAssertions += parseInt(passMatch[1]);
+    if (failMatch) totalFailedAssertions += parseInt(failMatch[1]);
+
+    if (output.includes('⚠️  SKIP:') || output.includes('⚠️ SKIP:')) {
+      console.log('⚠️  SKIP');
+      totalSkipped++;
+    } else {
+      console.log('✅ PASS');
+      totalPassed++;
+    }
   } catch (e) {
     const stderr = e.stderr?.toString() || '';
     const stdout = e.stdout?.toString() || '';
 
-    // Count individual test results from output
-    const passCount = (stdout.match(/PASS:|✅/g) || []).length;
-    const failCount = (stdout.match(/FAIL:|❌/g) || []).length;
+    // Try to extract assertion counts from partial output
+    const passMatch = stdout.match(/(\d+)\s+passed/);
+    const failMatch = stdout.match(/(\d+)\s+failed/);
+    if (passMatch) totalAssertions += parseInt(passMatch[1]);
+    if (failMatch) totalFailedAssertions += parseInt(failMatch[1]);
 
-    console.log(`❌ FAIL (${failCount} failures)`);
+    console.log('❌ FAIL');
     totalFailed++;
-
-    failures.push({
-      file,
-      passCount,
-      failCount,
-      output: (stdout + '\n' + stderr).slice(-500),
-    });
+    failures.push({ file, output: (stdout + '\n' + stderr).slice(-600) });
   }
 }
 
 // Summary
+const totalSuites = totalPassed + totalFailed + totalSkipped;
 console.log('\n============================');
-console.log(`Results: ${totalPassed} passed, ${totalFailed} failed, ${totalPassed + totalFailed} total suites`);
+console.log(`Suites:  ${totalPassed} passed, ${totalFailed} failed, ${totalSkipped} skipped, ${totalSuites} total`);
+console.log(`Asserts: ${totalAssertions} passed, ${totalFailedAssertions} failed`);
 console.log('============================');
 
 if (failures.length > 0) {
   console.log('\n--- Failure Details ---');
   for (const f of failures) {
-    console.log(`\n❌ ${f.file} (${f.failCount} failures):`);
-    console.log(f.output.slice(0, 300));
+    console.log(`\n❌ ${f.file}:`);
+    console.log(f.output.slice(0, 400));
   }
   process.exit(1);
 }
