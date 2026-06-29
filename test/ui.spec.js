@@ -28,6 +28,7 @@ async function waitForServer(url, timeoutMs = 15000) {
 }
 
 async function runTests() {
+  console.log('⚠️ This is a JSDOM DOM Integration Test, not a real browser.');
   console.log(`🚀 Starting server on port ${PORT}...`);
 
   // Use a copy of the predictions database to avoid writing to the real db
@@ -38,7 +39,7 @@ async function runTests() {
   }
 
   const serverProcess = spawn('node', ['server.js'], {
-    env: { ...process.env, PORT, NODE_ENV: 'test', TEST_DB_PATH: tmpDbPath }
+    env: { ...process.env, PORT, NODE_ENV: 'test', TEST_DB_PATH: tmpDbPath, DISABLE_BACKGROUND_JOBS: 'true' }
   });
   serverProcess.stdout.pipe(process.stdout);
   serverProcess.stderr.pipe(process.stderr);
@@ -84,7 +85,12 @@ async function runTests() {
           // Remove jsdom's AbortSignal as it's incompatible with Node's fetch
           const { signal, ...cleanOptions } = options;
           try {
-            return await global.fetch(url, cleanOptions);
+            const res = await global.fetch(url, cleanOptions);
+            if (res.status >= 500) {
+               console.error(`❌ Mock fetch encountered ${res.status} error for ${url}`);
+               uncaughtErrors++;
+            }
+            return res;
           } catch (err) {
             console.log(`❌ Mock fetch error for ${url}:`, err);
             throw err;
@@ -208,7 +214,7 @@ async function runTests() {
     console.log('12. Checking Match Detail Modal...');
     dom.window.eval("switchTab('schedule')");
     await new Promise(r => setTimeout(r, 1000));
-    
+
     const matchCards = doc.querySelectorAll('[data-match-id]');
     if (matchCards.length > 0) {
       matchCards[0].click();
@@ -240,9 +246,13 @@ async function runTests() {
     console.error('💥 Test failed:', err);
     process.exitCode = 1;
   } finally {
+    console.log('🛑 Shutting down server gracefully...');
     serverProcess.kill('SIGTERM');
+    await new Promise(resolve => {
+      serverProcess.on('exit', () => resolve());
+    });
     if (fs.existsSync(tmpDbPath)) fs.unlinkSync(tmpDbPath);
-    process.exit(process.exitCode || 0);
+    console.log('👋 Test run complete.');
   }
 }
 
