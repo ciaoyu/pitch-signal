@@ -172,10 +172,13 @@
             </div>
         </div>`;
 
-        // RIGHT: Win probability + Venue (280px)
+        // RIGHT: Win probability + Pressure + Venue (280px)
         html += `<div id="hud-right" class="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx('加载预测...', 'Loading prediction...')}</div>
+            </div>
+            <div id="hud-pressure-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
+                <div id="hud-pressure"></div>
             </div>
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-venue">${tx('加载场地...', 'Loading venue...')}</div>
@@ -249,10 +252,26 @@
             if (el) el.innerHTML = renderMatchWeatherBlock(matchData.weather);
         }
 
+        // Pressure → HUD right panel (live + finished matches only)
+        if (isLive || isFinishedMatch) {
+            api('/api/match/' + id + '/pressure').then(pressureRes => {
+                if (myReqId !== _openMatchReqId) return;
+                const pd = pressureRes?.data || pressureRes;
+                const wrap = document.getElementById('hud-pressure-wrap');
+                const el = document.getElementById('hud-pressure');
+                if (el && pd && !pd.error && (pd.current || (pd.curve && pd.curve.length > 0))) {
+                    el.innerHTML = MR().renderPressurePanel(pd, homeName, awayName);
+                    if (wrap) wrap.style.display = '';
+                }
+            }).catch(() => {});
+        }
+
         // Stats → left panel
-        const isFin = isFinishedMatch;
-        if (isFin && matchData.teamStats?.length) {
-            const statsEl = document.getElementById('detail-content-stats');
+        const statsEl = document.getElementById('detail-content-stats');
+        const hId = mHomeId || matchData.home?.id;
+        const aId = mAwayId || matchData.away?.id;
+
+        if (isLive && matchData.teamStats?.length) {
             if (statsEl) {
                 let statsHtml = '';
                 if (matchData.goals?.length) {
@@ -263,20 +282,24 @@
                 statsHtml += MR().renderHudStatsPanel(matchData, null);
                 statsEl.innerHTML = statsHtml;
             }
-        } else {
-            // Pre-match: show recent stats
-            const hId = mHomeId || matchData.home?.id, aId = mAwayId || matchData.away?.id;
-            if (hId && aId) {
-                Promise.allSettled([api('/api/team/' + hId + '/recent-stats'), api('/api/team/' + aId + '/recent-stats')]).then(([h, a]) => {
-                    if (myReqId !== _openMatchReqId) return;
-                    const el = document.getElementById('detail-content-stats'); if (!el) return;
-                    const hVal = h.value?.data || h.value; const aVal = a.value?.data || a.value;
-                    const hs = (h.status === 'fulfilled' && hVal?.stats) ? hVal : null;
-                    const as2 = (a.status === 'fulfilled' && aVal?.stats) ? aVal : null;
-                    if (!hs && !as2) { el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`; return; }
-                    el.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('近期场均', 'RECENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
-                }).catch((err) => { console.error('match-detail: recent-stats load failed:', err); if (myReqId !== _openMatchReqId) return; const el = document.getElementById('detail-content-stats'); if (el) el.innerHTML = ''; });
-            }
+        } else if (hId && aId && statsEl) {
+            // Non-live: show recent completed-match averages
+            Promise.allSettled([api('/api/team/' + hId + '/recent-stats'), api('/api/team/' + aId + '/recent-stats')]).then(([h, a]) => {
+                if (myReqId !== _openMatchReqId) return;
+                const hVal = h.value?.data || h.value;
+                const aVal = a.value?.data || a.value;
+                const hs = (h.status === 'fulfilled' && hVal?.stats) ? hVal : null;
+                const as2 = (a.status === 'fulfilled' && aVal?.stats) ? aVal : null;
+                if (!hs && !as2) {
+                    statsEl.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`;
+                    return;
+                }
+                statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('近期场均', 'RECENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
+            }).catch((err) => {
+                console.error('match-detail: recent-stats load failed:', err);
+                if (myReqId !== _openMatchReqId) return;
+                if (statsEl) statsEl.innerHTML = '';
+            });
         }
 
         // H2H → left panel

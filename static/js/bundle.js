@@ -3288,6 +3288,9 @@ var require_match_detail = __commonJS({
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx("\u52A0\u8F7D\u9884\u6D4B...", "Loading prediction...")}</div>
             </div>
+            <div id="hud-pressure-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
+                <div id="hud-pressure"></div>
+            </div>
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-venue">${tx("\u52A0\u8F7D\u573A\u5730...", "Loading venue...")}</div>
             </div>
@@ -3345,9 +3348,23 @@ var require_match_detail = __commonJS({
           const el = document.getElementById("hud-venue");
           if (el) el.innerHTML = renderMatchWeatherBlock(matchData2.weather);
         }
-        const isFin = isFinishedMatch;
-        if (isFin && matchData2.teamStats?.length) {
-          const statsEl = document.getElementById("detail-content-stats");
+        if (isLive || isFinishedMatch) {
+          api("/api/match/" + id + "/pressure").then((pressureRes) => {
+            if (myReqId !== _openMatchReqId) return;
+            const pd = pressureRes?.data || pressureRes;
+            const wrap = document.getElementById("hud-pressure-wrap");
+            const el = document.getElementById("hud-pressure");
+            if (el && pd && !pd.error && (pd.current || pd.curve && pd.curve.length > 0)) {
+              el.innerHTML = MR().renderPressurePanel(pd, homeName, awayName);
+              if (wrap) wrap.style.display = "";
+            }
+          }).catch(() => {
+          });
+        }
+        const statsEl = document.getElementById("detail-content-stats");
+        const hId = mHomeId || matchData2.home?.id;
+        const aId = mAwayId || matchData2.away?.id;
+        if (isLive && matchData2.teamStats?.length) {
           if (statsEl) {
             let statsHtml = "";
             if (matchData2.goals?.length) {
@@ -3358,29 +3375,23 @@ var require_match_detail = __commonJS({
             statsHtml += MR().renderHudStatsPanel(matchData2, null);
             statsEl.innerHTML = statsHtml;
           }
-        } else {
-          const hId = mHomeId || matchData2.home?.id, aId = mAwayId || matchData2.away?.id;
-          if (hId && aId) {
-            Promise.allSettled([api("/api/team/" + hId + "/recent-stats"), api("/api/team/" + aId + "/recent-stats")]).then(([h, a]) => {
-              if (myReqId !== _openMatchReqId) return;
-              const el = document.getElementById("detail-content-stats");
-              if (!el) return;
-              const hVal = h.value?.data || h.value;
-              const aVal = a.value?.data || a.value;
-              const hs = h.status === "fulfilled" && hVal?.stats ? hVal : null;
-              const as2 = a.status === "fulfilled" && aVal?.stats ? aVal : null;
-              if (!hs && !as2) {
-                el.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx("\u8D5B\u524D\u6682\u65E0\u53EF\u7528\u7EDF\u8BA1", "No pre-match stats")}</div>`;
-                return;
-              }
-              el.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx("\u8FD1\u671F\u573A\u5747", "RECENT AVG")}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
-            }).catch((err) => {
-              console.error("match-detail: recent-stats load failed:", err);
-              if (myReqId !== _openMatchReqId) return;
-              const el = document.getElementById("detail-content-stats");
-              if (el) el.innerHTML = "";
-            });
-          }
+        } else if (hId && aId && statsEl) {
+          Promise.allSettled([api("/api/team/" + hId + "/recent-stats"), api("/api/team/" + aId + "/recent-stats")]).then(([h, a]) => {
+            if (myReqId !== _openMatchReqId) return;
+            const hVal = h.value?.data || h.value;
+            const aVal = a.value?.data || a.value;
+            const hs = h.status === "fulfilled" && hVal?.stats ? hVal : null;
+            const as2 = a.status === "fulfilled" && aVal?.stats ? aVal : null;
+            if (!hs && !as2) {
+              statsEl.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx("\u8D5B\u524D\u6682\u65E0\u53EF\u7528\u7EDF\u8BA1", "No pre-match stats")}</div>`;
+              return;
+            }
+            statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx("\u8FD1\u671F\u573A\u5747", "RECENT AVG")}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
+          }).catch((err) => {
+            console.error("match-detail: recent-stats load failed:", err);
+            if (myReqId !== _openMatchReqId) return;
+            if (statsEl) statsEl.innerHTML = "";
+          });
         }
         api("/api/h2h/" + id, { timeout: 8e3 }).then((h2hRes) => {
           if (myReqId !== _openMatchReqId) return;
@@ -4196,7 +4207,7 @@ var require_elo_prediction = __commonJS({
                 ${predHtml}
             </div>`;
         }
-        if (qualiData && typeof qualiData === "object" && !Array.isArray(qualiData)) {
+        if (!isKnockoutStage && qualiData && typeof qualiData === "object" && !Array.isArray(qualiData)) {
           const qualiGroups = Object.values(qualiData);
           if (qualiGroups.length) {
             html += `<div class="pred-section" style="margin-top:12px;padding:16px">
@@ -6393,6 +6404,57 @@ var require_match_renderers = __commonJS({
         html += `</div>`;
         return html;
       }
+      function renderPressurePanel(pressureData, homeName, awayName) {
+        if (!pressureData || pressureData.error) return "";
+        const current = pressureData.current;
+        const curve = Array.isArray(pressureData.curve) ? pressureData.curve : [];
+        if (!current && curve.length === 0) return "";
+        const homePI = current?.home ?? 0;
+        const awayPI = current?.away ?? 0;
+        const total = homePI + awayPI || 1;
+        const homePct = Math.round(homePI / total * 100);
+        const awayPct = 100 - homePct;
+        const dominant = current?.dominant;
+        const minute = current?.atMinute;
+        const domLabel = dominant === "home" ? `<span style="color:rgba(59,130,246,.7)">${esc(homeName)}</span>` : dominant === "away" ? `<span style="color:rgba(248,113,113,.6)">${esc(awayName)}</span>` : `<span style="color:rgba(248,250,252,.25)">${tx("\u5747\u52BF", "Even")}</span>`;
+        let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx("\u6001\u52BF\u8D70\u52BF", "MOMENTUM")}</div>`;
+        if (curve.length > 1) {
+          const W = 244, H = 52;
+          const maxMin = Math.max(...curve.map((r) => r.minute), 90);
+          const toX = (m) => (m / maxMin * (W - 8) + 4).toFixed(1);
+          const toY = (v) => (H - 4 - Math.min(v, 100) / 100 * (H - 10)).toFixed(1);
+          const hPts = curve.map((r) => `${toX(r.minute)},${toY(r.pressure_home)}`).join(" ");
+          const aPts = curve.map((r) => `${toX(r.minute)},${toY(r.pressure_away)}`).join(" ");
+          const last = curve[curve.length - 1];
+          const midY = toY(50);
+          html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:10px;overflow:visible">
+                <line x1="4" y1="${midY}" x2="${W - 4}" y2="${midY}" stroke="rgba(255,255,255,.05)" stroke-width="1" stroke-dasharray="2,4"/>
+                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.55)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.45)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_home)}" r="2.5" fill="rgba(59,130,246,.8)"/>
+                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_away)}" r="2.5" fill="rgba(248,113,113,.7)"/>
+            </svg>`;
+        }
+        html += `<div style="display:flex;height:22px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:6px">
+            <div style="width:${homePct}%;background:rgba(59,130,246,.18);display:flex;align-items:center;justify-content:center;min-width:28px">
+                <span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.75)">${homePI.toFixed(0)}</span>
+            </div>
+            <div style="width:${awayPct}%;background:rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;min-width:28px">
+                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.55)">${awayPI.toFixed(0)}</span>
+            </div>
+        </div>`;
+        html += `<div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || "H")}</span>
+            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${domLabel} ${tx("\u4E3B\u5BFC", "dominant")}${minute != null ? ` \xB7 ${minute}'` : ""}</span>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || "A")}</span>
+        </div>`;
+        html += `<div style="display:flex;align-items:center;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(59,130,246,.55)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(248,113,113,.45)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">${tx("\u538B\u529B\u6307\u6570", "PI 0\u2013100")}</span>
+        </div>`;
+        return html;
+      }
       function renderHudVenuePanel(venueData) {
         if (!venueData || venueData.error) {
           return "";
@@ -6476,7 +6538,8 @@ var require_match_renderers = __commonJS({
         // HUD renderers
         renderHudStatsPanel,
         renderHudWinProbPanel,
-        renderHudVenuePanel
+        renderHudVenuePanel,
+        renderPressurePanel
       };
     })();
   }
