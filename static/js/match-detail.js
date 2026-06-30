@@ -177,6 +177,9 @@
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx('加载预测...', 'Loading prediction...')}</div>
             </div>
+            <div id="hud-liveprob-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
+                <div id="hud-liveprob"></div>
+            </div>
             <div id="hud-pressure-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
                 <div id="hud-pressure"></div>
             </div>
@@ -250,6 +253,35 @@
         } else if (matchData.weather) {
             const el = document.getElementById('hud-venue');
             if (el) el.innerHTML = renderMatchWeatherBlock(matchData.weather);
+        }
+
+        // Live probability curve → HUD right panel (live + finished matches only)
+        if (isLive || isFinishedMatch) {
+            let liveProbUrl = '/api/match/' + id + '/live-probability';
+            if (isLive && homeScore !== '-' && awayScore !== '-') {
+                const minute = matchData.clock?.value != null
+                    ? Math.round(matchData.clock.value / 60)
+                    : (matchData.status?.displayClock ? parseInt(matchData.status.displayClock) : 0);
+                const params = new URLSearchParams({
+                    homeScore: String(homeScore),
+                    awayScore: String(awayScore),
+                    minute: String(Math.min(minute || 0, 120)),
+                });
+                liveProbUrl += '?' + params.toString();
+            }
+            api(liveProbUrl).then(lpRes => {
+                if (myReqId !== _openMatchReqId) return;
+                const lpd = lpRes?.data || lpRes;
+                const wrap = document.getElementById('hud-liveprob-wrap');
+                const el = document.getElementById('hud-liveprob');
+                if (el && lpd && !lpd.error && lpd.preMatch?.homeWin != null) {
+                    const rendered = MR().renderLiveProbPanel(lpd, homeName, awayName);
+                    if (rendered) {
+                        el.innerHTML = rendered;
+                        if (wrap) wrap.style.display = '';
+                    }
+                }
+            }).catch(() => {});
         }
 
         // Pressure → HUD right panel (live + finished matches only)
@@ -360,7 +392,7 @@
         });
 
         // Review → bottom dock
-        if (isFin && mHomeId && mAwayId) {
+        if (isFinishedMatch && mHomeId && mAwayId) {
             window.WorldCup.ApiClient.get('/api/post-match-review/' + id, { timeout: 8000 }).then(r => r.data).then(async review => {
                 if (myReqId !== _openMatchReqId) return;
                 if (review && !review.error) {

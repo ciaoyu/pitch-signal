@@ -1395,37 +1395,57 @@ window.WorldCup.MatchRenderers = (() => {
         const scoreParts = score.split(/[-:]/).map(s => s.trim());
         const [sH, sA] = scoreParts.length >= 2 ? scoreParts : ['?', '?'];
 
-        // Arc: hw% of 180° semicircle
-        const arcAngle = (hw / 100) * Math.PI;
-        const r = 75;
-        const cx = 90, cy = 85;
-        const x2 = cx + r * Math.cos(Math.PI - arcAngle);
-        const y2 = cy - r * Math.sin(Math.PI - arcAngle);
-        const largeArc = hw > 50 ? 1 : 0;
+        // Three-segment arc: left=home(blue) → draw(amber) → away(red)=right
+        // Semicircle: center (90,76), radius 66, sweeps left→top→right
+        const cx = 90, cy = 76, r = 66, SW = 10;
+        const pt = pct => {
+            const θ = Math.PI * (1 - pct / 100);
+            return { x: +(cx + r * Math.cos(θ)).toFixed(2), y: +(cy - r * Math.sin(θ)).toFixed(2) };
+        };
+        const p0 = pt(0);           // left (home start)
+        const p1 = pt(hw);          // home/draw boundary
+        const p2 = pt(hw + dr);     // draw/away boundary
+        const p3 = pt(100);         // right (away end)
+        const seg = (a, b, col) => (a.x === b.x && a.y === b.y) ? '' :
+            `<path d="M${a.x} ${a.y} A${r} ${r} 0 0 1 ${b.x} ${b.y}" fill="none" stroke="${col}" stroke-width="${SW}" stroke-linecap="butt"/>`;
 
         let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
-        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx('胜率预测', 'WIN PROBABILITY')}</div>`;
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('胜率预测', 'WIN PROBABILITY')}</div>`;
 
-        // SVG arc
-        html += `<div style="text-align:center;margin-bottom:6px">
-            <svg width="180" height="95" viewBox="0 0 180 95">
-                <path d="M15 85 A75 75 0 0 1 165 85" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M15 85 A${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="rgba(59,130,246,.35)" stroke-width="10" stroke-linecap="round"/>
-                <text x="90" y="50" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="14" fill="rgba(248,250,252,.3)">%</tspan></text>
-                <text x="90" y="67" text-anchor="middle" fill="rgba(59,130,246,.5)" font-family="JetBrains Mono" font-size="8" font-weight="400" letter-spacing="1.5">${esc(homeName || 'HOME')} WIN</text>
+        // SVG: bg arc → three segments → outer round caps → separator dots
+        html += `<div style="text-align:center;margin-bottom:4px">
+            <svg width="180" height="88" viewBox="0 0 180 88">
+                <path d="M${p0.x} ${p0.y} A${r} ${r} 0 0 1 ${p3.x} ${p3.y}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="butt"/>
+                ${hw > 1 ? seg(p0, p1, 'rgba(59,130,246,.6)') : ''}
+                ${dr > 1 ? seg(p1, p2, 'rgba(251,191,36,.5)') : ''}
+                ${aw > 1 ? seg(p2, p3, 'rgba(248,113,113,.5)') : ''}
+                <circle cx="${p0.x}" cy="${p0.y}" r="${SW / 2}" fill="${hw > 1 ? 'rgba(59,130,246,.6)' : 'rgba(255,255,255,.05)'}"/>
+                <circle cx="${p3.x}" cy="${p3.y}" r="${SW / 2}" fill="${aw > 1 ? 'rgba(248,113,113,.5)' : 'rgba(255,255,255,.05)'}"/>
+                ${hw > 2 && dr > 2 ? `<circle cx="${p1.x}" cy="${p1.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ''}
+                ${dr > 2 && aw > 2 ? `<circle cx="${p2.x}" cy="${p2.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ''}
+                <text x="${cx}" y="44" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="13" fill="rgba(248,250,252,.3)">%</tspan></text>
+                <text x="${cx}" y="60" text-anchor="middle" fill="rgba(59,130,246,.45)" font-family="JetBrains Mono" font-size="7" font-weight="400" letter-spacing="1.5">${esc((homeName || 'HOME').toUpperCase())} WIN</text>
             </svg>
         </div>`;
 
-        // Breakdown bar
-        html += `<div style="display:flex;height:24px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:8px">
-            <div style="width:${hw}%;background:rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center"><span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.7)">${hw}%</span></div>
-            <div style="width:${dr}%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${dr}%</span></div>
-            <div style="width:${Math.max(1, aw)}%;background:rgba(248,113,113,.08);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${aw}%</span></div>
+        // Three numbers below arc
+        html += `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0 2px;margin-bottom:12px">
+            <div style="text-align:left">
+                <div style="font:600 15px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.8)">${hw}<span style="font-size:9px;font-weight:400;color:rgba(59,130,246,.35)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(59,130,246,.3);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(homeName || 'HOME')}</div>
+            </div>
+            <div style="text-align:center">
+                <div style="font:400 12px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.55)">${dr}<span style="font-size:9px;color:rgba(251,191,36,.25)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(251,191,36,.25);margin-top:3px">${tx('平', 'DRAW')}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font:500 13px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${aw}<span style="font-size:9px;font-weight:400;color:rgba(248,113,113,.25)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || 'AWAY')}</div>
+            </div>
         </div>`;
-        html += `<div style="display:flex;justify-content:space-between"><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || 'H')}</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.15)">DRAW</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || 'A')}</span></div>`;
 
         // Predicted score
-        html += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+        html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
             <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('预测比分', 'PREDICTED SCORE')}</div>
             <div style="display:flex;align-items:center;justify-content:center;gap:12px">
                 <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
@@ -1435,6 +1455,154 @@ window.WorldCup.MatchRenderers = (() => {
         </div>`;
 
         html += `</div>`;
+        return html;
+    }
+
+    /**
+     * HUD Right Panel — Pressure Index card
+     * Shows dual-color split bar (current PI) + SVG sparkline trend
+     */
+    function renderPressurePanel(pressureData, homeName, awayName) {
+        if (!pressureData || pressureData.error) return '';
+        const current = pressureData.current;
+        const curve = Array.isArray(pressureData.curve) ? pressureData.curve : [];
+        if (!current && curve.length === 0) return '';
+
+        const homePI = current?.home ?? 0;
+        const awayPI = current?.away ?? 0;
+        const total = homePI + awayPI || 1;
+        const homePct = Math.round((homePI / total) * 100);
+        const awayPct = 100 - homePct;
+        const dominant = current?.dominant;
+        const minute = current?.atMinute;
+
+        const domLabel = dominant === 'home'
+            ? `<span style="color:rgba(59,130,246,.7)">${esc(homeName)}</span>`
+            : dominant === 'away'
+            ? `<span style="color:rgba(248,113,113,.6)">${esc(awayName)}</span>`
+            : `<span style="color:rgba(248,250,252,.25)">${tx('均势', 'Even')}</span>`;
+
+        let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('态势走势', 'MOMENTUM')}</div>`;
+
+        // Sparkline
+        if (curve.length > 1) {
+            const W = 244, H = 52;
+            const maxMin = Math.max(...curve.map(r => r.minute), 90);
+            const toX = m => ((m / maxMin) * (W - 8) + 4).toFixed(1);
+            const toY = v => (H - 4 - (Math.min(v, 100) / 100) * (H - 10)).toFixed(1);
+
+            const hPts = curve.map(r => `${toX(r.minute)},${toY(r.pressure_home)}`).join(' ');
+            const aPts = curve.map(r => `${toX(r.minute)},${toY(r.pressure_away)}`).join(' ');
+            const last = curve[curve.length - 1];
+            const midY = toY(50);
+
+            html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:10px;overflow:visible">
+                <line x1="4" y1="${midY}" x2="${W - 4}" y2="${midY}" stroke="rgba(255,255,255,.05)" stroke-width="1" stroke-dasharray="2,4"/>
+                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.55)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.45)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_home)}" r="2.5" fill="rgba(59,130,246,.8)"/>
+                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_away)}" r="2.5" fill="rgba(248,113,113,.7)"/>
+            </svg>`;
+        }
+
+        // Current PI split bar
+        html += `<div style="display:flex;height:22px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:6px">
+            <div style="width:${homePct}%;background:rgba(59,130,246,.18);display:flex;align-items:center;justify-content:center;min-width:28px">
+                <span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.75)">${homePI.toFixed(0)}</span>
+            </div>
+            <div style="width:${awayPct}%;background:rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;min-width:28px">
+                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.55)">${awayPI.toFixed(0)}</span>
+            </div>
+        </div>`;
+        html += `<div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || 'H')}</span>
+            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${domLabel} ${tx('主导', 'dominant')}${minute != null ? ` · ${minute}'` : ''}</span>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || 'A')}</span>
+        </div>`;
+
+        // Legend
+        html += `<div style="display:flex;align-items:center;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(59,130,246,.55)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || 'H')}</span></div>
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(248,113,113,.45)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || 'A')}</span></div>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">${tx('压力指数', 'PI 0–100')}</span>
+        </div>`;
+
+        return html;
+    }
+
+    /**
+     * HUD Right Panel — Live Probability Journey (Track A)
+     * Shows SVG 3-line chart of how W/D/L probabilities evolved through the match
+     */
+    function renderLiveProbPanel(data, homeName, awayName) {
+        if (!data || data.error) return '';
+        const preMatch = data.preMatch || {};
+        const current = data.current || null;
+        const curve = Array.isArray(data.curve) ? data.curve : [];
+        if (!preMatch.homeWin && curve.length === 0) return '';
+
+        const W = 244, H = 64;
+        const pct = v => Math.round((v || 0) * 100);
+
+        let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('概率走势', 'PROB JOURNEY')}</div>`;
+
+        // SVG chart
+        if (curve.length > 1) {
+            const maxMin = Math.max(...curve.map(r => r.minute || 0), 90);
+            const toX = m => ((Math.min(m || 0, maxMin) / maxMin) * (W - 8) + 4).toFixed(1);
+            const toY = v => (H - 4 - Math.min(Math.max(v || 0, 0), 1) * (H - 12)).toFixed(1);
+
+            const hPts = curve.map(r => `${toX(r.minute)},${toY(r.prob_home_win)}`).join(' ');
+            const dPts = curve.map(r => `${toX(r.minute)},${toY(r.prob_draw)}`).join(' ');
+            const aPts = curve.map(r => `${toX(r.minute)},${toY(r.prob_away_win)}`).join(' ');
+            const pmHY = toY(preMatch.homeWin || 0);
+            const goals = curve.filter(r => r.type === 'goal');
+
+            html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:8px;overflow:visible">
+                <line x1="4" y1="${pmHY}" x2="${W - 4}" y2="${pmHY}" stroke="rgba(59,130,246,.12)" stroke-width="1" stroke-dasharray="3,5"/>
+                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.5)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${dPts}" fill="none" stroke="rgba(251,191,36,.4)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.75)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                ${goals.map(g => `<circle cx="${toX(g.minute)}" cy="${toY(g.prob_home_win)}" r="2.5" fill="rgba(52,211,153,.85)"/>`).join('')}
+            </svg>`;
+        }
+
+        // Pre-match baseline row
+        const pmH = pct(preMatch.homeWin), pmD = pct(preMatch.draw), pmA = pct(preMatch.awayWin);
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);margin-bottom:5px">
+            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${tx('赛前', 'PRE')}</span>
+            <div style="display:flex;gap:8px">
+                <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${pmH}%</span>
+                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4)">${pmD}%</span>
+                <span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${pmA}%</span>
+            </div>
+        </div>`;
+
+        // Current live probability (Track A) — only show if we have a real live state
+        if (current && !current.error && (current.minuteElapsed > 0 || current.homeScore > 0 || current.awayScore > 0)) {
+            const lH = pct(current.homeWin), lD = pct(current.draw), lA = pct(current.awayWin);
+            const delta = (current.homeWin || 0) - (preMatch.homeWin || 0);
+            const deltaStr = delta > 0.005 ? `+${Math.round(delta * 100)}%` : delta < -0.005 ? `${Math.round(delta * 100)}%` : '';
+            const deltaColor = delta > 0.005 ? 'rgba(52,211,153,.7)' : delta < -0.005 ? 'rgba(248,113,113,.6)' : 'rgba(248,250,252,.2)';
+            html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.13)">
+                <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.5)">${tx('当前', 'NOW')}</span>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.85)">${lH}%</span>
+                    <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.45)">${lD}%</span>
+                    <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${lA}%</span>
+                    ${deltaStr ? `<span style="font:500 8px/1 'JetBrains Mono',monospace;color:${deltaColor}">${esc(deltaStr)}</span>` : ''}
+                </div>
+            </div>`;
+        }
+
+        // Legend
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:rgba(59,130,246,.75)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || 'H')}</span></div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(251,191,36,.4)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${tx('平', 'D')}</span></div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(248,113,113,.5)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || 'A')}</span></div>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
+        </div>`;
+
         return html;
     }
 
@@ -1540,5 +1708,7 @@ window.WorldCup.MatchRenderers = (() => {
         renderHudStatsPanel,
         renderHudWinProbPanel,
         renderHudVenuePanel,
+        renderPressurePanel,
+        renderLiveProbPanel,
     };
 })();

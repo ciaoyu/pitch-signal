@@ -3288,6 +3288,9 @@ var require_match_detail = __commonJS({
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx("\u52A0\u8F7D\u9884\u6D4B...", "Loading prediction...")}</div>
             </div>
+            <div id="hud-liveprob-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
+                <div id="hud-liveprob"></div>
+            </div>
             <div id="hud-pressure-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
                 <div id="hud-pressure"></div>
             </div>
@@ -3347,6 +3350,32 @@ var require_match_detail = __commonJS({
         } else if (matchData2.weather) {
           const el = document.getElementById("hud-venue");
           if (el) el.innerHTML = renderMatchWeatherBlock(matchData2.weather);
+        }
+        if (isLive || isFinishedMatch) {
+          let liveProbUrl = "/api/match/" + id + "/live-probability";
+          if (isLive && homeScore !== "-" && awayScore !== "-") {
+            const minute = matchData2.clock?.value != null ? Math.round(matchData2.clock.value / 60) : matchData2.status?.displayClock ? parseInt(matchData2.status.displayClock) : 0;
+            const params = new URLSearchParams({
+              homeScore: String(homeScore),
+              awayScore: String(awayScore),
+              minute: String(Math.min(minute || 0, 120))
+            });
+            liveProbUrl += "?" + params.toString();
+          }
+          api(liveProbUrl).then((lpRes) => {
+            if (myReqId !== _openMatchReqId) return;
+            const lpd = lpRes?.data || lpRes;
+            const wrap = document.getElementById("hud-liveprob-wrap");
+            const el = document.getElementById("hud-liveprob");
+            if (el && lpd && !lpd.error && lpd.preMatch?.homeWin != null) {
+              const rendered = MR().renderLiveProbPanel(lpd, homeName, awayName);
+              if (rendered) {
+                el.innerHTML = rendered;
+                if (wrap) wrap.style.display = "";
+              }
+            }
+          }).catch(() => {
+          });
         }
         if (isLive || isFinishedMatch) {
           api("/api/match/" + id + "/pressure").then((pressureRes) => {
@@ -3442,7 +3471,7 @@ var require_match_detail = __commonJS({
           const el = document.getElementById("detail-content-corners");
           if (el) el.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u89D2\u7403\u6570\u636E\u6682\u65E0", "No corner data")}</div>`;
         });
-        if (isFin && mHomeId && mAwayId) {
+        if (isFinishedMatch && mHomeId && mAwayId) {
           window.WorldCup.ApiClient.get("/api/post-match-review/" + id, { timeout: 8e3 }).then((r) => r.data).then(async (review) => {
             if (myReqId !== _openMatchReqId) return;
             if (review && !review.error) {
@@ -6371,29 +6400,47 @@ var require_match_renderers = __commonJS({
         const score = String(pred.likelyScore || fallbackScore);
         const scoreParts = score.split(/[-:]/).map((s) => s.trim());
         const [sH, sA] = scoreParts.length >= 2 ? scoreParts : ["?", "?"];
-        const arcAngle = hw / 100 * Math.PI;
-        const r = 75;
-        const cx = 90, cy = 85;
-        const x2 = cx + r * Math.cos(Math.PI - arcAngle);
-        const y2 = cy - r * Math.sin(Math.PI - arcAngle);
-        const largeArc = hw > 50 ? 1 : 0;
+        const cx = 90, cy = 76, r = 66, SW = 10;
+        const pt = (pct) => {
+          const \u03B8 = Math.PI * (1 - pct / 100);
+          return { x: +(cx + r * Math.cos(\u03B8)).toFixed(2), y: +(cy - r * Math.sin(\u03B8)).toFixed(2) };
+        };
+        const p0 = pt(0);
+        const p1 = pt(hw);
+        const p2 = pt(hw + dr);
+        const p3 = pt(100);
+        const seg = (a, b, col) => a.x === b.x && a.y === b.y ? "" : `<path d="M${a.x} ${a.y} A${r} ${r} 0 0 1 ${b.x} ${b.y}" fill="none" stroke="${col}" stroke-width="${SW}" stroke-linecap="butt"/>`;
         let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
-        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px">${tx("\u80DC\u7387\u9884\u6D4B", "WIN PROBABILITY")}</div>`;
-        html += `<div style="text-align:center;margin-bottom:6px">
-            <svg width="180" height="95" viewBox="0 0 180 95">
-                <path d="M15 85 A75 75 0 0 1 165 85" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M15 85 A${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="rgba(59,130,246,.35)" stroke-width="10" stroke-linecap="round"/>
-                <text x="90" y="50" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="14" fill="rgba(248,250,252,.3)">%</tspan></text>
-                <text x="90" y="67" text-anchor="middle" fill="rgba(59,130,246,.5)" font-family="JetBrains Mono" font-size="8" font-weight="400" letter-spacing="1.5">${esc(homeName || "HOME")} WIN</text>
+        html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx("\u80DC\u7387\u9884\u6D4B", "WIN PROBABILITY")}</div>`;
+        html += `<div style="text-align:center;margin-bottom:4px">
+            <svg width="180" height="88" viewBox="0 0 180 88">
+                <path d="M${p0.x} ${p0.y} A${r} ${r} 0 0 1 ${p3.x} ${p3.y}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="butt"/>
+                ${hw > 1 ? seg(p0, p1, "rgba(59,130,246,.6)") : ""}
+                ${dr > 1 ? seg(p1, p2, "rgba(251,191,36,.5)") : ""}
+                ${aw > 1 ? seg(p2, p3, "rgba(248,113,113,.5)") : ""}
+                <circle cx="${p0.x}" cy="${p0.y}" r="${SW / 2}" fill="${hw > 1 ? "rgba(59,130,246,.6)" : "rgba(255,255,255,.05)"}"/>
+                <circle cx="${p3.x}" cy="${p3.y}" r="${SW / 2}" fill="${aw > 1 ? "rgba(248,113,113,.5)" : "rgba(255,255,255,.05)"}"/>
+                ${hw > 2 && dr > 2 ? `<circle cx="${p1.x}" cy="${p1.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
+                ${dr > 2 && aw > 2 ? `<circle cx="${p2.x}" cy="${p2.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
+                <text x="${cx}" y="44" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="13" fill="rgba(248,250,252,.3)">%</tspan></text>
+                <text x="${cx}" y="60" text-anchor="middle" fill="rgba(59,130,246,.45)" font-family="JetBrains Mono" font-size="7" font-weight="400" letter-spacing="1.5">${esc((homeName || "HOME").toUpperCase())} WIN</text>
             </svg>
         </div>`;
-        html += `<div style="display:flex;height:24px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:8px">
-            <div style="width:${hw}%;background:rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center"><span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.7)">${hw}%</span></div>
-            <div style="width:${dr}%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.25)">${dr}%</span></div>
-            <div style="width:${Math.max(1, aw)}%;background:rgba(248,113,113,.08);display:flex;align-items:center;justify-content:center"><span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${aw}%</span></div>
+        html += `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0 2px;margin-bottom:12px">
+            <div style="text-align:left">
+                <div style="font:600 15px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.8)">${hw}<span style="font-size:9px;font-weight:400;color:rgba(59,130,246,.35)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(59,130,246,.3);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(homeName || "HOME")}</div>
+            </div>
+            <div style="text-align:center">
+                <div style="font:400 12px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.55)">${dr}<span style="font-size:9px;color:rgba(251,191,36,.25)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(251,191,36,.25);margin-top:3px">${tx("\u5E73", "DRAW")}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font:500 13px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${aw}<span style="font-size:9px;font-weight:400;color:rgba(248,113,113,.25)">%</span></div>
+                <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || "AWAY")}</div>
+            </div>
         </div>`;
-        html += `<div style="display:flex;justify-content:space-between"><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || "H")}</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.15)">DRAW</span><span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || "A")}</span></div>`;
-        html += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+        html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
             <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u9884\u6D4B\u6BD4\u5206", "PREDICTED SCORE")}</div>
             <div style="display:flex;align-items:center;justify-content:center;gap:12px">
                 <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
@@ -6452,6 +6499,64 @@ var require_match_renderers = __commonJS({
             <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(59,130,246,.55)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
             <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(248,113,113,.45)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
             <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">${tx("\u538B\u529B\u6307\u6570", "PI 0\u2013100")}</span>
+        </div>`;
+        return html;
+      }
+      function renderLiveProbPanel(data, homeName, awayName) {
+        if (!data || data.error) return "";
+        const preMatch = data.preMatch || {};
+        const current = data.current || null;
+        const curve = Array.isArray(data.curve) ? data.curve : [];
+        if (!preMatch.homeWin && curve.length === 0) return "";
+        const W = 244, H = 64;
+        const pct = (v) => Math.round((v || 0) * 100);
+        let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx("\u6982\u7387\u8D70\u52BF", "PROB JOURNEY")}</div>`;
+        if (curve.length > 1) {
+          const maxMin = Math.max(...curve.map((r) => r.minute || 0), 90);
+          const toX = (m) => (Math.min(m || 0, maxMin) / maxMin * (W - 8) + 4).toFixed(1);
+          const toY = (v) => (H - 4 - Math.min(Math.max(v || 0, 0), 1) * (H - 12)).toFixed(1);
+          const hPts = curve.map((r) => `${toX(r.minute)},${toY(r.prob_home_win)}`).join(" ");
+          const dPts = curve.map((r) => `${toX(r.minute)},${toY(r.prob_draw)}`).join(" ");
+          const aPts = curve.map((r) => `${toX(r.minute)},${toY(r.prob_away_win)}`).join(" ");
+          const pmHY = toY(preMatch.homeWin || 0);
+          const goals = curve.filter((r) => r.type === "goal");
+          html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:8px;overflow:visible">
+                <line x1="4" y1="${pmHY}" x2="${W - 4}" y2="${pmHY}" stroke="rgba(59,130,246,.12)" stroke-width="1" stroke-dasharray="3,5"/>
+                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.5)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${dPts}" fill="none" stroke="rgba(251,191,36,.4)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.75)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                ${goals.map((g) => `<circle cx="${toX(g.minute)}" cy="${toY(g.prob_home_win)}" r="2.5" fill="rgba(52,211,153,.85)"/>`).join("")}
+            </svg>`;
+        }
+        const pmH = pct(preMatch.homeWin), pmD = pct(preMatch.draw), pmA = pct(preMatch.awayWin);
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);margin-bottom:5px">
+            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${tx("\u8D5B\u524D", "PRE")}</span>
+            <div style="display:flex;gap:8px">
+                <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${pmH}%</span>
+                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4)">${pmD}%</span>
+                <span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${pmA}%</span>
+            </div>
+        </div>`;
+        if (current && !current.error && (current.minuteElapsed > 0 || current.homeScore > 0 || current.awayScore > 0)) {
+          const lH = pct(current.homeWin), lD = pct(current.draw), lA = pct(current.awayWin);
+          const delta = (current.homeWin || 0) - (preMatch.homeWin || 0);
+          const deltaStr = delta > 5e-3 ? `+${Math.round(delta * 100)}%` : delta < -5e-3 ? `${Math.round(delta * 100)}%` : "";
+          const deltaColor = delta > 5e-3 ? "rgba(52,211,153,.7)" : delta < -5e-3 ? "rgba(248,113,113,.6)" : "rgba(248,250,252,.2)";
+          html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.13)">
+                <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.5)">${tx("\u5F53\u524D", "NOW")}</span>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.85)">${lH}%</span>
+                    <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.45)">${lD}%</span>
+                    <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${lA}%</span>
+                    ${deltaStr ? `<span style="font:500 8px/1 'JetBrains Mono',monospace;color:${deltaColor}">${esc(deltaStr)}</span>` : ""}
+                </div>
+            </div>`;
+        }
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:rgba(59,130,246,.75)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(251,191,36,.4)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${tx("\u5E73", "D")}</span></div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(248,113,113,.5)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
+            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
         </div>`;
         return html;
       }
@@ -6539,7 +6644,8 @@ var require_match_renderers = __commonJS({
         renderHudStatsPanel,
         renderHudWinProbPanel,
         renderHudVenuePanel,
-        renderPressurePanel
+        renderPressurePanel,
+        renderLiveProbPanel
       };
     })();
   }

@@ -252,8 +252,8 @@
             </div>`;
         }
 
-        // ── Qualification probabilities ──
-        if (qualiData && typeof qualiData === 'object' && !Array.isArray(qualiData)) {
+        // ── Qualification probabilities (group stage only) ──
+        if (!isKnockoutStage && qualiData && typeof qualiData === 'object' && !Array.isArray(qualiData)) {
             const qualiGroups = Object.values(qualiData);
             if (qualiGroups.length) {
                 html += `<div class="pred-section" style="margin-top:12px;padding:16px">
