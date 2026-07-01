@@ -121,6 +121,7 @@
                     </div>
                     <div style="padding:0 12px;text-align:center">
                         <span style="font:600 14px/1 'JetBrains Mono', monospace;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.03em">${esc(score)}</span>
+                        ${p.likelyScoreProb != null ? `<div style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px" title="${tx('该具体比分出现的概率，通常不高——胜平负百分比才是更可靠的信号','Probability of this exact scoreline — the win/draw/loss split below is the more reliable signal')}">${Fmt().pct(p.likelyScoreProb)}</div>` : ''}
                     </div>
                     <div style="flex:1;display:flex;align-items:center;gap:8px;min-width:0;justify-content:flex-end">
                         <span style="font:500 13px/1 'Inter';color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right">${esc(awayName)}</span>

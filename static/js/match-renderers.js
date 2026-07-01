@@ -1445,6 +1445,7 @@ window.WorldCup.MatchRenderers = (() => {
         </div>`;
 
         // Predicted score
+        const scoreProbPct = Number.isFinite(pred.likelyScoreProb) ? Math.round(pred.likelyScoreProb * 100) : null;
         html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
             <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('预测比分', 'PREDICTED SCORE')}</div>
             <div style="display:flex;align-items:center;justify-content:center;gap:12px">
@@ -1452,6 +1453,7 @@ window.WorldCup.MatchRenderers = (() => {
                 <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
                 <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
             </div>
+            ${scoreProbPct != null ? `<div style="text-align:center;font:400 8px/1 'Inter';color:rgba(248,250,252,.15);margin-top:6px" title="${tx('该具体比分出现的概率，通常不高——上方胜平负百分比才是更可靠的信号','Probability of this exact scoreline — the win/draw/loss split above is the more reliable signal')}">${tx('该比分概率','score probability')} ${scoreProbPct}%</div>` : ''}
         </div>`;
 
         html += `</div>`;
