@@ -68,5 +68,64 @@ test('elimination probability accounts for qualified third places', () => {
   assert.strictEqual(thirdTeams[11].eliminatedProb, 1);
 });
 
+test('complete tie uses conduct score then latest FIFA ranking', () => {
+  const base = { pts: 4, gd: 0, gf: 3 };
+  assert.ok(
+    simulator.compareStandings(
+      { ...base, id: 'conduct-high', teamConductScore: -2, fifaRank: 40 },
+      { ...base, id: 'conduct-low', conduct: -5, fifaRanking: 1 }
+    ) < 0,
+    'higher team conduct score should rank first'
+  );
+  assert.ok(
+    simulator.compareStandings(
+      { ...base, id: 'rank-high', conduct: -2, fifaRanking: 8 },
+      { ...base, id: 'rank-low', teamConductScore: -2, fifaRank: 12 }
+    ) < 0,
+    'lower FIFA ranking number should rank first'
+  );
+});
+
+test('missing FIFA ranking uses Elo without group-order bias', () => {
+  const tiedGroups = Array.from({ length: 12 }, (_, index) => {
+    const group = buildGroup(index);
+    group.teams[2].pts = 4;
+    group.teams[2].gd = 0;
+    group.teams[2].gf = 3;
+    group.teams[2].ga = 3;
+    group.teams[2].teamConductScore = -2;
+    return group;
+  });
+  const tiedSimulator = new QualificationSimulator({ simulations: 1 });
+  tiedSimulator.ratings = Object.fromEntries(
+    tiedGroups.map((group, index) => [group.teams[2].id, { rating: 1600 + index }])
+  );
+
+  const forward = tiedSimulator.simulateGroups(tiedGroups);
+  const reversed = tiedSimulator.simulateGroups([...tiedGroups].reverse());
+  const qualified = output => tiedGroups
+    .filter(group => output[group.name].results.find(team => team.id.endsWith('3')).thirdPlaceQualifyProb === 1)
+    .map(group => group.teams[2].id)
+    .sort();
+
+  assert.deepStrictEqual(qualified(forward), qualified(reversed));
+  assert.deepStrictEqual(qualified(forward), ['E3', 'F3', 'G3', 'H3', 'I3', 'J3', 'K3', 'L3']);
+});
+
+test('equal Elo falls back to stable team ID', () => {
+  const tied = { pts: 4, gd: 0, gf: 3, teamConductScore: -2 };
+  simulator.ratings['Alpha'] = { rating: 1500 };
+  simulator.ratings['Zulu'] = { rating: 1500 };
+
+  assert.ok(simulator.compareStandings(
+    { ...tied, id: 'Alpha' },
+    { ...tied, id: 'Zulu' }
+  ) < 0);
+  assert.ok(simulator.compareStandings(
+    { ...tied, id: 'Zulu' },
+    { ...tied, id: 'Alpha' }
+  ) > 0);
+});
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
