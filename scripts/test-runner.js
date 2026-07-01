@@ -36,6 +36,7 @@ const TEST_FILES = [
   'test-prediction.js',
   'test-roster-cache.js',
   'test-same-day-leakage.js',
+  'test-score-writeback.js',
   'test-security.js',
   'test-services.js',
   'test-tactical-board.js',

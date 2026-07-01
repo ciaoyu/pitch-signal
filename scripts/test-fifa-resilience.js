@@ -41,7 +41,22 @@ console.log('📊 1. Schema 校验');
 }
 
 // ---------- 2. 状态与缓存回退测试 ----------
-console.log('📊 2. 状态转换与缓存回退 (stale/down)');
+console.log('📊 2. Live match 解析');
+{
+  const parsed = fifaApi._parseLiveMatch({
+    IdMatch: 'm1',
+    IdStage: 's1',
+    MatchStatus: 0,
+    HomeTeam: { IdCountry: 'ARG', Score: 3 },
+    AwayTeam: { IdCountry: 'FRA', Score: 2 },
+  });
+  check(parsed.status === 0, 'FIFA 终场状态保留为 0');
+  check(parsed.homeScore === 3 && parsed.awayScore === 2, 'FIFA 比分正确解析');
+  check(parsed.homeTeam.id === 'ARG' && parsed.awayTeam.id === 'FRA', 'FIFA IdCountry 暴露给回写映射');
+}
+
+// ---------- 3. 状态与缓存回退测试 ----------
+console.log('📊 3. 状态转换与缓存回退 (stale/down)');
 {
   clearCache();
   fifaApi._resetStatus();
