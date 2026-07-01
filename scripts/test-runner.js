@@ -43,6 +43,7 @@ const TEST_FILES = [
   'test-services.js',
   'test-tactical-board.js',
   'test-team-resolver.js',
+  'test-temp-units.js',
   'test-third-place.js',
   'test-venue-factor.js',
   'test-venueFactors.js',

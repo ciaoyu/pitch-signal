@@ -29,6 +29,35 @@
         return '';
     }
 
+    function normalizeCelsius(value, unit) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return null;
+        return unit === 'F' || (!unit && n > 50) ? (n - 32) * 5 / 9 : n;
+    }
+
+    function getWeatherUnit() {
+        try { return localStorage.getItem('weatherUnit') === 'F' ? 'F' : 'C'; } catch { return 'C'; }
+    }
+
+    function formatTemperature(value, sourceUnit = 'C', displayUnit = getWeatherUnit()) {
+        const celsius = normalizeCelsius(value, sourceUnit);
+        if (celsius === null) return '--';
+        const converted = displayUnit === 'F' ? celsius * 9 / 5 + 32 : celsius;
+        return `${Math.round(converted)}°${displayUnit}`;
+    }
+
+    function setWeatherUnit(unit) {
+        const next = unit === 'F' ? 'F' : 'C';
+        try { localStorage.setItem('weatherUnit', next); } catch {}
+        document.querySelectorAll('[data-temp-c]').forEach(el => {
+            el.textContent = formatTemperature(el.dataset.tempC, 'C', next);
+        });
+        document.querySelectorAll('[data-weather-unit]').forEach(el => {
+            el.classList.toggle('active', el.dataset.weatherUnit === next);
+            el.setAttribute('aria-pressed', String(el.dataset.weatherUnit === next));
+        });
+    }
+
     // Backward-compatible wrapper: returns raw data on success, null on failure.
     // All existing callers work unchanged. Prefer API.get() / API.post() for new code.
     async function api(url, options = {}) {
@@ -53,6 +82,10 @@
     U.attr = attr;
     U.safeUrl = safeUrl;
     U.api = api;
+    U.normalizeCelsius = normalizeCelsius;
+    U.getWeatherUnit = getWeatherUnit;
+    U.formatTemperature = formatTemperature;
+    U.setWeatherUnit = setWeatherUnit;
 
     U.displayMaybeTeamName = displayMaybeTeamName;
     U.displayGroupName = displayGroupName;

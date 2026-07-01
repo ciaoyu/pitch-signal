@@ -295,6 +295,7 @@
         if (action === 'switch-detail-tab') return window.switchDetailTab(target.dataset.detailTab, target);
         if (action === 'switch-standings-tab') return window.switchStandingsSubTab(target.dataset.standingsTab, target);
         if (action === 'switch-standings-sub-tab') return window.switchStandingsSubTab(target.dataset.standingsTab, target);
+        if (action === 'weather-unit') return window.WorldCup.Utils.setWeatherUnit(target.dataset.weatherUnit);
         if (action === 'set-pitch-view') return window.setPitchView(target.dataset.view, target);
         if (action === 'send-ai-message') {
             return window.sendAIMessage(target.dataset.chatId, target.dataset.matchId, target.dataset.homeId, target.dataset.awayId);

@@ -1886,6 +1886,38 @@ var require_utils = __commonJS({
         }
         return "";
       }
+      function normalizeCelsius(value, unit) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return null;
+        return unit === "F" || !unit && n > 50 ? (n - 32) * 5 / 9 : n;
+      }
+      function getWeatherUnit() {
+        try {
+          return localStorage.getItem("weatherUnit") === "F" ? "F" : "C";
+        } catch {
+          return "C";
+        }
+      }
+      function formatTemperature(value, sourceUnit = "C", displayUnit = getWeatherUnit()) {
+        const celsius = normalizeCelsius(value, sourceUnit);
+        if (celsius === null) return "--";
+        const converted = displayUnit === "F" ? celsius * 9 / 5 + 32 : celsius;
+        return `${Math.round(converted)}\xB0${displayUnit}`;
+      }
+      function setWeatherUnit(unit) {
+        const next = unit === "F" ? "F" : "C";
+        try {
+          localStorage.setItem("weatherUnit", next);
+        } catch {
+        }
+        document.querySelectorAll("[data-temp-c]").forEach((el) => {
+          el.textContent = formatTemperature(el.dataset.tempC, "C", next);
+        });
+        document.querySelectorAll("[data-weather-unit]").forEach((el) => {
+          el.classList.toggle("active", el.dataset.weatherUnit === next);
+          el.setAttribute("aria-pressed", String(el.dataset.weatherUnit === next));
+        });
+      }
       async function api(url, options = {}) {
         const { ApiClient } = window.WorldCup;
         return ApiClient.legacy(url, options);
@@ -1902,6 +1934,10 @@ var require_utils = __commonJS({
       U.attr = attr;
       U.safeUrl = safeUrl2;
       U.api = api;
+      U.normalizeCelsius = normalizeCelsius;
+      U.getWeatherUnit = getWeatherUnit;
+      U.formatTemperature = formatTemperature;
+      U.setWeatherUnit = setWeatherUnit;
       U.displayMaybeTeamName = displayMaybeTeamName;
       U.displayGroupName = displayGroupName;
       Object.defineProperty(U, "t", { get() {
@@ -3639,6 +3675,9 @@ var require_match_detail = __commonJS({
         }).join("") + "</div>";
       }
       function renderMatchWeatherBlock(w) {
+        const unit = window.WorldCup.Utils.getWeatherUnit();
+        const temp = window.WorldCup.Utils.formatTemperature(w.tC, "C", unit);
+        const feels = window.WorldCup.Utils.formatTemperature(w.feelsC, "C", unit);
         if (!w) return "";
         const wmoEmoji = (code) => {
           if (code === 0) return "\u2600\uFE0F";
@@ -3658,8 +3697,12 @@ var require_match_detail = __commonJS({
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
                 <span style="font-size:28px">${emoji}</span>
                 <div>
-                    <div style="font:300 28px/1 'JetBrains Mono',monospace;color:${tempColor}">${w.tC}<span style="font-size:12px;color:rgba(248,250,252,.2)">\xB0C</span></div>
-                    <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-top:2px">${tx("\u4F53\u611F", "Feels")} ${w.feelsC}\xB0C</div>
+                    <div data-temp-c="${attr(w.tC)}" style="font:300 28px/1 'JetBrains Mono',monospace;color:${tempColor}">${temp}</div>
+                    <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-top:2px">${tx("\u4F53\u611F", "Feels")} <span data-temp-c="${attr(w.feelsC)}">${feels}</span></div>
+                    <div style="display:flex;gap:3px;margin-top:8px" aria-label="${tx("\u6E29\u5EA6\u5355\u4F4D", "Temperature unit")}">
+                        <button data-action="weather-unit" data-weather-unit="C" aria-pressed="${unit === "C"}" class="${unit === "C" ? "active" : ""}" style="min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:inherit;background:rgba(255,255,255,.03)">\xB0C</button>
+                        <button data-action="weather-unit" data-weather-unit="F" aria-pressed="${unit === "F"}" class="${unit === "F" ? "active" : ""}" style="min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:inherit;background:rgba(255,255,255,.03)">\xB0F</button>
+                    </div>
                 </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
@@ -6948,6 +6991,7 @@ var require_app = __commonJS({
         if (action === "switch-detail-tab") return window.switchDetailTab(target.dataset.detailTab, target);
         if (action === "switch-standings-tab") return window.switchStandingsSubTab(target.dataset.standingsTab, target);
         if (action === "switch-standings-sub-tab") return window.switchStandingsSubTab(target.dataset.standingsTab, target);
+        if (action === "weather-unit") return window.WorldCup.Utils.setWeatherUnit(target.dataset.weatherUnit);
         if (action === "set-pitch-view") return window.setPitchView(target.dataset.view, target);
         if (action === "send-ai-message") {
           return window.sendAIMessage(target.dataset.chatId, target.dataset.matchId, target.dataset.homeId, target.dataset.awayId);

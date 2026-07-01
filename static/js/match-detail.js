@@ -512,6 +512,9 @@
     }
 
     function renderMatchWeatherBlock(w) {
+        const unit = window.WorldCup.Utils.getWeatherUnit();
+        const temp = window.WorldCup.Utils.formatTemperature(w.tC, 'C', unit);
+        const feels = window.WorldCup.Utils.formatTemperature(w.feelsC, 'C', unit);
         if (!w) return '';
         const wmoEmoji = (code) => {
             if (code === 0) return '☀️';
@@ -531,8 +534,12 @@
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
                 <span style="font-size:28px">${emoji}</span>
                 <div>
-                    <div style="font:300 28px/1 'JetBrains Mono',monospace;color:${tempColor}">${w.tC}<span style="font-size:12px;color:rgba(248,250,252,.2)">°C</span></div>
-                    <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-top:2px">${tx('体感', 'Feels')} ${w.feelsC}°C</div>
+                    <div data-temp-c="${attr(w.tC)}" style="font:300 28px/1 'JetBrains Mono',monospace;color:${tempColor}">${temp}</div>
+                    <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.2);margin-top:2px">${tx('体感', 'Feels')} <span data-temp-c="${attr(w.feelsC)}">${feels}</span></div>
+                    <div style="display:flex;gap:3px;margin-top:8px" aria-label="${tx('温度单位','Temperature unit')}">
+                        <button data-action="weather-unit" data-weather-unit="C" aria-pressed="${unit === 'C'}" class="${unit === 'C' ? 'active' : ''}" style="min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:inherit;background:rgba(255,255,255,.03)">°C</button>
+                        <button data-action="weather-unit" data-weather-unit="F" aria-pressed="${unit === 'F'}" class="${unit === 'F' ? 'active' : ''}" style="min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:inherit;background:rgba(255,255,255,.03)">°F</button>
+                    </div>
                 </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
