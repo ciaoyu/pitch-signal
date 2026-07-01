@@ -28,6 +28,7 @@ const TEST_FILES = [
   'test-fuzzy-match.js',
   'test-health-enhance.js',
   'test-live-state-machine.js',
+  'test-logger-trycatch.js',
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',
