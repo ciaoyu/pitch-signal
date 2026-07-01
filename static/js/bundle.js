@@ -3185,6 +3185,18 @@ var require_match_detail = __commonJS({
         const awayLogo = scheduledMatch.away?.logo || matchData2.away?.logo || "";
         const homeFlag = scheduledMatch.home?.flag || "\u{1F3F3}\uFE0F";
         const awayFlag = scheduledMatch.away?.flag || "\u{1F3F3}\uFE0F";
+        const st = matchData2.liveState?.state || (isLive ? "match" : isFinishedMatch ? "end" : "pre");
+        const stLabel = matchData2.liveState?.label || (st === "end" ? matchData2.hasPenalties ? tx("\u70B9\u7403\u51B3\u51FA", "FT-Pens") : "FT" : st === "match" ? "LIVE" : tx("\u5F85\u8D5B", "TBD"));
+        const stBadgeStyles = {
+          pre: "font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px",
+          match: "display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12);font:500 9px/1 'JetBrains Mono',monospace;color:#34d399",
+          ht: "display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);font:500 9px/1 'JetBrains Mono',monospace;color:#fbbf24",
+          et: "display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);font:500 9px/1 'JetBrains Mono',monospace;color:#c084fc",
+          pen: "display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);font:500 9px/1 'JetBrains Mono',monospace;color:#fb7185",
+          end: "font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px"
+        };
+        const stPulse = st === "match" ? '<div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>' : "";
+        const scoreBadgeHtml = `<div style="${stBadgeStyles[st] || stBadgeStyles.pre}">${stPulse}<span>${esc(stLabel)}</span></div>`;
         html += `<div id="hud-score" style="display:flex;align-items:center;justify-content:center;padding:24px 24px 16px;gap:20px">
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:16px">
                 <div style="text-align:right">
@@ -3198,7 +3210,7 @@ var require_match_detail = __commonJS({
             </div>
             <div style="min-width:140px;text-align:center;padding:0 20px;flex-shrink:0">
                 <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
-                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">${matchData2.hasPenalties ? tx("\u70B9\u7403\u51B3\u51FA", "FT-Pens") : "FT"}</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx("\u5F85\u8D5B", "TBD")}</div>`}
+                ${scoreBadgeHtml}
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:16px">
                 ${awayLogo ? `<img src="${attr(awayLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(awayFlag)}</div>`}
@@ -3353,15 +3365,17 @@ var require_match_detail = __commonJS({
         }
         if (isLive || isFinishedMatch) {
           let liveProbUrl = "/api/match/" + id + "/live-probability";
-          if (isLive && homeScore !== "-" && awayScore !== "-") {
-            const minute = matchData2.clock?.value != null ? Math.round(matchData2.clock.value / 60) : matchData2.status?.displayClock ? parseInt(matchData2.status.displayClock) : 0;
-            const params = new URLSearchParams({
-              homeScore: String(homeScore),
-              awayScore: String(awayScore),
-              minute: String(Math.min(minute || 0, 120))
-            });
-            liveProbUrl += "?" + params.toString();
-          }
+          const minute = matchData2.clock?.value != null ? Math.round(matchData2.clock.value / 60) : matchData2.status?.displayClock ? parseInt(matchData2.status.displayClock) : matchData2.liveState?.clock ? parseInt(matchData2.liveState.clock) : 0;
+          const params = new URLSearchParams({
+            homeScore: String(homeScore !== "-" ? homeScore : 0),
+            awayScore: String(awayScore !== "-" ? awayScore : 0),
+            minute: String(Math.min(minute || 0, 120)),
+            state: matchData2.liveState?.state || (isLive ? "in" : "post"),
+            statusName: matchData2.statusName || "",
+            displayClock: matchData2.displayClock || "",
+            hasPenalties: String(!!matchData2.hasPenalties)
+          });
+          liveProbUrl += "?" + params.toString();
           api(liveProbUrl).then((lpRes) => {
             if (myReqId !== _openMatchReqId) return;
             const lpd = lpRes?.data || lpRes;
@@ -6511,6 +6525,33 @@ var require_match_renderers = __commonJS({
         const W = 244, H = 64;
         const pct = (v) => Math.round((v || 0) * 100);
         let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx("\u6982\u7387\u8D70\u52BF", "PROB JOURNEY")}</div>`;
+        const st = data.liveState?.state || (current && (current.minuteElapsed > 0 || current.homeScore > 0 || current.awayScore > 0) ? "match" : "pre");
+        const stLabel = data.liveState?.label || (st === "end" ? "FT" : st === "match" ? "LIVE" : "PRE");
+        const hSc = data.score?.home ?? current?.homeScore ?? "-";
+        const aSc = data.score?.away ?? current?.awayScore ?? "-";
+        const stStyles = {
+          pre: "background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.25)",
+          match: "background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)",
+          ht: "background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)",
+          et: "background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)",
+          pen: "background:rgba(244,63,94,.15);color:#fb7185;border:1px solid rgba(244,63,94,.3)",
+          end: "background:rgba(100,116,139,.2);color:#cbd5e1;border:1px solid rgba(100,116,139,.3)"
+        };
+        const badgeStyle = stStyles[st] || stStyles.pre;
+        const pulseCircle = st === "match" ? `<div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>` : "";
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(homeName || "")}">${esc(homeName || "H")}</span>
+                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(hSc))}</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:0.5px;flex-shrink:0;${badgeStyle}">
+                ${pulseCircle}<span>${esc(stLabel)}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(aSc))}</span>
+                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(awayName || "")}">${esc(awayName || "A")}</span>
+            </div>
+        </div>`;
         if (curve.length > 1) {
           const maxMin = Math.max(...curve.map((r) => r.minute || 0), 90);
           const toX = (m) => (Math.min(m || 0, maxMin) / maxMin * (W - 8) + 4).toFixed(1);

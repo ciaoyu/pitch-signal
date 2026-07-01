@@ -60,6 +60,19 @@
         const awayFlag = scheduledMatch.away?.flag || '🏳️';
 
         // Score header — jumbo
+        const st = matchData.liveState?.state || (isLive ? 'match' : isFinishedMatch ? 'end' : 'pre');
+        const stLabel = matchData.liveState?.label || (st === 'end' ? (matchData.hasPenalties ? tx('点球决出', 'FT-Pens') : 'FT') : st === 'match' ? 'LIVE' : tx('待赛', 'TBD'));
+        const stBadgeStyles = {
+            pre:   'font:400 10px/1 \'JetBrains Mono\',monospace;color:rgba(59,130,246,.4);margin-top:8px',
+            match: 'display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12);font:500 9px/1 \'JetBrains Mono\',monospace;color:#34d399',
+            ht:    'display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);font:500 9px/1 \'JetBrains Mono\',monospace;color:#fbbf24',
+            et:    'display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);font:500 9px/1 \'JetBrains Mono\',monospace;color:#c084fc',
+            pen:   'display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);font:500 9px/1 \'JetBrains Mono\',monospace;color:#fb7185',
+            end:   'font:400 10px/1 \'JetBrains Mono\',monospace;color:rgba(248,250,252,.3);margin-top:8px',
+        };
+        const stPulse = st === 'match' ? '<div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>' : '';
+        const scoreBadgeHtml = `<div style="${stBadgeStyles[st] || stBadgeStyles.pre}">${stPulse}<span>${esc(stLabel)}</span></div>`;
+
         html += `<div id="hud-score" style="display:flex;align-items:center;justify-content:center;padding:24px 24px 16px;gap:20px">
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:16px">
                 <div style="text-align:right">
@@ -73,7 +86,7 @@
             </div>
             <div style="min-width:140px;text-align:center;padding:0 20px;flex-shrink:0">
                 <div style="font:300 52px/1 'JetBrains Mono',monospace;color:#f8fafc;letter-spacing:-3px">${esc(String(homeScore))} <span style="font-size:22px;color:rgba(248,250,252,.12)">:</span> ${esc(String(awayScore))}</div>
-                ${isLive ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 12px;border-radius:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)"><div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div><span style="font:500 9px/1 'JetBrains Mono',monospace;color:#34d399">LIVE</span></div>` : isFinishedMatch ? `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.3);margin-top:8px">${matchData.hasPenalties ? tx('点球决出', 'FT-Pens') : 'FT'}</div>` : `<div style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);margin-top:8px">${tx('待赛', 'TBD')}</div>`}
+                ${scoreBadgeHtml}
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:16px">
                 ${awayLogo ? `<img src="${attr(awayLogo)}" style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);flex-shrink:0" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;border-radius:14px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${esc(awayFlag)}</div>`}
@@ -258,17 +271,19 @@
         // Live probability curve → HUD right panel (live + finished matches only)
         if (isLive || isFinishedMatch) {
             let liveProbUrl = '/api/match/' + id + '/live-probability';
-            if (isLive && homeScore !== '-' && awayScore !== '-') {
-                const minute = matchData.clock?.value != null
-                    ? Math.round(matchData.clock.value / 60)
-                    : (matchData.status?.displayClock ? parseInt(matchData.status.displayClock) : 0);
-                const params = new URLSearchParams({
-                    homeScore: String(homeScore),
-                    awayScore: String(awayScore),
-                    minute: String(Math.min(minute || 0, 120)),
-                });
-                liveProbUrl += '?' + params.toString();
-            }
+            const minute = matchData.clock?.value != null
+                ? Math.round(matchData.clock.value / 60)
+                : (matchData.status?.displayClock ? parseInt(matchData.status.displayClock) : (matchData.liveState?.clock ? parseInt(matchData.liveState.clock) : 0));
+            const params = new URLSearchParams({
+                homeScore: String(homeScore !== '-' ? homeScore : 0),
+                awayScore: String(awayScore !== '-' ? awayScore : 0),
+                minute: String(Math.min(minute || 0, 120)),
+                state: matchData.liveState?.state || (isLive ? 'in' : 'post'),
+                statusName: matchData.statusName || '',
+                displayClock: matchData.displayClock || '',
+                hasPenalties: String(!!matchData.hasPenalties),
+            });
+            liveProbUrl += '?' + params.toString();
             api(liveProbUrl).then(lpRes => {
                 if (myReqId !== _openMatchReqId) return;
                 const lpd = lpRes?.data || lpRes;
