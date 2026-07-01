@@ -1546,6 +1546,37 @@ window.WorldCup.MatchRenderers = (() => {
 
         let html = `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx('概率走势', 'PROB JOURNEY')}</div>`;
 
+        // ── Live Score & Match State Machine Bar (pre/match/ht/et/pen/end) ──
+        const st = data.liveState?.state || (current && (current.minuteElapsed > 0 || current.homeScore > 0 || current.awayScore > 0) ? 'match' : 'pre');
+        const stLabel = data.liveState?.label || (st === 'end' ? 'FT' : st === 'match' ? 'LIVE' : 'PRE');
+        const hSc = data.score?.home ?? current?.homeScore ?? '-';
+        const aSc = data.score?.away ?? current?.awayScore ?? '-';
+
+        const stStyles = {
+            pre:   'background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.25)',
+            match: 'background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)',
+            ht:    'background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)',
+            et:    'background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)',
+            pen:   'background:rgba(244,63,94,.15);color:#fb7185;border:1px solid rgba(244,63,94,.3)',
+            end:   'background:rgba(100,116,139,.2);color:#cbd5e1;border:1px solid rgba(100,116,139,.3)',
+        };
+        const badgeStyle = stStyles[st] || stStyles.pre;
+        const pulseCircle = st === 'match' ? `<div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>` : '';
+
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(homeName || '')}">${esc(homeName || 'H')}</span>
+                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(hSc))}</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:0.5px;flex-shrink:0;${badgeStyle}">
+                ${pulseCircle}<span>${esc(stLabel)}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(aSc))}</span>
+                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(awayName || '')}">${esc(awayName || 'A')}</span>
+            </div>
+        </div>`;
+
         // SVG chart
         if (curve.length > 1) {
             const maxMin = Math.max(...curve.map(r => r.minute || 0), 90);
