@@ -3312,9 +3312,9 @@ var require_match_detail = __commonJS({
         html += `<div id="hud-left" class="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
             <div class="hud-glass-panel">
                 <div style="display:flex;border-bottom:1px solid rgba(255,255,255,.05);padding:0 4px" id="hud-left-tabs">
-                    <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active">${tx("\u7EDF\u8BA1", "Stats")}</button>
-                    <button data-action="switch-detail-tab" data-detail-tab="h2h" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn">${tx("\u4EA4\u950B", "H2H")}</button>
-                    <button data-action="switch-detail-tab" data-detail-tab="news" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn">${tx("\u65B0\u95FB", "News")}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active" style="min-height:44px">${tx("\u7EDF\u8BA1", "Stats")}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="h2h" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx("\u4EA4\u950B", "H2H")}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="news" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx("\u65B0\u95FB", "News")}</button>
                 </div>
                 <div id="hud-left-content" style="max-height:calc(100vh - 380px);overflow-y:auto">
                     <div id="detail-content-stats" class="detail-content">${tx("\u52A0\u8F7D\u4E2D...", "Loading...")}</div>

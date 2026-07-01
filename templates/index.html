@@ -267,11 +267,11 @@
         <div style="font:600 14px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.6);letter-spacing:0.5px">PitchSignal</div>
     </div>
     <div id="nav" style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px" class="flex-1 mx-4 justify-center max-w-lg">
-        <button data-tab="live" class="tab-btn tab-on" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">比分 Live</button>
-        <button data-tab="schedule" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">赛程 Schedule</button>
-        <button data-tab="prediction" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">预测 Predict</button>
-        <button data-tab="standings" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">积分 Table</button>
-        <button data-tab="teams" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;border-radius:6px;cursor:pointer;white-space:nowrap">球队 Teams</button>
+        <button data-tab="live" class="tab-btn tab-on" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">比分 Live</button>
+        <button data-tab="schedule" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">赛程 Schedule</button>
+        <button data-tab="prediction" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">预测 Predict</button>
+        <button data-tab="standings" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">积分 Table</button>
+        <button data-tab="teams" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">球队 Teams</button>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
         <div style="display:flex;align-items:center;border-radius:4px;background:rgba(255,255,255,.04);padding:2px">
@@ -331,9 +331,9 @@
     <section id="tab-standings" class="tab-content hidden">
         <!-- Sub-tabs: Groups / Knockout -->
         <div style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content">
-        <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛 Groups</button>
-        <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛 Knockout</button>
-        <button id="standings-sub-scorers" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Scorers</button>
+        <button id="standings-sub-groups" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛 Groups</button>
+        <button id="standings-sub-knockout" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛 Knockout</button>
+        <button id="standings-sub-scorers" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Scorers</button>
         </div>
         <div id="standings-sub-groups-content"></div>
         <div id="standings-sub-scorers-content" class="hidden"></div>
@@ -481,6 +481,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=8788b86c"></script>
+<script type="module" src="/static/js/bundle.js?v=bf0312e7"></script>
 </body>
 </html>
