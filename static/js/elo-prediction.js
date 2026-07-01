@@ -265,8 +265,9 @@
                     html += `<div style="margin-bottom:12px"><div style="font:600 11px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.3);margin-bottom:6px">${esc(groupName)}</div><div style="display:flex;flex-direction:column;gap:6px">`;
                     (g.results || []).forEach(t => {
                         const pct = Math.round((t.probability || t.qualifyProb || 0) * 100);
+                        const thirdPct = Math.round((t.thirdPlaceQualifyProb || 0) * 100);
                         const barCls = pct >= 70 ? 'quali-high' : pct >= 40 ? 'quali-mid' : 'quali-low';
-                        html += `<div class="quali-card flex items-center gap-2.5"><div class="team-flag">${t.flag || '🏳️'}</div><div class="flex-1 min-w-0"><div class="flex items-center justify-between mb-1"><span style="font:500 12px/1 'Inter';color:#f8fafc">${esc(displayMaybeTeamName(t.name))}</span><span style="font:500 12px/1 'JetBrains Mono', monospace;color:${pct >= 70 ? '#34d399' : pct >= 40 ? '#f59e0b' : 'rgba(248,250,252,.3)'}">${pct}%</span></div><div class="quali-bar"><div class="quali-bar-fill ${barCls}" style="width:${pct}%"></div></div></div></div>`;
+                        html += `<div class="quali-card flex items-center gap-2.5"><div class="team-flag">${t.flag || '🏳️'}</div><div class="flex-1 min-w-0"><div class="flex items-center justify-between mb-1"><span style="font:500 12px/1 'Inter';color:#f8fafc">${esc(displayMaybeTeamName(t.name))}</span><span style="font:500 12px/1 'JetBrains Mono', monospace;color:${pct >= 70 ? '#34d399' : pct >= 40 ? '#f59e0b' : 'rgba(248,250,252,.3)'}">${pct}%</span></div><div class="quali-bar"><div class="quali-bar-fill ${barCls}" style="width:${pct}%"></div></div>${thirdPct > 0 ? `<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font:500 9px/1 'Inter';color:#fbbf24">${tx('最佳第三','Best third')} ${thirdPct}%</span><div class="quali-bar" style="flex:1;height:3px"><div style="height:100%;border-radius:2px;background:#fbbf24;width:${thirdPct}%"></div></div></div>` : ''}</div></div>`;
                     });
                     html += '</div></div>';
                 });
