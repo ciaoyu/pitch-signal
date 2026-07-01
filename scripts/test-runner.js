@@ -44,6 +44,7 @@ const TEST_FILES = [
   'test-tactical-board.js',
   'test-team-resolver.js',
   'test-third-place.js',
+  'test-venue-factor.js',
   'test-venueFactors.js',
 ];
 
