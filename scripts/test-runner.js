@@ -26,6 +26,7 @@ const TEST_FILES = [
   'test-fifa-resilience.js',
   'test-final-round-context.js',
   'test-fuzzy-match.js',
+  'test-health-enhance.js',
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',
