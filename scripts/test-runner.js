@@ -23,6 +23,7 @@ const TEST_FILES = [
   'test-data-resolver.js',
   'test-elo.js',
   'test-eventFilter.js',
+  'test-fifa-resilience.js',
   'test-final-round-context.js',
   'test-fuzzy-match.js',
   'test-matchup-spatial.js',
@@ -38,6 +39,7 @@ const TEST_FILES = [
   'test-services.js',
   'test-tactical-board.js',
   'test-team-resolver.js',
+  'test-third-place.js',
   'test-venueFactors.js',
 ];
 
