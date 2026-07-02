@@ -3335,6 +3335,7 @@ var require_match_detail = __commonJS({
         html += `<div id="hud-right" class="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx("\u52A0\u8F7D\u9884\u6D4B...", "Loading prediction...")}</div>
+                <div id="hud-divergence-hint" style="display:none;margin-top:8px"></div>
             </div>
             <div id="hud-liveprob-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
                 <div id="hud-liveprob"></div>
@@ -3373,6 +3374,18 @@ var require_match_detail = __commonJS({
           const pmEl = document.getElementById("detail-content-pre-match");
           if (pmEl && pred && !pred.error && pred.homeWin !== void 0) pmEl.innerHTML = renderPreMatchPrediction(pred);
           else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction unavailable")}</div>`;
+          api("/api/odds-divergence/" + id).then(function(divRes) {
+            if (myReqId !== _openMatchReqId) return;
+            const div = divRes?.data || divRes;
+            if (div && div.divergence && !div.error) {
+              const hintEl = document.getElementById("hud-divergence-hint");
+              if (hintEl) {
+                hintEl.innerHTML = renderOddsDivergenceHint(div);
+                hintEl.style.display = "";
+              }
+            }
+          }).catch(function() {
+          });
         }).catch((err) => {
           console.error("match-detail: predict load failed:", err);
           if (myReqId !== _openMatchReqId) return;
@@ -3805,7 +3818,24 @@ var require_match_detail = __commonJS({
         const paceColor = r.pace === "above" ? "text-yellow-400" : r.pace === "below" ? "text-blue-400" : "text-green-400";
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">\u{1F4D0} ${tx("\u89D2\u7403\u9884\u6D4B", "Corner Forecast")}</span><span class="text-xs text-gray-500">${tx("\u76D8\u53E3\u7EBF", "Line")} <span class="font-bold text-white">${o?.line || 9.5}</span></span></div><div class="flex items-center gap-3 mb-3"><div class="text-center"><div class="text-2xl font-bold text-white">${p?.total || "-"}</div><div class="text-[11px] text-gray-500">${tx("\u9884\u6D4B\u603B\u89D2\u7403", "Projected Corners")}</div></div><div class="flex-1"><div class="flex items-center gap-1 mb-1"><span class="text-xs">${trendEmoji}</span><span class="text-xs font-bold ${trend.includes("over") ? "text-red-400" : trend.includes("under") ? "text-blue-400" : "text-gray-400"}">${esc(trend.replace("_", " ").toUpperCase())}</span><span class="ml-auto">${conf}</span></div><div class="text-[11px] text-gray-500">${tx("\u5B9E\u9645", "Actual")} <span class="font-bold text-white">${r.current?.total || 0}</span> / ${o?.line || 9.5}</div></div></div><div class="relative h-4 bg-white/5 rounded-full overflow-hidden mb-2"><div class="absolute top-0 bottom-0 w-0.5 bg-yellow-500/50" style="left:${expectedPct}%"></div><div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-700" style="width:${progressPct}%"></div><div class="absolute inset-0 flex items-center justify-between px-2 text-[9px]"><span class="text-white font-bold">${r.current?.total || 0}</span><span class="text-gray-400">${Math.round(progressPct)}%</span></div></div><div class="flex items-center justify-between text-[11px]"><span class="text-gray-500">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle, "style") || tx("\u5747\u8861\u578B", "Balanced"))} ${tx("\u5BF9\u9635", "vs")} ${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle, "style") || tx("\u5747\u8861\u578B", "Balanced"))}</span><span class="${paceColor} font-bold">${paceStatus}</span></div></div><div class="grid grid-cols-2 gap-2"><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">\u{1F535} ${tx("\u4E3B\u961F", "Home")}</div><div class="text-sm font-bold">${h?.homeAvg || "-"} ${tx("\u573A\u5747", "avg")}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle, "style") || tx("\u5747\u8861\u578B", "Balanced"))} (${esc(h?.homeStyleCoeff) || 1}x)</div></div><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">\u{1F534} ${tx("\u5BA2\u961F", "Away")}</div><div class="text-sm font-bold">${h?.awayAvg || "-"} ${tx("\u573A\u5747", "avg")}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle, "style") || tx("\u5747\u8861\u578B", "Balanced"))} (${esc(h?.awayStyleCoeff) || 1}x)</div></div></div>${data.verdict?.reason || data.verdict?.reasonI18n ? `<div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">\u{1F4CA} ${tx("\u5206\u6790\u7ED3\u8BBA", "Verdict")}</div><div class="text-xs text-gray-300">${esc(window.WorldCup.I18n.i18nText(data.verdict.reasonI18n, data.verdict.reason || ""))}</div></div>` : ""}</div>`;
       }
-      window.WorldCup.MatchDetail = { openMatch, switchDetailTab, closeModal, renderVenueWeather, renderMatchWeatherBlock, renderNewsList, renderHeadToHead, renderPreMatchPrediction, renderTacticalScenario, renderCornerAnalysis };
+      function renderOddsDivergenceHint(divData) {
+        if (!divData || !divData.divergence) return "";
+        var direction = divData.direction || "";
+        var delta = divData.delta || {};
+        var homeDelta = delta.home != null ? (delta.home > 0 ? "+" : "") + (delta.home * 100).toFixed(1) + "%" : "---";
+        var awayDelta = delta.away != null ? (delta.away > 0 ? "+" : "") + (delta.away * 100).toFixed(1) + "%" : "---";
+        var maxAbs = divData.maxAbsDelta != null ? (divData.maxAbsDelta * 100).toFixed(1) + "%" : "";
+        var directionText = "";
+        if (direction === "model_home_lean") directionText = tx("\u6A21\u578B\u6BD4\u5E02\u573A\u66F4\u770B\u597D\u4E3B\u961F", "Model leans home vs market");
+        else if (direction === "model_away_lean") directionText = tx("\u6A21\u578B\u6BD4\u5E02\u573A\u66F4\u770B\u597D\u5BA2\u961F", "Model leans away vs market");
+        else if (direction === "market_home_lean") directionText = tx("\u6A21\u578B\u6BD4\u5E02\u573A\u66F4\u770B\u4F4E\u4E3B\u961F", "Model lower than market on home");
+        else if (direction === "market_away_lean") directionText = tx("\u6A21\u578B\u6BD4\u5E02\u573A\u66F4\u770B\u4F4E\u5BA2\u961F", "Model lower than market on away");
+        return `<div style="margin-top:6px;padding:6px 10px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:8px;font:400 9px/1.4 Inter,sans-serif;color:rgba(234,179,8,.7)">
+            <span style="font-weight:600">&#9888; ${tx("\u6A21\u578B\u4E0E\u5E02\u573A\u5206\u6B67", "Model-vs-Market")} ${esc(maxAbs)}</span>
+            <div style="margin-top:3px;font-size:8px;color:rgba(234,179,8,.55)">${esc(directionText)} &middot; ${tx("\u4E3B", "H")}${esc(homeDelta)} / ${tx("\u5BA2", "A")}${esc(awayDelta)} &middot; ${tx("\u6765\u6E90", "src")}: ${esc(divData.source || "---")}</div>
+        </div>`;
+      }
+      window.WorldCup.MatchDetail = { openMatch, switchDetailTab, closeModal, renderVenueWeather, renderMatchWeatherBlock, renderNewsList, renderHeadToHead, renderPreMatchPrediction, renderTacticalScenario, renderCornerAnalysis, renderOddsDivergenceHint };
       window.openMatch = openMatch;
       window.switchDetailTab = switchDetailTab;
       window.closeModal = closeModal;

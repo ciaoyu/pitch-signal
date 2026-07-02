@@ -47,6 +47,7 @@ const TEST_FILES = [
   'test-third-place.js',
   'test-venue-factor.js',
   'test-venueFactors.js',
+  'test-odds-divergence.js',
   'test-user-predictions.js',
 ];
 
