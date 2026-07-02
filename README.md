@@ -73,7 +73,8 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 | `CORS_ORIGINS` | No | `localhost:5099` | Comma-separated allowed browser origins |
 | `RATE_LIMIT_MAX` | No | `100` | Max requests per rate-limit window |
 | `RATE_LIMIT_WINDOW_MS` | No | `60000` | Rate-limit window in milliseconds |
-| `ODDS_API_KEY` | No | — | the-odds-api.com key |
+| `THE_ODDS_API_KEY` | No | — | the-odds-api.com key for market odds / divergence |
+| `ODDS_API_KEY` | No | — | Legacy alias for `THE_ODDS_API_KEY` |
 | `OWM_API_KEY` | No | — | OpenWeatherMap key (venue weather) |
 | `BALLDONTLIE_API_KEY` | No | — | balldontlie.io roster/stats enrichment |
 | `TAVILY_API_KEY` | No | — | Tavily search (AI post-match research) |

@@ -5,7 +5,8 @@
  * 验证：① 数学性质（去水后和为1、不改变排序）② 冷热门修正方向正确
  * （相对简单比例去水，热门概率应上修、冷门概率应下修）③ 边界情况
  * （无水/倒挂退化为比例去水）④ /api/predict 的 odds key 门控读对了变量
- * （此前误判 BALLDONTLIE_API_KEY，应为 THE_ODDS_API_KEY）。
+ * （此前误判 BALLDONTLIE_API_KEY，应为 THE_ODDS_API_KEY）⑤ legacy odds route/job
+ * 也接受 THE_ODDS_API_KEY，且按 The Odds API 官方 apiKey query 参数认证。
  */
 const PredictionEngine = require('../lib/prediction');
 const fs = require('fs');
@@ -63,6 +64,17 @@ const engine = new PredictionEngine();
   const gateLine = src.split('\n').find(l => l.includes('hasOddsKey ='));
   assert(!!gateLine && gateLine.includes('THE_ODDS_API_KEY'), '/api/predict 的 odds 门控读 THE_ODDS_API_KEY');
   assert(!!gateLine && !gateLine.includes('BALLDONTLIE_API_KEY'), '/api/predict 的 odds 门控不再误读 BALLDONTLIE_API_KEY');
+}
+
+// 7. 旧 odds route/job 接受 THE_ODDS_API_KEY，且不再用 x-api-key header 空转
+{
+  const oddsRouteSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'routes', 'odds.js'), 'utf8');
+  const oddsJobSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'jobs', 'odds-collector.js'), 'utf8');
+  assert(oddsRouteSrc.includes('process.env.THE_ODDS_API_KEY || process.env.ODDS_API_KEY'), '/api/odds 优先读 THE_ODDS_API_KEY，兼容 ODDS_API_KEY');
+  assert(oddsJobSrc.includes('process.env.THE_ODDS_API_KEY || process.env.ODDS_API_KEY'), 'odds-collector 优先读 THE_ODDS_API_KEY，兼容 ODDS_API_KEY');
+  assert(oddsRouteSrc.includes('apiKey=${encodeURIComponent(ODDS_API_KEY)}'), '/api/odds 使用 apiKey query 参数认证');
+  assert(oddsJobSrc.includes('apiKey=${encodeURIComponent(ODDS_API_KEY)}'), 'odds-collector 使用 apiKey query 参数认证');
+  assert(!oddsRouteSrc.includes('x-api-key') && !oddsJobSrc.includes('x-api-key'), 'odds route/job 不再使用 x-api-key header');
 }
 
 console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);

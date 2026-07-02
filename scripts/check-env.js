@@ -33,7 +33,8 @@ const groups = [
     title: 'core data',
     vars: [
       { name: 'BALLDONTLIE_API_KEY', required: false, note: 'FIFA/team data enrichment' },
-      { name: 'ODDS_API_KEY', required: false, note: 'live odds instead of mock odds' },
+      { name: 'THE_ODDS_API_KEY', required: false, note: 'live market odds and divergence' },
+      { name: 'ODDS_API_KEY', required: false, note: 'legacy alias for THE_ODDS_API_KEY' },
       { name: 'OWM_API_KEY', required: false, note: 'live venue weather' },
     ],
   },

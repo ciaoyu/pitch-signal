@@ -47,7 +47,8 @@
 | `ANTHROPIC_API_KEY` | _(可选)_ | 可选 |
 | `CLAUDE_POSTMORTEM_MODEL` | `deepseek-v4-pro` | 可选 |
 | `CLAUDE_CHAT_MODEL` | `deepseek-v4-flash` | 可选 |
-| `ODDS_API_KEY` | _(可选)_ | 可选 |
+| `THE_ODDS_API_KEY` | _(可选)_ | the-odds-api.com；启用市场赔率轨道 / odds-divergence |
+| `ODDS_API_KEY` | _(可选)_ | legacy alias；新部署优先使用 `THE_ODDS_API_KEY` |
 | `OWM_API_KEY` | _(可选)_ | 可选 |
 
 > ⚠️ **令牌三级全不设**：bot.js 用 `BOT_API_TOKEN || ADMIN_TOKEN`，prediction.js 用 `WRITE_API_TOKEN || ADMIN_TOKEN`。
