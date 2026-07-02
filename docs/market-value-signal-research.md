@@ -13,7 +13,7 @@
 2. 不直接爬 Transfermarkt 页面。
    - P4-2 只接收导出的本地 JSON/CSV/DB 派生数据，避免生产服务运行时触碰网页抓取和 ToS 风险。
 
-当前实现选择：先接本地 JSON `data/market-values.json`（或 `MARKET_VALUES_PATH` 指向的文件），默认不开闸、不影响概率。
+当前实现选择：`scripts/import-market-values.js` 从 `national_teams.csv.gz` 生成本地 JSON `data/market-values.json`（或运行时用 `MARKET_VALUES_PATH` 指向其他文件），默认不开闸、不影响概率。
 
 ## 本地 JSON 合约
 
@@ -35,6 +35,14 @@
 ```
 
 也支持每队 `players[].marketValueEur`，服务会求和。
+
+## 导入命令
+
+```bash
+node scripts/import-market-values.js
+```
+
+该脚本只下载 `national_teams.csv.gz`，读取 `total_market_value`，并用 `data/id_map_center.json` 尽量映射到 `ratings.json` 使用的国家名。
 
 ## 上线闸门
 

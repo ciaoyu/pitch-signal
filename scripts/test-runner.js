@@ -27,6 +27,7 @@ const TEST_FILES = [
   'test-final-round-context.js',
   'test-fuzzy-match.js',
   'test-health-enhance.js',
+  'test-import-market-values.js',
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
   'test-matchup-spatial.js',
