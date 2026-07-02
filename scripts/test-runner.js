@@ -48,6 +48,8 @@ const TEST_FILES = [
   'test-venue-factor.js',
   'test-venueFactors.js',
   // P2 专项测试
+  'test-odds-divergence.js',
+  'test-user-predictions.js',
   'test-teamcontext-news.js',
 ];
 
