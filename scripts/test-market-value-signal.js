@@ -69,5 +69,9 @@ assert(withSignal.homeWin > baseline.homeWin, 'market-value signal shifts probab
 const serviceSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'services', 'PredictionService.js'), 'utf8');
 assert(serviceSrc.includes("MARKET_VALUE_SIGNAL_ENABLED === 'true'"), 'PredictionService keeps market-value signal behind explicit env gate');
 
+const backtestSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'backtest.js'), 'utf8');
+assert(backtestSrc.includes("'marketValueSignal'"), 'compareBaseline accepts market-value signal as an explicit candidate config');
+assert(backtestSrc.includes('marketValueSignal.buildSignal(homeTeam, awayTeam)'), 'walk-forward backtest injects market-value signal only when candidate config enables it');
+
 console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
 process.exit(failed ? 1 : 0);
