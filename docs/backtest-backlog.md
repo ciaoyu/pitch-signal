@@ -4,8 +4,14 @@
 
 **现状：** 只有 2018 + 2022 两届世界杯数据，共 128 场比赛。统计显著性不足。
 
+**可用数据源**：[martj42/international_results](https://github.com/martj42/international_results)（CC0，公共领域），49,496 场国家队比赛，1872 年至今。已实测下载确认字段为 `date, home_team, away_team, home_score, away_score, tournament, city, country, neutral`。其中真正与世界杯正赛同量级的赛事（FIFA World Cup + Euro + Copa América + AFCON 正赛）约 3000+ 场，其余多为友谊赛（37%）和各类预选赛，强度不可直接混用。
+
 **方案：**
-- [ ] 短期：加 Euro 2020、Copa America 2021、Euro 2024 等洲际赛事数据，扩充到 300-400 场（数据格式兼容，需标记来源）
+- [ ] 分层使用，不要整份倒入：
+  - Elo 部分：全量 49k 场按时间顺序走 walk-forward（Elo 机制本身会让旧比赛权重随时间自然衰减，全量喂法是标准做法）
+  - Poisson `attack_strength`/`defense_strength` 训练：只用近 2-4 年数据，避免用百年前友谊赛数据代表球队当前实力
+  - Brier/方向准确率评估口径：只用 FIFA World Cup + 同级洲际正赛（Euro/Copa/AFCON），不要把友谊赛混进准确率统计，否则和现有 128 场纯世界杯口径不可比
+- [ ] 复用现有 `kFactorByType`（`lib/elo.js:13`）区分赛事类型权重，而不是新增权重机制
 - [ ] 中期：2026 世界杯结束后追加 104 场（48 队扩军），样本量翻倍
 - [ ] 先做好置信区间（问题 2），让小样本的不确定性可见，比堆数据更紧急
 
