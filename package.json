@@ -10,6 +10,8 @@
     "healthcheck:native": "node scripts/runtime-healthcheck.js --native-only",
     "check:env": "node scripts/check-env.js",
     "generate:ai-postmortem": "node scripts/generate-ai-postmortem.js",
+    "diagnose:venue-factor": "node scripts/diagnose-venue-factor.js",
+    "validate:bracket-ids": "node scripts/validate-bracket-ids.js",
     "test": "node scripts/test-runner.js",
     "test:ui": "node test/ui.spec.js",
     "start": "node server.js"
