@@ -3751,6 +3751,27 @@ var require_match_detail = __commonJS({
         venueBlock += `<div class="grid grid-cols-2 gap-2 text-[11px]"><div><span class="text-gray-500">${tx("\u6D77\u62D4", "Altitude")}</span><span class="font-bold ml-1">${v.altitude || 0}m</span></div><div><span class="text-gray-500">${tx("\u8349\u76AE", "Surface")}</span><span class="ml-1">${grassIcon} ${esc(grassDisplay)}</span></div><div><span class="text-gray-500">${tx("\u5C4B\u9876", "Roof")}</span><span class="ml-1">${v.roof === "closed" ? tx("\u5C01\u95ED", "Closed") : v.roof === "retractable" ? tx("\u53EF\u4F38\u7F29", "Retractable") : tx("\u5F00\u653E", "Open")}</span></div></div>`;
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3">${venueBlock}</div>${w ? `<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">${weatherIcon} ${tx("\u5929\u6C14\u72B6\u51B5", "Weather")}</span><span class="text-[11px] text-gray-500">${esc(w.description) || ""}</span></div><div class="grid grid-cols-3 gap-3 text-center"><div><div class="text-xl font-bold">${esc(w.temp) || "-"}\xB0C</div><div class="text-[11px] text-gray-500">${tx("\u6E29\u5EA6", "Temp")}</div><div class="text-[11px] text-gray-600">${tx("\u4F53\u611F", "Feels")} ${esc(w.feelsLike) || "-"}\xB0C</div></div><div><div class="text-xl font-bold">${esc(w.humidity) || "-"}%</div><div class="text-[11px] text-gray-500">${tx("\u6E7F\u5EA6", "Humidity")}</div></div><div><div class="text-xl font-bold">${w.windSpeed ? esc(Math.round(w.windSpeed)) : "-"}</div><div class="text-[11px] text-gray-500">${tx("\u98CE\u901F", "Wind")} km/h</div></div></div></div>` : `<div class="glass-light rounded-lg p-3"><div class="text-center text-gray-500 text-xs"><div class="mb-1">\u{1F324}\uFE0F ${tx("\u5929\u6C14\u6570\u636E", "Weather")}</div><div>${tx("\u6682\u65E0\u5B9E\u65F6\u5929\u6C14", "No weather data")}</div></div></div>`}${impact ? `<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">\u{1F4CA} ${tx("\u573A\u5730\u5F71\u54CD\u5206\u6790", "Venue Impact")}</span><span class="text-xs ${impactColor} font-bold">${impactEmoji} ${impact.overall > 0 ? "+" : ""}${esc(impact.overall)}</span></div><div class="grid grid-cols-2 gap-2 text-[11px] mb-2"><div><span class="text-gray-500">${tx("\u8FDB\u653B", "Attack")}</span><span class="font-bold ml-1 ${impact.attack > 0 ? "text-green-400" : impact.attack < 0 ? "text-red-400" : ""}">${impact.attack > 0 ? "+" : ""}${esc(impact.attack)}%</span></div><div><span class="text-gray-500">${tx("\u9632\u5B88", "Defense")}</span><span class="font-bold ml-1 ${impact.defense > 0 ? "text-green-400" : impact.defense < 0 ? "text-red-400" : ""}">${impact.defense > 0 ? "+" : ""}${esc(impact.defense)}%</span></div><div><span class="text-gray-500">${tx("\u63A7\u7403", "Poss")}</span><span class="font-bold ml-1 ${impact.possession > 0 ? "text-green-400" : impact.possession < 0 ? "text-red-400" : ""}">${impact.possession > 0 ? "+" : ""}${esc(impact.possession)}%</span></div><div><span class="text-gray-500">${tx("\u4F53\u80FD", "Stamina")}</span><span class="font-bold ml-1 ${impact.physical > 0 ? "text-green-400" : impact.physical < 0 ? "text-red-400" : ""}">${impact.physical > 0 ? "+" : ""}${esc(impact.physical)}%</span></div></div>${impact.details?.length ? `<div class="border-t border-white/5 pt-2">${impact.details.map((d) => `<div class="text-[11px] text-gray-400 mb-1">\u2022 ${esc(d)}</div>`).join("")}</div>` : ""}</div>` : ""}</div>`;
       }
+      // P2-4: 用户预测投票面板
+      function renderUserVotePanel(pred) {
+        const matchId = pred?.match?.id || window._currentMatchId || '';
+        if (!matchId) return '';
+        const homeName = displayMaybeTeamName(pred?.match?.homeNameI18n || pred?.match?.homeName || 'Home');
+        const awayName = displayMaybeTeamName(pred?.match?.awayNameI18n || pred?.match?.awayName || 'Away');
+        // HTML shell: 投票按钮 + 结果展示区
+        let html = `<div class="pred-section" id="user-vote-panel">
+          <div class="pred-section-title text-indigo-400"><span class="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-xs">\u{1F3C6}</span>${tx('球迷预测', 'Fan Predictions')}</div>
+          <div class="flex items-center gap-2 mb-2">
+            <button onclick="castUserVote('${matchId}','home')" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-green-500/10 text-green-300 border border-green-500/20 hover:bg-green-500/20 transition">${esc(homeName)} \u{1F3C6}</button>
+            <button onclick="castUserVote('${matchId}','draw')" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 hover:bg-yellow-500/20 transition">${tx('平局', 'Draw')}</button>
+            <button onclick="castUserVote('${matchId}','away')" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition">${esc(awayName)} \u{1F3C6}</button>
+          </div>
+          <div id="user-vote-result" class="text-xs text-gray-400 leading-snug">${tx('点击投票查看球迷预测', 'Vote to see fan predictions')}</div>
+        </div>`;
+        // 异步拉取聚合数据
+        setTimeout(function() { loadUserVoteAggregate(matchId); }, 200);
+        return html;
+      }
+
       function renderPreMatchPrediction(pred) {
         if (!pred || pred.error) return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction data unavailable")}</div>`;
         const homeName = displayMaybeTeamName(pred.match?.homeNameI18n || pred.match?.homeName || "\u4E3B\u961F"), awayName = displayMaybeTeamName(pred.match?.awayNameI18n || pred.match?.awayName || "\u5BA2\u961F");
@@ -3762,6 +3783,8 @@ var require_match_detail = __commonJS({
         let html = `<div class="space-y-3"><div class="pred-section"><div class="pred-section-title text-purple-400"><span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">\u26A1</span>${tx("Elo \u5B9E\u529B\u5BF9\u6BD4", "Elo Comparison")}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(homeName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloHomePct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloHomePct}%</span></div><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(awayName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloAwayPct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloAwayPct}%</span></div><div class="text-[10px] text-gray-500 text-center mt-1.5">${tx("Elo \u5DEE\u503C", "Elo Diff")}: ${eloDiff}</div></div></div>`;
         html += `<div class="pred-section"><div class="pred-section-title text-blue-400"><span class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-xs">\u{1F3AF}</span>${tx("\u80DC\u5E73\u8D1F\u6982\u7387", "W/D/L Probability")}</div><div class="prob-bar mb-2"><div class="prob-bar-home" style="width:${hw}%">${hw > 12 ? hw + "%" : ""}</div><div class="prob-bar-draw" style="width:${dr}%">${dr > 10 ? dr + "%" : ""}</div><div class="prob-bar-away" style="width:${aw}%">${aw > 12 ? aw + "%" : ""}</div></div><div class="flex justify-between text-[11px]"><span class="text-green-400 font-bold">${tx("\u4E3B\u80DC", "Home")} ${hw}%</span><span class="text-yellow-400 font-bold">${tx("\u5E73\u5C40", "Draw")} ${dr}%</span><span class="text-red-400 font-bold">${tx("\u5BA2\u80DC", "Away")} ${aw}%</span></div></div>`;
         html += `<div class="pred-section"><div class="pred-section-title text-emerald-400"><span class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-xs">\u{1F4CA}</span>${tx("\u8FDB\u7403\u671F\u671B\u503C (\u03BB)", "Expected Goals (\u03BB)")}</div><div class="grid grid-cols-2 gap-2"><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-emerald-300">${esc(homeName)}</div><div class="text-sm font-mono font-bold text-emerald-400">${homeLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-red-300">${esc(awayName)}</div><div class="text-sm font-mono font-bold text-red-400">${awayLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div></div></div>`;
+        // P2-4: 用户预测投票面板
+        html += renderUserVotePanel(pred);
         if (pred.tacticalScenario?.applicable) html += renderTacticalScenario(pred.tacticalScenario);
         html += "</div>";
         return html;
@@ -3797,6 +3820,53 @@ var require_match_detail = __commonJS({
       window.openMatch = openMatch;
       window.switchDetailTab = switchDetailTab;
       window.closeModal = closeModal;
+
+      // P2-4: 用户预测投票逻辑
+      var _userVoteUid = null; // 匿名会话 uid
+      function _saveUid(uid) {
+        _userVoteUid = uid;
+        try { document.cookie = 'ps_uid=' + uid + '; path=/; max-age=31536000; SameSite=Lax'; } catch (e) {}
+      }
+      function _readUid() {
+        if (_userVoteUid) return _userVoteUid;
+        try {
+          var m = document.cookie.match(/(?:^|;\s*)ps_uid=([^;]+)/);
+          return m ? m[1].trim() : null;
+        } catch (e) { return null; }
+      }
+
+      function castUserVote(matchId, choice) {
+        api('/api/user-predictions', {
+          method: 'POST',
+          body: JSON.stringify({ matchId: matchId, choice: choice })
+        }).then(function(res) {
+          var data = res?.data || res || {};
+          if (data.error) { console.warn('castUserVote error:', data.error); return; }
+          if (data.uid) _saveUid(data.uid);
+          // 高亮选中按钮
+          document.querySelectorAll('.vote-btn').forEach(function(btn) {
+            btn.classList.remove('ring-2', 'ring-indigo-400', 'ring-offset-1');
+            if (btn.getAttribute('data-choice') === choice) btn.classList.add('ring-2', 'ring-indigo-400', 'ring-offset-1');
+          });
+          loadUserVoteAggregate(matchId);
+        }).catch(function(e) { console.error('castUserVote failed:', e); });
+      }
+      function loadUserVoteAggregate(matchId) {
+        api('/api/user-predictions/' + matchId + '/aggregate').then(function(res) {
+          var data = res?.data || res || {};
+          if (data.error || !data.totalVotes) return;
+          var el = document.getElementById('user-vote-result');
+          if (!el) return;
+          var p = data.percentages;
+          el.innerHTML = '<div class="mb-1.5 font-bold text-white">'
+            + (data.totalVotes || 0) + tx(' 人已投票', ' voted') + '</div>'
+            + '<div class="grid grid-cols-3 gap-1">'
+            + '<div class="text-center"><div class="text-green-400 font-bold">' + p.home + '%</div><div class="text-[9px] text-gray-500">Home</div></div>'
+            + '<div class="text-center"><div class="text-yellow-400 font-bold">' + p.draw + '%</div><div class="text-[9px] text-gray-500">Draw</div></div>'
+            + '<div class="text-center"><div class="text-red-400 font-bold">' + p.away + '%</div><div class="text-[9px] text-gray-500">Away</div></div>'
+            + '</div>';
+        }).catch(function() {});
+      }
     })();
   }
 });
