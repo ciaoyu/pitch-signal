@@ -1,123 +1,277 @@
 #!/usr/bin/env node
 /**
- * P2-5: teamcontext-news 测试 — 搜索词 + 缓存注入链 + 降级
+ * P2-5: teamcontext-news 行为测试
+ *
+ * 测试原则：
+ * - 不复制生产逻辑到测试
+ * - 不 inspect teamContext.js 源码字符串 (no eval/regex on production module)
+ * - 直接 require 生产模块,覆盖真实行为
+ * - mock fetch 控制 API 返回值
+ *
+ * 例外：Part A 的 buildContextAwareSearchTerms 是 pure function 但未导出,
+ * 通过 eval(function body) 提取，这是访问该函数的唯一入口。
  */
 'use strict';
+
+const fs = require('fs');
+const path = require('path');
 
 let passed = 0, failed = 0;
 function assert(cond, label) { cond ? (console.log('  ✅', label), passed++) : (console.error('  ❌', label), failed++); }
 
-console.log('━━━ teamcontext-news tests (search-terms + cache-chain + fallback) ━━━');
+console.log('━━━ teamcontext-news tests (real module, mocked Tavily) ━━━');
 
-// ── Part A: buildContextAwareSearchTerms (existing) ──
+// ── Module mock: bypass better-sqlite3 NODE_MODULE_VERSION mismatch ──
+const Module = require('module');
+const origRequire = Module.prototype.require;
+Module.prototype.require = function (id) {
+  if (id === './db' && this.filename && this.filename.includes('/lib/')) {
+    return { db: { prepare: () => ({ all: () => [] }) }, DB_PATH: ':memory:' };
+  }
+  return origRequire.apply(this, arguments);
+};
 
-const fs = require('fs');
-const src = fs.readFileSync(__dirname + '/../lib/routes/news.js', 'utf8');
-const buildFn = src.match(/function buildContextAwareSearchTerms[\s\S]*?^}/m);
-if (!buildFn) { console.error('❌ Could not extract buildContextAwareSearchTerms'); process.exit(1); }
-const buildContextAwareSearchTerms = eval(`(${buildFn[0]})`);
+function freshModule() {
+  delete require.cache[require.resolve('../lib/teamContext')];
+  delete require.cache[require.resolve('../lib/crossMatchEffect')];
+  return require('../lib/teamContext');
+}
+
+// ── fetch mock ──
+const origFetch = globalThis.fetch;
+let fetchCalls = [];
+
+function setFetch(fn) {
+  fetchCalls = [];
+  globalThis.fetch = async (...args) => {
+    const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+    const body = args[1]?.body ? JSON.parse(args[1].body) : {};
+    fetchCalls.push({ url, query: body.query });
+    return fn(url, body);
+  };
+}
+
+async function run(fn, label) {
+  try { await fn(); } catch (e) { console.error(`  ❌ ${label}: ${e.message}`); failed++; }
+}
+
+// ── TAVILY_API_KEY — set globally, B9 deletes/restores locally ──
+const ORIG_KEY = process.env.TAVILY_API_KEY;
+process.env.TAVILY_API_KEY = 'test-key';
+
+(async () => {
+
+// ═══ Part A: buildContextAwareSearchTerms (pure fn via eval, only entry) ═══
 
 {
-  const ctx = { homeTeam: 'Germany', awayTeam: 'Curaçao', homeId: 'GER', awayId: 'CUW' };
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false });
-  assert(terms.length >= 5, 'base pre-match ≥ 5 terms');
-  assert(terms.some(t => t.includes('injury update')), 'contains injury update');
+  const newsSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'routes', 'news.js'), 'utf8');
+  const fnMatch = newsSrc.match(/function buildContextAwareSearchTerms\s*\([^)]*\)\s*\{[\s\S]*?\n\}/);
+  if (!fnMatch) { console.error('❌ Could not extract buildContextAwareSearchTerms'); process.exit(1); }
+  const buildContextAwareSearchTerms = eval(`(${fnMatch[0]})`);
+
+  const ctx = { homeTeam: 'Germany', awayTeam: 'Argentina', homeId: '481', awayId: '202' };
+
+  {
+    const terms = buildContextAwareSearchTerms(ctx, { isFinished: false });
+    assert(terms.length >= 5, `A1 base pre-match: ${terms.length} ≥ 5`);
+  }
+  {
+    const post = buildContextAwareSearchTerms({ ...ctx, homeScore: 1, awayScore: 0 }, { isFinished: true });
+    assert(post.some(t => t.includes('result') || t.includes('recap')), 'A2 post-match includes result/recap');
+  }
+  {
+    const getElo = (id) => (id === '481' ? 2000 : 1400);
+    const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getElo });
+    assert(terms.some(t => t.includes('upset')), 'A3 Elo diff → upset');
+  }
+  {
+    const getStyle = (id) => (id === '481' ? 'attacking' : 'defensive');
+    const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getStyle });
+    assert(terms.some(t => /low.?block|defensive/i.test(t)), 'A4 att vs def → tactical clash');
+  }
+  {
+    const terms = buildContextAwareSearchTerms({ ...ctx, weatherCondition: 'rain' }, { isFinished: false });
+    assert(terms.some(t => t.includes('weather')), 'A5 rain → weather query');
+  }
+  {
+    const getQual = () => ({ stage: 'knockout' });
+    const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getQualification: getQual });
+    assert(terms.some(t => t.includes('must win')), 'A6 knockout → must win');
+  }
+  {
+    const terms = buildContextAwareSearchTerms(ctx, { isFinished: false,
+      getElo: () => 1600, getStyle: () => 'balanced', getQualification: () => ({ stage: 'knockout' }),
+    });
+    assert(terms.length <= 8, `A7 max 8: ${terms.length}`);
+    const norms = terms.map(t => t.toLowerCase().trim());
+    assert(new Set(norms).size === terms.length, 'A8 all unique');
+  }
 }
+
+// ═══ Part B: requestTeamNews — real module, mocked fetch ═══
+
+// B1: Tavily returns results → headlines injected + fetch was called
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({
+    ok: true,
+    json: async () => ({ results: [
+      { title: 'Germany striker injured, doubtful for opener' },
+      { title: 'Germany manager reveals tactical switch' },
+      { title: 'Germany squad rotation plans' },
+    ] }),
+  }));
+
+  const headlines = await tm.requestTeamNews('Germany');
+  assert(fetchCalls.length > 0, 'B1 fetch was called');
+  assert(headlines.length > 0, 'B1 non-empty headlines');
+  assert(headlines.length <= 8, 'B1 headlines ≤ 8');
+  assert(headlines[0].includes('Germany'), 'B1 headline contains team name');
+}, 'B1');
+
+// B2: Tavily empty results → [] + fetch was called
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({ ok: true, json: async () => ({ results: [] }) }));
+
+  const headlines = await tm.requestTeamNews('Brazil');
+  assert(fetchCalls.length > 0, 'B2 fetch was called');
+  assert(headlines.length === 0, 'B2 empty results → []');
+
+  const ctx = await tm.getContext('Brazil');
+  assert(ctx.latestNews.length === 0, 'B2 getContext returns []');
+}, 'B2');
+
+// B3: HTTP 500 → [] + fetch was called
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({ ok: false, status: 500 }));
+
+  const headlines = await tm.requestTeamNews('Argentina');
+  assert(fetchCalls.length > 0, 'B3 fetch was called');
+  assert(headlines.length === 0, 'B3 HTTP 500 → []');
+}, 'B3');
+
+// B4: network error → [] + fetch was called
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => { throw new Error('ECONNREFUSED'); });
+
+  const headlines = await tm.requestTeamNews('France');
+  assert(fetchCalls.length > 0, 'B4 fetch was called');
+  assert(headlines.length === 0, 'B4 network error → []');
+}, 'B4');
+
+// B5: cache hit → fetch NOT called, returns existing items
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({ ok: true, json: async () => ({ results: [{ title: 'Should NOT be called' }] }) }));
+  tm.updateTeamNews('Spain', ['Existing headline 1', 'Existing headline 2']);
+
+  const headlines = await tm.requestTeamNews('Spain');
+  assert(fetchCalls.length === 0, 'B5 fetch was NOT called (cache hit)');
+  assert(headlines.length === 2, 'B5 cache returns 2 items');
+  assert(headlines[0] === 'Existing headline 1', 'B5 cache returns original item');
+}, 'B5');
+
+// B6: empty Tavily → guard prevents overwriting existing cache entry
+await run(async () => {
+  const tm = freshModule();
+  tm.updateTeamNews('Italy', ['Italy team news: important headline']);
+
+  // Force-expire cache to trigger Tavily fetch path, then return empty
+  for (const [key, entry] of tm._newsCache) {
+    entry.updatedAt = '2020-01-01T00:00:00.000Z';
+  }
+
+  setFetch(() => ({ ok: true, json: async () => ({ results: [] }) }));
+  const headlines = await tm.requestTeamNews('Italy');
+
+  assert(fetchCalls.length > 0, 'B6 fetch was called (cache expired)');
+  assert(headlines.length === 0, 'B6 empty Tavily → []');
+
+  // Anti-overwrite guard: cache entry still holds original items (not replaced by [])
+  const entry = tm._newsCache.get('Italy');
+  assert(entry !== undefined, 'B6 cache entry still exists');
+  assert(entry.items.length === 1, 'B6 cache items preserved (not overwritten by empty)');
+  assert(entry.items[0].includes('Italy'), 'B6 original headline preserved');
+}, 'B6');
+
+// B7: maxItems=3 → exactly 3 headlines returned
+await run(async () => {
+  const tm = freshModule();
+  setFetch((_, body) => ({
+    ok: true,
+    json: async () => ({ results: Array.from({ length: 6 }, (_, i) => ({ title: `${body.query} result ${i + 1}` })) }),
+  }));
+
+  const headlines = await tm.requestTeamNews('Netherlands', { maxItems: 3 });
+  assert(fetchCalls.length > 0, 'B7 fetch was called');
+  assert(headlines.length === 3, `B7 maxItems=3 → exactly 3, got ${headlines.length}`);
+}, 'B7');
+
+// B8: maxItems=0 → returns [] without calling fetch
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({ ok: true, json: async () => ({ results: [{ title: 'nope' }] }) }));
+
+  const headlines = await tm.requestTeamNews('Mexico', { maxItems: 0 });
+  assert(fetchCalls.length === 0, 'B8 fetch was NOT called (maxItems=0)');
+  assert(headlines.length === 0, 'B8 maxItems=0 → []');
+}, 'B8');
+
+// B9: no TAVILY_API_KEY → returns [] without calling fetch
+await run(async () => {
+  delete process.env.TAVILY_API_KEY;
+
+  const tm = freshModule();
+  setFetch(() => ({ ok: true, json: async () => ({ results: [{ title: 'nope' }] }) }));
+
+  const headlines = await tm.requestTeamNews('England');
+  assert(fetchCalls.length === 0, 'B9 fetch was NOT called (no API key)');
+  assert(headlines.length === 0, 'B9 no API key → []');
+
+  process.env.TAVILY_API_KEY = ORIG_KEY;
+}, 'B9');
+
+// B10: duplicate titles deduped + non-empty result
+await run(async () => {
+  const tm = freshModule();
+  setFetch(() => ({
+    ok: true,
+    json: async () => ({ results: [
+      { title: 'Unique headline' },
+      { title: 'Unique headline' },  // dup
+      { title: 'Another news item' },
+      { title: 'Unique headline' },  // dup again
+    ] }),
+  }));
+
+  const headlines = await tm.requestTeamNews('Portugal');
+  assert(fetchCalls.length > 0, 'B10 fetch was called');
+  assert(headlines.length > 0, 'B10 non-empty result');
+  assert(headlines.length === 2, `B10 deduped to 2 unique, got ${headlines.length}: [${headlines.join(', ')}]`);
+  const dupCount = headlines.filter(h => h === 'Unique headline').length;
+  assert(dupCount === 1, `B10 "Unique headline" appears exactly once (${dupCount})`);
+}, 'B10');
+
+// ═══ Part C: updateTeamNews (sync, real module) ═══
+
 {
-  const ctx = { homeTeam: 'Brazil', awayTeam: 'Argentina', homeId: 'BRA', awayId: 'ARG' };
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: true });
-  assert(terms.some(t => t.includes('match analysis')), 'post has match analysis');
-  assert(terms.some(t => t.includes('post-match reaction')), 'post has reaction');
-}
-{
-  const ctx = { homeTeam: 'France', awayTeam: 'Iceland', homeId: 'FRA', awayId: 'ISL' };
-  const getElo = (id) => id === 'FRA' ? 1850 : 1550;
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getElo });
-  assert(terms.some(t => t.includes('upset')), 'Elo diff → upset chance');
-  assert(terms.length > 5, 'Elo diff increases term count');
-}
-{
-  const ctx = { homeTeam: 'Morocco', awayTeam: 'England', homeId: 'MAR', awayId: 'ENG' };
-  const getStyle = (id) => id === 'MAR' ? 'defensive' : 'attacking';
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getStyle });
-  assert(terms.some(t => t.includes('counter attack')), 'def vs att → counter query');
-}
-{
-  const ctx = { homeTeam: 'Norway', awayTeam: 'Spain', homeId: 'NOR', awayId: 'ESP', weatherCondition: 'Rain' };
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false });
-  assert(terms.some(t => t.includes('weather')), 'rain → weather query');
-}
-{
-  const ctx = { homeTeam: 'Argentina', awayTeam: 'Portugal', homeId: 'ARG', awayId: 'POR' };
-  const getQualification = () => ({ stage: 'knockout' });
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getQualification });
-  assert(terms.some(t => t.includes('must win')), 'knockout → must win');
-}
-{
-  const ctx = { homeTeam: 'France', awayTeam: 'Iceland', homeId: 'FRA', awayId: 'ISL' };
-  const getElo = (id) => id === 'FRA' ? 1850 : 1550;
-  const getStyle = (id) => id === 'FRA' ? 'attacking' : 'defensive';
-  const getQualification = () => ({ stage: 'knockout' });
-  const terms = buildContextAwareSearchTerms(ctx, { isFinished: false, getElo, getStyle, getQualification });
-  assert(terms.length <= 8, 'max 8 queries');
-  const unique = new Set(terms.map(t => t.toLowerCase().trim()));
-  assert(unique.size === terms.length, 'all queries unique');
+  const tm = freshModule();
+  assert(tm.updateTeamNews(null, ['a']) === 0, 'C1 null teamId → 0');
+  assert(tm.updateTeamNews('X', 'not-an-array') === 0, 'C2 non-array items → 0');
+
+  const count = tm.updateTeamNews('Germany', ['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10']);
+  assert(count === 8, 'C3 updateTeamNews slices to 8');
 }
 
-// ── Part B: _generateMockTeamNews logic verification ──
-// Mirror the template generation logic (avoid eval of class method syntax).
-const teamContextSrc = require('fs').readFileSync(__dirname + '/../lib/teamContext.js', 'utf8');
-const genFnMatch = teamContextSrc.match(/^  _generateMockTeamNews[\s\S]*?^  \}/m);
-assert(genFnMatch !== null, '_generateMockTeamNews method found in source');
-const genBody = genFnMatch[0];
-
-// 8 templates in source
-assert((genBody.match(/`\$\{name\}/g) || []).length === 8, '8 template strings');
-assert(genBody.includes('.slice(0, maxItems)'), 'uses slice for clamping');
-assert(genBody.includes('const name = String'), 'normalizes to String');
-
-// Inline equivalent test
-function _mockNews(teamId, maxItems) {
-  const name = String(teamId);
-  const templates = [
-    `${name} injury update: key players fitness assessment ahead of next match`,
-    `${name} manager discusses tactical approach and possible formation changes`,
-    `${name} training camp report: squad depth and rotation options`,
-    `${name} set-piece analysis: identified as potential game-changer`,
-    `${name} defensive organization under scrutiny in recent outings`,
-    `${name} goalkeeper form could be decisive factor`,
-    `${name} young prospect pushing for starting role`,
-    `${name} recent form guide: trends and patterns in last 5 matches`,
-  ];
-  return templates.slice(0, maxItems);
-}
-const h = _mockNews('GER', 4);
-assert(Array.isArray(h), 'returns array');
-assert(h.length === 4, 'returns 4 items');
-assert(h.every(s => typeof s === 'string' && s.length > 10), 'all items strings');
-assert(h[0].includes('GER injury'), 'includes teamId in first headline');
-assert(h.some(s => s.includes('tactical')), 'tactical headline exists');
-assert(h.some(s => s.includes('form')), 'form headline exists (at least 1)');
-assert(_mockNews('BRA', 3).length === 3, 'maxItems clamps');
-assert(_mockNews('FRA', 0).length === 0, 'maxItems=0 returns empty');
-
-// ── Part C: requestTeamNews anti-overwrite logic (verify via source inspection) ──
-
-const reqFnMatch = teamContextSrc.match(/async requestTeamNews[\s\S]*?^\s+\}/m);
-assert(reqFnMatch !== null, 'requestTeamNews method found in source');
-
-const reqBody = reqFnMatch[0];
-assert(reqBody.includes('cached.length > 0'), 'checks cached.length before updating');
-assert(reqBody.includes('this._generateMockTeamNews'), 'calls _generateMockTeamNews when cache miss');
-assert(!reqBody.includes('const headlines = []'), 'no longer returns empty hardcoded array');
-
-// ── Part D: _getLatestNews reads from _newsCache (verify via source) ──
-// The regex ^\s+} matches first } (if-block), not method-end, so use substring.
-const getNewsStart = teamContextSrc.indexOf('_getLatestNews(teamId) {');
-assert(getNewsStart > 0, '_getLatestNews found');
-const getNewsBody = teamContextSrc.substring(getNewsStart, getNewsStart + 600);
-assert(getNewsBody.includes('this._newsCache.get'), 'reads _newsCache');
-assert(getNewsBody.includes('teamIdAliasSet'), 'uses alias bridging');
-
-console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
-process.exit(failed > 0 ? 1 : 0);
+})().then(() => {
+  globalThis.fetch = origFetch;
+  process.env.TAVILY_API_KEY = ORIG_KEY;
+  console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
+  process.exit(failed > 0 ? 1 : 0);
+}).catch((e) => {
+  console.error('FATAL:', e);
+  process.exit(1);
+});
