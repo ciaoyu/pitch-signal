@@ -55,6 +55,7 @@ const TEST_FILES = [
   'test-user-predictions.js',
   'test-teamcontext-news.js',
   // P4 专项测试
+  'test-market-value-signal.js',
   'test-prediction-market-ui.js',
   'test-shin-devig.js',
 ];
