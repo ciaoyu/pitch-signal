@@ -196,7 +196,7 @@
             '/api/elo/rankings', '/api/schedule', '/api/qualification-probabilities',
         ]);
 
-        let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">⚠️ ${tx('本页面为实验性足球概率模型，仅供产品体验参考，不构成任何投注建议。预测基于 Elo 评分与 Poisson 进球预期模型，不接入实时市场赔率。', 'This page provides an experimental football probability model for product evaluation only. It is not betting advice. Predictions are based on Elo ratings and Poisson goal expectations, without live market odds.')}</div>`;
+        let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">⚠️ ${tx('本页面为实验性足球概率模型，仅供产品体验参考，不构成任何投注建议。预测基线来自 Elo 与 Poisson；若已配置市场赔率，比赛详情页会展示模型 vs 市场分歧提示。', 'This page provides an experimental football probability model for product evaluation only. It is not betting advice. The baseline forecast uses Elo and Poisson; when market odds are configured, match details show model-vs-market divergence hints.')}</div>`;
 
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some(m => m.stage && m.stage !== 'group');
