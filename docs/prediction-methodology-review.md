@@ -39,7 +39,7 @@ PitchSignal 的核心预测引擎是 **Elo 评分 + 独立 Poisson（Dixon-Coles
 ### 1.3 机器学习对比：三重独立证据（E1-E3）
 
 - **E1** — arXiv 2408.08331《Match predictions in soccer: ML vs. Poisson approaches》[一手确认]：五大联赛实测，结论原话——"特征选择和模型选择对预测质量都只有微小影响"。
-- **E2** — Groll et al. 2018 (arXiv:1806.03208) [一手确认]：随机森林的增益全部来自**把排名类能力值当特征喂进去**，不是算法本身；2002-2014 跨届验证。
+- **E2** — Groll et al. 2018 (arXiv:1806.03208) [一手确认，转述简化]：原文实测是"排名类能力值特征 + 随机森林"组合显著优于纯 Poisson/排名法，不是"随机森林本身不起作用"——但增益来源仍是**特征质量**（排名类能力值），换成更花哨的算法本身不是关键变量；2002-2014 跨届验证。
 - **E3** — hjjbh1314/worldcup-predictor [一手确认，可复现代码]：同一份 martj42 数据上，梯度提升（+状态/疲劳/赛程密度/中立场特征）对 Elo 基线的提升为 60.0%→60.0%，"essentially nothing"；permutation importance 中 `elo_diff` 一项 +0.34，其余全部 <0.01。
 - 反面教材 [营销数字]："94% 准确率"类主张全部无 walk-forward 披露；Kaggle 世界杯 notebook 普遍随机切分泄漏未来 Elo。小样本上复杂模型更差：Towards Data Science 11 模型对比中，交叉验证后**逻辑回归赢过 XGBoost 和神经网络**。
 
