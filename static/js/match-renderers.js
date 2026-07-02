@@ -934,6 +934,37 @@ window.WorldCup.MatchRenderers = (() => {
             return 'text-red-400';
         };
 
+        const renderSubstitutionImpact = (item) => {
+            const impact = item.teamImpact;
+            const playerLabel = item.playerIn
+                ? `${esc(item.playerIn)}${item.playerOut ? ` ${tx('换下', 'for')} ${esc(item.playerOut)}` : ''}`
+                : tx('换人', 'Substitution');
+            let signal = `<span class="text-gray-500">${tx('数据不足', 'Insufficient data')}</span>`;
+            if (item.impact?.status === 'pending') {
+                signal = `<span class="text-gray-500">${tx('评估中', 'Evaluating')}</span>`;
+            } else if (impact?.status === 'ready') {
+                const direction = impact.direction;
+                const icon = direction === 'positive' ? '↑' : direction === 'negative' ? '↓' : '→';
+                const label = direction === 'positive'
+                    ? tx('压力提升', 'Pressure up')
+                    : direction === 'negative'
+                        ? tx('压力下降', 'Pressure down')
+                        : tx('压力持平', 'Pressure steady');
+                const color = direction === 'positive'
+                    ? 'text-green-400'
+                    : direction === 'negative' ? 'text-red-400' : 'text-gray-300';
+                const delta = Number(impact.slopeDelta);
+                signal = `<span class="${color} font-bold">${icon} ${label} ${delta >= 0 ? '+' : ''}${delta.toFixed(2)}/min</span>`;
+            }
+            return `<div class="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0">
+                <div class="min-w-0">
+                    <div class="text-xs text-gray-200 truncate">${playerLabel}</div>
+                    <div class="text-[10px] text-gray-500">${esc(item.minute)}′ · ${item.side === 'home' ? esc(teamLabel(home)) : item.side === 'away' ? esc(teamLabel(away)) : tx('球队待确认', 'Team unknown')}</div>
+                </div>
+                <div class="text-[11px] text-right shrink-0">${signal}</div>
+            </div>`;
+        };
+
         // Render bench player card
         const renderBenchPlayer = (player, teamColor, teamNameStr) => {
             const playerNameZh = translatePlayerName(player.name, player.nameZh);
@@ -1047,6 +1078,14 @@ window.WorldCup.MatchRenderers = (() => {
                     </div>
                 </div>
             </div>
+
+            ${Array.isArray(data.substitutionImpacts) && data.substitutionImpacts.length ? `
+            <div class="glass-light rounded-lg p-3">
+                <div class="text-xs font-bold text-gray-300 mb-1">${tx('换人影响', 'Substitution Impact')}</div>
+                <div class="text-[10px] text-gray-500 mb-2">${tx('换人前后 10 分钟 Pressure Index 斜率', 'Pressure Index slope, 10 minutes before and after')}</div>
+                ${data.substitutionImpacts.map(renderSubstitutionImpact).join('')}
+            </div>
+            ` : ''}
 
             <div class="grid grid-cols-2 gap-2">
                 <div class="glass-light rounded-lg p-2 min-w-0">

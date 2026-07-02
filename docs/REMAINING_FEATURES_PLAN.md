@@ -58,10 +58,10 @@
 | 项 | 状态 | 剩余工作 |
 |---|---|---|
 | P1-1 出线概率补最佳第三名 | ✅ 完成 | 无 |
-| P1-2 venueFactor `applied=false` 根因 | 🟡 数值模型已接（`prediction.js:203`），**诊断脚本未写** | 补 `scripts/diagnose-venue-factor.js`：遍历赛程输出每场 applied/失败原因；场地名加别名模糊匹配。**0.5天，可随时插空做** |
+| P1-2 venueFactor `applied=false` 根因 | ✅ 完成 | `scripts/diagnose-venue-factor.js` 遍历 104 场并区分 applied/no-effect/unverifiable/mismatch；当前 0 mismatch，21 场 applied，输出 λ 前后证据。 |
 | P1-3 温度单位统一 | ✅ 完成 | 无 |
-| P1-4 bracket matchId 校验 | 🟡 交互已接（`bracket.js:266`），有一次性人工校验记录（commit `0a4282c`），**无常驻校验脚本** | 补 `scripts/validate-bracket-ids.js`，供每次赛程更新后重跑。**0.5天，低优先（人工校验过一次，暂无爆雷证据）** |
-| P1-5 体验验收 | 🟡 无正式验收记录 | 用 `/verify` 或 `preview_*` 工具对 HUD/Standings/Prediction 做一轮真机检查，对照 `UI-AUDIT-REPORT.md`。**1天，建议世界杯进行中找个空档做，不阻塞其他工作** |
+| P1-4 bracket matchId 校验 | ✅ 完成 | `scripts/validate-bracket-ids.js` 常驻校验完整 bracket、季军赛、重复 ID、轮次、阶段和开球时间；当前 32/32 匹配，0 failures。 |
+| P1-5 体验验收 | ✅ 完成 | 桌面 1280px 与移动端 320px 的 Live/Schedule/Prediction/Standings/HUD 已完成真实浏览器验收；记录见 `docs/P1-5_UX_ACCEPTANCE.md`。生产环境待 GitHub source redeploy 后复验。 |
 
 ---
 
@@ -69,12 +69,12 @@
 
 | 项 | 状态 | 说明 |
 |---|---|---|
-| P2-1 换人影响追踪 | ❌ **未做** | `renderBenchAnalysis` 只展示替补强度，无换人前后压力斜率对比、无 ↑/↓ 箭头。原计划完整保留，1.5天 |
+| P2-1 换人影响追踪 | ✅ 完成 | 取换人前后 10 分钟 Pressure Index，以每侧至少 3 个快照计算线性回归斜率差，写入 `match_moments.raw_json.substitution_impact`；Bench 展示 ↑/↓/→，不足明确标记。 |
 | P2-2 PWA 推送（进球推送） | ✅ **完成**（commit `ab2b030`，分支 `p2/pwa-push`，2026-07-02，已核实） | `web-push` 真实发送 + 404/410 失效订阅自动清理；`selectPushableGoals()` 用时间窗口+DB查重双重保险防重启补发历史进球；sw.js push/notificationclick + 前端订阅入口 + hash 深链全链路打通；`test-pwa-push.js`（15断言）+ 全量 35 suites/481 asserts 独立复核通过；本地起服务器实测 `/api/push/public-key`(503)/`/api/push/subscribe`(400/200 且真实写入 SQLite) 全部符合预期，页面按钮正确反映真实 `Notification.permission`。**唯一剩余**：Railway 部署 `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` 后的真机送达验收（本机无法测，`.env.example` 已登记这两个变量） |
 | P2-3 市场赔率分歧展示 | ✅ 完成 | 见上「已完成」 |
 | P2-4 用户预测 vs 模型 | ✅ 完成 | 见上「已完成」 |
 | P2-5 新闻/伤停注入 TeamContext | ✅ 完成 | 见上「已完成」，依赖 `TAVILY_API_KEY` 是否配置 |
-| P2-6 Bot 知识库注入出线概率 + 赛事情境 | ✅ **完成**（commit `fe7d167`，2026-07-02，已核实） | `fetchGlobalContext()` 注入全部 48 队出线概率 + 12 组积分榜；修复了对 `/api/qualification-probabilities` 真实响应结构（按组名分桶的对象，非数组/非 `{results}`）的兼容读取——已核实与 `lib/qualification.js formatGroupResult()` 的真实返回结构一致；`test-bot-kb.js` 21 断言（含专门覆盖真实分组结构的用例）已注册进 `test-runner.js`；全量 34 suites/466 asserts 独立复核通过。**唯一剩余**：本机无真实 AI 模型 key，部署后需人工问几个"谁能出线"类问题，确认 Bot 回答真的引用了注入数值而非模型自由发挥 |
+| P2-6 Bot 知识库注入出线概率 + 赛事情境 | 🟡 **线上模型通过，数据注入修复待部署复验** | 生产回答确认 `source=deepseek-v4-flash` 且未编造空数据；发现线上 `group_standings` 为空而 UI 使用 `/api/standings`。本地已改为优先复用 standings 路由并忽略空概率数组；记录见 `docs/P2-6_BOT_PRODUCTION_ACCEPTANCE.md`。 |
 
 ---
 
@@ -135,7 +135,7 @@
 
 | 项 | 状态 |
 |---|---|
-| a11y / 色盲 | ❌ 完全未做（仅 6 处零散 aria- 标签），色条无图案区分、无百分比常显。**建议排进近期**，属于低成本高合规价值的项 |
+| a11y / 色盲 | ✅ 完成近期快修 | 核心按钮/Tab ≥44px；Standings 与 HUD Tab 有选中状态；概率条有 ARIA 标签、百分比常显及非纯颜色图案区分；320px 无页面级横向溢出。 |
 | 新模块补测试 | 🟡 P2-3/2-4/2-5 已注册进 `test-runner.js`；**`test-bot-kb.js` 漏注册**（见 P2-6）；P0/P1 系列多数靠既有测试间接覆盖，无专项 |
 | README 数据流图 | ❌ 未做 |
 | env/闸门治理 | 🟡 大部分变量已登记 README，**VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY 未登记**（P2-2 上线前必须补） |

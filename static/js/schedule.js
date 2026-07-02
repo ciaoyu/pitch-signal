@@ -94,7 +94,7 @@
 
             return `<button data-d="${attr(d)}" data-action="filter-date" data-date="${attr(d)}"
                 class="date-btn snap-center shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-lg transition-all duration-150
-                ${extraCls}">
+                ${extraCls}" style="min-width:52px;min-height:44px">
                 <span style="font:400 9px/1 'Inter'">${specialLabel ? esc(specialLabel) : monthStr}</span>
                 <span style="font:600 16px/1 'JetBrains Mono', monospace">${esc(day)}</span>
                 <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">${matchCountStr}</span>

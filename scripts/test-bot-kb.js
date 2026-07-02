@@ -46,6 +46,10 @@ function qualRoute(data) {
   return { 'GET /api/qualification-probabilities': async () => data };
 }
 
+function standingsRoute(groups) {
+  return { 'GET /api/standings': async () => ({ groups }) };
+}
+
 const baseRoutes = {
   'GET /api/matchup-spatial/:home/:away': async () => ({ summary: 'mock' }),
 };
@@ -93,9 +97,37 @@ const baseRoutes = {
   const deps = { routes: { ...baseRoutes, ...qualRoute([]) }, getCached, setCache };
   const bot = freshBot(deps);
   const ctx = await bot.fetchGlobalContext({ getCached: () => null, setCache: () => {} });
-  assert(ctx.qualification.length === 0, 'A3a first call ← qual route');
+  assert(ctx.qualification === null, 'A3a empty qualification is omitted');
   const ctx2 = await bot.fetchGlobalContext({ getCached, setCache });
   assert(ctx2.qualification[0].team === 'cached', 'A3b cache hit');
+}
+
+// A5: production standings route is preferred when the legacy DB table is empty
+{
+  mockDb(makeStandingsDB({}));
+  const deps = {
+    routes: {
+      ...baseRoutes,
+      ...qualRoute({}),
+      ...standingsRoute([{
+        name: '小组 A',
+        group: 'A',
+        standings: [
+          { name: 'Mexico', nameI18n: { zh: '墨西哥', en: 'Mexico' }, played: 3, wins: 3, draws: 0, losses: 0, gf: 6, ga: 0, gd: 6, pts: 9 },
+          { name: 'South Africa', nameI18n: { zh: '南非', en: 'South Africa' }, played: 3, wins: 1, draws: 1, losses: 1, gf: 2, ga: 3, gd: -1, pts: 4 },
+        ],
+      }]),
+    },
+    getCached: () => null,
+    setCache: () => {},
+  };
+  const bot = freshBot(deps);
+  const ctx = await bot.fetchGlobalContext({ getCached: () => null, setCache: () => {} });
+  assert(ctx.qualification === null, 'A5a empty qualification omitted');
+  assert(ctx.standings.A.length === 2, 'A5b standings route supplies Group A');
+  assert(ctx.standings.A[0].team_name === '墨西哥', 'A5c localized team name retained');
+  assert(ctx.standings.A[0].points === 9, 'A5d points normalized');
+  assert(ctx.standings.A[0].goal_difference === 6, 'A5e goal difference normalized');
 }
 
 // A4: grouped production response is flattened without dropping lower-ranked teams

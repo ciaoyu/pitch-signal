@@ -2924,7 +2924,7 @@ var require_schedule = __commonJS({
           const matchCountStr = state.uiLang === "zh" ? n + "\u573A" : n + " M";
           return `<button data-d="${attr(d)}" data-action="filter-date" data-date="${attr(d)}"
                 class="date-btn snap-center shrink-0 flex flex-col items-center justify-center min-w-[52px] px-2.5 py-2 rounded-lg transition-all duration-150
-                ${extraCls}">
+                ${extraCls}" style="min-width:52px;min-height:44px">
                 <span style="font:400 9px/1 'Inter'">${specialLabel ? esc(specialLabel) : monthStr}</span>
                 <span style="font:600 16px/1 'JetBrains Mono', monospace">${esc(day)}</span>
                 <span style="font:400 8px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.15)">${matchCountStr}</span>
@@ -4231,7 +4231,7 @@ var require_elo_prediction = __commonJS({
         else if (direction === "market_away_lean") directionText = tx("\u5E02\u573A\u66F4\u770B\u597D\u5BA2\u961F", "Market leans away");
         else if (hasMarket) directionText = tx("\u6A21\u578B\u4E0E\u5E02\u573A\u57FA\u672C\u4E00\u81F4", "Model and market aligned");
         const flagCls = hasMarket && divergence.divergence ? "color:#fbbf24;background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.24)" : hasMarket ? "color:#94a3b8;background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.16)" : "color:rgba(248,250,252,.32);background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)";
-        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;min-width:0">
             <div style="border:1px solid rgba(59,130,246,.14);background:rgba(59,130,246,.05);border-radius:10px;padding:8px">
                 <div style="font:700 10px/1 'Inter';color:#93c5fd;margin-bottom:7px">\u2460 ${tx("\u6A21\u578B\u9884\u6D4B", "Model")}</div>
                 ${renderProbabilityMiniRow(modelProbs, { home: tx("\u4E3B", "H"), draw: tx("\u5E73", "D"), away: tx("\u5BA2", "A") })}
@@ -6286,6 +6286,28 @@ var require_match_renderers = __commonJS({
           if (prob >= 0.5) return "text-yellow-400";
           return "text-red-400";
         };
+        const renderSubstitutionImpact = (item) => {
+          const impact = item.teamImpact;
+          const playerLabel = item.playerIn ? `${esc(item.playerIn)}${item.playerOut ? ` ${tx("\u6362\u4E0B", "for")} ${esc(item.playerOut)}` : ""}` : tx("\u6362\u4EBA", "Substitution");
+          let signal = `<span class="text-gray-500">${tx("\u6570\u636E\u4E0D\u8DB3", "Insufficient data")}</span>`;
+          if (item.impact?.status === "pending") {
+            signal = `<span class="text-gray-500">${tx("\u8BC4\u4F30\u4E2D", "Evaluating")}</span>`;
+          } else if (impact?.status === "ready") {
+            const direction = impact.direction;
+            const icon = direction === "positive" ? "\u2191" : direction === "negative" ? "\u2193" : "\u2192";
+            const label = direction === "positive" ? tx("\u538B\u529B\u63D0\u5347", "Pressure up") : direction === "negative" ? tx("\u538B\u529B\u4E0B\u964D", "Pressure down") : tx("\u538B\u529B\u6301\u5E73", "Pressure steady");
+            const color = direction === "positive" ? "text-green-400" : direction === "negative" ? "text-red-400" : "text-gray-300";
+            const delta = Number(impact.slopeDelta);
+            signal = `<span class="${color} font-bold">${icon} ${label} ${delta >= 0 ? "+" : ""}${delta.toFixed(2)}/min</span>`;
+          }
+          return `<div class="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0">
+                <div class="min-w-0">
+                    <div class="text-xs text-gray-200 truncate">${playerLabel}</div>
+                    <div class="text-[10px] text-gray-500">${esc(item.minute)}\u2032 \xB7 ${item.side === "home" ? esc(teamLabel(home)) : item.side === "away" ? esc(teamLabel(away)) : tx("\u7403\u961F\u5F85\u786E\u8BA4", "Team unknown")}</div>
+                </div>
+                <div class="text-[11px] text-right shrink-0">${signal}</div>
+            </div>`;
+        };
         const renderBenchPlayer = (player, teamColor, teamNameStr) => {
           const playerNameZh = translatePlayerName(player.name, player.nameZh);
           let playedStr = "";
@@ -6394,6 +6416,14 @@ var require_match_renderers = __commonJS({
                     </div>
                 </div>
             </div>
+
+            ${Array.isArray(data.substitutionImpacts) && data.substitutionImpacts.length ? `
+            <div class="glass-light rounded-lg p-3">
+                <div class="text-xs font-bold text-gray-300 mb-1">${tx("\u6362\u4EBA\u5F71\u54CD", "Substitution Impact")}</div>
+                <div class="text-[10px] text-gray-500 mb-2">${tx("\u6362\u4EBA\u524D\u540E 10 \u5206\u949F Pressure Index \u659C\u7387", "Pressure Index slope, 10 minutes before and after")}</div>
+                ${data.substitutionImpacts.map(renderSubstitutionImpact).join("")}
+            </div>
+            ` : ""}
 
             <div class="grid grid-cols-2 gap-2">
                 <div class="glass-light rounded-lg p-2 min-w-0">

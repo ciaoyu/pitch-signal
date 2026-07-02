@@ -66,7 +66,7 @@
                 ? 'color:#94a3b8;background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.16)'
                 : 'color:rgba(248,250,252,.32);background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)';
 
-        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;min-width:0">
             <div style="border:1px solid rgba(59,130,246,.14);background:rgba(59,130,246,.05);border-radius:10px;padding:8px">
                 <div style="font:700 10px/1 'Inter';color:#93c5fd;margin-bottom:7px">① ${tx('模型预测', 'Model')}</div>
                 ${renderProbabilityMiniRow(modelProbs, { home: tx('主', 'H'), draw: tx('平', 'D'), away: tx('客', 'A') })}
