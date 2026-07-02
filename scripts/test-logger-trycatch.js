@@ -136,10 +136,10 @@ async function runTests() {
     assert.strictEqual(res.dryRun, true);
   });
 
-  await testAsync('pushService.registerSubscription should report pending implementation without throwing', async () => {
+  await testAsync('pushService.registerSubscription should reject invalid subscriptions without throwing', async () => {
     const res = await pushService.registerSubscription('user-1', { endpoint: 'https://test' });
     assert.strictEqual(res.success, false);
-    assert.strictEqual(res.error, 'subscription_persistence_not_implemented');
+    assert.strictEqual(res.error, 'invalid_subscription');
   });
 
   // Test 5: moment-sync job lifecycle resilience

@@ -265,6 +265,7 @@
         const action = target.dataset.action;
         if (action === 'set-lang') return window.setLanguage(target.dataset.lang);
         if (action === 'refresh-all') return refreshAll();
+        if (action === 'enable-push') return window.PitchSignalPush?.enable();
         if (action === 'close-team-modal') return window.closeTeamModal();
         if (action === 'close-modal') return window.closeModal();
         if (action === 'open-match') return window.openMatch(target.dataset.matchId);
@@ -353,15 +354,21 @@
         });
     }
 
+    function routeFromHash() {
+        const hash = location.hash.slice(1);
+        if (hash.startsWith('match/')) {
+            const matchId = decodeURIComponent(hash.slice('match/'.length));
+            if (matchId) window.openMatch(matchId);
+            return;
+        }
+        if (hash && document.getElementById('tab-' + hash)) switchTab(hash);
+    }
+
     // ========== Tab from URL Hash ==========
     window.addEventListener('DOMContentLoaded', () => {
-        const hash = location.hash.slice(1);
-        if (hash && document.getElementById('tab-' + hash)) switchTab(hash);
+        routeFromHash();
     });
-    window.addEventListener('popstate', () => {
-        const hash = location.hash.slice(1);
-        if (hash && document.getElementById('tab-' + hash)) switchTab(hash);
-    });
+    window.addEventListener('popstate', routeFromHash);
 
     // ========== Expose for HTML onclick handlers ==========
     window.switchTab = switchTab;
@@ -392,6 +399,13 @@
 
     // ========== Service Worker (PWA) ==========
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/static/sw.js?v=20260630-2', { updateViaCache: 'none' }).catch(() => {});
+        navigator.serviceWorker.register('/static/sw.js?v=20260703-push', { updateViaCache: 'none' })
+            .then(() => window.PitchSignalPush?.refresh())
+            .catch(() => {});
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data?.type === 'OPEN_MATCH' && event.data.matchId) {
+                window.openMatch(String(event.data.matchId));
+            }
+        });
     }
 })();

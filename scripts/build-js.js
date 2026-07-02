@@ -40,6 +40,7 @@ const MODULES = [
     'odds-card.js',
     'ui-helpers.js',
     'match-renderers.js',
+    'push-notifications.js',
     'app.js',
 ];
 

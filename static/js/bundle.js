@@ -6831,6 +6831,115 @@ var require_match_renderers = __commonJS({
   }
 });
 
+// static/js/push-notifications.js
+var require_push_notifications = __commonJS({
+  "static/js/push-notifications.js"() {
+    (function() {
+      "use strict";
+      const button = () => document.getElementById("push-notification-btn");
+      function setState(state, zh, en) {
+        const el = button();
+        if (!el) return;
+        el.dataset.pushState = state;
+        el.title = window.WorldCup?.State?.uiLang === "en" ? en : zh;
+        const label = el.querySelector("[data-push-label]");
+        if (label) label.textContent = state === "enabled" ? "\u2713" : "\u{1F514}";
+        el.setAttribute("aria-label", el.title);
+        el.style.color = state === "enabled" ? "#34d399" : "rgba(248,250,252,.45)";
+      }
+      function base64UrlToUint8Array(value) {
+        const padding = "=".repeat((4 - value.length % 4) % 4);
+        const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const raw = atob(base64);
+        return Uint8Array.from(raw, (char) => char.charCodeAt(0));
+      }
+      function getDeviceId() {
+        const key = "pitchsignal_push_device_id";
+        let id = localStorage.getItem(key);
+        if (!id) {
+          id = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `device_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+          localStorage.setItem(key, id);
+        }
+        return id;
+      }
+      async function registerSubscription(subscription) {
+        const response = await fetch("/api/push/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            deviceId: getDeviceId(),
+            subscription: subscription.toJSON()
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) throw new Error(data.error || "Subscription registration failed");
+      }
+      async function enablePushNotifications() {
+        if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+          setState("unsupported", "\u5F53\u524D\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\u63A8\u9001\u901A\u77E5", "Push notifications are not supported");
+          return;
+        }
+        const el = button();
+        if (el) el.disabled = true;
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission !== "granted") {
+            setState("denied", "\u901A\u77E5\u6743\u9650\u672A\u5F00\u542F", "Notification permission was not granted");
+            return;
+          }
+          const registration = await navigator.serviceWorker.ready;
+          let subscription = await registration.pushManager.getSubscription();
+          if (!subscription) {
+            const keyResponse = await fetch("/api/push/public-key", { cache: "no-store" });
+            const keyData = await keyResponse.json().catch(() => ({}));
+            if (!keyResponse.ok || !keyData.publicKey) {
+              throw new Error(keyData.error || "Push service is not configured");
+            }
+            subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: base64UrlToUint8Array(keyData.publicKey)
+            });
+          }
+          await registerSubscription(subscription);
+          setState("enabled", "\u8FDB\u7403\u63A8\u9001\u5DF2\u5F00\u542F", "Goal notifications enabled");
+        } catch (error) {
+          console.error("push-notifications: enable failed", error);
+          setState("error", "\u8FDB\u7403\u63A8\u9001\u5F00\u542F\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5", "Could not enable goal notifications");
+        } finally {
+          if (el) el.disabled = false;
+        }
+      }
+      async function refreshPushState() {
+        if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+          setState("unsupported", "\u5F53\u524D\u6D4F\u89C8\u5668\u4E0D\u652F\u6301\u63A8\u9001\u901A\u77E5", "Push notifications are not supported");
+          return;
+        }
+        if (Notification.permission === "denied") {
+          setState("denied", "\u901A\u77E5\u6743\u9650\u5DF2\u88AB\u6D4F\u89C8\u5668\u963B\u6B62", "Notifications are blocked by the browser");
+          return;
+        }
+        if (Notification.permission !== "granted") {
+          setState("idle", "\u5F00\u542F\u8FDB\u7403\u63A8\u9001", "Enable goal notifications");
+          return;
+        }
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          if (subscription) {
+            await registerSubscription(subscription);
+            setState("enabled", "\u8FDB\u7403\u63A8\u9001\u5DF2\u5F00\u542F", "Goal notifications enabled");
+          } else {
+            setState("idle", "\u5F00\u542F\u8FDB\u7403\u63A8\u9001", "Enable goal notifications");
+          }
+        } catch {
+          setState("error", "\u8FDB\u7403\u63A8\u9001\u72B6\u6001\u68C0\u67E5\u5931\u8D25", "Could not check notification status");
+        }
+      }
+      window.PitchSignalPush = { enable: enablePushNotifications, refresh: refreshPushState };
+    })();
+  }
+});
+
 // static/js/app.js
 var require_app = __commonJS({
   "static/js/app.js"() {
@@ -7058,6 +7167,7 @@ var require_app = __commonJS({
         const action = target.dataset.action;
         if (action === "set-lang") return window.setLanguage(target.dataset.lang);
         if (action === "refresh-all") return refreshAll();
+        if (action === "enable-push") return window.PitchSignalPush?.enable();
         if (action === "close-team-modal") return window.closeTeamModal();
         if (action === "close-modal") return window.closeModal();
         if (action === "open-match") return window.openMatch(target.dataset.matchId);
@@ -7137,14 +7247,19 @@ var require_app = __commonJS({
           if (e.key === "Enter") sendGlobalChatMessage();
         });
       }
+      function routeFromHash() {
+        const hash = location.hash.slice(1);
+        if (hash.startsWith("match/")) {
+          const matchId = decodeURIComponent(hash.slice("match/".length));
+          if (matchId) window.openMatch(matchId);
+          return;
+        }
+        if (hash && document.getElementById("tab-" + hash)) switchTab(hash);
+      }
       window.addEventListener("DOMContentLoaded", () => {
-        const hash = location.hash.slice(1);
-        if (hash && document.getElementById("tab-" + hash)) switchTab(hash);
+        routeFromHash();
       });
-      window.addEventListener("popstate", () => {
-        const hash = location.hash.slice(1);
-        if (hash && document.getElementById("tab-" + hash)) switchTab(hash);
-      });
+      window.addEventListener("popstate", routeFromHash);
       window.switchTab = switchTab;
       window.togglePredDetail = togglePredDetail;
       window.refreshAll = refreshAll;
@@ -7169,7 +7284,12 @@ var require_app = __commonJS({
         if (!document.hidden && state.tab === "live") loadScores();
       });
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/sw.js?v=20260630-2", { updateViaCache: "none" }).catch(() => {
+        navigator.serviceWorker.register("/static/sw.js?v=20260703-push", { updateViaCache: "none" }).then(() => window.PitchSignalPush?.refresh()).catch(() => {
+        });
+        navigator.serviceWorker.addEventListener("message", (event) => {
+          if (event.data?.type === "OPEN_MATCH" && event.data.matchId) {
+            window.openMatch(String(event.data.matchId));
+          }
         });
       }
     })();
@@ -7201,6 +7321,7 @@ var require_entry = __commonJS({
     var import_odds_card = __toESM(require_odds_card());
     var import_ui_helpers = __toESM(require_ui_helpers());
     var import_match_renderers = __toESM(require_match_renderers());
+    var import_push_notifications = __toESM(require_push_notifications());
     var import_app = __toESM(require_app());
   }
 });
