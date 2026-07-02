@@ -70,7 +70,7 @@
 | 项 | 状态 | 说明 |
 |---|---|---|
 | P2-1 换人影响追踪 | ❌ **未做** | `renderBenchAnalysis` 只展示替补强度，无换人前后压力斜率对比、无 ↑/↓ 箭头。原计划完整保留，1.5天 |
-| P2-2 PWA 推送（进球推送） | ❌ **未做，缺口最大** | `push-service.js` 只有骨架，缺：① `POST /api/push/subscribe` 路由 ② `push_subscriptions` 建表 ③ `sw.js` push handler + `notificationclick` ④ moment-sync 里的 goal 触发推送 ⑤ VAPID key 部署。世界杯进行中，这是唯一还在盘子里的"实时增强"类功能，**建议优先做**，2天 |
+| P2-2 PWA 推送（进球推送） | ✅ **完成**（commit `ab2b030`，分支 `p2/pwa-push`，2026-07-02，已核实） | `web-push` 真实发送 + 404/410 失效订阅自动清理；`selectPushableGoals()` 用时间窗口+DB查重双重保险防重启补发历史进球；sw.js push/notificationclick + 前端订阅入口 + hash 深链全链路打通；`test-pwa-push.js`（15断言）+ 全量 35 suites/481 asserts 独立复核通过；本地起服务器实测 `/api/push/public-key`(503)/`/api/push/subscribe`(400/200 且真实写入 SQLite) 全部符合预期，页面按钮正确反映真实 `Notification.permission`。**唯一剩余**：Railway 部署 `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` 后的真机送达验收（本机无法测，`.env.example` 已登记这两个变量） |
 | P2-3 市场赔率分歧展示 | ✅ 完成 | 见上「已完成」 |
 | P2-4 用户预测 vs 模型 | ✅ 完成 | 见上「已完成」 |
 | P2-5 新闻/伤停注入 TeamContext | ✅ 完成 | 见上「已完成」，依赖 `TAVILY_API_KEY` 是否配置 |
@@ -155,8 +155,8 @@
 ## 建议排期（世界杯进行中，非赛前）
 
 1. ~~P2-6 收尾~~ ✅ 完成（`fe7d167`，2026-07-02）
-2. **P2-2 PWA 推送**（唯一还没做的实时增强，赛事仍在进行，越晚价值越低）
-3. **P4-1 市场赔率轨道**（预测模型侧最高杠杆，且不占直播关键路径，可与上面并行）
+2. ~~P2-2 PWA 推送~~ ✅ 完成（`ab2b030`，分支 `p2/pwa-push`，2026-07-02；待部署 VAPID key 后真机验收）
+3. **P4-1 市场赔率轨道**（预测模型侧最高杠杆，且不占直播关键路径，当前最高优先级）
 4. **P1-2/P1-4 诊断脚本 + P1-5 真机验收**（低成本，插空做）
 5. P2-1、P4-2~P4-5、a11y、P3 系列——按团队带宽排
 
