@@ -29,10 +29,11 @@ const ALIASES = {
   'Dutch East Indies': 'Indonesia',
   'Bosnia-Herzegovina': 'Bosnia and Herzegovina',
   'Ireland': 'Republic of Ireland',
-  'China': 'China PR',
   'Serbia and Montenegro': 'Serbia',
   'East Germany': 'German DR',
   "Côte d'Ivoire": 'Ivory Coast',
+  // 注：'China' 两边都直接叫 "China"，无需别名（方法审计核实过，此前误加过
+  // 'China'→'China PR' 一条，martj42 里根本没有 "China PR" 这个名字，纯死代码，已删除）
 };
 
 const CONTINENTAL_FINALS = /^(UEFA Euro|Copa América|African Cup of Nations|AFC Asian Cup|CONCACAF Championship|Gold Cup|CONCACAF Gold Cup|Oceania Nations Cup|OFC Nations Cup)$/;
@@ -121,7 +122,9 @@ function main() {
   console.log(`Replaying ${rows.length} completed matches...`);
 
   const eloHome = new EloRating();               // 真主场：+100
-  const eloNeutral = new EloRating({ homeAdvantage: 0.0001 }); // 中立场：无主场加成
+  // 中立场：无主场加成。不能传 0 —— lib/elo.js 用 `options.homeAdvantage || 100`，
+  // 0 是 falsy 会被当作"未传参"覆盖回默认 100；用一个可忽略的极小值绕开这个陷阱。
+  const eloNeutral = new EloRating({ homeAdvantage: 0.0001 });
   const ratings = {};
   const get = (t) => ratings[t] !== undefined ? ratings[t] : 1500;
 
