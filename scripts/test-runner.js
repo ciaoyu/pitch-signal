@@ -47,6 +47,8 @@ const TEST_FILES = [
   'test-third-place.js',
   'test-venue-factor.js',
   'test-venueFactors.js',
+  // P2 专项测试
+  'test-teamcontext-news.js',
 ];
 
 const filter = process.argv.includes('--match')
