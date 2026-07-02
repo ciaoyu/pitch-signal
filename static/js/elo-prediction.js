@@ -85,6 +85,51 @@
         </div>`;
     }
 
+    function pctMetric(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return '—';
+        return `${(n * 100).toFixed(1)}%`;
+    }
+
+    function renderCalibrationReport(report) {
+        const metrics = report?.metrics || {};
+        const buckets = Array.isArray(report?.buckets) ? report.buckets : [];
+        const hasData = Number(report?.sampleSize || 0) > 0;
+        const bars = buckets.map((b) => {
+            const acc = Number(b.accuracy);
+            const conf = Number(b.avgConfidence);
+            const accPct = Number.isFinite(acc) ? Math.round(acc * 100) : 0;
+            const confPct = Number.isFinite(conf) ? Math.round(conf * 100) : 0;
+            const label = `${Math.round((b.range?.[0] || 0) * 100)}-${Math.round((b.range?.[1] || 0) * 100)}%`;
+            return `<div style="display:grid;grid-template-columns:46px 1fr 38px;align-items:center;gap:8px;min-height:18px">
+                <div style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.32)">${esc(label)}</div>
+                <div style="height:7px;background:rgba(255,255,255,.06);border-radius:999px;position:relative;overflow:hidden">
+                    <div style="position:absolute;left:0;top:0;bottom:0;width:${accPct}%;background:#34d399;border-radius:999px"></div>
+                    <div style="position:absolute;left:${confPct}%;top:-2px;bottom:-2px;width:2px;background:#facc15"></div>
+                </div>
+                <div style="font:600 9px/1 'JetBrains Mono',monospace;color:${b.count ? '#cbd5e1' : 'rgba(248,250,252,.2)'}">${b.count || 0}</div>
+            </div>`;
+        }).join('');
+
+        return `<div class="pred-section" style="padding:16px;margin-bottom:12px">
+            <div class="pred-section-title text-cyan-400" style="font-family:'DM Sans',sans-serif">
+                <span class="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center text-xs flex-shrink-0">📈</span>${tx('模型表现', 'Model Performance')}
+            </div>
+            ${hasData ? `<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px">
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">Brier</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#f8fafc">${metrics.brier ?? '—'}</div></div>
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">${tx('方向准确率', 'Accuracy')}</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#34d399">${pctMetric(metrics.accuracy)}</div></div>
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">ECE</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#facc15">${pctMetric(metrics.expectedCalibrationError)}</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:10px;color:rgba(248,250,252,.38)">
+                <span>${tx('样本', 'Sample')} ${report.sampleSize}</span>
+                <span style="display:flex;align-items:center;gap:4px"><i style="width:12px;height:6px;background:#34d399;border-radius:999px"></i>${tx('实际命中', 'Actual')}</span>
+                <span style="display:flex;align-items:center;gap:4px"><i style="width:2px;height:10px;background:#facc15"></i>${tx('平均置信', 'Confidence')}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">${bars}</div>
+            <div style="font-size:10px;color:rgba(248,250,252,.32);margin-top:10px">${report.platt?.available ? `Platt a=${report.platt.slope}, b=${report.platt.intercept}` : tx('样本不足时仅展示观测校准桶。', 'Shows observed calibration buckets until enough samples exist.')}</div>` : `<div class="glass-light rounded-lg p-3 text-xs text-gray-400">${tx('暂无已完赛快照样本；赛后复盘写回后会自动生成校准报告。', 'No completed forecast snapshots yet; calibration appears after post-match reviews are written back.')}</div>`}
+        </div>`;
+    }
+
     // ── Build Elo rankings table HTML (reusable) ──
     function buildEloTable(rankings) {
         let h = '';
@@ -290,11 +335,12 @@
         const el = document.getElementById('prediction-content');
         el.innerHTML = `<div class="text-center py-10 text-gray-500">🧠 ${esc(tx('loadingPredictions'))}</div>`;
 
-        const [rankings, schedule, qualiData] = await window.WorldCup.ApiClient.allData([
-            '/api/elo/rankings', '/api/schedule', '/api/qualification-probabilities',
+        const [rankings, schedule, qualiData, calibrationReport] = await window.WorldCup.ApiClient.allData([
+            '/api/elo/rankings', '/api/schedule', '/api/qualification-probabilities', '/api/calibration-report',
         ]);
 
         let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">⚠️ ${tx('本页面为实验性足球概率模型，仅供产品体验参考，不构成任何投注建议。预测基线来自 Elo 与 Poisson；若已配置市场赔率，比赛详情页会展示模型 vs 市场分歧提示。', 'This page provides an experimental football probability model for product evaluation only. It is not betting advice. The baseline forecast uses Elo and Poisson; when market odds are configured, match details show model-vs-market divergence hints.')}</div>`;
+        html += renderCalibrationReport(calibrationReport);
 
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some(m => m.stage && m.stage !== 'group');

@@ -4245,6 +4245,48 @@ var require_elo_prediction = __commonJS({
             </div>
         </div>`;
       }
+      function pctMetric(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return "\u2014";
+        return `${(n * 100).toFixed(1)}%`;
+      }
+      function renderCalibrationReport(report) {
+        const metrics = report?.metrics || {};
+        const buckets = Array.isArray(report?.buckets) ? report.buckets : [];
+        const hasData = Number(report?.sampleSize || 0) > 0;
+        const bars = buckets.map((b) => {
+          const acc = Number(b.accuracy);
+          const conf = Number(b.avgConfidence);
+          const accPct = Number.isFinite(acc) ? Math.round(acc * 100) : 0;
+          const confPct = Number.isFinite(conf) ? Math.round(conf * 100) : 0;
+          const label = `${Math.round((b.range?.[0] || 0) * 100)}-${Math.round((b.range?.[1] || 0) * 100)}%`;
+          return `<div style="display:grid;grid-template-columns:46px 1fr 38px;align-items:center;gap:8px;min-height:18px">
+                <div style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.32)">${esc(label)}</div>
+                <div style="height:7px;background:rgba(255,255,255,.06);border-radius:999px;position:relative;overflow:hidden">
+                    <div style="position:absolute;left:0;top:0;bottom:0;width:${accPct}%;background:#34d399;border-radius:999px"></div>
+                    <div style="position:absolute;left:${confPct}%;top:-2px;bottom:-2px;width:2px;background:#facc15"></div>
+                </div>
+                <div style="font:600 9px/1 'JetBrains Mono',monospace;color:${b.count ? "#cbd5e1" : "rgba(248,250,252,.2)"}">${b.count || 0}</div>
+            </div>`;
+        }).join("");
+        return `<div class="pred-section" style="padding:16px;margin-bottom:12px">
+            <div class="pred-section-title text-cyan-400" style="font-family:'DM Sans',sans-serif">
+                <span class="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center text-xs flex-shrink-0">\u{1F4C8}</span>${tx("\u6A21\u578B\u8868\u73B0", "Model Performance")}
+            </div>
+            ${hasData ? `<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px">
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">Brier</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#f8fafc">${metrics.brier ?? "\u2014"}</div></div>
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">${tx("\u65B9\u5411\u51C6\u786E\u7387", "Accuracy")}</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#34d399">${pctMetric(metrics.accuracy)}</div></div>
+                <div class="glass-light rounded-lg p-2"><div style="font-size:9px;color:rgba(248,250,252,.35);margin-bottom:3px">ECE</div><div style="font:700 16px/1 'JetBrains Mono',monospace;color:#facc15">${pctMetric(metrics.expectedCalibrationError)}</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:10px;color:rgba(248,250,252,.38)">
+                <span>${tx("\u6837\u672C", "Sample")} ${report.sampleSize}</span>
+                <span style="display:flex;align-items:center;gap:4px"><i style="width:12px;height:6px;background:#34d399;border-radius:999px"></i>${tx("\u5B9E\u9645\u547D\u4E2D", "Actual")}</span>
+                <span style="display:flex;align-items:center;gap:4px"><i style="width:2px;height:10px;background:#facc15"></i>${tx("\u5E73\u5747\u7F6E\u4FE1", "Confidence")}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">${bars}</div>
+            <div style="font-size:10px;color:rgba(248,250,252,.32);margin-top:10px">${report.platt?.available ? `Platt a=${report.platt.slope}, b=${report.platt.intercept}` : tx("\u6837\u672C\u4E0D\u8DB3\u65F6\u4EC5\u5C55\u793A\u89C2\u6D4B\u6821\u51C6\u6876\u3002", "Shows observed calibration buckets until enough samples exist.")}</div>` : `<div class="glass-light rounded-lg p-3 text-xs text-gray-400">${tx("\u6682\u65E0\u5DF2\u5B8C\u8D5B\u5FEB\u7167\u6837\u672C\uFF1B\u8D5B\u540E\u590D\u76D8\u5199\u56DE\u540E\u4F1A\u81EA\u52A8\u751F\u6210\u6821\u51C6\u62A5\u544A\u3002", "No completed forecast snapshots yet; calibration appears after post-match reviews are written back.")}</div>`}
+        </div>`;
+      }
       function buildEloTable(rankings) {
         let h = "";
         h += `<div class="pred-section-title text-purple-400" style="font-family:'DM Sans',sans-serif">
@@ -4426,12 +4468,14 @@ var require_elo_prediction = __commonJS({
       async function loadPrediction2() {
         const el = document.getElementById("prediction-content");
         el.innerHTML = `<div class="text-center py-10 text-gray-500">\u{1F9E0} ${esc(tx("loadingPredictions"))}</div>`;
-        const [rankings, schedule, qualiData] = await window.WorldCup.ApiClient.allData([
+        const [rankings, schedule, qualiData, calibrationReport] = await window.WorldCup.ApiClient.allData([
           "/api/elo/rankings",
           "/api/schedule",
-          "/api/qualification-probabilities"
+          "/api/qualification-probabilities",
+          "/api/calibration-report"
         ]);
         let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">\u26A0\uFE0F ${tx("\u672C\u9875\u9762\u4E3A\u5B9E\u9A8C\u6027\u8DB3\u7403\u6982\u7387\u6A21\u578B\uFF0C\u4EC5\u4F9B\u4EA7\u54C1\u4F53\u9A8C\u53C2\u8003\uFF0C\u4E0D\u6784\u6210\u4EFB\u4F55\u6295\u6CE8\u5EFA\u8BAE\u3002\u9884\u6D4B\u57FA\u7EBF\u6765\u81EA Elo \u4E0E Poisson\uFF1B\u82E5\u5DF2\u914D\u7F6E\u5E02\u573A\u8D54\u7387\uFF0C\u6BD4\u8D5B\u8BE6\u60C5\u9875\u4F1A\u5C55\u793A\u6A21\u578B vs \u5E02\u573A\u5206\u6B67\u63D0\u793A\u3002", "This page provides an experimental football probability model for product evaluation only. It is not betting advice. The baseline forecast uses Elo and Poisson; when market odds are configured, match details show model-vs-market divergence hints.")}</div>`;
+        html += renderCalibrationReport(calibrationReport);
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some((m) => m.stage && m.stage !== "group");
         let upcoming = allMatches.filter((m) => m.state === "pre").slice(0, 6);

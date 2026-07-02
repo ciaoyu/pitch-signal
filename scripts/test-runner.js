@@ -22,6 +22,7 @@ const TEST_FILES = [
   'test-bracket-updater.js',
   'test-data-resolver.js',
   'test-elo.js',
+  'test-elo-guided-base-lambda.js',
   'test-eventFilter.js',
   'test-fifa-resilience.js',
   'test-final-round-context.js',
@@ -51,6 +52,7 @@ const TEST_FILES = [
   'test-venueFactors.js',
   // P2 专项测试
   'test-bot-kb.js',
+  'test-calibration-report.js',
   'test-odds-divergence.js',
   'test-pwa-push.js',
   'test-user-predictions.js',
