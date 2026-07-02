@@ -121,6 +121,7 @@ Quick overview:
 - **[docs/API.md](docs/API.md)** - Full API reference
 - **[docs/VERSIONING.md](docs/VERSIONING.md)** - Static asset / cache versioning strategy
 - **[docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)** - How the prediction model works
+- **[docs/prediction-model-methodology.md](docs/prediction-model-methodology.md)** ([中文](docs/prediction-model-methodology.zh.md)) - Full methodology paper: architecture, evaluation protocol, 964-match backtest results, and honest limitations
 - **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway deployment guide
 - **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - Public beta safety & gates
 
