@@ -55,5 +55,39 @@ assert(div.computeDivergence(null, null) === null, 'null inputs → null');
 // 8. threshold constant
 assert(div.DIVERGENCE_THRESHOLD === 0.08, 'threshold = 0.08');
 
-console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
-process.exit(failed > 0 ? 1 : 0);
+// 9. P4-1: route uses PURE model probs (includeExternalOdds:false), not the
+// odds-blended prediction — otherwise "divergence" is model+20%market vs
+// 100%market, which understates the real gap. Mock PredictionService so the
+// two calls (pure vs with-odds) return deliberately different homeWin, and
+// assert the route's modelProbs matches the PURE one.
+(async () => {
+  process.env.TEST_MODE = '1';
+  const PredictionService = require('../lib/services/PredictionService');
+  const original = PredictionService.prototype.predictMatch;
+
+  PredictionService.prototype.predictMatch = async function (matchId, opts = {}) {
+    if (opts.includeExternalOdds) {
+      // Simulate what the real blended prediction would look like: pulled
+      // toward the market (60/25/15 → 51/28/21), plus the raw market odds.
+      return {
+        homeWin: 0.51, draw: 0.28, awayWin: 0.21,
+        externalOdds: { homeWin: 2.50, draw: 3.60, awayWin: 6.00, source: 'test_mock' },
+      };
+    }
+    return { homeWin: 0.60, draw: 0.25, awayWin: 0.15 };
+  };
+
+  const createOddsDivergenceRoutes = require('../lib/routes/odds-divergence');
+  const routes = createOddsDivergenceRoutes({ getCached: () => null, setCache: () => {} });
+  const result = await routes['GET /api/odds-divergence/:matchId']({ matchId: 'test-p4-1-pure-model' });
+
+  PredictionService.prototype.predictMatch = original;
+
+  assert(!result.error, `route did not error: ${result.error || ''}`);
+  near(result.modelProbs?.home ?? -1, 0.60, 0.001, 'modelProbs.home uses PURE prediction (0.60)');
+  assert(Math.abs((result.modelProbs?.home ?? 0) - 0.51) > 0.01, 'modelProbs.home is NOT the odds-blended value (0.51)');
+  assert(result.marketProbs != null, 'marketProbs still populated from externalOdds on the with-odds call');
+
+  console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
+  process.exit(failed > 0 ? 1 : 0);
+})();

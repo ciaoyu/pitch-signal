@@ -54,6 +54,8 @@ const TEST_FILES = [
   'test-pwa-push.js',
   'test-user-predictions.js',
   'test-teamcontext-news.js',
+  // P4 专项测试
+  'test-shin-devig.js',
 ];
 
 const filter = process.argv.includes('--match')
