@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pitchsignal-v20260630-2';
+const CACHE_NAME = 'pitchsignal-v20260703-push';
 const STATIC_ASSETS = [
   '/static/manifest.json',
   '/static/icon-192-v3.png',
@@ -50,5 +50,48 @@ self.addEventListener('fetch', e => {
   // Versioned icons and manifest can remain cache-first.
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
+  );
+});
+
+self.addEventListener('push', event => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : '比赛有新动态' };
+  }
+
+  const matchId = data.matchId ? String(data.matchId) : '';
+  const url = data.url || (matchId ? `/#match/${encodeURIComponent(matchId)}` : '/#live');
+  event.waitUntil(self.registration.showNotification(data.title || 'PitchSignal', {
+    body: data.body || '比赛有新动态',
+    icon: data.icon || '/static/icon-192-v3.png',
+    badge: data.badge || '/static/icon-192-v3.png',
+    tag: data.tag || (matchId ? `goal-${matchId}` : 'pitchsignal-update'),
+    renotify: true,
+    data: { ...data, matchId, url },
+  }));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const data = event.notification.data || {};
+  const matchId = data.matchId ? String(data.matchId) : '';
+  const targetUrl = new URL(
+    data.url || (matchId ? `/#match/${encodeURIComponent(matchId)}` : '/#live'),
+    self.location.origin,
+  ).href;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async clients => {
+      for (const client of clients) {
+        if (new URL(client.url).origin !== self.location.origin) continue;
+        if ('navigate' in client) await client.navigate(targetUrl);
+        await client.focus();
+        if (matchId) client.postMessage({ type: 'OPEN_MATCH', matchId });
+        return;
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+    })
   );
 });

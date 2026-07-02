@@ -288,6 +288,9 @@
         <button data-tab="teams" class="tab-btn" style="font:500 11px/1 'DM Sans', sans-serif;padding:7px 16px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">球队 Teams</button>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
+        <button id="push-notification-btn" data-action="enable-push" data-push-state="idle" aria-label="开启进球推送" title="开启进球推送" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04);color:rgba(248,250,252,.45);cursor:pointer">
+            <span data-push-label aria-hidden="true">🔔</span>
+        </button>
         <div style="display:flex;align-items:center;border-radius:4px;background:rgba(255,255,255,.04);padding:2px">
             <button data-action="set-lang" data-lang="zh" class="lang-btn" style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.35);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">中</button>
             <button data-action="set-lang" data-lang="en" class="lang-btn" style="font:400 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.15);padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">EN</button>
@@ -495,6 +498,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=d6793f03"></script>
+<script type="module" src="/static/js/bundle.js?v=0354bce1"></script>
 </body>
 </html>

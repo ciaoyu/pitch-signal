@@ -24,7 +24,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",
     "better-sqlite3": "^12.11.1",
-    "jsdom": "^29.1.1"
+    "jsdom": "^29.1.1",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",

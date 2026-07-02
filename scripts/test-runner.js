@@ -51,6 +51,7 @@ const TEST_FILES = [
   // P2 专项测试
   'test-bot-kb.js',
   'test-odds-divergence.js',
+  'test-pwa-push.js',
   'test-user-predictions.js',
   'test-teamcontext-news.js',
 ];
