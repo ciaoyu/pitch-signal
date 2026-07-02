@@ -1,0 +1,206 @@
+{
+  "tournament": "1950 FIFA World Cup",
+  "year": 1950,
+  "host": "Brazil",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1950-06-24",
+      "home": "Brazil",
+      "away": "Mexico",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-06-25",
+      "home": "Yugoslavia",
+      "away": "Switzerland",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estádio Independência"
+    },
+    {
+      "date": "1950-06-28",
+      "home": "Brazil",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 1",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-06-28",
+      "home": "Yugoslavia",
+      "away": "Mexico",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estádio dos Eucaliptos"
+    },
+    {
+      "date": "1950-07-01",
+      "home": "Brazil",
+      "away": "Yugoslavia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-07-02",
+      "home": "Switzerland",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estádio dos Eucaliptos"
+    },
+    {
+      "date": "1950-06-25",
+      "home": "England",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-06-25",
+      "home": "Spain",
+      "away": "United States",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estádio Durival de Britto"
+    },
+    {
+      "date": "1950-06-29",
+      "home": "Spain",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-06-29",
+      "home": "United States",
+      "away": "England",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estádio Independência"
+    },
+    {
+      "date": "1950-07-02",
+      "home": "Spain",
+      "away": "England",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-07-02",
+      "home": "Chile",
+      "away": "United States",
+      "homeScore": 5,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Estádio Ilha do Retiro"
+    },
+    {
+      "date": "1950-06-25",
+      "home": "Sweden",
+      "away": "Italy",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 3",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-06-29",
+      "home": "Sweden",
+      "away": "Paraguay",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 3",
+      "venue": "Estádio Durival Britto"
+    },
+    {
+      "date": "1950-07-02",
+      "home": "Italy",
+      "away": "Paraguay",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-07-02",
+      "home": "Uruguay",
+      "away": "Bolivia",
+      "homeScore": 8,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estádio Independência"
+    },
+    {
+      "date": "1950-07-09",
+      "home": "Uruguay",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Final Round",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-07-09",
+      "home": "Brazil",
+      "away": "Sweden",
+      "homeScore": 7,
+      "awayScore": 1,
+      "stage": "Final Round",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-07-13",
+      "home": "Brazil",
+      "away": "Spain",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Final Round",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "1950-07-13",
+      "home": "Uruguay",
+      "away": "Sweden",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Final Round",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-07-16",
+      "home": "Sweden",
+      "away": "Spain",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Final Round",
+      "venue": "Estádio do Pacaembu"
+    },
+    {
+      "date": "1950-07-16",
+      "home": "Uruguay",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Final Round",
+      "venue": "Estádio do Maracanã"
+    }
+  ]
+}

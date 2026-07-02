@@ -1,0 +1,161 @@
+{
+  "tournament": "1934 FIFA World Cup",
+  "year": 1934,
+  "host": "Italy",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1934-05-27",
+      "home": "Sweden",
+      "away": "Argentina",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Preliminary round",
+      "venue": "Stadio Littoriale"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Austria",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Preliminary round",
+      "venue": "Stadio Benito Mussolini"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Germany",
+      "away": "Belgium",
+      "homeScore": 5,
+      "awayScore": 2,
+      "stage": "Preliminary round",
+      "venue": "Stadio Giovanni Berta"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Spain",
+      "away": "Brazil",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Preliminary round",
+      "venue": "Stadio Luigi Ferraris"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Hungary",
+      "away": "Egypt",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Preliminary round",
+      "venue": "Stadio Giorgio Ascarelli"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Switzerland",
+      "away": "Netherlands",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Preliminary round",
+      "venue": "Stadio San Siro"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Italy",
+      "away": "United States",
+      "homeScore": 7,
+      "awayScore": 1,
+      "stage": "Preliminary round",
+      "venue": "Stadio Nazionale PNF"
+    },
+    {
+      "date": "1934-05-27",
+      "home": "Czechoslovakia",
+      "away": "Romania",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Preliminary round",
+      "venue": "Stadio Littorio"
+    },
+    {
+      "date": "1934-05-31",
+      "home": "Czechoslovakia",
+      "away": "Switzerland",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Benito Mussolini"
+    },
+    {
+      "date": "1934-05-31",
+      "home": "Germany",
+      "away": "Sweden",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Stadio San Siro"
+    },
+    {
+      "date": "1934-05-31",
+      "home": "Italy",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Giovanni Berta"
+    },
+    {
+      "date": "1934-05-31",
+      "home": "Austria",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Littoriale"
+    },
+    {
+      "date": "1934-06-01",
+      "home": "Italy",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Giovanni Berta"
+    },
+    {
+      "date": "1934-06-03",
+      "home": "Italy",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Semi-finals",
+      "venue": "Stadio San Siro"
+    },
+    {
+      "date": "1934-06-03",
+      "home": "Czechoslovakia",
+      "away": "Germany",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Stadio Nazionale PNF"
+    },
+    {
+      "date": "1934-06-07",
+      "home": "Germany",
+      "away": "Austria",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Third place",
+      "venue": "Stadio Giorgio Ascarelli"
+    },
+    {
+      "date": "1934-06-10",
+      "home": "Italy",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Stadio Nazionale PNF"
+    }
+  ]
+}

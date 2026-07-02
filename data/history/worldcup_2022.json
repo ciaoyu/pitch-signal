@@ -2,81 +2,583 @@
   "tournament": "2022 FIFA World Cup",
   "year": 2022,
   "host": "Qatar",
+  "source": "openfootball/worldcup.json (CC0)",
   "matches": [
-    {"date":"2022-11-20","home":"Qatar","away":"Ecuador","homeScore":0,"awayScore":2,"stage":"Group A","venue":"Al Bayt Stadium"},
-    {"date":"2022-11-21","home":"Senegal","away":"Netherlands","homeScore":0,"awayScore":2,"stage":"Group A","venue":"Al Thumama Stadium"},
-    {"date":"2022-11-25","home":"Qatar","away":"Senegal","homeScore":1,"awayScore":3,"stage":"Group A","venue":"Al Thumama Stadium"},
-    {"date":"2022-11-25","home":"Netherlands","away":"Ecuador","homeScore":1,"awayScore":1,"stage":"Group A","venue":"Khalifa International Stadium"},
-    {"date":"2022-11-29","home":"Netherlands","away":"Qatar","homeScore":2,"awayScore":0,"stage":"Group A","venue":"Al Bayt Stadium"},
-    {"date":"2022-11-29","home":"Ecuador","away":"Senegal","homeScore":1,"awayScore":2,"stage":"Group A","venue":"Khalifa International Stadium"},
-
-    {"date":"2022-11-21","home":"England","away":"Iran","homeScore":6,"awayScore":2,"stage":"Group B","venue":"Khalifa International Stadium"},
-    {"date":"2022-11-21","home":"USA","away":"Wales","homeScore":1,"awayScore":1,"stage":"Group B","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-11-25","home":"England","away":"USA","homeScore":0,"awayScore":0,"stage":"Group B","venue":"Al Bayt Stadium"},
-    {"date":"2022-11-25","home":"Wales","away":"Iran","homeScore":0,"awayScore":2,"stage":"Group B","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-11-29","home":"Wales","away":"England","homeScore":0,"awayScore":3,"stage":"Group B","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-11-29","home":"Iran","away":"USA","homeScore":0,"awayScore":1,"stage":"Group B","venue":"Al Thumama Stadium"},
-
-    {"date":"2022-11-22","home":"Argentina","away":"Saudi Arabia","homeScore":1,"awayScore":2,"stage":"Group C","venue":"Lusail Stadium"},
-    {"date":"2022-11-22","home":"Mexico","away":"Poland","homeScore":0,"awayScore":0,"stage":"Group C","venue":"Stadium 974"},
-    {"date":"2022-11-26","home":"Argentina","away":"Mexico","homeScore":2,"awayScore":0,"stage":"Group C","venue":"Lusail Stadium"},
-    {"date":"2022-11-26","home":"Poland","away":"Saudi Arabia","homeScore":2,"awayScore":0,"stage":"Group C","venue":"Education City Stadium"},
-    {"date":"2022-11-30","home":"Poland","away":"Argentina","homeScore":0,"awayScore":2,"stage":"Group C","venue":"Stadium 974"},
-    {"date":"2022-11-30","home":"Saudi Arabia","away":"Mexico","homeScore":1,"awayScore":2,"stage":"Group C","venue":"Lusail Stadium"},
-
-    {"date":"2022-11-22","home":"France","away":"Australia","homeScore":4,"awayScore":1,"stage":"Group D","venue":"Al Janoub Stadium"},
-    {"date":"2022-11-22","home":"Denmark","away":"Tunisia","homeScore":0,"awayScore":0,"stage":"Group D","venue":"Education City Stadium"},
-    {"date":"2022-11-26","home":"France","away":"Denmark","homeScore":2,"awayScore":1,"stage":"Group D","venue":"Stadium 974"},
-    {"date":"2022-11-26","home":"Tunisia","away":"Australia","homeScore":0,"awayScore":1,"stage":"Group D","venue":"Al Janoub Stadium"},
-    {"date":"2022-11-30","home":"Tunisia","away":"France","homeScore":1,"awayScore":0,"stage":"Group D","venue":"Education City Stadium"},
-    {"date":"2022-11-30","home":"Australia","away":"Denmark","homeScore":1,"awayScore":0,"stage":"Group D","venue":"Al Janoub Stadium"},
-
-    {"date":"2022-11-23","home":"Germany","away":"Japan","homeScore":1,"awayScore":2,"stage":"Group E","venue":"Khalifa International Stadium"},
-    {"date":"2022-11-23","home":"Spain","away":"Costa Rica","homeScore":7,"awayScore":0,"stage":"Group E","venue":"Al Thumama Stadium"},
-    {"date":"2022-11-27","home":"Spain","away":"Germany","homeScore":1,"awayScore":1,"stage":"Group E","venue":"Al Bayt Stadium"},
-    {"date":"2022-11-27","home":"Japan","away":"Costa Rica","homeScore":0,"awayScore":1,"stage":"Group E","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-12-01","home":"Japan","away":"Spain","homeScore":2,"awayScore":1,"stage":"Group E","venue":"Khalifa International Stadium"},
-    {"date":"2022-12-01","home":"Costa Rica","away":"Germany","homeScore":2,"awayScore":4,"stage":"Group E","venue":"Al Bayt Stadium"},
-
-    {"date":"2022-11-23","home":"Morocco","away":"Croatia","homeScore":0,"awayScore":0,"stage":"Group F","venue":"Al Bayt Stadium"},
-    {"date":"2022-11-23","home":"Belgium","away":"Canada","homeScore":1,"awayScore":0,"stage":"Group F","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-11-27","home":"Belgium","away":"Morocco","homeScore":0,"awayScore":2,"stage":"Group F","venue":"Al Thumama Stadium"},
-    {"date":"2022-11-27","home":"Croatia","away":"Canada","homeScore":4,"awayScore":1,"stage":"Group F","venue":"Khalifa International Stadium"},
-    {"date":"2022-12-01","home":"Croatia","away":"Belgium","homeScore":0,"awayScore":0,"stage":"Group F","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-12-01","home":"Canada","away":"Morocco","homeScore":1,"awayScore":2,"stage":"Group F","venue":"Al Thumama Stadium"},
-
-    {"date":"2022-11-24","home":"Switzerland","away":"Cameroon","homeScore":1,"awayScore":0,"stage":"Group G","venue":"Al Janoub Stadium"},
-    {"date":"2022-11-24","home":"Brazil","away":"Serbia","homeScore":2,"awayScore":0,"stage":"Group G","venue":"Lusail Stadium"},
-    {"date":"2022-11-28","home":"Brazil","away":"Switzerland","homeScore":1,"awayScore":0,"stage":"Group G","venue":"Stadium 974"},
-    {"date":"2022-11-28","home":"Cameroon","away":"Serbia","homeScore":3,"awayScore":3,"stage":"Group G","venue":"Al Janoub Stadium"},
-    {"date":"2022-12-02","home":"Cameroon","away":"Brazil","homeScore":1,"awayScore":0,"stage":"Group G","venue":"Lusail Stadium"},
-    {"date":"2022-12-02","home":"Serbia","away":"Switzerland","homeScore":2,"awayScore":3,"stage":"Group G","venue":"Stadium 974"},
-
-    {"date":"2022-11-24","home":"Uruguay","away":"South Korea","homeScore":0,"awayScore":0,"stage":"Group H","venue":"Education City Stadium"},
-    {"date":"2022-11-24","home":"Portugal","away":"Ghana","homeScore":3,"awayScore":2,"stage":"Group H","venue":"Stadium 974"},
-    {"date":"2022-11-28","home":"Portugal","away":"Uruguay","homeScore":2,"awayScore":0,"stage":"Group H","venue":"Lusail Stadium"},
-    {"date":"2022-11-28","home":"South Korea","away":"Ghana","homeScore":2,"awayScore":3,"stage":"Group H","venue":"Education City Stadium"},
-    {"date":"2022-12-02","home":"South Korea","away":"Portugal","homeScore":2,"awayScore":1,"stage":"Group H","venue":"Education City Stadium"},
-    {"date":"2022-12-02","home":"Ghana","away":"Uruguay","homeScore":0,"awayScore":2,"stage":"Group H","venue":"Al Janoub Stadium"},
-
-    {"date":"2022-12-03","home":"Netherlands","away":"USA","homeScore":3,"awayScore":1,"stage":"Round of 16","venue":"Khalifa International Stadium"},
-    {"date":"2022-12-03","home":"Argentina","away":"Australia","homeScore":2,"awayScore":1,"stage":"Round of 16","venue":"Ahmad bin Ali Stadium"},
-    {"date":"2022-12-04","home":"France","away":"Poland","homeScore":3,"awayScore":1,"stage":"Round of 16","venue":"Al Thumama Stadium"},
-    {"date":"2022-12-04","home":"England","away":"Senegal","homeScore":3,"awayScore":0,"stage":"Round of 16","venue":"Al Bayt Stadium"},
-    {"date":"2022-12-05","home":"Japan","away":"Croatia","homeScore":1,"awayScore":1,"stage":"Round of 16","venue":"Al Janoub Stadium"},
-    {"date":"2022-12-05","home":"Brazil","away":"South Korea","homeScore":4,"awayScore":1,"stage":"Round of 16","venue":"Stadium 974"},
-    {"date":"2022-12-06","home":"Morocco","away":"Spain","homeScore":0,"awayScore":0,"stage":"Round of 16","venue":"Education City Stadium"},
-    {"date":"2022-12-06","home":"Portugal","away":"Switzerland","homeScore":6,"awayScore":1,"stage":"Round of 16","venue":"Lusail Stadium"},
-
-    {"date":"2022-12-09","home":"Croatia","away":"Brazil","homeScore":1,"awayScore":1,"stage":"Quarter-finals","venue":"Education City Stadium"},
-    {"date":"2022-12-09","home":"Netherlands","away":"Argentina","homeScore":2,"awayScore":2,"stage":"Quarter-finals","venue":"Lusail Stadium"},
-    {"date":"2022-12-10","home":"Morocco","away":"Portugal","homeScore":1,"awayScore":0,"stage":"Quarter-finals","venue":"Al Thumama Stadium"},
-    {"date":"2022-12-10","home":"England","away":"France","homeScore":1,"awayScore":2,"stage":"Quarter-finals","venue":"Al Bayt Stadium"},
-
-    {"date":"2022-12-13","home":"Argentina","away":"Croatia","homeScore":3,"awayScore":0,"stage":"Semi-finals","venue":"Lusail Stadium"},
-    {"date":"2022-12-14","home":"France","away":"Morocco","homeScore":2,"awayScore":0,"stage":"Semi-finals","venue":"Al Bayt Stadium"},
-
-    {"date":"2022-12-17","home":"Croatia","away":"Morocco","homeScore":2,"awayScore":1,"stage":"Third place","venue":"Khalifa International Stadium"},
-    {"date":"2022-12-18","home":"Argentina","away":"France","homeScore":3,"awayScore":3,"stage":"Final","venue":"Lusail Stadium"}
+    {
+      "date": "2022-11-20",
+      "home": "Qatar",
+      "away": "Ecuador",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-11-21",
+      "home": "Senegal",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-25",
+      "home": "Qatar",
+      "away": "Senegal",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-25",
+      "home": "Netherlands",
+      "away": "Ecuador",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-11-29",
+      "home": "Ecuador",
+      "away": "Senegal",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-11-29",
+      "home": "Netherlands",
+      "away": "Qatar",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-11-21",
+      "home": "England",
+      "away": "Iran",
+      "homeScore": 6,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-11-21",
+      "home": "USA",
+      "away": "Wales",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-11-25",
+      "home": "Wales",
+      "away": "Iran",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-11-25",
+      "home": "England",
+      "away": "USA",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-11-29",
+      "home": "Wales",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group B",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-11-29",
+      "home": "Iran",
+      "away": "USA",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-22",
+      "home": "Argentina",
+      "away": "Saudi Arabia",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-11-22",
+      "home": "Mexico",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-11-26",
+      "home": "Poland",
+      "away": "Saudi Arabia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-11-26",
+      "home": "Argentina",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-11-30",
+      "home": "Poland",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-11-30",
+      "home": "Saudi Arabia",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-11-22",
+      "home": "Denmark",
+      "away": "Tunisia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-11-22",
+      "home": "France",
+      "away": "Australia",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-11-26",
+      "home": "Tunisia",
+      "away": "Australia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-11-26",
+      "home": "France",
+      "away": "Denmark",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-11-30",
+      "home": "Australia",
+      "away": "Denmark",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-11-30",
+      "home": "Tunisia",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-11-23",
+      "home": "Germany",
+      "away": "Japan",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-11-23",
+      "home": "Spain",
+      "away": "Costa Rica",
+      "homeScore": 7,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-27",
+      "home": "Japan",
+      "away": "Costa Rica",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-11-27",
+      "home": "Spain",
+      "away": "Germany",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-12-01",
+      "home": "Japan",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-12-01",
+      "home": "Costa Rica",
+      "away": "Germany",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "Group E",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-11-23",
+      "home": "Morocco",
+      "away": "Croatia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-11-23",
+      "home": "Belgium",
+      "away": "Canada",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-11-27",
+      "home": "Belgium",
+      "away": "Morocco",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-27",
+      "home": "Croatia",
+      "away": "Canada",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-12-01",
+      "home": "Croatia",
+      "away": "Belgium",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-12-01",
+      "home": "Canada",
+      "away": "Morocco",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-11-24",
+      "home": "Switzerland",
+      "away": "Cameroon",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-11-24",
+      "home": "Brazil",
+      "away": "Serbia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-11-28",
+      "home": "Cameroon",
+      "away": "Serbia",
+      "homeScore": 3,
+      "awayScore": 3,
+      "stage": "Group G",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-11-28",
+      "home": "Brazil",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-12-02",
+      "home": "Serbia",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group G",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-12-02",
+      "home": "Cameroon",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-11-24",
+      "home": "Uruguay",
+      "away": "South Korea",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-11-24",
+      "home": "Portugal",
+      "away": "Ghana",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group H",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-11-28",
+      "home": "South Korea",
+      "away": "Ghana",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group H",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-11-28",
+      "home": "Portugal",
+      "away": "Uruguay",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-12-02",
+      "home": "Ghana",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group H",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-12-02",
+      "home": "South Korea",
+      "away": "Portugal",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-12-03",
+      "home": "Netherlands",
+      "away": "USA",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-12-03",
+      "home": "Argentina",
+      "away": "Australia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Ahmad bin Ali Stadium"
+    },
+    {
+      "date": "2022-12-04",
+      "home": "France",
+      "away": "Poland",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-12-04",
+      "home": "England",
+      "away": "Senegal",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-12-05",
+      "home": "Japan",
+      "away": "Croatia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Al Janoub Stadium"
+    },
+    {
+      "date": "2022-12-05",
+      "home": "Brazil",
+      "away": "South Korea",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Stadium 974"
+    },
+    {
+      "date": "2022-12-06",
+      "home": "Morocco",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-12-06",
+      "home": "Portugal",
+      "away": "Switzerland",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-12-09",
+      "home": "Croatia",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Education City Stadium"
+    },
+    {
+      "date": "2022-12-09",
+      "home": "Netherlands",
+      "away": "Argentina",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-12-10",
+      "home": "Morocco",
+      "away": "Portugal",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Al Thumama Stadium"
+    },
+    {
+      "date": "2022-12-10",
+      "home": "England",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-12-13",
+      "home": "Argentina",
+      "away": "Croatia",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Semi-finals",
+      "venue": "Lusail Iconic Stadium"
+    },
+    {
+      "date": "2022-12-14",
+      "home": "France",
+      "away": "Morocco",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Semi-finals",
+      "venue": "Al Bayt Stadium"
+    },
+    {
+      "date": "2022-12-17",
+      "home": "Croatia",
+      "away": "Morocco",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Khalifa International Stadium"
+    },
+    {
+      "date": "2022-12-18",
+      "home": "Argentina",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 3,
+      "stage": "Final",
+      "venue": "Lusail Iconic Stadium"
+    }
   ]
 }

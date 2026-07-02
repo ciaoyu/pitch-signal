@@ -1,0 +1,584 @@
+{
+  "tournament": "2006 FIFA World Cup",
+  "year": 2006,
+  "host": "Germany",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "2006-06-09",
+      "home": "Germany",
+      "away": "Costa Rica",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-06-09",
+      "home": "Poland",
+      "away": "Ecuador",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Veltins-Arena"
+    },
+    {
+      "date": "2006-06-14",
+      "home": "Germany",
+      "away": "Poland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-06-15",
+      "home": "Ecuador",
+      "away": "Costa Rica",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "AOL Arena"
+    },
+    {
+      "date": "2006-06-20",
+      "home": "Ecuador",
+      "away": "Germany",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "2006-06-20",
+      "home": "Costa Rica",
+      "away": "Poland",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "AWD-Arena"
+    },
+    {
+      "date": "2006-06-10",
+      "home": "England",
+      "away": "Paraguay",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Commerzbank-Arena"
+    },
+    {
+      "date": "2006-06-10",
+      "home": "Trinidad and Tobago",
+      "away": "Sweden",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-06-15",
+      "home": "England",
+      "away": "Trinidad and Tobago",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Frankenstadion"
+    },
+    {
+      "date": "2006-06-15",
+      "home": "Sweden",
+      "away": "Paraguay",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "2006-06-20",
+      "home": "Sweden",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "RheinEnergieStadion"
+    },
+    {
+      "date": "2006-06-20",
+      "home": "Paraguay",
+      "away": "Trinidad and Tobago",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Fritz-Walter-Stadion"
+    },
+    {
+      "date": "2006-06-10",
+      "home": "Argentina",
+      "away": "Côte d'Ivoire",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "AOL Arena"
+    },
+    {
+      "date": "2006-06-11",
+      "home": "Serbia and Montenegro",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Zentralstadion"
+    },
+    {
+      "date": "2006-06-16",
+      "home": "Argentina",
+      "away": "Serbia and Montenegro",
+      "homeScore": 6,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Veltins-Arena"
+    },
+    {
+      "date": "2006-06-16",
+      "home": "Netherlands",
+      "away": "Côte d'Ivoire",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-06-21",
+      "home": "Netherlands",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Commerzbank-Arena"
+    },
+    {
+      "date": "2006-06-21",
+      "home": "Côte d'Ivoire",
+      "away": "Serbia and Montenegro",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-06-11",
+      "home": "Mexico",
+      "away": "Iran",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Frankenstadion"
+    },
+    {
+      "date": "2006-06-11",
+      "home": "Angola",
+      "away": "Portugal",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "RheinEnergieStadion"
+    },
+    {
+      "date": "2006-06-16",
+      "home": "Mexico",
+      "away": "Angola",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "AWD-Arena"
+    },
+    {
+      "date": "2006-06-17",
+      "home": "Portugal",
+      "away": "Iran",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Commerzbank-Arena"
+    },
+    {
+      "date": "2006-06-21",
+      "home": "Portugal",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Veltins-Arena"
+    },
+    {
+      "date": "2006-06-21",
+      "home": "Iran",
+      "away": "Angola",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Zentralstadion"
+    },
+    {
+      "date": "2006-06-12",
+      "home": "Italy",
+      "away": "Ghana",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "AWD-Arena"
+    },
+    {
+      "date": "2006-06-12",
+      "home": "USA",
+      "away": "Czech Republic",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group E",
+      "venue": "Veltins-Arena"
+    },
+    {
+      "date": "2006-06-17",
+      "home": "Italy",
+      "away": "USA",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Fritz-Walter-Stadion"
+    },
+    {
+      "date": "2006-06-17",
+      "home": "Czech Republic",
+      "away": "Ghana",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "RheinEnergieStadion"
+    },
+    {
+      "date": "2006-06-22",
+      "home": "Czech Republic",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "AOL Arena"
+    },
+    {
+      "date": "2006-06-22",
+      "home": "Ghana",
+      "away": "USA",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Frankenstadion"
+    },
+    {
+      "date": "2006-06-13",
+      "home": "Brazil",
+      "away": "Croatia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "2006-06-12",
+      "home": "Australia",
+      "away": "Japan",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Fritz-Walter-Stadion"
+    },
+    {
+      "date": "2006-06-18",
+      "home": "Brazil",
+      "away": "Australia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-06-18",
+      "home": "Japan",
+      "away": "Croatia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Frankenstadion"
+    },
+    {
+      "date": "2006-06-22",
+      "home": "Japan",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group F",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-06-22",
+      "home": "Croatia",
+      "away": "Australia",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-06-13",
+      "home": "France",
+      "away": "Switzerland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-06-13",
+      "home": "South Korea",
+      "away": "Togo",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Commerzbank-Arena"
+    },
+    {
+      "date": "2006-06-18",
+      "home": "France",
+      "away": "South Korea",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Zentralstadion"
+    },
+    {
+      "date": "2006-06-19",
+      "home": "Togo",
+      "away": "Switzerland",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group G",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-06-23",
+      "home": "Togo",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group G",
+      "venue": "RheinEnergieStadion"
+    },
+    {
+      "date": "2006-06-23",
+      "home": "Switzerland",
+      "away": "South Korea",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "AWD-Arena"
+    },
+    {
+      "date": "2006-06-14",
+      "home": "Spain",
+      "away": "Ukraine",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Zentralstadion"
+    },
+    {
+      "date": "2006-06-14",
+      "home": "Tunisia",
+      "away": "Saudi Arabia",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group H",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-06-19",
+      "home": "Spain",
+      "away": "Tunisia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-06-19",
+      "home": "Saudi Arabia",
+      "away": "Ukraine",
+      "homeScore": 0,
+      "awayScore": 4,
+      "stage": "Group H",
+      "venue": "AOL Arena"
+    },
+    {
+      "date": "2006-06-23",
+      "home": "Saudi Arabia",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Fritz-Walter-Stadion"
+    },
+    {
+      "date": "2006-06-23",
+      "home": "Ukraine",
+      "away": "Tunisia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "2006-06-24",
+      "home": "Germany",
+      "away": "Sweden",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-06-24",
+      "home": "Argentina",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Zentralstadion"
+    },
+    {
+      "date": "2006-06-25",
+      "home": "England",
+      "away": "Ecuador",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-06-25",
+      "home": "Portugal",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Frankenstadion"
+    },
+    {
+      "date": "2006-06-26",
+      "home": "Italy",
+      "away": "Australia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Fritz-Walter-Stadion"
+    },
+    {
+      "date": "2006-06-26",
+      "home": "Switzerland",
+      "away": "Ukraine",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "RheinEnergieStadion"
+    },
+    {
+      "date": "2006-06-27",
+      "home": "Brazil",
+      "away": "Ghana",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-06-27",
+      "home": "Spain",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Round of 16",
+      "venue": "AWD-Arena"
+    },
+    {
+      "date": "2006-06-30",
+      "home": "Germany",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "2006-06-30",
+      "home": "Italy",
+      "away": "Ukraine",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "AOL Arena"
+    },
+    {
+      "date": "2006-07-01",
+      "home": "England",
+      "away": "Portugal",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Veltins-Arena"
+    },
+    {
+      "date": "2006-07-01",
+      "home": "Brazil",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Commerzbank-Arena"
+    },
+    {
+      "date": "2006-07-04",
+      "home": "Germany",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Signal Iduna Park"
+    },
+    {
+      "date": "2006-07-05",
+      "home": "Portugal",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Allianz Arena"
+    },
+    {
+      "date": "2006-07-08",
+      "home": "Germany",
+      "away": "Portugal",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Gottlieb-Daimler-Stadion"
+    },
+    {
+      "date": "2006-07-09",
+      "home": "Italy",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Olympiastadion"
+    }
+  ]
+}

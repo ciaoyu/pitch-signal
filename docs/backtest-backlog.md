@@ -1,8 +1,15 @@
 # Backtest 待解决清单
 
-## 问题 1：样本量偏小
+## 问题 1：样本量偏小 ✅ 已解决（2026-07-02）
 
-**现状：** 只有 2018 + 2022 两届世界杯数据，共 128 场比赛。统计显著性不足。
+**结果：** 回测历史已扩到 24 届 964 场 + 每届 Elo 热启动快照。方向准确率从 42.19%（128场冷启动）提升到 57.88% [95% CI: 54.8%, 61.1%]（964场热启动），与业界 Elo 基线 60% 的 CI 重叠。详见 [prediction-methodology-review.md](prediction-methodology-review.md) §2.2。
+
+**最终分工（与下面原方案略有不同）：**
+- 主数据源改用 [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)（CC0，只含世界杯正赛，无需按赛事类型过滤）→ `scripts/fetch-worldcup-history.js` 转换为 `data/history/worldcup_<year>.json`（与手工校对的 2018/2022 逐场零差异交叉验证）
+- martj42 49k 数据只用于 **Elo 热启动**：`scripts/build-elo-seed.js` 全量按时回放，在每届开赛日前落快照 → `data/elo-seed.json`（K 复用 `kFactorByType`，中立场不加主场分，队名别名映射覆盖率 100%）
+- 评估口径保持纯世界杯正赛，未混入友谊赛——原方案的分层原则得到执行
+
+**原始记录（存档）：** 只有 2018 + 2022 两届世界杯数据，共 128 场比赛。统计显著性不足。
 
 **可用数据源**：[martj42/international_results](https://github.com/martj42/international_results)（CC0，公共领域），49,496 场国家队比赛，1872 年至今。已实测下载确认字段为 `date, home_team, away_team, home_score, away_score, tournament, city, country, neutral`。其中真正与世界杯正赛同量级的赛事（FIFA World Cup + Euro + Copa América + AFCON 正赛）约 3000+ 场，其余多为友谊赛（37%）和各类预选赛，强度不可直接混用。
 

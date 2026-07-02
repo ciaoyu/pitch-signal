@@ -1,0 +1,476 @@
+{
+  "tournament": "1982 FIFA World Cup",
+  "year": 1982,
+  "host": "Spain",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1982-06-14",
+      "home": "Italy",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Balaídos"
+    },
+    {
+      "date": "1982-06-15",
+      "home": "Peru",
+      "away": "Cameroon",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio de Riazor"
+    },
+    {
+      "date": "1982-06-18",
+      "home": "Italy",
+      "away": "Peru",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Balaídos"
+    },
+    {
+      "date": "1982-06-19",
+      "home": "Poland",
+      "away": "Cameroon",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio de Riazor"
+    },
+    {
+      "date": "1982-06-22",
+      "home": "Poland",
+      "away": "Peru",
+      "homeScore": 5,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio de Riazor"
+    },
+    {
+      "date": "1982-06-23",
+      "home": "Italy",
+      "away": "Cameroon",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Balaídos"
+    },
+    {
+      "date": "1982-06-16",
+      "home": "West Germany",
+      "away": "Algeria",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "El Molinón"
+    },
+    {
+      "date": "1982-06-17",
+      "home": "Chile",
+      "away": "Austria",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Carlos Tartiere"
+    },
+    {
+      "date": "1982-06-20",
+      "home": "West Germany",
+      "away": "Chile",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "El Molinón"
+    },
+    {
+      "date": "1982-06-21",
+      "home": "Algeria",
+      "away": "Austria",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Estadio Carlos Tartiere"
+    },
+    {
+      "date": "1982-06-24",
+      "home": "Algeria",
+      "away": "Chile",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Estadio Carlos Tartiere"
+    },
+    {
+      "date": "1982-06-25",
+      "home": "West Germany",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "El Molinón"
+    },
+    {
+      "date": "1982-06-13",
+      "home": "Argentina",
+      "away": "Belgium",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Camp Nou"
+    },
+    {
+      "date": "1982-06-15",
+      "home": "Hungary",
+      "away": "El Salvador",
+      "homeScore": 10,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Nuevo Estadio"
+    },
+    {
+      "date": "1982-06-18",
+      "home": "Argentina",
+      "away": "Hungary",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio José Rico Pérez"
+    },
+    {
+      "date": "1982-06-19",
+      "home": "Belgium",
+      "away": "El Salvador",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Nuevo Estadio"
+    },
+    {
+      "date": "1982-06-22",
+      "home": "Belgium",
+      "away": "Hungary",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Nuevo Estadio"
+    },
+    {
+      "date": "1982-06-23",
+      "home": "Argentina",
+      "away": "El Salvador",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio José Rico Pérez"
+    },
+    {
+      "date": "1982-06-16",
+      "home": "England",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio San Mamés"
+    },
+    {
+      "date": "1982-06-17",
+      "home": "Czechoslovakia",
+      "away": "Kuwait",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio José Zorrilla"
+    },
+    {
+      "date": "1982-06-20",
+      "home": "England",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio San Mamés"
+    },
+    {
+      "date": "1982-06-21",
+      "home": "France",
+      "away": "Kuwait",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio José Zorrilla"
+    },
+    {
+      "date": "1982-06-24",
+      "home": "France",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio José Zorrilla"
+    },
+    {
+      "date": "1982-06-25",
+      "home": "England",
+      "away": "Kuwait",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio San Mamés"
+    },
+    {
+      "date": "1982-06-16",
+      "home": "Spain",
+      "away": "Honduras",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 5",
+      "venue": "Estadio Luis Casanova"
+    },
+    {
+      "date": "1982-06-17",
+      "home": "Yugoslavia",
+      "away": "Northern Ireland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 5",
+      "venue": "La Romareda"
+    },
+    {
+      "date": "1982-06-20",
+      "home": "Spain",
+      "away": "Yugoslavia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 5",
+      "venue": "Estadio Luis Casanova"
+    },
+    {
+      "date": "1982-06-21",
+      "home": "Honduras",
+      "away": "Northern Ireland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 5",
+      "venue": "La Romareda"
+    },
+    {
+      "date": "1982-06-24",
+      "home": "Honduras",
+      "away": "Yugoslavia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 5",
+      "venue": "La Romareda"
+    },
+    {
+      "date": "1982-06-25",
+      "home": "Spain",
+      "away": "Northern Ireland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 5",
+      "venue": "Estadio Luis Casanova"
+    },
+    {
+      "date": "1982-06-14",
+      "home": "Brazil",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 6",
+      "venue": "Estadio Ramón Sánchez Pizjuán"
+    },
+    {
+      "date": "1982-06-15",
+      "home": "Scotland",
+      "away": "New Zealand",
+      "homeScore": 5,
+      "awayScore": 2,
+      "stage": "Group 6",
+      "venue": "Estadio La Rosaleda"
+    },
+    {
+      "date": "1982-06-18",
+      "home": "Brazil",
+      "away": "Scotland",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 6",
+      "venue": "Estadio Benito Villamarín"
+    },
+    {
+      "date": "1982-06-19",
+      "home": "Soviet Union",
+      "away": "New Zealand",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 6",
+      "venue": "Estadio La Rosaleda"
+    },
+    {
+      "date": "1982-06-22",
+      "home": "Soviet Union",
+      "away": "Scotland",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 6",
+      "venue": "Estadio La Rosaleda"
+    },
+    {
+      "date": "1982-06-23",
+      "home": "Brazil",
+      "away": "New Zealand",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 6",
+      "venue": "Estadio Benito Villamarín"
+    },
+    {
+      "date": "1982-06-28",
+      "home": "Poland",
+      "away": "Belgium",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Camp Nou"
+    },
+    {
+      "date": "1982-07-01",
+      "home": "Belgium",
+      "away": "Soviet Union",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Camp Nou"
+    },
+    {
+      "date": "1982-07-04",
+      "home": "Soviet Union",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Camp Nou"
+    },
+    {
+      "date": "1982-06-29",
+      "home": "West Germany",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Santiago Bernabéu"
+    },
+    {
+      "date": "1982-07-02",
+      "home": "West Germany",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Estadio Santiago Bernabéu"
+    },
+    {
+      "date": "1982-07-05",
+      "home": "Spain",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Santiago Bernabéu"
+    },
+    {
+      "date": "1982-06-29",
+      "home": "Italy",
+      "away": "Argentina",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Estadio Sarriá"
+    },
+    {
+      "date": "1982-07-02",
+      "home": "Argentina",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group C",
+      "venue": "Estadio Sarriá"
+    },
+    {
+      "date": "1982-07-05",
+      "home": "Italy",
+      "away": "Brazil",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Estadio Sarriá"
+    },
+    {
+      "date": "1982-06-28",
+      "home": "Austria",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Estadio Vicente Calderón"
+    },
+    {
+      "date": "1982-07-01",
+      "home": "Austria",
+      "away": "Northern Ireland",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Estadio Vicente Calderón"
+    },
+    {
+      "date": "1982-07-04",
+      "home": "Northern Ireland",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group D",
+      "venue": "Estadio Vicente Calderón"
+    },
+    {
+      "date": "1982-07-08",
+      "home": "Poland",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Camp Nou"
+    },
+    {
+      "date": "1982-07-08",
+      "home": "West Germany",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 3,
+      "stage": "Semi-finals",
+      "venue": "Estadio Ramón Sánchez Pizjuán"
+    },
+    {
+      "date": "1982-07-10",
+      "home": "Poland",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Third place",
+      "venue": "Estadio José Rico Pérez"
+    },
+    {
+      "date": "1982-07-11",
+      "home": "Italy",
+      "away": "West Germany",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Estadio Santiago Bernabéu"
+    }
+  ]
+}

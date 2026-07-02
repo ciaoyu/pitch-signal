@@ -1,0 +1,476 @@
+{
+  "tournament": "1994 FIFA World Cup",
+  "year": 1994,
+  "host": "USA",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1994-06-18",
+      "home": "USA",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Pontiac Silverdome"
+    },
+    {
+      "date": "1994-06-18",
+      "home": "Colombia",
+      "away": "Romania",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-06-22",
+      "home": "Romania",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group A",
+      "venue": "Pontiac Silverdome"
+    },
+    {
+      "date": "1994-06-22",
+      "home": "USA",
+      "away": "Colombia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-06-26",
+      "home": "USA",
+      "away": "Romania",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-06-26",
+      "home": "Switzerland",
+      "away": "Colombia",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-06-19",
+      "home": "Cameroon",
+      "away": "Sweden",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-06-20",
+      "home": "Brazil",
+      "away": "Russia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-06-24",
+      "home": "Brazil",
+      "away": "Cameroon",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-06-24",
+      "home": "Sweden",
+      "away": "Russia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Pontiac Silverdome"
+    },
+    {
+      "date": "1994-06-28",
+      "home": "Russia",
+      "away": "Cameroon",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-06-28",
+      "home": "Brazil",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Pontiac Silverdome"
+    },
+    {
+      "date": "1994-06-17",
+      "home": "Germany",
+      "away": "Bolivia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Soldier Field"
+    },
+    {
+      "date": "1994-06-17",
+      "home": "Spain",
+      "away": "South Korea",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-06-21",
+      "home": "Germany",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Soldier Field"
+    },
+    {
+      "date": "1994-06-23",
+      "home": "South Korea",
+      "away": "Bolivia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-06-27",
+      "home": "Bolivia",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group C",
+      "venue": "Soldier Field"
+    },
+    {
+      "date": "1994-06-27",
+      "home": "Germany",
+      "away": "South Korea",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-06-21",
+      "home": "Argentina",
+      "away": "Greece",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-06-21",
+      "home": "Nigeria",
+      "away": "Bulgaria",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-06-25",
+      "home": "Argentina",
+      "away": "Nigeria",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-06-26",
+      "home": "Greece",
+      "away": "Bulgaria",
+      "homeScore": 0,
+      "awayScore": 4,
+      "stage": "Group D",
+      "venue": "Soldier Field"
+    },
+    {
+      "date": "1994-06-30",
+      "home": "Greece",
+      "away": "Nigeria",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-06-30",
+      "home": "Argentina",
+      "away": "Bulgaria",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-06-18",
+      "home": "Italy",
+      "away": "Ireland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-06-19",
+      "home": "Norway",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "RFK Stadium"
+    },
+    {
+      "date": "1994-06-23",
+      "home": "Italy",
+      "away": "Norway",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-06-24",
+      "home": "Mexico",
+      "away": "Ireland",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Citrus Bowl"
+    },
+    {
+      "date": "1994-06-28",
+      "home": "Ireland",
+      "away": "Norway",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-06-28",
+      "home": "Italy",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "RFK Stadium"
+    },
+    {
+      "date": "1994-06-19",
+      "home": "Belgium",
+      "away": "Morocco",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Citrus Bowl"
+    },
+    {
+      "date": "1994-06-20",
+      "home": "Netherlands",
+      "away": "Saudi Arabia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "RFK Stadium"
+    },
+    {
+      "date": "1994-06-25",
+      "home": "Belgium",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Citrus Bowl"
+    },
+    {
+      "date": "1994-06-25",
+      "home": "Saudi Arabia",
+      "away": "Morocco",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-06-29",
+      "home": "Morocco",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Citrus Bowl"
+    },
+    {
+      "date": "1994-06-29",
+      "home": "Belgium",
+      "away": "Saudi Arabia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "RFK Stadium"
+    },
+    {
+      "date": "1994-07-02",
+      "home": "Germany",
+      "away": "Belgium",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Soldier Field"
+    },
+    {
+      "date": "1994-07-02",
+      "home": "Spain",
+      "away": "Switzerland",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "RFK Stadium"
+    },
+    {
+      "date": "1994-07-03",
+      "home": "Saudi Arabia",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Round of 16",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-07-03",
+      "home": "Romania",
+      "away": "Argentina",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-07-04",
+      "home": "Netherlands",
+      "away": "Ireland",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Citrus Bowl"
+    },
+    {
+      "date": "1994-07-04",
+      "home": "Brazil",
+      "away": "USA",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-07-05",
+      "home": "Nigeria",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-07-05",
+      "home": "Mexico",
+      "away": "Bulgaria",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-07-09",
+      "home": "Italy",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Foxboro Stadium"
+    },
+    {
+      "date": "1994-07-09",
+      "home": "Netherlands",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Quarter-finals",
+      "venue": "Cotton Bowl"
+    },
+    {
+      "date": "1994-07-10",
+      "home": "Bulgaria",
+      "away": "Germany",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-07-10",
+      "home": "Romania",
+      "away": "Sweden",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Stanford Stadium"
+    },
+    {
+      "date": "1994-07-13",
+      "home": "Bulgaria",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Giants Stadium"
+    },
+    {
+      "date": "1994-07-13",
+      "home": "Sweden",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-07-16",
+      "home": "Sweden",
+      "away": "Bulgaria",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Third place",
+      "venue": "Rose Bowl"
+    },
+    {
+      "date": "1994-07-17",
+      "home": "Brazil",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Final",
+      "venue": "Rose Bowl"
+    }
+  ]
+}

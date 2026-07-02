@@ -1,0 +1,350 @@
+{
+  "tournament": "1978 FIFA World Cup",
+  "year": 1978,
+  "host": "Argentina",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1978-06-02",
+      "home": "Argentina",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-02",
+      "home": "Italy",
+      "away": "France",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio José María Minella"
+    },
+    {
+      "date": "1978-06-06",
+      "home": "Argentina",
+      "away": "France",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-06",
+      "home": "Italy",
+      "away": "Hungary",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio José María Minella"
+    },
+    {
+      "date": "1978-06-10",
+      "home": "Argentina",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-10",
+      "home": "France",
+      "away": "Hungary",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio José María Minella"
+    },
+    {
+      "date": "1978-06-01",
+      "home": "West Germany",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-02",
+      "home": "Tunisia",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-06",
+      "home": "Poland",
+      "away": "Tunisia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-06",
+      "home": "West Germany",
+      "away": "Mexico",
+      "homeScore": 6,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-10",
+      "home": "Poland",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-10",
+      "home": "West Germany",
+      "away": "Tunisia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Olímpico Chateau Carreras"
+    },
+    {
+      "date": "1978-06-03",
+      "home": "Austria",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio José Amalfitani"
+    },
+    {
+      "date": "1978-06-03",
+      "home": "Brazil",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio José Maria Minella"
+    },
+    {
+      "date": "1978-06-07",
+      "home": "Austria",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio José Amalfitani"
+    },
+    {
+      "date": "1978-06-07",
+      "home": "Brazil",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio José Maria Minella"
+    },
+    {
+      "date": "1978-06-11",
+      "home": "Spain",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio José Amalfitani"
+    },
+    {
+      "date": "1978-06-11",
+      "home": "Brazil",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio José Maria Minella"
+    },
+    {
+      "date": "1978-06-03",
+      "home": "Peru",
+      "away": "Scotland",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-03",
+      "home": "Netherlands",
+      "away": "Iran",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-07",
+      "home": "Scotland",
+      "away": "Iran",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-07",
+      "home": "Netherlands",
+      "away": "Peru",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-11",
+      "home": "Peru",
+      "away": "Iran",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-11",
+      "home": "Scotland",
+      "away": "Netherlands",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-14",
+      "home": "Italy",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-14",
+      "home": "Austria",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 5,
+      "stage": "Group A",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-18",
+      "home": "Italy",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-18",
+      "home": "Netherlands",
+      "away": "West Germany",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-21",
+      "home": "Italy",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-21",
+      "home": "Austria",
+      "away": "West Germany",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Estadio Chateau Carreras"
+    },
+    {
+      "date": "1978-06-14",
+      "home": "Argentina",
+      "away": "Poland",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-14",
+      "home": "Peru",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group B",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-18",
+      "home": "Argentina",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-18",
+      "home": "Peru",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-21",
+      "home": "Argentina",
+      "away": "Peru",
+      "homeScore": 6,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Gigante de Arroyito"
+    },
+    {
+      "date": "1978-06-21",
+      "home": "Poland",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group B",
+      "venue": "Estadio Ciudad de Mendoza"
+    },
+    {
+      "date": "1978-06-24",
+      "home": "Brazil",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Estadio Monumental"
+    },
+    {
+      "date": "1978-06-25",
+      "home": "Netherlands",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Final",
+      "venue": "Estadio Monumental"
+    }
+  ]
+}

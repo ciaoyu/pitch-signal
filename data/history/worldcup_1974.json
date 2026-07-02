@@ -1,0 +1,350 @@
+{
+  "tournament": "1974 FIFA World Cup",
+  "year": 1974,
+  "host": "West Germany",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1974-06-14",
+      "home": "West Germany",
+      "away": "Chile",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-14",
+      "home": "East Germany",
+      "away": "Australia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Volksparkstadion"
+    },
+    {
+      "date": "1974-06-18",
+      "home": "Chile",
+      "away": "East Germany",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-18",
+      "home": "Australia",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group 1",
+      "venue": "Volksparkstadion"
+    },
+    {
+      "date": "1974-06-22",
+      "home": "Australia",
+      "away": "Chile",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-22",
+      "home": "East Germany",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Volksparkstadion"
+    },
+    {
+      "date": "1974-06-13",
+      "home": "Brazil",
+      "away": "Yugoslavia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Waldstadion"
+    },
+    {
+      "date": "1974-06-14",
+      "home": "Zaire",
+      "away": "Scotland",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Westfalenstadion"
+    },
+    {
+      "date": "1974-06-18",
+      "home": "Yugoslavia",
+      "away": "Zaire",
+      "homeScore": 9,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Parkstadion"
+    },
+    {
+      "date": "1974-06-18",
+      "home": "Scotland",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Waldstadion"
+    },
+    {
+      "date": "1974-06-22",
+      "home": "Scotland",
+      "away": "Yugoslavia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Waldstadion"
+    },
+    {
+      "date": "1974-06-22",
+      "home": "Zaire",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group 2",
+      "venue": "Parkstadion"
+    },
+    {
+      "date": "1974-06-15",
+      "home": "Uruguay",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group 3",
+      "venue": "Niedersachsenstadion"
+    },
+    {
+      "date": "1974-06-15",
+      "home": "Sweden",
+      "away": "Bulgaria",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Rheinstadion"
+    },
+    {
+      "date": "1974-06-19",
+      "home": "Netherlands",
+      "away": "Sweden",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Westfalenstadion"
+    },
+    {
+      "date": "1974-06-19",
+      "home": "Uruguay",
+      "away": "Bulgaria",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Niedersachsenstadion"
+    },
+    {
+      "date": "1974-06-23",
+      "home": "Netherlands",
+      "away": "Bulgaria",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Westfalenstadion"
+    },
+    {
+      "date": "1974-06-23",
+      "home": "Sweden",
+      "away": "Uruguay",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Rheinstadion"
+    },
+    {
+      "date": "1974-06-15",
+      "home": "Italy",
+      "away": "Haiti",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-15",
+      "home": "Poland",
+      "away": "Argentina",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Neckarstadion"
+    },
+    {
+      "date": "1974-06-19",
+      "home": "Haiti",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 7,
+      "stage": "Group 4",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-19",
+      "home": "Argentina",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Neckarstadion"
+    },
+    {
+      "date": "1974-06-23",
+      "home": "Argentina",
+      "away": "Haiti",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-06-23",
+      "home": "Poland",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Neckarstadion"
+    },
+    {
+      "date": "1974-06-26",
+      "home": "Brazil",
+      "away": "East Germany",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Niedersachsenstadion"
+    },
+    {
+      "date": "1974-06-26",
+      "home": "Netherlands",
+      "away": "Argentina",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Parkstadion"
+    },
+    {
+      "date": "1974-06-30",
+      "home": "East Germany",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Parkstadion"
+    },
+    {
+      "date": "1974-06-30",
+      "home": "Argentina",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Niedersachsenstadion"
+    },
+    {
+      "date": "1974-07-03",
+      "home": "Argentina",
+      "away": "East Germany",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Parkstadion"
+    },
+    {
+      "date": "1974-07-03",
+      "home": "Netherlands",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Westfalenstadion"
+    },
+    {
+      "date": "1974-06-26",
+      "home": "Yugoslavia",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Rheinstadion"
+    },
+    {
+      "date": "1974-06-26",
+      "home": "Sweden",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Neckarstadion"
+    },
+    {
+      "date": "1974-06-30",
+      "home": "West Germany",
+      "away": "Sweden",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Rheinstadion"
+    },
+    {
+      "date": "1974-06-30",
+      "home": "Poland",
+      "away": "Yugoslavia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Waldstadion"
+    },
+    {
+      "date": "1974-07-03",
+      "home": "Poland",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Waldstadion"
+    },
+    {
+      "date": "1974-07-03",
+      "home": "Sweden",
+      "away": "Yugoslavia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Rheinstadion"
+    },
+    {
+      "date": "1974-07-06",
+      "home": "Brazil",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1974-07-07",
+      "home": "Netherlands",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Final",
+      "venue": "Olympiastadion"
+    }
+  ]
+}

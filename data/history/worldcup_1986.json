@@ -1,0 +1,476 @@
+{
+  "tournament": "1986 FIFA World Cup",
+  "year": 1986,
+  "host": "Mexico",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1986-05-31",
+      "home": "Bulgaria",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-02",
+      "home": "Argentina",
+      "away": "South Korea",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Estadio Olímpico Universitario"
+    },
+    {
+      "date": "1986-06-05",
+      "home": "Italy",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1986-06-05",
+      "home": "South Korea",
+      "away": "Bulgaria",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Estadio Olímpico Universitario"
+    },
+    {
+      "date": "1986-06-10",
+      "home": "South Korea",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1986-06-10",
+      "home": "Argentina",
+      "away": "Bulgaria",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Estadio Olímpico Universitario"
+    },
+    {
+      "date": "1986-06-03",
+      "home": "Belgium",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-04",
+      "home": "Paraguay",
+      "away": "Iraq",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Estadio Nemesio Díez"
+    },
+    {
+      "date": "1986-06-07",
+      "home": "Mexico",
+      "away": "Paraguay",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-08",
+      "home": "Iraq",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Estadio Nemesio Díez"
+    },
+    {
+      "date": "1986-06-11",
+      "home": "Iraq",
+      "away": "Mexico",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-11",
+      "home": "Paraguay",
+      "away": "Belgium",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Estadio Nemesio Díez"
+    },
+    {
+      "date": "1986-06-01",
+      "home": "Canada",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1986-06-02",
+      "home": "Soviet Union",
+      "away": "Hungary",
+      "homeScore": 6,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Estadio Sergio León Chavez"
+    },
+    {
+      "date": "1986-06-05",
+      "home": "France",
+      "away": "Soviet Union",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1986-06-06",
+      "home": "Hungary",
+      "away": "Canada",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Estadio Sergio León Chavez"
+    },
+    {
+      "date": "1986-06-09",
+      "home": "Hungary",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group C",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1986-06-09",
+      "home": "Soviet Union",
+      "away": "Canada",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Estadio Sergio León Chavez"
+    },
+    {
+      "date": "1986-06-01",
+      "home": "Spain",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-03",
+      "home": "Algeria",
+      "away": "Northern Ireland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Estadio Tres de Marzo"
+    },
+    {
+      "date": "1986-06-06",
+      "home": "Brazil",
+      "away": "Algeria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-07",
+      "home": "Northern Ireland",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Estadio Tres de Marzo"
+    },
+    {
+      "date": "1986-06-12",
+      "home": "Northern Ireland",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group D",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-12",
+      "home": "Algeria",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group D",
+      "venue": "Estadio Tecnológico"
+    },
+    {
+      "date": "1986-06-04",
+      "home": "Uruguay",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Estadio La Corregidora"
+    },
+    {
+      "date": "1986-06-04",
+      "home": "Scotland",
+      "away": "Denmark",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Estadio Neza 86"
+    },
+    {
+      "date": "1986-06-08",
+      "home": "West Germany",
+      "away": "Scotland",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Estadio La Corregidora"
+    },
+    {
+      "date": "1986-06-08",
+      "home": "Denmark",
+      "away": "Uruguay",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Estadio Neza 86"
+    },
+    {
+      "date": "1986-06-13",
+      "home": "Denmark",
+      "away": "West Germany",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Estadio La Corregidora"
+    },
+    {
+      "date": "1986-06-13",
+      "home": "Scotland",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Estadio Neza 86"
+    },
+    {
+      "date": "1986-06-02",
+      "home": "Morocco",
+      "away": "Poland",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estadio Universitario"
+    },
+    {
+      "date": "1986-06-03",
+      "home": "Portugal",
+      "away": "England",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estadio Tecnológico"
+    },
+    {
+      "date": "1986-06-06",
+      "home": "England",
+      "away": "Morocco",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estadio Tecnológico"
+    },
+    {
+      "date": "1986-06-07",
+      "home": "Poland",
+      "away": "Portugal",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estadio Universitario"
+    },
+    {
+      "date": "1986-06-11",
+      "home": "Portugal",
+      "away": "Morocco",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group F",
+      "venue": "Estadio Tres de Marzo"
+    },
+    {
+      "date": "1986-06-11",
+      "home": "England",
+      "away": "Poland",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estadio Tecnológico"
+    },
+    {
+      "date": "1986-06-15",
+      "home": "Mexico",
+      "away": "Bulgaria",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-15",
+      "home": "Soviet Union",
+      "away": "Belgium",
+      "homeScore": 3,
+      "awayScore": 4,
+      "stage": "Round of 16",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1986-06-16",
+      "home": "Argentina",
+      "away": "Uruguay",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1986-06-16",
+      "home": "Brazil",
+      "away": "Poland",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-17",
+      "home": "Italy",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Estadio Olímpico Universitario"
+    },
+    {
+      "date": "1986-06-17",
+      "home": "Morocco",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Estadio Universitario"
+    },
+    {
+      "date": "1986-06-18",
+      "home": "England",
+      "away": "Paraguay",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-18",
+      "home": "Denmark",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 5,
+      "stage": "Round of 16",
+      "venue": "Estadio La Corregidora"
+    },
+    {
+      "date": "1986-06-21",
+      "home": "Brazil",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-21",
+      "home": "West Germany",
+      "away": "Mexico",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Universitario"
+    },
+    {
+      "date": "1986-06-22",
+      "home": "Spain",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1986-06-22",
+      "home": "Argentina",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-25",
+      "home": "Argentina",
+      "away": "Belgium",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Semi-finals",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1986-06-25",
+      "home": "France",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1986-06-28",
+      "home": "France",
+      "away": "Belgium",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Third place",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1986-06-29",
+      "home": "Argentina",
+      "away": "West Germany",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Final",
+      "venue": "Estadio Azteca"
+    }
+  ]
+}

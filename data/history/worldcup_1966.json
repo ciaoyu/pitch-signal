@@ -1,0 +1,296 @@
+{
+  "tournament": "1966 FIFA World Cup",
+  "year": 1966,
+  "host": "England",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1966-07-11",
+      "home": "England",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-13",
+      "home": "France",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-15",
+      "home": "Uruguay",
+      "away": "France",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "White City Stadium"
+    },
+    {
+      "date": "1966-07-16",
+      "home": "England",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-19",
+      "home": "Mexico",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-20",
+      "home": "England",
+      "away": "France",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-12",
+      "home": "West Germany",
+      "away": "Switzerland",
+      "homeScore": 5,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Hillsborough Stadium"
+    },
+    {
+      "date": "1966-07-13",
+      "home": "Argentina",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Villa Park"
+    },
+    {
+      "date": "1966-07-15",
+      "home": "Spain",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Hillsborough Stadium"
+    },
+    {
+      "date": "1966-07-16",
+      "home": "Argentina",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Villa Park"
+    },
+    {
+      "date": "1966-07-19",
+      "home": "Argentina",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Hillsborough Stadium"
+    },
+    {
+      "date": "1966-07-20",
+      "home": "West Germany",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Villa Park"
+    },
+    {
+      "date": "1966-07-12",
+      "home": "Brazil",
+      "away": "Bulgaria",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Goodison Park"
+    },
+    {
+      "date": "1966-07-13",
+      "home": "Portugal",
+      "away": "Hungary",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Old Trafford"
+    },
+    {
+      "date": "1966-07-15",
+      "home": "Hungary",
+      "away": "Brazil",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Goodison Park"
+    },
+    {
+      "date": "1966-07-16",
+      "home": "Portugal",
+      "away": "Bulgaria",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Old Trafford"
+    },
+    {
+      "date": "1966-07-19",
+      "home": "Portugal",
+      "away": "Brazil",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Goodison Park"
+    },
+    {
+      "date": "1966-07-20",
+      "home": "Hungary",
+      "away": "Bulgaria",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Old Trafford"
+    },
+    {
+      "date": "1966-07-12",
+      "home": "Soviet Union",
+      "away": "North Korea",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Ayresome Park"
+    },
+    {
+      "date": "1966-07-13",
+      "home": "Italy",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Roker Park"
+    },
+    {
+      "date": "1966-07-15",
+      "home": "Chile",
+      "away": "North Korea",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Ayresome Park"
+    },
+    {
+      "date": "1966-07-16",
+      "home": "Soviet Union",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Roker Park"
+    },
+    {
+      "date": "1966-07-19",
+      "home": "North Korea",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Ayresome Park"
+    },
+    {
+      "date": "1966-07-20",
+      "home": "Soviet Union",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Roker Park"
+    },
+    {
+      "date": "1966-07-23",
+      "home": "England",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-23",
+      "home": "West Germany",
+      "away": "Uruguay",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Hillsborough Stadium"
+    },
+    {
+      "date": "1966-07-23",
+      "home": "Soviet Union",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Roker Park"
+    },
+    {
+      "date": "1966-07-23",
+      "home": "Portugal",
+      "away": "North Korea",
+      "homeScore": 5,
+      "awayScore": 3,
+      "stage": "Quarter-finals",
+      "venue": "Goodison Park"
+    },
+    {
+      "date": "1966-07-25",
+      "home": "West Germany",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Goodison Park"
+    },
+    {
+      "date": "1966-07-26",
+      "home": "England",
+      "away": "Portugal",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-28",
+      "home": "Portugal",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Wembley Stadium"
+    },
+    {
+      "date": "1966-07-30",
+      "home": "England",
+      "away": "West Germany",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Final",
+      "venue": "Wembley Stadium"
+    }
+  ]
+}

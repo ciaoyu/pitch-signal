@@ -1,0 +1,296 @@
+{
+  "tournament": "1970 FIFA World Cup",
+  "year": 1970,
+  "host": "Mexico",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1970-05-31",
+      "home": "Mexico",
+      "away": "Soviet Union",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-03",
+      "home": "Belgium",
+      "away": "El Salvador",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-06",
+      "home": "Soviet Union",
+      "away": "Belgium",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-07",
+      "home": "Mexico",
+      "away": "El Salvador",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-10",
+      "home": "Soviet Union",
+      "away": "El Salvador",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-11",
+      "home": "Mexico",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-02",
+      "home": "Uruguay",
+      "away": "Israel",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1970-06-03",
+      "home": "Italy",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Luis Dosal"
+    },
+    {
+      "date": "1970-06-06",
+      "home": "Uruguay",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1970-06-07",
+      "home": "Sweden",
+      "away": "Israel",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Luis Dosal"
+    },
+    {
+      "date": "1970-06-10",
+      "home": "Uruguay",
+      "away": "Sweden",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Cuauhtémoc"
+    },
+    {
+      "date": "1970-06-11",
+      "home": "Israel",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Luis Dosal"
+    },
+    {
+      "date": "1970-06-02",
+      "home": "Romania",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-03",
+      "home": "Czechoslovakia",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-06",
+      "home": "Romania",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-07",
+      "home": "England",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-10",
+      "home": "Romania",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-11",
+      "home": "England",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-02",
+      "home": "Peru",
+      "away": "Bulgaria",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-03",
+      "home": "Morocco",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-06",
+      "home": "Peru",
+      "away": "Morocco",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-07",
+      "home": "Bulgaria",
+      "away": "West Germany",
+      "homeScore": 2,
+      "awayScore": 5,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-10",
+      "home": "Peru",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-11",
+      "home": "Bulgaria",
+      "away": "Morocco",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-14",
+      "home": "Soviet Union",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-14",
+      "home": "Italy",
+      "away": "Mexico",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Luis Dosal"
+    },
+    {
+      "date": "1970-06-14",
+      "home": "Brazil",
+      "away": "Peru",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-14",
+      "home": "West Germany",
+      "away": "England",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Nou Camp"
+    },
+    {
+      "date": "1970-06-17",
+      "home": "Uruguay",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Semi-finals",
+      "venue": "Estadio Jalisco"
+    },
+    {
+      "date": "1970-06-17",
+      "home": "Italy",
+      "away": "West Germany",
+      "homeScore": 4,
+      "awayScore": 3,
+      "stage": "Semi-finals",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-20",
+      "home": "Uruguay",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Estadio Azteca"
+    },
+    {
+      "date": "1970-06-21",
+      "home": "Brazil",
+      "away": "Italy",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Estadio Azteca"
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+{
+  "tournament": "1954 FIFA World Cup",
+  "year": 1954,
+  "host": "Switzerland",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1954-06-16",
+      "home": "Brazil",
+      "away": "Mexico",
+      "homeScore": 5,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Charmilles Stadium"
+    },
+    {
+      "date": "1954-06-16",
+      "home": "Yugoslavia",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Stade Olympique de la Pontaise"
+    },
+    {
+      "date": "1954-06-19",
+      "home": "Brazil",
+      "away": "Yugoslavia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Stade Olympique de la Pontaise"
+    },
+    {
+      "date": "1954-06-19",
+      "home": "France",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 1",
+      "venue": "Charmilles Stadium"
+    },
+    {
+      "date": "1954-06-17",
+      "home": "West Germany",
+      "away": "Turkey",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Wankdorf Stadium"
+    },
+    {
+      "date": "1954-06-17",
+      "home": "Hungary",
+      "away": "South Korea",
+      "homeScore": 9,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Hardturm Stadium"
+    },
+    {
+      "date": "1954-06-20",
+      "home": "Hungary",
+      "away": "West Germany",
+      "homeScore": 8,
+      "awayScore": 3,
+      "stage": "Group 2",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-20",
+      "home": "Turkey",
+      "away": "South Korea",
+      "homeScore": 7,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Charmilles Stadium"
+    },
+    {
+      "date": "1954-06-23",
+      "home": "West Germany",
+      "away": "Turkey",
+      "homeScore": 7,
+      "awayScore": 2,
+      "stage": "Group 2 Play-off",
+      "venue": "Hardturm Stadium"
+    },
+    {
+      "date": "1954-06-16",
+      "home": "Uruguay",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Wankdorf Stadium"
+    },
+    {
+      "date": "1954-06-16",
+      "home": "Austria",
+      "away": "Scotland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Hardturm Stadium"
+    },
+    {
+      "date": "1954-06-19",
+      "home": "Austria",
+      "away": "Czechoslovakia",
+      "homeScore": 5,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Hardturm Stadium"
+    },
+    {
+      "date": "1954-06-19",
+      "home": "Uruguay",
+      "away": "Scotland",
+      "homeScore": 7,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-17",
+      "home": "England",
+      "away": "Belgium",
+      "homeScore": 4,
+      "awayScore": 4,
+      "stage": "Group 4",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-17",
+      "home": "Switzerland",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Stade Olympique de la Pontaise"
+    },
+    {
+      "date": "1954-06-20",
+      "home": "England",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Wankdorf Stadium"
+    },
+    {
+      "date": "1954-06-20",
+      "home": "Italy",
+      "away": "Belgium",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Cornaredo Stadium"
+    },
+    {
+      "date": "1954-06-23",
+      "home": "Switzerland",
+      "away": "Italy",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 4 Play-off",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-26",
+      "home": "Austria",
+      "away": "Switzerland",
+      "homeScore": 7,
+      "awayScore": 5,
+      "stage": "Quarter-finals",
+      "venue": "Stade Olympique de la Pontaise"
+    },
+    {
+      "date": "1954-06-26",
+      "home": "Uruguay",
+      "away": "England",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-27",
+      "home": "Yugoslavia",
+      "away": "West Germany",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Charmilles Stadium"
+    },
+    {
+      "date": "1954-06-27",
+      "home": "Brazil",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "Quarter-finals",
+      "venue": "Wankdorf Stadium"
+    },
+    {
+      "date": "1954-06-30",
+      "home": "West Germany",
+      "away": "Austria",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "St. Jakob Stadium"
+    },
+    {
+      "date": "1954-06-30",
+      "home": "Hungary",
+      "away": "Uruguay",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Stade Olympique de la Pontaise"
+    },
+    {
+      "date": "1954-07-03",
+      "home": "Uruguay",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Third place",
+      "venue": "Hardturm Stadium"
+    },
+    {
+      "date": "1954-07-04",
+      "home": "Hungary",
+      "away": "West Germany",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Final",
+      "venue": "Wankdorf Stadium"
+    }
+  ]
+}

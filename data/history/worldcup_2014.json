@@ -1,0 +1,584 @@
+{
+  "tournament": "2014 FIFA World Cup",
+  "year": 2014,
+  "host": "Brazil",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "2014-06-12",
+      "home": "Brazil",
+      "away": "Croatia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-06-13",
+      "home": "Mexico",
+      "away": "Cameroon",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Estádio das Dunas"
+    },
+    {
+      "date": "2014-06-17",
+      "home": "Brazil",
+      "away": "Mexico",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-06-18",
+      "home": "Cameroon",
+      "away": "Croatia",
+      "homeScore": 0,
+      "awayScore": 4,
+      "stage": "Group A",
+      "venue": "Arena Amazônia"
+    },
+    {
+      "date": "2014-06-23",
+      "home": "Cameroon",
+      "away": "Brazil",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group A",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-06-23",
+      "home": "Croatia",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Arena Pernambuco"
+    },
+    {
+      "date": "2014-06-13",
+      "home": "Spain",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 5,
+      "stage": "Group B",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-06-13",
+      "home": "Chile",
+      "away": "Australia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Arena Pantanal"
+    },
+    {
+      "date": "2014-06-18",
+      "home": "Australia",
+      "away": "Netherlands",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group B",
+      "venue": "Estádio Beira-Rio"
+    },
+    {
+      "date": "2014-06-18",
+      "home": "Spain",
+      "away": "Chile",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-06-23",
+      "home": "Australia",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group B",
+      "venue": "Arena da Baixada"
+    },
+    {
+      "date": "2014-06-23",
+      "home": "Netherlands",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-06-14",
+      "home": "Colombia",
+      "away": "Greece",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-06-14",
+      "home": "Côte d'Ivoire",
+      "away": "Japan",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Arena Pernambuco"
+    },
+    {
+      "date": "2014-06-19",
+      "home": "Colombia",
+      "away": "Côte d'Ivoire",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-06-19",
+      "home": "Japan",
+      "away": "Greece",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Estádio das Dunas"
+    },
+    {
+      "date": "2014-06-24",
+      "home": "Japan",
+      "away": "Colombia",
+      "homeScore": 1,
+      "awayScore": 4,
+      "stage": "Group C",
+      "venue": "Arena Pantanal"
+    },
+    {
+      "date": "2014-06-24",
+      "home": "Greece",
+      "away": "Côte d'Ivoire",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-06-14",
+      "home": "Uruguay",
+      "away": "Costa Rica",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group D",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-06-14",
+      "home": "England",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Arena Amazônia"
+    },
+    {
+      "date": "2014-06-19",
+      "home": "Uruguay",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-06-20",
+      "home": "Italy",
+      "away": "Costa Rica",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Arena Pernambuco"
+    },
+    {
+      "date": "2014-06-24",
+      "home": "Italy",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Estádio das Dunas"
+    },
+    {
+      "date": "2014-06-24",
+      "home": "Costa Rica",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-06-15",
+      "home": "Switzerland",
+      "away": "Ecuador",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-06-15",
+      "home": "France",
+      "away": "Honduras",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Estádio Beira-Rio"
+    },
+    {
+      "date": "2014-06-20",
+      "home": "Switzerland",
+      "away": "France",
+      "homeScore": 2,
+      "awayScore": 5,
+      "stage": "Group E",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-06-20",
+      "home": "Honduras",
+      "away": "Ecuador",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "Arena da Baixada"
+    },
+    {
+      "date": "2014-06-25",
+      "home": "Honduras",
+      "away": "Switzerland",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group E",
+      "venue": "Arena Amazônia"
+    },
+    {
+      "date": "2014-06-25",
+      "home": "Ecuador",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-06-15",
+      "home": "Argentina",
+      "away": "Bosnia-Herzegovina",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-06-16",
+      "home": "Iran",
+      "away": "Nigeria",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Arena da Baixada"
+    },
+    {
+      "date": "2014-06-21",
+      "home": "Argentina",
+      "away": "Iran",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-06-21",
+      "home": "Nigeria",
+      "away": "Bosnia-Herzegovina",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Arena Pantanal"
+    },
+    {
+      "date": "2014-06-25",
+      "home": "Nigeria",
+      "away": "Argentina",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Group F",
+      "venue": "Estádio Beira-Rio"
+    },
+    {
+      "date": "2014-06-25",
+      "home": "Bosnia-Herzegovina",
+      "away": "Iran",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-06-16",
+      "home": "Germany",
+      "away": "Portugal",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-06-16",
+      "home": "Ghana",
+      "away": "USA",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group G",
+      "venue": "Estádio das Dunas"
+    },
+    {
+      "date": "2014-06-21",
+      "home": "Germany",
+      "away": "Ghana",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group G",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-06-22",
+      "home": "USA",
+      "away": "Portugal",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group G",
+      "venue": "Arena Amazônia"
+    },
+    {
+      "date": "2014-06-26",
+      "home": "USA",
+      "away": "Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Arena Pernambuco"
+    },
+    {
+      "date": "2014-06-26",
+      "home": "Portugal",
+      "away": "Ghana",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-06-17",
+      "home": "Belgium",
+      "away": "Algeria",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-06-17",
+      "home": "Russia",
+      "away": "South Korea",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Arena Pantanal"
+    },
+    {
+      "date": "2014-06-22",
+      "home": "Belgium",
+      "away": "Russia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-06-22",
+      "home": "South Korea",
+      "away": "Algeria",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "Group H",
+      "venue": "Estádio Beira-Rio"
+    },
+    {
+      "date": "2014-06-26",
+      "home": "South Korea",
+      "away": "Belgium",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-06-26",
+      "home": "Algeria",
+      "away": "Russia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Arena da Baixada"
+    },
+    {
+      "date": "2014-06-28",
+      "home": "Brazil",
+      "away": "Chile",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-06-28",
+      "home": "Colombia",
+      "away": "Uruguay",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-06-29",
+      "home": "Netherlands",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-06-29",
+      "home": "Costa Rica",
+      "away": "Greece",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Arena Pernambuco"
+    },
+    {
+      "date": "2014-06-30",
+      "home": "France",
+      "away": "Nigeria",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-06-30",
+      "home": "Germany",
+      "away": "Algeria",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Estádio Beira-Rio"
+    },
+    {
+      "date": "2014-07-01",
+      "home": "Argentina",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-07-01",
+      "home": "Belgium",
+      "away": "USA",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-07-04",
+      "home": "France",
+      "away": "Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estádio do Maracanã"
+    },
+    {
+      "date": "2014-07-04",
+      "home": "Brazil",
+      "away": "Colombia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estádio Castelão"
+    },
+    {
+      "date": "2014-07-05",
+      "home": "Argentina",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-07-05",
+      "home": "Netherlands",
+      "away": "Costa Rica",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Arena Fonte Nova"
+    },
+    {
+      "date": "2014-07-08",
+      "home": "Brazil",
+      "away": "Germany",
+      "homeScore": 1,
+      "awayScore": 7,
+      "stage": "Semi-finals",
+      "venue": "Estádio Mineirão"
+    },
+    {
+      "date": "2014-07-09",
+      "home": "Netherlands",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Semi-finals",
+      "venue": "Arena de São Paulo"
+    },
+    {
+      "date": "2014-07-12",
+      "home": "Brazil",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Third place",
+      "venue": "Estádio Nacional Mané Garrincha"
+    },
+    {
+      "date": "2014-07-13",
+      "home": "Germany",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Final",
+      "venue": "Estádio do Maracanã"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "tournament": "1938 FIFA World Cup",
+  "year": 1938,
+  "host": "France",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1938-06-04",
+      "home": "Switzerland",
+      "away": "Germany",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "First round",
+      "venue": "Parc des Princes"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "Hungary",
+      "away": "Dutch East Indies",
+      "homeScore": 6,
+      "awayScore": 0,
+      "stage": "First round",
+      "venue": "Vélodrome Municipal"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "France",
+      "away": "Belgium",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "First round",
+      "venue": "Stade Olympique de Colombes"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "Cuba",
+      "away": "Romania",
+      "homeScore": 3,
+      "awayScore": 3,
+      "stage": "First round",
+      "venue": "Stade Chapou"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "Italy",
+      "away": "Norway",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "First round",
+      "venue": "Stade Vélodrome"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "Brazil",
+      "away": "Poland",
+      "homeScore": 6,
+      "awayScore": 5,
+      "stage": "First round",
+      "venue": "Stade de la Meinau"
+    },
+    {
+      "date": "1938-06-05",
+      "home": "Czechoslovakia",
+      "away": "Netherlands",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "First round",
+      "venue": "Stade municipal"
+    },
+    {
+      "date": "1938-06-09",
+      "home": "Cuba",
+      "away": "Romania",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "First round, Replays",
+      "venue": "Stade Chapou"
+    },
+    {
+      "date": "1938-06-09",
+      "home": "Germany",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "First round, Replays",
+      "venue": "Parc des Princes"
+    },
+    {
+      "date": "1938-06-12",
+      "home": "Brazil",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Parc Lescure"
+    },
+    {
+      "date": "1938-06-12",
+      "home": "Switzerland",
+      "away": "Hungary",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Stade Victor Boucquey"
+    },
+    {
+      "date": "1938-06-12",
+      "home": "Sweden",
+      "away": "Cuba",
+      "homeScore": 8,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Stade du Fort Carré"
+    },
+    {
+      "date": "1938-06-12",
+      "home": "France",
+      "away": "Italy",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Quarter-finals",
+      "venue": "Stade Olympique de Colombes"
+    },
+    {
+      "date": "1938-06-14",
+      "home": "Brazil",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Parc Lescure"
+    },
+    {
+      "date": "1938-06-16",
+      "home": "Hungary",
+      "away": "Sweden",
+      "homeScore": 5,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Parc des Princes"
+    },
+    {
+      "date": "1938-06-16",
+      "home": "Italy",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Stade Vélodrome"
+    },
+    {
+      "date": "1938-06-19",
+      "home": "Sweden",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "Third place",
+      "venue": "Parc Lescure"
+    },
+    {
+      "date": "1938-06-19",
+      "home": "Hungary",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 4,
+      "stage": "Final",
+      "venue": "Stade Olympique de Colombes"
+    }
+  ]
+}

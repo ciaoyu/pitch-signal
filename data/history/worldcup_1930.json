@@ -1,0 +1,170 @@
+{
+  "tournament": "1930 FIFA World Cup",
+  "year": 1930,
+  "host": "Uruguay",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1930-07-13",
+      "home": "France",
+      "away": "Mexico",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Pocitos"
+    },
+    {
+      "date": "1930-07-15",
+      "home": "Argentina",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-16",
+      "home": "Chile",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-19",
+      "home": "Chile",
+      "away": "France",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-19",
+      "home": "Argentina",
+      "away": "Mexico",
+      "homeScore": 6,
+      "awayScore": 3,
+      "stage": "Group 1",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-22",
+      "home": "Argentina",
+      "away": "Chile",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-14",
+      "home": "Yugoslavia",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-17",
+      "home": "Yugoslavia",
+      "away": "Bolivia",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-20",
+      "home": "Brazil",
+      "away": "Bolivia",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-14",
+      "home": "Romania",
+      "away": "Peru",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Pocitos"
+    },
+    {
+      "date": "1930-07-18",
+      "home": "Uruguay",
+      "away": "Peru",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-21",
+      "home": "Uruguay",
+      "away": "Romania",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-13",
+      "home": "United States",
+      "away": "Belgium",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-17",
+      "home": "United States",
+      "away": "Paraguay",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Parque Central"
+    },
+    {
+      "date": "1930-07-20",
+      "home": "Paraguay",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-26",
+      "home": "Argentina",
+      "away": "United States",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-27",
+      "home": "Uruguay",
+      "away": "Yugoslavia",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Estadio Centenario"
+    },
+    {
+      "date": "1930-07-30",
+      "home": "Uruguay",
+      "away": "Argentina",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Final",
+      "venue": "Estadio Centenario"
+    }
+  ]
+}

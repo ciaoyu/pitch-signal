@@ -1,0 +1,296 @@
+{
+  "tournament": "1962 FIFA World Cup",
+  "year": 1962,
+  "host": "Chile",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1962-05-30",
+      "home": "Uruguay",
+      "away": "Colombia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-05-31",
+      "home": "Soviet Union",
+      "away": "Yugoslavia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-06-02",
+      "home": "Yugoslavia",
+      "away": "Uruguay",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-06-03",
+      "home": "Soviet Union",
+      "away": "Colombia",
+      "homeScore": 4,
+      "awayScore": 4,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-06-06",
+      "home": "Soviet Union",
+      "away": "Uruguay",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-06-07",
+      "home": "Yugoslavia",
+      "away": "Colombia",
+      "homeScore": 5,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-05-30",
+      "home": "Chile",
+      "away": "Switzerland",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-05-31",
+      "home": "West Germany",
+      "away": "Italy",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-02",
+      "home": "Chile",
+      "away": "Italy",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-03",
+      "home": "West Germany",
+      "away": "Switzerland",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-06",
+      "home": "West Germany",
+      "away": "Chile",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-07",
+      "home": "Italy",
+      "away": "Switzerland",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 2",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-05-30",
+      "home": "Brazil",
+      "away": "Mexico",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-05-31",
+      "home": "Czechoslovakia",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-02",
+      "home": "Brazil",
+      "away": "Czechoslovakia",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-03",
+      "home": "Spain",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-06",
+      "home": "Brazil",
+      "away": "Spain",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-07",
+      "home": "Mexico",
+      "away": "Czechoslovakia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-05-30",
+      "home": "Argentina",
+      "away": "Bulgaria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-05-31",
+      "home": "Hungary",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-02",
+      "home": "England",
+      "away": "Argentina",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-03",
+      "home": "Hungary",
+      "away": "Bulgaria",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-06",
+      "home": "Hungary",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-07",
+      "home": "England",
+      "away": "Bulgaria",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-10",
+      "home": "Chile",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Carlos Dittborn"
+    },
+    {
+      "date": "1962-06-10",
+      "home": "Yugoslavia",
+      "away": "West Germany",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-10",
+      "home": "Brazil",
+      "away": "England",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-10",
+      "home": "Czechoslovakia",
+      "away": "Hungary",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Estadio El Teniente"
+    },
+    {
+      "date": "1962-06-13",
+      "home": "Brazil",
+      "away": "Chile",
+      "homeScore": 4,
+      "awayScore": 2,
+      "stage": "Semi-finals",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-13",
+      "home": "Czechoslovakia",
+      "away": "Yugoslavia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Estadio Sausalito"
+    },
+    {
+      "date": "1962-06-16",
+      "home": "Chile",
+      "away": "Yugoslavia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Third place",
+      "venue": "Estadio Nacional"
+    },
+    {
+      "date": "1962-06-17",
+      "home": "Brazil",
+      "away": "Czechoslovakia",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Estadio Nacional"
+    }
+  ]
+}

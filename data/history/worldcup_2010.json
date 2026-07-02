@@ -1,0 +1,584 @@
+{
+  "tournament": "2010 FIFA World Cup",
+  "year": 2010,
+  "host": "South Africa",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "2010-06-11",
+      "home": "South Africa",
+      "away": "Mexico",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-11",
+      "home": "Uruguay",
+      "away": "France",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-06-16",
+      "home": "South Africa",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group A",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-17",
+      "home": "France",
+      "away": "Mexico",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Peter Mokaba Stadium"
+    },
+    {
+      "date": "2010-06-22",
+      "home": "Mexico",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-22",
+      "home": "France",
+      "away": "South Africa",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group A",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-12",
+      "home": "South Korea",
+      "away": "Greece",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-12",
+      "home": "Argentina",
+      "away": "Nigeria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-17",
+      "home": "Argentina",
+      "away": "South Korea",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-17",
+      "home": "Greece",
+      "away": "Nigeria",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-22",
+      "home": "Nigeria",
+      "away": "South Korea",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-22",
+      "home": "Greece",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Peter Mokaba Stadium"
+    },
+    {
+      "date": "2010-06-12",
+      "home": "England",
+      "away": "USA",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-13",
+      "home": "Algeria",
+      "away": "Slovenia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Peter Mokaba Stadium"
+    },
+    {
+      "date": "2010-06-18",
+      "home": "Slovenia",
+      "away": "USA",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-18",
+      "home": "England",
+      "away": "Algeria",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-06-23",
+      "home": "USA",
+      "away": "Algeria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-23",
+      "home": "Slovenia",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-13",
+      "home": "Serbia",
+      "away": "Ghana",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-13",
+      "home": "Germany",
+      "away": "Australia",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-18",
+      "home": "Germany",
+      "away": "Serbia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-19",
+      "home": "Ghana",
+      "away": "Australia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-23",
+      "home": "Australia",
+      "away": "Serbia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Mbombela Stadium"
+    },
+    {
+      "date": "2010-06-23",
+      "home": "Ghana",
+      "away": "Germany",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-14",
+      "home": "Netherlands",
+      "away": "Denmark",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-14",
+      "home": "Japan",
+      "away": "Cameroon",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-19",
+      "home": "Netherlands",
+      "away": "Japan",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-19",
+      "home": "Cameroon",
+      "away": "Denmark",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-24",
+      "home": "Denmark",
+      "away": "Japan",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group E",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-24",
+      "home": "Cameroon",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-06-14",
+      "home": "Italy",
+      "away": "Paraguay",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-06-15",
+      "home": "New Zealand",
+      "away": "Slovakia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-20",
+      "home": "Slovakia",
+      "away": "Paraguay",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-20",
+      "home": "Italy",
+      "away": "New Zealand",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Mbombela Stadium"
+    },
+    {
+      "date": "2010-06-24",
+      "home": "Slovakia",
+      "away": "Italy",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group F",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-24",
+      "home": "Paraguay",
+      "away": "New Zealand",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Peter Mokaba Stadium"
+    },
+    {
+      "date": "2010-06-15",
+      "home": "Côte d'Ivoire",
+      "away": "Portugal",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-15",
+      "home": "Brazil",
+      "away": "North Korea",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-20",
+      "home": "Brazil",
+      "away": "Côte d'Ivoire",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group G",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-21",
+      "home": "Portugal",
+      "away": "North Korea",
+      "homeScore": 7,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-06-25",
+      "home": "Portugal",
+      "away": "Brazil",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group G",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-25",
+      "home": "North Korea",
+      "away": "Côte d'Ivoire",
+      "homeScore": 0,
+      "awayScore": 3,
+      "stage": "Group G",
+      "venue": "Mbombela Stadium"
+    },
+    {
+      "date": "2010-06-16",
+      "home": "Honduras",
+      "away": "Chile",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Mbombela Stadium"
+    },
+    {
+      "date": "2010-06-16",
+      "home": "Spain",
+      "away": "Switzerland",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group H",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-21",
+      "home": "Chile",
+      "away": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-21",
+      "home": "Spain",
+      "away": "Honduras",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-25",
+      "home": "Chile",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group H",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-25",
+      "home": "Switzerland",
+      "away": "Honduras",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group H",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-26",
+      "home": "Uruguay",
+      "away": "South Korea",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-06-26",
+      "home": "USA",
+      "away": "Ghana",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Royal Bafokeng Stadium"
+    },
+    {
+      "date": "2010-06-27",
+      "home": "Germany",
+      "away": "England",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Free State Stadium"
+    },
+    {
+      "date": "2010-06-27",
+      "home": "Argentina",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-06-28",
+      "home": "Netherlands",
+      "away": "Slovakia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-06-28",
+      "home": "Brazil",
+      "away": "Chile",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-06-29",
+      "home": "Paraguay",
+      "away": "Japan",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Loftus Versfeld Stadium"
+    },
+    {
+      "date": "2010-06-29",
+      "home": "Spain",
+      "away": "Portugal",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-07-02",
+      "home": "Netherlands",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-07-02",
+      "home": "Uruguay",
+      "away": "Ghana",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Soccer City"
+    },
+    {
+      "date": "2010-07-03",
+      "home": "Argentina",
+      "away": "Germany",
+      "homeScore": 0,
+      "awayScore": 4,
+      "stage": "Quarter-finals",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-07-03",
+      "home": "Paraguay",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Quarter-finals",
+      "venue": "Ellis Park Stadium"
+    },
+    {
+      "date": "2010-07-06",
+      "home": "Uruguay",
+      "away": "Netherlands",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Semi-finals",
+      "venue": "Cape Town Stadium"
+    },
+    {
+      "date": "2010-07-07",
+      "home": "Germany",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Moses Mabhida Stadium"
+    },
+    {
+      "date": "2010-07-10",
+      "home": "Uruguay",
+      "away": "Germany",
+      "homeScore": 2,
+      "awayScore": 3,
+      "stage": "Third place",
+      "venue": "Nelson Mandela Bay Stadium"
+    },
+    {
+      "date": "2010-07-11",
+      "home": "Netherlands",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Final",
+      "venue": "Soccer City"
+    }
+  ]
+}

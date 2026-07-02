@@ -1,0 +1,476 @@
+{
+  "tournament": "1990 FIFA World Cup",
+  "year": 1990,
+  "host": "Italy",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1990-06-09",
+      "home": "Italy",
+      "away": "Austria",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Stadio Olimpico"
+    },
+    {
+      "date": "1990-06-10",
+      "home": "United States",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 5,
+      "stage": "Group A",
+      "venue": "Stadio Comunale"
+    },
+    {
+      "date": "1990-06-14",
+      "home": "Italy",
+      "away": "United States",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Stadio Olimpico"
+    },
+    {
+      "date": "1990-06-15",
+      "home": "Austria",
+      "away": "Czechoslovakia",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Stadio Comunale"
+    },
+    {
+      "date": "1990-06-19",
+      "home": "Italy",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group A",
+      "venue": "Stadio Olimpico"
+    },
+    {
+      "date": "1990-06-19",
+      "home": "Austria",
+      "away": "United States",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group A",
+      "venue": "Stadio Comunale"
+    },
+    {
+      "date": "1990-06-08",
+      "home": "Argentina",
+      "away": "Cameroon",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-06-09",
+      "home": "Soviet Union",
+      "away": "Romania",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group B",
+      "venue": "Stadio San Nicola"
+    },
+    {
+      "date": "1990-06-13",
+      "home": "Argentina",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group B",
+      "venue": "Stadio San Paolo"
+    },
+    {
+      "date": "1990-06-14",
+      "home": "Cameroon",
+      "away": "Romania",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Stadio San Nicola"
+    },
+    {
+      "date": "1990-06-18",
+      "home": "Argentina",
+      "away": "Romania",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group B",
+      "venue": "Stadio San Paolo"
+    },
+    {
+      "date": "1990-06-18",
+      "home": "Cameroon",
+      "away": "Soviet Union",
+      "homeScore": 0,
+      "awayScore": 4,
+      "stage": "Group B",
+      "venue": "Stadio San Nicola"
+    },
+    {
+      "date": "1990-06-10",
+      "home": "Brazil",
+      "away": "Sweden",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group C",
+      "venue": "Stadio Delle Alpi"
+    },
+    {
+      "date": "1990-06-11",
+      "home": "Costa Rica",
+      "away": "Scotland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Stadio Luigi Ferraris"
+    },
+    {
+      "date": "1990-06-16",
+      "home": "Brazil",
+      "away": "Costa Rica",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Stadio Delle Alpi"
+    },
+    {
+      "date": "1990-06-16",
+      "home": "Sweden",
+      "away": "Scotland",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Stadio Luigi Ferraris"
+    },
+    {
+      "date": "1990-06-20",
+      "home": "Brazil",
+      "away": "Scotland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group C",
+      "venue": "Stadio Delle Alpi"
+    },
+    {
+      "date": "1990-06-20",
+      "home": "Sweden",
+      "away": "Costa Rica",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group C",
+      "venue": "Stadio Luigi Ferraris"
+    },
+    {
+      "date": "1990-06-09",
+      "home": "United Arab Emirates",
+      "away": "Colombia",
+      "homeScore": 0,
+      "awayScore": 2,
+      "stage": "Group D",
+      "venue": "Stadio Renato Dall'Ara"
+    },
+    {
+      "date": "1990-06-10",
+      "home": "West Germany",
+      "away": "Yugoslavia",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-06-14",
+      "home": "Yugoslavia",
+      "away": "Colombia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group D",
+      "venue": "Stadio Renato Dall'Ara"
+    },
+    {
+      "date": "1990-06-15",
+      "home": "West Germany",
+      "away": "United Arab Emirates",
+      "homeScore": 5,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-06-19",
+      "home": "West Germany",
+      "away": "Colombia",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-06-19",
+      "home": "Yugoslavia",
+      "away": "United Arab Emirates",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Group D",
+      "venue": "Stadio Renato Dall'Ara"
+    },
+    {
+      "date": "1990-06-12",
+      "home": "Belgium",
+      "away": "South Korea",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Stadio Marc'Antonio Bentegodi"
+    },
+    {
+      "date": "1990-06-13",
+      "home": "Uruguay",
+      "away": "Spain",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group E",
+      "venue": "Stadio Friuli"
+    },
+    {
+      "date": "1990-06-17",
+      "home": "Belgium",
+      "away": "Uruguay",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Stadio Marc'Antonio Bentegodi"
+    },
+    {
+      "date": "1990-06-17",
+      "home": "South Korea",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Group E",
+      "venue": "Stadio Friuli"
+    },
+    {
+      "date": "1990-06-21",
+      "home": "Belgium",
+      "away": "Spain",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Group E",
+      "venue": "Stadio Marc'Antonio Bentegodi"
+    },
+    {
+      "date": "1990-06-21",
+      "home": "South Korea",
+      "away": "Uruguay",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Group E",
+      "venue": "Stadio Friuli"
+    },
+    {
+      "date": "1990-06-11",
+      "home": "England",
+      "away": "Ireland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Stadio Sant'Elia"
+    },
+    {
+      "date": "1990-06-12",
+      "home": "Netherlands",
+      "away": "Egypt",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Stadio La Favorita"
+    },
+    {
+      "date": "1990-06-16",
+      "home": "England",
+      "away": "Netherlands",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Stadio Sant'Elia"
+    },
+    {
+      "date": "1990-06-17",
+      "home": "Ireland",
+      "away": "Egypt",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Stadio La Favorita"
+    },
+    {
+      "date": "1990-06-21",
+      "home": "England",
+      "away": "Egypt",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group F",
+      "venue": "Stadio Sant'Elia"
+    },
+    {
+      "date": "1990-06-21",
+      "home": "Ireland",
+      "away": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group F",
+      "venue": "Stadio La Favorita"
+    },
+    {
+      "date": "1990-06-23",
+      "home": "Cameroon",
+      "away": "Colombia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Stadio San Paolo"
+    },
+    {
+      "date": "1990-06-23",
+      "home": "Czechoslovakia",
+      "away": "Costa Rica",
+      "homeScore": 4,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Stadio San Nicola"
+    },
+    {
+      "date": "1990-06-24",
+      "home": "Brazil",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "Stadio Delle Alpi"
+    },
+    {
+      "date": "1990-06-24",
+      "home": "West Germany",
+      "away": "Netherlands",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Round of 16",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-06-25",
+      "home": "Ireland",
+      "away": "Romania",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Stadio Luigi Ferraris"
+    },
+    {
+      "date": "1990-06-25",
+      "home": "Italy",
+      "away": "Uruguay",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Stadio Olimpico"
+    },
+    {
+      "date": "1990-06-26",
+      "home": "Spain",
+      "away": "Yugoslavia",
+      "homeScore": 1,
+      "awayScore": 2,
+      "stage": "Round of 16",
+      "venue": "Stadio Marc'Antonio Bentegodi"
+    },
+    {
+      "date": "1990-06-26",
+      "home": "England",
+      "away": "Belgium",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Round of 16",
+      "venue": "Stadio Renato Dall'Ara"
+    },
+    {
+      "date": "1990-06-30",
+      "home": "Yugoslavia",
+      "away": "Argentina",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Artemio Franchi"
+    },
+    {
+      "date": "1990-06-30",
+      "home": "Italy",
+      "away": "Ireland",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Stadio Olimpico"
+    },
+    {
+      "date": "1990-07-01",
+      "home": "West Germany",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "San Siro"
+    },
+    {
+      "date": "1990-07-01",
+      "home": "England",
+      "away": "Cameroon",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Quarter-finals",
+      "venue": "Stadio San Paolo"
+    },
+    {
+      "date": "1990-07-03",
+      "home": "Italy",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Stadio San Paolo"
+    },
+    {
+      "date": "1990-07-04",
+      "home": "West Germany",
+      "away": "England",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Semi-finals",
+      "venue": "Stadio delle Alpi"
+    },
+    {
+      "date": "1990-07-07",
+      "home": "Italy",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Third place",
+      "venue": "Stadio San Nicola"
+    },
+    {
+      "date": "1990-07-08",
+      "home": "West Germany",
+      "away": "Argentina",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Final",
+      "venue": "Stadio Olimpico"
+    }
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "tournament": "1958 FIFA World Cup",
+  "year": 1958,
+  "host": "Sweden",
+  "source": "openfootball/worldcup.json (CC0)",
+  "matches": [
+    {
+      "date": "1958-06-08",
+      "home": "West Germany",
+      "away": "Argentina",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Malmö Stadion"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Northern Ireland",
+      "away": "Czechoslovakia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 1",
+      "venue": "Örjans Vall"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Argentina",
+      "away": "Northern Ireland",
+      "homeScore": 3,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Örjans Vall"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "West Germany",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 1",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "West Germany",
+      "away": "Northern Ireland",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 1",
+      "venue": "Malmö Stadion"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "Czechoslovakia",
+      "away": "Argentina",
+      "homeScore": 6,
+      "awayScore": 1,
+      "stage": "Group 1",
+      "venue": "Olympiastadion"
+    },
+    {
+      "date": "1958-06-17",
+      "home": "Northern Ireland",
+      "away": "Czechoslovakia",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 1 Play-off",
+      "venue": "Malmö Stadion"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "France",
+      "away": "Paraguay",
+      "homeScore": 7,
+      "awayScore": 3,
+      "stage": "Group 2",
+      "venue": "Idrottsparken"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Yugoslavia",
+      "away": "Scotland",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Arosvallen"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Yugoslavia",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Arosvallen"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Paraguay",
+      "away": "Scotland",
+      "homeScore": 3,
+      "awayScore": 2,
+      "stage": "Group 2",
+      "venue": "Idrottsparken"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "France",
+      "away": "Scotland",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 2",
+      "venue": "Eyravallen"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "Paraguay",
+      "away": "Yugoslavia",
+      "homeScore": 3,
+      "awayScore": 3,
+      "stage": "Group 2",
+      "venue": "Tunavallen"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Sweden",
+      "away": "Mexico",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Hungary",
+      "away": "Wales",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Jernvallen"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Mexico",
+      "away": "Wales",
+      "homeScore": 1,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-12",
+      "home": "Sweden",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 3",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "Sweden",
+      "away": "Wales",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "Hungary",
+      "away": "Mexico",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Group 3",
+      "venue": "Jernvallen"
+    },
+    {
+      "date": "1958-06-17",
+      "home": "Wales",
+      "away": "Hungary",
+      "homeScore": 2,
+      "awayScore": 1,
+      "stage": "Group 3 Play-off",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Brazil",
+      "away": "Austria",
+      "homeScore": 3,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Rimnersvallen"
+    },
+    {
+      "date": "1958-06-08",
+      "home": "Soviet Union",
+      "away": "England",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Brazil",
+      "away": "England",
+      "homeScore": 0,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-11",
+      "home": "Soviet Union",
+      "away": "Austria",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Ryavallen"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "England",
+      "away": "Austria",
+      "homeScore": 2,
+      "awayScore": 2,
+      "stage": "Group 4",
+      "venue": "Ryavallen"
+    },
+    {
+      "date": "1958-06-15",
+      "home": "Brazil",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Group 4",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-17",
+      "home": "Soviet Union",
+      "away": "England",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Group 4 Play-off",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-19",
+      "home": "France",
+      "away": "Northern Ireland",
+      "homeScore": 4,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Idrottsparken"
+    },
+    {
+      "date": "1958-06-19",
+      "home": "Sweden",
+      "away": "Soviet Union",
+      "homeScore": 2,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-19",
+      "home": "Brazil",
+      "away": "Wales",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-19",
+      "home": "West Germany",
+      "away": "Yugoslavia",
+      "homeScore": 1,
+      "awayScore": 0,
+      "stage": "Quarter-finals",
+      "venue": "Malmö Stadion"
+    },
+    {
+      "date": "1958-06-24",
+      "home": "France",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 5,
+      "stage": "Semi-finals",
+      "venue": "Råsunda Stadium"
+    },
+    {
+      "date": "1958-06-24",
+      "home": "West Germany",
+      "away": "Sweden",
+      "homeScore": 1,
+      "awayScore": 3,
+      "stage": "Semi-finals",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-28",
+      "home": "West Germany",
+      "away": "France",
+      "homeScore": 3,
+      "awayScore": 6,
+      "stage": "Third place",
+      "venue": "Ullevi"
+    },
+    {
+      "date": "1958-06-29",
+      "home": "Sweden",
+      "away": "Brazil",
+      "homeScore": 2,
+      "awayScore": 5,
+      "stage": "Final",
+      "venue": "Råsunda Stadium"
+    }
+  ]
+}
