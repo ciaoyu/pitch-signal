@@ -189,6 +189,7 @@
         html += `<div id="hud-right" class="hud-right" style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px">
             <div class="hud-glass-panel" style="padding:14px 16px">
                 <div id="hud-winprob">${tx('加载预测...', 'Loading prediction...')}</div>
+                <div id="hud-divergence-hint" style="display:none;margin-top:8px"></div>
             </div>
             <div id="hud-liveprob-wrap" class="hud-glass-panel" style="padding:14px 16px;display:none">
                 <div id="hud-liveprob"></div>
@@ -238,6 +239,15 @@
             const pmEl = document.getElementById('detail-content-pre-match');
             if (pmEl && pred && !pred.error && pred.homeWin !== undefined) pmEl.innerHTML = renderPreMatchPrediction(pred);
             else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
+            // P2-3: 拉取模型 vs 市场分歧
+            api('/api/odds-divergence/' + id).then(function(divRes) {
+              if (myReqId !== _openMatchReqId) return;
+              const div = divRes?.data || divRes;
+              if (div && div.divergence && !div.error) {
+                const hintEl = document.getElementById('hud-divergence-hint');
+                if (hintEl) { hintEl.innerHTML = renderOddsDivergenceHint(div); hintEl.style.display = ''; }
+              }
+            }).catch(function() {});
         }).catch((err) => {
             console.error('match-detail: predict load failed:', err);
             if (myReqId !== _openMatchReqId) return;
@@ -621,7 +631,26 @@
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">📐 ${tx('角球预测','Corner Forecast')}</span><span class="text-xs text-gray-500">${tx('盘口线','Line')} <span class="font-bold text-white">${o?.line||9.5}</span></span></div><div class="flex items-center gap-3 mb-3"><div class="text-center"><div class="text-2xl font-bold text-white">${p?.total||'-'}</div><div class="text-[11px] text-gray-500">${tx('预测总角球','Projected Corners')}</div></div><div class="flex-1"><div class="flex items-center gap-1 mb-1"><span class="text-xs">${trendEmoji}</span><span class="text-xs font-bold ${trend.includes('over')?'text-red-400':trend.includes('under')?'text-blue-400':'text-gray-400'}">${esc(trend.replace('_',' ').toUpperCase())}</span><span class="ml-auto">${conf}</span></div><div class="text-[11px] text-gray-500">${tx('实际','Actual')} <span class="font-bold text-white">${r.current?.total||0}</span> / ${o?.line||9.5}</div></div></div><div class="relative h-4 bg-white/5 rounded-full overflow-hidden mb-2"><div class="absolute top-0 bottom-0 w-0.5 bg-yellow-500/50" style="left:${expectedPct}%"></div><div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-700" style="width:${progressPct}%"></div><div class="absolute inset-0 flex items-center justify-between px-2 text-[9px]"><span class="text-white font-bold">${r.current?.total||0}</span><span class="text-gray-400">${Math.round(progressPct)}%</span></div></div><div class="flex items-center justify-between text-[11px]"><span class="text-gray-500">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle,'style')||tx('均衡型','Balanced'))} ${tx('对阵','vs')} ${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle,'style')||tx('均衡型','Balanced'))}</span><span class="${paceColor} font-bold">${paceStatus}</span></div></div><div class="grid grid-cols-2 gap-2"><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">🔵 ${tx('主队','Home')}</div><div class="text-sm font-bold">${h?.homeAvg||'-'} ${tx('场均','avg')}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle,'style')||tx('均衡型','Balanced'))} (${esc(h?.homeStyleCoeff)||1}x)</div></div><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">🔴 ${tx('客队','Away')}</div><div class="text-sm font-bold">${h?.awayAvg||'-'} ${tx('场均','avg')}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle,'style')||tx('均衡型','Balanced'))} (${esc(h?.awayStyleCoeff)||1}x)</div></div></div>${data.verdict?.reason||data.verdict?.reasonI18n?`<div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">📊 ${tx('分析结论','Verdict')}</div><div class="text-xs text-gray-300">${esc(window.WorldCup.I18n.i18nText(data.verdict.reasonI18n,data.verdict.reason||''))}</div></div>`:''}</div>`;
     }
 
-    window.WorldCup.MatchDetail = { openMatch, switchDetailTab, closeModal, renderVenueWeather, renderMatchWeatherBlock, renderNewsList, renderHeadToHead, renderPreMatchPrediction, renderTacticalScenario, renderCornerAnalysis };
+    // P2-3: 模型 vs 市场分歧提示条
+    function renderOddsDivergenceHint(divData) {
+        if (!divData || !divData.divergence) return '';
+        var direction = divData.direction || '';
+        var delta = divData.delta || {};
+        var homeDelta = delta.home != null ? (delta.home > 0 ? '+' : '') + (delta.home * 100).toFixed(1) + '%' : '---';
+        var awayDelta = delta.away != null ? (delta.away > 0 ? '+' : '') + (delta.away * 100).toFixed(1) + '%' : '---';
+        var maxAbs = divData.maxAbsDelta != null ? (divData.maxAbsDelta * 100).toFixed(1) + '%' : '';
+        var directionText = '';
+        if (direction === 'model_home_lean') directionText = tx('模型比市场更看好主队', 'Model leans home vs market');
+        else if (direction === 'model_away_lean') directionText = tx('模型比市场更看好客队', 'Model leans away vs market');
+        else if (direction === 'market_home_lean') directionText = tx('模型比市场更看低主队', 'Model lower than market on home');
+        else if (direction === 'market_away_lean') directionText = tx('模型比市场更看低客队', 'Model lower than market on away');
+        return `<div style="margin-top:6px;padding:6px 10px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:8px;font:400 9px/1.4 Inter,sans-serif;color:rgba(234,179,8,.7)">
+            <span style="font-weight:600">&#9888; ${tx('模型与市场分歧', 'Model-vs-Market')} ${esc(maxAbs)}</span>
+            <div style="margin-top:3px;font-size:8px;color:rgba(234,179,8,.55)">${esc(directionText)} &middot; ${tx('主','H')}${esc(homeDelta)} / ${tx('客','A')}${esc(awayDelta)} &middot; ${tx('来源','src')}: ${esc(divData.source || '---')}</div>
+        </div>`;
+    }
+
+    window.WorldCup.MatchDetail = { openMatch, switchDetailTab, closeModal, renderVenueWeather, renderMatchWeatherBlock, renderNewsList, renderHeadToHead, renderPreMatchPrediction, renderTacticalScenario, renderCornerAnalysis, renderOddsDivergenceHint };
     window.openMatch = openMatch;
     window.switchDetailTab = switchDetailTab;
     window.closeModal = closeModal;
