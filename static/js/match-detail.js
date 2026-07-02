@@ -162,9 +162,9 @@
         html += `<div id="hud-left" class="hud-left" style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
             <div class="hud-glass-panel">
                 <div style="display:flex;border-bottom:1px solid rgba(255,255,255,.05);padding:0 4px" id="hud-left-tabs">
-                    <button data-action="switch-detail-tab" data-detail-tab="stats" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active" style="min-height:44px">${tx('统计', 'Stats')}</button>
-                    <button data-action="switch-detail-tab" data-detail-tab="h2h" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx('交锋', 'H2H')}</button>
-                    <button data-action="switch-detail-tab" data-detail-tab="news" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx('新闻', 'News')}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="stats" role="tab" aria-selected="true" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn active" style="min-height:44px">${tx('统计', 'Stats')}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="h2h" role="tab" aria-selected="false" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx('交锋', 'H2H')}</button>
+                    <button data-action="switch-detail-tab" data-detail-tab="news" role="tab" aria-selected="false" class="detail-tab flex-1 py-2 text-[10px] font-medium transition-all rounded-lg hud-tab-btn" style="min-height:44px">${tx('新闻', 'News')}</button>
                 </div>
                 <div id="hud-left-content" style="max-height:calc(100vh - 380px);overflow-y:auto">
                     <div id="detail-content-stats" class="detail-content">${tx('加载中...', 'Loading...')}</div>
@@ -209,12 +209,12 @@
             <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
 
         const showPreMatch = !isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED'));
-        if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="review" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition whitespace-nowrap">📋 ${tx('回顾', 'Review')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="bench" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🔄 ${tx('替补', 'Bench')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="corners" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">📐 ${tx('角球', 'Corners')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="coach" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🧠 ${tx('教练', 'Coach')}</button>`;
-        html += `<button data-action="switch-detail-tab" data-detail-tab="venue-tab" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap">🏟️ ${tx('场地详情', 'Venue')}</button>`;
+        if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" role="tab" aria-selected="true" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap" style="min-width:44px;min-height:44px">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="review" role="tab" aria-selected="${showPreMatch ? 'false' : 'true'}" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition whitespace-nowrap" style="min-width:44px;min-height:44px">📋 ${tx('回顾', 'Review')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="bench" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">🔄 ${tx('替补', 'Bench')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="corners" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">📐 ${tx('角球', 'Corners')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="coach" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">🧠 ${tx('教练', 'Coach')}</button>`;
+        html += `<button data-action="switch-detail-tab" data-detail-tab="venue-tab" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">🏟️ ${tx('场地详情', 'Venue')}</button>`;
         html += `</div>`;
 
         if (showPreMatch) html += `<div id="detail-content-pre-match" class="detail-content"><div class="flex items-center gap-2 mb-3"><div class="loader w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div><span class="text-xs text-gray-500">${tx('加载赛前预测...', 'Loading...')}</span></div></div>`;
@@ -453,6 +453,7 @@
         // All detail-tab buttons reset
         document.querySelectorAll('.detail-tab').forEach(el => {
             el.classList.remove('active');
+            el.setAttribute('aria-selected', 'false');
             el.style.color = 'rgba(248,250,252,.35)';
             el.style.borderBottom = 'none';
             el.style.background = 'transparent';
@@ -463,6 +464,7 @@
         // Activate clicked button
         if (btn) {
             btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
             if (isLeft) {
                 btn.style.color = '#f8fafc';
                 btn.style.borderBottom = '2px solid #34d399';
@@ -625,7 +627,7 @@
         const homeLambda=Fmt.safeNum(pred.goals?.homeExpected||pred.components?.poisson?.homeLambda,0).toFixed(2);
         const awayLambda=Fmt.safeNum(pred.goals?.awayExpected||pred.components?.poisson?.awayLambda,0).toFixed(2);
         let html=`<div class="space-y-3"><div class="pred-section"><div class="pred-section-title text-purple-400"><span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">⚡</span>${tx('Elo 实力对比','Elo Comparison')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(homeName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloHomePct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloHomePct}%</span></div><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(awayName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloAwayPct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloAwayPct}%</span></div><div class="text-[10px] text-gray-500 text-center mt-1.5">${tx('Elo 差值','Elo Diff')}: ${eloDiff}</div></div></div>`;
-        html+=`<div class="pred-section"><div class="pred-section-title text-blue-400"><span class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-xs">🎯</span>${tx('胜平负概率','W/D/L Probability')}</div><div class="prob-bar mb-2"><div class="prob-bar-home" style="width:${hw}%">${hw>12?hw+'%':''}</div><div class="prob-bar-draw" style="width:${dr}%">${dr>10?dr+'%':''}</div><div class="prob-bar-away" style="width:${aw}%">${aw>12?aw+'%':''}</div></div><div class="flex justify-between text-[11px]"><span class="text-green-400 font-bold">${tx('主胜','Home')} ${hw}%</span><span class="text-yellow-400 font-bold">${tx('平局','Draw')} ${dr}%</span><span class="text-red-400 font-bold">${tx('客胜','Away')} ${aw}%</span></div></div>`;
+        html+=`<div class="pred-section"><div class="pred-section-title text-blue-400"><span class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-xs">🎯</span>${tx('胜平负概率','W/D/L Probability')}</div><div class="prob-bar mb-2" role="img" aria-label="${tx('胜平负概率','Win draw loss probability')}: ${tx('主胜','Home')} ${hw}%, ${tx('平局','Draw')} ${dr}%, ${tx('客胜','Away')} ${aw}%"><div class="prob-bar-home" style="width:${hw}%">${hw>12?hw+'%':''}</div><div class="prob-bar-draw" style="width:${dr}%">${dr>10?dr+'%':''}</div><div class="prob-bar-away" style="width:${aw}%">${aw>12?aw+'%':''}</div></div><div class="flex justify-between text-[11px]"><span class="text-green-400 font-bold">${tx('主胜','Home')} ${hw}%</span><span class="text-yellow-400 font-bold">${tx('平局','Draw')} ${dr}%</span><span class="text-red-400 font-bold">${tx('客胜','Away')} ${aw}%</span></div></div>`;
         html+=`<div class="pred-section"><div class="pred-section-title text-emerald-400"><span class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-xs">📊</span>${tx('进球期望值 (λ)','Expected Goals (λ)')}</div><div class="grid grid-cols-2 gap-2"><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-emerald-300">${esc(homeName)}</div><div class="text-sm font-mono font-bold text-emerald-400">${homeLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx('场均进球','Avg Goals')}</div></div><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-red-300">${esc(awayName)}</div><div class="text-sm font-mono font-bold text-red-400">${awayLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx('场均进球','Avg Goals')}</div></div></div></div>`;
         // P2-4: 用户预测投票面板
         html += renderUserVotePanel(pred);

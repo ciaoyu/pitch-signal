@@ -270,7 +270,7 @@
                 </div>`;
 
                 // Prob bar
-                h += `<div class="prob-bar" style="margin-top:10px"><div class="prob-bar-home" style="width:${hw}%">${hw > 12 ? hw + '%' : ''}</div><div class="prob-bar-draw" style="width:${dr}%">${dr > 10 ? dr + '%' : ''}</div><div class="prob-bar-away" style="width:${aw}%">${aw > 12 ? aw + '%' : ''}</div></div>`;
+                h += `<div class="prob-bar" role="img" aria-label="${tx('胜平负概率','Win draw loss probability')}: ${tx('主胜','Home')} ${hw}%, ${tx('平局','Draw')} ${dr}%, ${tx('客胜','Away')} ${aw}%" style="margin-top:10px"><div class="prob-bar-home" style="width:${hw}%">${hw > 12 ? hw + '%' : ''}</div><div class="prob-bar-draw" style="width:${dr}%">${dr > 10 ? dr + '%' : ''}</div><div class="prob-bar-away" style="width:${aw}%">${aw > 12 ? aw + '%' : ''}</div></div>`;
                 h += `<div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px">
                     <span style="color:rgba(52,211,153,.5);font-weight:600">${tx('主胜','Home')} ${hw}%</span>
                     <span style="color:rgba(250,204,21,.5);font-weight:600">${tx('平局','Draw')} ${dr}%</span>
@@ -281,7 +281,7 @@
 
                 // Expand button + confidence
                 h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">
-                    <button data-action="toggle-pred-detail" data-target="pred-detail-${idx}" style="font:400 10px/1 'Inter';color:rgba(59,130,246,.5);background:none;border:none;cursor:pointer;padding:0">📊 ${tx('详情','Details')} ▾</button>
+                    <button data-action="toggle-pred-detail" data-target="pred-detail-${idx}" style="font:400 10px/1 'Inter';color:rgba(59,130,246,.65);background:none;border:none;cursor:pointer;min-width:44px;min-height:44px;padding:8px 4px">📊 ${tx('详情','Details')} ▾</button>
                     <span class="confidence-pill ${confCls}">📊 ${tx('置信度','Confidence')}: ${confLabel} ${conf}%</span>
                 </div>`;
 

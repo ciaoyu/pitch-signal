@@ -15,6 +15,7 @@
         // Deactivate all sub-tab buttons
         document.querySelectorAll('[data-action="switch-standings-sub-tab"]').forEach(b => {
             b.classList.remove('tab-on');
+            b.setAttribute('aria-selected', 'false');
             b.style.color = 'rgba(248,250,252,.3)';
         });
 
@@ -29,6 +30,7 @@
 
         if (btn) {
             btn.classList.add('tab-on');
+            btn.setAttribute('aria-selected', 'true');
             btn.style.color = '#f8fafc';
         }
 
