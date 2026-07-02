@@ -45,6 +45,7 @@ const TEST_FILES = [
   'test-team-resolver.js',
   'test-temp-units.js',
   'test-third-place.js',
+  'test-tournament-stats-sync.js',
   'test-venue-factor.js',
   'test-venueFactors.js',
   // P2 专项测试
