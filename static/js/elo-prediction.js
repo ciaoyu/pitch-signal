@@ -13,6 +13,78 @@
     const displayGroupName = (...a) => (window.WorldCup.I18n?.displayGroupName || ((x) => x))(...a);
     const Fmt = () => window.WorldCup.Fmt || window.WorldCup.Formatters || window.Fmt || {};
 
+    function pctLabel(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return '—';
+        return `${Math.round(n * 100)}%`;
+    }
+
+    function pctDelta(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return '—';
+        const pct = n * 100;
+        return `${pct > 0 ? '+' : ''}${pct.toFixed(1)}pp`;
+    }
+
+    function divergenceScore(divergence) {
+        if (!divergence || divergence.error || !divergence.marketProbs) return -1;
+        const direct = Number(divergence.maxAbsDelta);
+        if (Number.isFinite(direct)) return direct;
+        const delta = divergence.delta || {};
+        return Math.max(
+            Math.abs(Number(delta.home) || 0),
+            Math.abs(Number(delta.draw) || 0),
+            Math.abs(Number(delta.away) || 0)
+        );
+    }
+
+    function renderProbabilityMiniRow(probs, labels) {
+        if (!probs) return `<div style="color:rgba(248,250,252,.28);font-size:10px;line-height:1.5">${tx('暂无市场数据', 'No market data')}</div>`;
+        return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.home)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#34d399">${pctLabel(probs.home)}</div></div>
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.draw)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#facc15">${pctLabel(probs.draw)}</div></div>
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.away)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#f87171">${pctLabel(probs.away)}</div></div>
+        </div>`;
+    }
+
+    function renderMarketDivergencePanel(modelProbs, divergence) {
+        const hasMarket = divergence && !divergence.error && divergence.marketProbs;
+        const score = divergenceScore(divergence);
+        const scorePct = score >= 0 ? `${(score * 100).toFixed(1)}pp` : '—';
+        const delta = divergence?.delta || {};
+        const direction = divergence?.direction || 'none';
+        let directionText = tx('市场数据不足，暂不排序', 'Market data unavailable');
+        if (direction === 'model_home_lean') directionText = tx('模型更看好主队', 'Model leans home');
+        else if (direction === 'model_away_lean') directionText = tx('模型更看好客队', 'Model leans away');
+        else if (direction === 'market_home_lean') directionText = tx('市场更看好主队', 'Market leans home');
+        else if (direction === 'market_away_lean') directionText = tx('市场更看好客队', 'Market leans away');
+        else if (hasMarket) directionText = tx('模型与市场基本一致', 'Model and market aligned');
+
+        const flagCls = hasMarket && divergence.divergence
+            ? 'color:#fbbf24;background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.24)'
+            : hasMarket
+                ? 'color:#94a3b8;background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.16)'
+                : 'color:rgba(248,250,252,.32);background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)';
+
+        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+            <div style="border:1px solid rgba(59,130,246,.14);background:rgba(59,130,246,.05);border-radius:10px;padding:8px">
+                <div style="font:700 10px/1 'Inter';color:#93c5fd;margin-bottom:7px">① ${tx('模型预测', 'Model')}</div>
+                ${renderProbabilityMiniRow(modelProbs, { home: tx('主', 'H'), draw: tx('平', 'D'), away: tx('客', 'A') })}
+            </div>
+            <div style="border:1px solid rgba(16,185,129,.14);background:rgba(16,185,129,.045);border-radius:10px;padding:8px">
+                <div style="font:700 10px/1 'Inter';color:#6ee7b7;margin-bottom:7px">② ${tx('市场参考', 'Market')}</div>
+                ${renderProbabilityMiniRow(hasMarket ? divergence.marketProbs : null, { home: tx('主', 'H'), draw: tx('平', 'D'), away: tx('客', 'A') })}
+                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? (divergence.source || 'market') : tx('未配置赔率 Key 或无盘口', 'No odds key / market'))}</div>
+            </div>
+            <div style="border:1px solid;border-radius:10px;padding:8px;${flagCls}">
+                <div style="font:700 10px/1 'Inter';margin-bottom:7px">③ ${tx('分歧指数', 'Divergence')}</div>
+                <div style="font:700 18px/1 'JetBrains Mono',monospace">${esc(scorePct)}</div>
+                <div style="font-size:9px;line-height:1.4;margin-top:5px">${esc(directionText)}</div>
+                <div style="font-size:8px;opacity:.72;margin-top:4px">${tx('主', 'H')} ${pctDelta(delta.home)} · ${tx('平', 'D')} ${pctDelta(delta.draw)} · ${tx('客', 'A')} ${pctDelta(delta.away)}</div>
+            </div>
+        </div>`;
+    }
+
     // ── Build Elo rankings table HTML (reusable) ──
     function buildEloTable(rankings) {
         let h = '';
@@ -67,17 +139,41 @@
     async function buildPredictionCards(upcoming, startIdx) {
         let h = '';
         const predPromises = upcoming.map(m => api(`/api/predict/${m.id}`).catch(() => null));
-        const predictions = await Promise.all(predPromises);
+        const divergencePromises = upcoming.map(m => api(`/api/odds-divergence/${m.id}`).catch(() => null));
+        const [predictions, divergences] = await Promise.all([
+            Promise.all(predPromises),
+            Promise.all(divergencePromises),
+        ]);
 
-        for (let i = 0; i < upcoming.length; i++) {
-            const m = upcoming[i];
-            const pred = predictions[i];
-            const idx = startIdx + i;
+        const rows = upcoming.map((match, originalIndex) => {
+            const divergence = divergences[originalIndex]?.data || divergences[originalIndex];
+            return {
+                match,
+                prediction: predictions[originalIndex]?.data || predictions[originalIndex],
+                divergence,
+                originalIndex,
+                divergenceScore: divergenceScore(divergence),
+            };
+        }).sort((a, b) => {
+            if (b.divergenceScore !== a.divergenceScore) return b.divergenceScore - a.divergenceScore;
+            return a.originalIndex - b.originalIndex;
+        });
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const m = row.match;
+            const pred = row.prediction;
+            const idx = startIdx + row.originalIndex;
             if (pred && !pred.error && pred.homeWin !== undefined) {
                 const p = pred;
                 const hw = Fmt().pctBar(p.homeWin);
                 const dr = Fmt().pctBar(p.draw);
                 const aw = Fmt().pctBar(p.awayWin);
+                const modelProbs = {
+                    home: Number(p.homeWin || p.homeWinProb || 0),
+                    draw: Number(p.draw || p.drawProb || 0),
+                    away: Number(p.awayWin || p.awayWinProb || 0),
+                };
                 const comps = p.components || {};
                 const compConfs = [comps.elo, comps.poisson, comps.coach, comps.venue, comps.odds].filter(Boolean).map(c => Fmt().safeNum(c.confidence, 0));
                 const conf = compConfs.length ? Math.round(compConfs.reduce((a, b) => a + b, 0) / compConfs.length * 100) : 65;
@@ -135,6 +231,8 @@
                     <span style="color:rgba(250,204,21,.5);font-weight:600">${tx('平局','Draw')} ${dr}%</span>
                     <span style="color:rgba(248,113,113,.4);font-weight:600">${tx('客胜','Away')} ${aw}%</span>
                 </div>`;
+
+                h += renderMarketDivergencePanel(modelProbs, row.divergence);
 
                 // Expand button + confidence
                 h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">

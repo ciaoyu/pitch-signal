@@ -4184,6 +4184,67 @@ var require_elo_prediction = __commonJS({
       const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
       const displayGroupName = (...a) => (window.WorldCup.I18n?.displayGroupName || ((x) => x))(...a);
       const Fmt2 = () => window.WorldCup.Fmt || window.WorldCup.Formatters || window.Fmt || {};
+      function pctLabel(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return "\u2014";
+        return `${Math.round(n * 100)}%`;
+      }
+      function pctDelta(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return "\u2014";
+        const pct = n * 100;
+        return `${pct > 0 ? "+" : ""}${pct.toFixed(1)}pp`;
+      }
+      function divergenceScore(divergence) {
+        if (!divergence || divergence.error || !divergence.marketProbs) return -1;
+        const direct = Number(divergence.maxAbsDelta);
+        if (Number.isFinite(direct)) return direct;
+        const delta = divergence.delta || {};
+        return Math.max(
+          Math.abs(Number(delta.home) || 0),
+          Math.abs(Number(delta.draw) || 0),
+          Math.abs(Number(delta.away) || 0)
+        );
+      }
+      function renderProbabilityMiniRow(probs, labels) {
+        if (!probs) return `<div style="color:rgba(248,250,252,.28);font-size:10px;line-height:1.5">${tx("\u6682\u65E0\u5E02\u573A\u6570\u636E", "No market data")}</div>`;
+        return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.home)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#34d399">${pctLabel(probs.home)}</div></div>
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.draw)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#facc15">${pctLabel(probs.draw)}</div></div>
+            <div><div style="color:rgba(248,250,252,.25);font-size:9px">${esc(labels.away)}</div><div style="font:600 12px/1.2 'JetBrains Mono',monospace;color:#f87171">${pctLabel(probs.away)}</div></div>
+        </div>`;
+      }
+      function renderMarketDivergencePanel(modelProbs, divergence) {
+        const hasMarket = divergence && !divergence.error && divergence.marketProbs;
+        const score = divergenceScore(divergence);
+        const scorePct = score >= 0 ? `${(score * 100).toFixed(1)}pp` : "\u2014";
+        const delta = divergence?.delta || {};
+        const direction = divergence?.direction || "none";
+        let directionText = tx("\u5E02\u573A\u6570\u636E\u4E0D\u8DB3\uFF0C\u6682\u4E0D\u6392\u5E8F", "Market data unavailable");
+        if (direction === "model_home_lean") directionText = tx("\u6A21\u578B\u66F4\u770B\u597D\u4E3B\u961F", "Model leans home");
+        else if (direction === "model_away_lean") directionText = tx("\u6A21\u578B\u66F4\u770B\u597D\u5BA2\u961F", "Model leans away");
+        else if (direction === "market_home_lean") directionText = tx("\u5E02\u573A\u66F4\u770B\u597D\u4E3B\u961F", "Market leans home");
+        else if (direction === "market_away_lean") directionText = tx("\u5E02\u573A\u66F4\u770B\u597D\u5BA2\u961F", "Market leans away");
+        else if (hasMarket) directionText = tx("\u6A21\u578B\u4E0E\u5E02\u573A\u57FA\u672C\u4E00\u81F4", "Model and market aligned");
+        const flagCls = hasMarket && divergence.divergence ? "color:#fbbf24;background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.24)" : hasMarket ? "color:#94a3b8;background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.16)" : "color:rgba(248,250,252,.32);background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)";
+        return `<div class="market-divergence-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+            <div style="border:1px solid rgba(59,130,246,.14);background:rgba(59,130,246,.05);border-radius:10px;padding:8px">
+                <div style="font:700 10px/1 'Inter';color:#93c5fd;margin-bottom:7px">\u2460 ${tx("\u6A21\u578B\u9884\u6D4B", "Model")}</div>
+                ${renderProbabilityMiniRow(modelProbs, { home: tx("\u4E3B", "H"), draw: tx("\u5E73", "D"), away: tx("\u5BA2", "A") })}
+            </div>
+            <div style="border:1px solid rgba(16,185,129,.14);background:rgba(16,185,129,.045);border-radius:10px;padding:8px">
+                <div style="font:700 10px/1 'Inter';color:#6ee7b7;margin-bottom:7px">\u2461 ${tx("\u5E02\u573A\u53C2\u8003", "Market")}</div>
+                ${renderProbabilityMiniRow(hasMarket ? divergence.marketProbs : null, { home: tx("\u4E3B", "H"), draw: tx("\u5E73", "D"), away: tx("\u5BA2", "A") })}
+                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? divergence.source || "market" : tx("\u672A\u914D\u7F6E\u8D54\u7387 Key \u6216\u65E0\u76D8\u53E3", "No odds key / market"))}</div>
+            </div>
+            <div style="border:1px solid;border-radius:10px;padding:8px;${flagCls}">
+                <div style="font:700 10px/1 'Inter';margin-bottom:7px">\u2462 ${tx("\u5206\u6B67\u6307\u6570", "Divergence")}</div>
+                <div style="font:700 18px/1 'JetBrains Mono',monospace">${esc(scorePct)}</div>
+                <div style="font-size:9px;line-height:1.4;margin-top:5px">${esc(directionText)}</div>
+                <div style="font-size:8px;opacity:.72;margin-top:4px">${tx("\u4E3B", "H")} ${pctDelta(delta.home)} \xB7 ${tx("\u5E73", "D")} ${pctDelta(delta.draw)} \xB7 ${tx("\u5BA2", "A")} ${pctDelta(delta.away)}</div>
+            </div>
+        </div>`;
+      }
       function buildEloTable(rankings) {
         let h = "";
         h += `<div class="pred-section-title text-purple-400" style="font-family:'DM Sans',sans-serif">
@@ -4233,16 +4294,39 @@ var require_elo_prediction = __commonJS({
       async function buildPredictionCards(upcoming, startIdx) {
         let h = "";
         const predPromises = upcoming.map((m) => api(`/api/predict/${m.id}`).catch(() => null));
-        const predictions = await Promise.all(predPromises);
-        for (let i = 0; i < upcoming.length; i++) {
-          const m = upcoming[i];
-          const pred = predictions[i];
-          const idx = startIdx + i;
+        const divergencePromises = upcoming.map((m) => api(`/api/odds-divergence/${m.id}`).catch(() => null));
+        const [predictions, divergences] = await Promise.all([
+          Promise.all(predPromises),
+          Promise.all(divergencePromises)
+        ]);
+        const rows = upcoming.map((match, originalIndex) => {
+          const divergence = divergences[originalIndex]?.data || divergences[originalIndex];
+          return {
+            match,
+            prediction: predictions[originalIndex]?.data || predictions[originalIndex],
+            divergence,
+            originalIndex,
+            divergenceScore: divergenceScore(divergence)
+          };
+        }).sort((a, b) => {
+          if (b.divergenceScore !== a.divergenceScore) return b.divergenceScore - a.divergenceScore;
+          return a.originalIndex - b.originalIndex;
+        });
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const m = row.match;
+          const pred = row.prediction;
+          const idx = startIdx + row.originalIndex;
           if (pred && !pred.error && pred.homeWin !== void 0) {
             const p = pred;
             const hw = Fmt2().pctBar(p.homeWin);
             const dr = Fmt2().pctBar(p.draw);
             const aw = Fmt2().pctBar(p.awayWin);
+            const modelProbs = {
+              home: Number(p.homeWin || p.homeWinProb || 0),
+              draw: Number(p.draw || p.drawProb || 0),
+              away: Number(p.awayWin || p.awayWinProb || 0)
+            };
             const comps = p.components || {};
             const compConfs = [comps.elo, comps.poisson, comps.coach, comps.venue, comps.odds].filter(Boolean).map((c) => Fmt2().safeNum(c.confidence, 0));
             const conf = compConfs.length ? Math.round(compConfs.reduce((a, b) => a + b, 0) / compConfs.length * 100) : 65;
@@ -4291,6 +4375,7 @@ var require_elo_prediction = __commonJS({
                     <span style="color:rgba(250,204,21,.5);font-weight:600">${tx("\u5E73\u5C40", "Draw")} ${dr}%</span>
                     <span style="color:rgba(248,113,113,.4);font-weight:600">${tx("\u5BA2\u80DC", "Away")} ${aw}%</span>
                 </div>`;
+            h += renderMarketDivergencePanel(modelProbs, row.divergence);
             h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">
                     <button data-action="toggle-pred-detail" data-target="pred-detail-${idx}" style="font:400 10px/1 'Inter';color:rgba(59,130,246,.5);background:none;border:none;cursor:pointer;padding:0">\u{1F4CA} ${tx("\u8BE6\u60C5", "Details")} \u25BE</button>
                     <span class="confidence-pill ${confCls}">\u{1F4CA} ${tx("\u7F6E\u4FE1\u5EA6", "Confidence")}: ${confLabel} ${conf}%</span>
