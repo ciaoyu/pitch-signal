@@ -1,6 +1,11 @@
+<!-- Note: update README.zh.md when this file changes -->
 # ⚽ PitchSignal
 
 **PitchSignal** is a comprehensive analytics dashboard for the 2026 FIFA World Cup, featuring real-time standings, match predictions using Poisson and Elo models, spatial matchups, and interactive bracket visualizations.
+
+👉 [Try the public beta now!](https://pitch-signal-production.up.railway.app) Some features are currently gated in Beta.
+
+README in [中文](README.zh.md)
 
 ## 🌟 Key Features
 - **Live Match Integration**: Fetches real-time fixtures, scores, and standings from the ESPN API.
@@ -67,8 +72,8 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 |----------|----------|---------|-------|
 | `PORT` | No | `5099` | Server port |
 | `NODE_ENV` | No | `development` | `production` enables stricter security |
-| `DATA_PATH` | No | `./data` | SQLite、snapshots 和可变 WC2026 数据目录。部署时必须挂载持久卷。 |
-| `SEED_DATA_PATH` | No | `./resources/seed/wc2026` | 只读 WC2026 seed 覆盖路径，通常无需设置。 |
+| `DATA_PATH` | No | `./data` | Mutable directory for SQLite, snapshots, and runtime WC2026 data. Must be mounted as a persistent volume when deployed. |
+| `SEED_DATA_PATH` | No | `./resources/seed/wc2026` | Read-only WC2026 seed override path. Usually not needed. |
 | `DB_PATH` | No | `${DATA_PATH}/predictions.db` | Override SQLite database path |
 | `CORS_ORIGINS` | No | `localhost:5099` | Comma-separated allowed browser origins |
 | `RATE_LIMIT_MAX` | No | `100` | Max requests per rate-limit window |
@@ -79,6 +84,9 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 | `BALLDONTLIE_API_KEY` | No | — | balldontlie.io roster/stats enrichment |
 | `TAVILY_API_KEY` | No | — | Tavily search (AI post-match research) |
 | `ANTHROPIC_API_KEY` | No | — | AI post-match review (experimental, beta disabled) |
+| `VAPID_PUBLIC_KEY` | No | — | Web Push public key (goal notifications) |
+| `VAPID_PRIVATE_KEY` | No | — | Web Push private key (goal notifications) |
+| `VAPID_SUBJECT` | No | `mailto:ops@pitchsignal.app` | Contact URI required by the Web Push protocol |
 | `ADMIN_TOKEN` | **Beta: must be unset** | — | Fallback token for protected endpoints |
 | `BOT_API_TOKEN` | **Beta: must be unset** | — | Bot chat endpoint token |
 | `WRITE_API_TOKEN` | **Beta: must be unset** | — | Write endpoint token |
@@ -125,6 +133,10 @@ Quick overview:
 - **[docs/prediction-model-methodology.md](docs/prediction-model-methodology.md)** ([中文](docs/prediction-model-methodology.zh.md)) - Full methodology paper: architecture, evaluation protocol, 964-match backtest results, and honest limitations
 - **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway deployment guide
 - **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - Public beta safety & gates
+
+## 📄 License
+
+Code: [ISC](LICENSE). Third-party data attribution (FIFA, Open-Meteo, 26worldcup.github.io, and others): see [COPYRIGHT.md](COPYRIGHT.md).
 
 ## ⚠️ Disclaimer
 

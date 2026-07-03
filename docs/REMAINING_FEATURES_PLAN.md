@@ -74,7 +74,7 @@
 | P2-3 市场赔率分歧展示 | ✅ 完成 | 见上「已完成」 |
 | P2-4 用户预测 vs 模型 | ✅ 完成 | 见上「已完成」 |
 | P2-5 新闻/伤停注入 TeamContext | ✅ 完成 | 见上「已完成」，依赖 `TAVILY_API_KEY` 是否配置 |
-| P2-6 Bot 知识库注入出线概率 + 赛事情境 | 🟡 **线上模型通过，数据注入修复待部署复验** | 生产回答确认 `source=deepseek-v4-flash` 且未编造空数据；发现线上 `group_standings` 为空而 UI 使用 `/api/standings`。本地已改为优先复用 standings 路由并忽略空概率数组；记录见 `docs/P2-6_BOT_PRODUCTION_ACCEPTANCE.md`。 |
+| P2-6 Bot 知识库注入出线概率 + 赛事情境 | ✅ **完成**（commit `e0aa816`，2026-07-03，生产已核实） | 根因是线上 `group_standings` 表为空而 UI 走 `/api/standings`；改为复用 `/api/standings` 路由（`lib/routes/matchup.js:252` 同款模式），DB 仅作 legacy fallback。部署后确认生产 bot 引用真实 W/D/L/GF/GA/GD 数字；记录见 `docs/P2-6_BOT_PRODUCTION_ACCEPTANCE.md`。 |
 
 ---
 
@@ -136,10 +136,10 @@
 | 项 | 状态 |
 |---|---|
 | a11y / 色盲 | ✅ 完成近期快修 | 核心按钮/Tab ≥44px；Standings 与 HUD Tab 有选中状态；概率条有 ARIA 标签、百分比常显及非纯颜色图案区分；320px 无页面级横向溢出。 |
-| 新模块补测试 | 🟡 P2-3/2-4/2-5 已注册进 `test-runner.js`；**`test-bot-kb.js` 漏注册**（见 P2-6）；P0/P1 系列多数靠既有测试间接覆盖，无专项 |
-| README 数据流图 | ❌ 未做 |
-| env/闸门治理 | 🟡 大部分变量已登记 README，**VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY 未登记**（P2-2 上线前必须补） |
-| AI 复盘历史回填 | ❌ 未做 |
+| 新模块补测试 | ✅ `test-bot-kb.js` 已注册进 `test-runner.js`（2026-07-03 核实，文档之前过期）；P0/P1 系列多数靠既有测试间接覆盖，无专项 |
+| README 数据流图 | 🟡 后台任务 `task_0368a662` 进行中（2026-07-03 发出） |
+| env/闸门治理 | ✅ `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY`/`VAPID_SUBJECT` 已补录 README（2026-07-03） |
+| AI 复盘历史回填 | 🟡 后台任务 `task_d6f98ff4` 进行中（2026-07-03 发出） |
 
 ---
 

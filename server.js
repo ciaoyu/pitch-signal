@@ -1,7 +1,7 @@
 /**
- * 2026 世界杯 Dashboard - Pure Node.js (no dependencies)
- * 
- * 使用应用配置模块进行依赖注入和模块化管理
+ * 2026 World Cup Dashboard - Pure Node.js (no dependencies)
+ *
+ * Uses the app config module for dependency injection and modularity
  */
 
 const http = require('http');
@@ -10,14 +10,14 @@ const path = require('path');
 const { createAppConfig } = require('./lib/app');
 const { createLogger } = require('./lib/logger');
 
-// 创建应用配置
+// Create the app config
 const appConfig = createAppConfig();
 const { PORT, DATA_DIR, ESPN_BASE, TEMPLATES, STATIC, infra, teamData, matchupModules, services, routes } = appConfig;
 
-// 创建主日志记录器
+// Create the main logger
 const logger = createLogger('server');
 
-// 从teamData获取常量
+// Pull constants from teamData
 const { 
   TEAM_NAMES, 
   TEAM_FLAGS, 
@@ -30,10 +30,10 @@ const {
   getPlayerRatingData 
 } = teamData;
 
-// 从infra获取中间件
+// Pull middleware from infra
 const { wrapCORS, parseBody, rateLimit } = infra;
 
-// 路由匹配函数
+// Route matching function
 function matchRoute(method, pathname) {
   for (const [key, handler] of Object.entries(routes)) {
     const [rMethod, rPath] = key.split(' ');
@@ -52,7 +52,7 @@ function matchRoute(method, pathname) {
   return null;
 }
 
-// MIME类型映射
+// MIME type map
 const MIME = {
   '.html': 'text/html', 
   '.css': 'text/css', 
@@ -65,7 +65,7 @@ const MIME = {
   '.webmanifest': 'application/manifest+json',
 };
 
-// 静态文件服务
+// Static file serving
 function serveStatic(res, filePath) {
   const ext = path.extname(filePath);
   const mime = MIME[ext] || 'application/octet-stream';
@@ -84,7 +84,7 @@ function serveStatic(res, filePath) {
   });
 }
 
-// 安全的静态文件路径
+// Safe static file path
 function safeStaticPath(root, requestPath) {
   const safeRoot = path.resolve(root);
   const fullPath = path.resolve(safeRoot, requestPath);
@@ -92,31 +92,31 @@ function safeStaticPath(root, requestPath) {
   return fullPath;
 }
 
-// 功能开关验证
+// Feature gate assertions
 function assertFeatureGates() {
   const GATES = [
-    { key: 'POLYMARKET_ENABLED', label: 'GATE-1 外部市场信号（Polymarket）融合' },
-    { key: 'PUNDIT_ENABLED', label: 'GATE-2 专家观点聚合（Pundit）' },
-    { key: 'AUTO_CALIBRATION', label: 'GATE-3 模型自动校准' },
+    { key: 'POLYMARKET_ENABLED', label: 'GATE-1 external market signal (Polymarket) fusion' },
+    { key: 'PUNDIT_ENABLED', label: 'GATE-2 pundit opinion aggregation' },
+    { key: 'AUTO_CALIBRATION', label: 'GATE-3 automatic model calibration' },
   ];
-  
+
   for (const { key, label } of GATES) {
     if (process.env[key] === 'true') {
-      logger.warn(`⛔ [${label}] ${key}=true 被检测到 — 强制覆盖为 false（公测 Beta 阶段禁止启用）`);
+      logger.warn(`⛔ [${label}] ${key}=true detected — force-overriding to false (disabled during public Beta)`);
       process.env[key] = 'false';
     } else {
       process.env[key] = 'false';
-      logger.info(`✅ [${label}] ${key}=false 已确认`);
+      logger.info(`✅ [${label}] ${key}=false confirmed`);
     }
   }
-  
-  logger.info('✅ [GATE-4] AI 仅生成赛后文字复盘，不修改任何预测概率');
+
+  logger.info('✅ [GATE-4] AI only generates post-match written reviews, never modifies prediction probabilities');
 }
 
-// 执行功能开关验证
+// Run feature gate assertions
 assertFeatureGates();
 
-// HTTP服务器
+// HTTP server
 let shuttingDown = false;
 const server = http.createServer(async (req, res) => {
   const start = Date.now();
@@ -124,7 +124,7 @@ const server = http.createServer(async (req, res) => {
   const parsed = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
   const pathname = parsed.pathname;
   
-  // 请求完成时记录日志
+  // Log once the request finishes
   res.on('finish', () => {
     const duration = Date.now() - start;
     logger.info(`${req.method} ${pathname} ${res.statusCode} ${duration}ms`, {
@@ -136,13 +136,13 @@ const server = http.createServer(async (req, res) => {
     });
   });
   
-  // CORS处理
+  // CORS handling
   if (wrapCORS(req, res)) return;
-  
-  // 限流处理
+
+  // Rate limiting
   if (pathname.startsWith('/api/') && rateLimit(req, res)) return;
-  
-  // 解析请求体
+
+  // Parse request body
   let body;
   try { 
     body = await parseBody(req); 
@@ -154,7 +154,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   
-  // 路由匹配
+  // Route matching
   const route = matchRoute(req.method, pathname);
   if (route) {
     try {
@@ -176,7 +176,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   
-  // 静态文件处理
+  // Static file handling
   if (pathname.startsWith('/static/')) {
     let requestedFile;
     try { 
@@ -201,15 +201,15 @@ const server = http.createServer(async (req, res) => {
     return serveStatic(res, path.join(STATIC, 'manifest.json'));
   }
   
-  // 默认页面
+  // Default page
   serveStatic(res, path.join(TEMPLATES, 'index.html'));
 });
 
-// 启动服务器
+// Start the server
 server.listen(PORT, '0.0.0.0', () => {
   logger.info(`⚽ PitchSignal: http://0.0.0.0:${PORT}`);
   
-  // 启动后台任务
+  // Start background jobs
   try {
     const { startJobs } = require('./lib/jobs');
     startJobs({ 
@@ -223,14 +223,14 @@ server.listen(PORT, '0.0.0.0', () => {
   }
 });
 
-// 优雅关闭
+// Graceful shutdown
 function shutdown(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
-  
+
   logger.info(`Received ${signal}; shutting down gracefully...`);
-  
-  // 停止后台任务
+
+  // Stop background jobs
   try {
     const { stopJobs } = require('./lib/jobs');
     stopJobs();
@@ -238,14 +238,14 @@ function shutdown(signal) {
     logger.warn('Failed to stop background jobs', { error: e.message });
   }
   
-  // 强制退出超时
+  // Force-exit timeout
   const forceExit = setTimeout(() => {
     logger.error('Graceful shutdown timed out; forcing exit.');
     process.exit(1);
   }, 10_000);
   forceExit.unref();
   
-  // 关闭服务器
+  // Close the server
   server.close((error) => {
     try {
       require('./lib/db').db.close();
@@ -258,6 +258,6 @@ function shutdown(signal) {
   });
 }
 
-// 注册信号处理
+// Register signal handlers
 process.once('SIGINT', () => shutdown('SIGINT'));
 process.once('SIGTERM', () => shutdown('SIGTERM'));

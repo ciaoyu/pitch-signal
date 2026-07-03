@@ -298,8 +298,8 @@
             <span data-push-label aria-hidden="true">🔔</span>
         </button>
         <div style="display:flex;align-items:center;border-radius:4px;background:rgba(255,255,255,.04);padding:2px">
-            <button data-action="set-lang" data-lang="zh" class="lang-btn" aria-label="切换中文" style="font:500 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.35);min-width:44px;min-height:44px;padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">中</button>
-            <button data-action="set-lang" data-lang="en" class="lang-btn" aria-label="Switch to English" style="font:400 10px/1 'DM Sans', sans-serif;color:rgba(248,250,252,.15);min-width:44px;min-height:44px;padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">EN</button>
+            <button data-action="set-lang" data-lang="zh" class="lang-btn text-gray-500" aria-label="切换中文" style="font:500 10px/1 'DM Sans', sans-serif;min-width:44px;min-height:44px;padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">中</button>
+            <button data-action="set-lang" data-lang="en" class="lang-btn text-gray-500" aria-label="Switch to English" style="font:400 10px/1 'DM Sans', sans-serif;min-width:44px;min-height:44px;padding:3px 8px;border-radius:4px;cursor:pointer;border:none;background:transparent">EN</button>
         </div>
     </div>
 </div>
@@ -373,6 +373,11 @@
         <div id="team-detail" class="hidden"></div>
     </section>
 </main>
+
+<!-- Data source attribution (FIFA ToS 6.4b requires attribution + no implied endorsement; Open-Meteo CC BY 4.0 requires attribution) -->
+<div style="max-width:720px;margin:0 auto;padding:0 20px 16px;text-align:center">
+    <span data-i18n="dataAttribution" style="font:400 9px/1.5 'DM Sans', sans-serif;color:rgba(248,250,252,.2)">数据来源：FIFA 公开 API（非官方粉丝项目，未获 FIFA 授权或背书）· Wikipedia · Open-Meteo · 部分数据同步自 26worldcup.github.io（MIT License）</span>
+</div>
 
 <!-- Data Quality Popover -->
 <button id="quality-info-btn" class="hidden" onclick="toggleQualityPopover()"></button>

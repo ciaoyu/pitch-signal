@@ -29,6 +29,8 @@ require('../lib/env').loadEnv();
 const { espn } = require('../services/espn');
 const PredictionService = require('../lib/services/PredictionService');
 const teamResolver = require('../lib/team_resolver');
+const { buildPostMatchReview, savePostMatchReview, getSavedPostMatchReview } = require('../lib/postMatchReview');
+const TeamContextManager = require('../lib/teamContext');
 
 const DATA_DIR = path.join(__dirname, '..', 'data', 'live-snapshots');
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -37,6 +39,7 @@ const POLL_INTERVAL = 5 * 60 * 1000; // 5 分钟
 // 赛前预测缓存（matchId → prediction result），避免每次轮询都重新计算
 let predictionService = null;
 const basePredictionCache = {};
+const teamContext = new TeamContextManager();
 
 function getPredictionService() {
   if (predictionService) return predictionService;
@@ -67,6 +70,8 @@ const HYDRATION_WINDOWS = [
   { start: 72, end: 78, label: 'second_half_hydration' },
 ];
 const HALFTIME_MINUTE = 45;
+const EXTRA_TIME_FIRST_HALF_MINUTE = 105;
+const EXTRA_TIME_SECOND_HALF_MINUTE = 120;
 
 // CLI 参数
 const args = process.argv.slice(2);
@@ -75,6 +80,7 @@ const DRY_RUN = args.includes('--dry-run');
 
 // 状态追踪（跨轮次比较）
 const matchState = {};  // matchId → { score, minute, lastTrigger, lastGoalMinute }
+const liveTimelineState = {}; // matchId → array of snapshot summaries
 
 // ============================================================
 // buildLiveAnalysis（从 prediction.js 提取，自包含）
@@ -87,6 +93,78 @@ function normalizeThreeWay(h, d, a) {
   return t > 0
     ? { homeWin: h / t, draw: d / t, awayWin: a / t }
     : { homeWin: 0.333, draw: 0.334, awayWin: 0.333 };
+}
+
+function safeTeamName(name) {
+  return String(name || '').trim().toLowerCase();
+}
+
+async function fetchMatchOdds(match) {
+  const apiKey = process.env.THE_ODDS_API_KEY || process.env.ODDS_API_KEY || '';
+  if (!apiKey) return { source: 'api_key_not_configured' };
+
+  const url = new URL('https://api.the-odds-api.com/v4/sports/soccer_fifa_world_cup/odds/');
+  url.searchParams.set('apiKey', apiKey);
+  url.searchParams.set('regions', 'uk,eu');
+  url.searchParams.set('markets', 'h2h,spreads,totals');
+  url.searchParams.set('oddsFormat', 'decimal');
+
+  const res = await fetch(url, { headers: { accept: 'application/json' } });
+  if (!res.ok) return { source: 'odds_fetch_failed', error: `HTTP ${res.status}` };
+  const games = await res.json();
+  if (!Array.isArray(games)) return { source: 'odds_invalid_payload' };
+
+  const homeName = safeTeamName(match.home.name);
+  const awayName = safeTeamName(match.away.name);
+  const homeResolved = teamResolver.resolve(match.home.name)?.official_name || match.home.name;
+  const awayResolved = teamResolver.resolve(match.away.name)?.official_name || match.away.name;
+
+  let game = games.find((g) => {
+    const gh = safeTeamName(g.home_team);
+    const ga = safeTeamName(g.away_team);
+    return (gh === homeName && ga === awayName) || (gh === safeTeamName(homeResolved) && ga === safeTeamName(awayResolved));
+  });
+
+  if (!game) {
+    game = games.find((g) => {
+      const gh = safeTeamName(g.home_team);
+      const ga = safeTeamName(g.away_team);
+      return gh.includes(homeName.split(' ').slice(-1)[0]) && ga.includes(awayName.split(' ').slice(-1)[0]);
+    }) || null;
+  }
+
+  if (!game) return { source: 'no_match_found' };
+
+  const h2h = game.bookmakers?.[0]?.markets?.find((m) => m.key === 'h2h');
+  const outcomes = h2h?.outcomes || [];
+  const h = outcomes.find((o) => safeTeamName(o.name) === safeTeamName(game.home_team));
+  const d = outcomes.find((o) => safeTeamName(o.name) === 'draw');
+  const a = outcomes.find((o) => safeTeamName(o.name) === safeTeamName(game.away_team));
+
+  const total = (h?.price ? 1 / h.price : 0) + (d?.price ? 1 / d.price : 0) + (a?.price ? 1 / a.price : 0);
+  const implied = total > 0 && h?.price && d?.price && a?.price ? {
+    home: `${((1 / h.price) / total * 100).toFixed(1)}%`,
+    draw: `${((1 / d.price) / total * 100).toFixed(1)}%`,
+    away: `${((1 / a.price) / total * 100).toFixed(1)}%`,
+    vig: `${((total - 1) * 100).toFixed(1)}%`,
+  } : null;
+
+  return {
+    source: 'the-odds-api',
+    lastUpdated: new Date().toISOString(),
+    homeWin: h?.price ?? null,
+    draw: d?.price ?? null,
+    awayWin: a?.price ?? null,
+    impliedProb: implied,
+    bookmakers: (game.bookmakers || []).map((bm) => bm.title || bm.key || '?').slice(0, 5),
+    overUnder: (() => {
+      const totals = game.bookmakers?.[0]?.markets?.find((m) => m.key === 'totals');
+      const over = totals?.outcomes?.find((o) => safeTeamName(o.name) === 'over');
+      const under = totals?.outcomes?.find((o) => safeTeamName(o.name) === 'under');
+      const line = totals?.outcomes?.find((o) => o.point != null)?.point ?? 2.5;
+      return { line, over: over?.price ?? null, under: under?.price ?? null };
+    })(),
+  };
 }
 
 function buildLiveAnalysis(basePrediction, matchMeta, liveStats = {}) {
@@ -225,6 +303,10 @@ function classifyTrigger(matchId, current) {
   // 终场
   if (current.minute >= 90 && (prev.minute || 0) < 90) return 'fulltime';
 
+  // 加时赛节点（淘汰赛专用）
+  if (current.minute >= EXTRA_TIME_FIRST_HALF_MINUTE && (prev.minute || 0) < EXTRA_TIME_FIRST_HALF_MINUTE) return 'extra_time_first_half';
+  if (current.minute >= EXTRA_TIME_SECOND_HALF_MINUTE && (prev.minute || 0) < EXTRA_TIME_SECOND_HALF_MINUTE) return 'extra_time_second_half';
+
   // 每 5 分钟定期
   const minuteDiff = current.minute - (prev.minute || 0);
   if (minuteDiff >= 5) return 'periodic';
@@ -276,6 +358,80 @@ function saveSnapshot(snapshot) {
   const filename = `${ts}_${snapshot.trigger}.json`;
   fs.writeFileSync(path.join(dir, filename), JSON.stringify(snapshot, null, 2));
   console.log(`  💾 saved: ${dir}/${filename}`);
+}
+
+function appendLiveTimeline(matchId, snapshot) {
+  if (!liveTimelineState[matchId]) liveTimelineState[matchId] = [];
+  liveTimelineState[matchId].push({
+    minute: snapshot.minute,
+    trigger: snapshot.trigger,
+    score: `${snapshot.home.score}-${snapshot.away.score}`,
+    home: { name: snapshot.home.name, score: snapshot.home.score },
+    away: { name: snapshot.away.name, score: snapshot.away.score },
+    summary: snapshot.summary,
+    analysis: snapshot.summary,
+    odds: snapshot.odds || null,
+  });
+  if (liveTimelineState[matchId].length > 20) liveTimelineState[matchId] = liveTimelineState[matchId].slice(-20);
+  return liveTimelineState[matchId];
+}
+
+async function buildKickoffContext(match, basePrediction) {
+  const [homeNews, awayNews] = await Promise.allSettled([
+    teamContext.requestTeamNews(match.home.id || match.home.name),
+    teamContext.requestTeamNews(match.away.id || match.away.name),
+  ]);
+  const homeItems = homeNews.status === 'fulfilled' ? homeNews.value : [];
+  const awayItems = awayNews.status === 'fulfilled' ? awayNews.value : [];
+  const newsText = [...homeItems, ...awayItems].slice(0, 3).join('；');
+  return {
+    labelI18n: { zh: '开场预测', en: 'Kickoff forecast' },
+    summaryI18n: {
+      zh: `赛前基线：主胜 ${Math.round((basePrediction.homeWin || 0) * 100)}%，平 ${Math.round((basePrediction.draw || 0) * 100)}%，客胜 ${Math.round((basePrediction.awayWin || 0) * 100)}%。最新消息：${newsText || '暂无可用新闻。'}`,
+      en: `Pre-match baseline: home ${Math.round((basePrediction.homeWin || 0) * 100)}%, draw ${Math.round((basePrediction.draw || 0) * 100)}%, away ${Math.round((basePrediction.awayWin || 0) * 100)}%. Latest news: ${newsText || 'No usable news available.'}`,
+    },
+    news: { home: homeItems.slice(0, 3), away: awayItems.slice(0, 3) },
+  };
+}
+
+function persistLiveReview(snapshot, basePrediction, timeline) {
+  const existing = getSavedPostMatchReview(snapshot.matchId) || {};
+  const review = buildPostMatchReview({
+    matchId: snapshot.matchId,
+    match: {
+      homeId: existing.match?.home?.id || snapshot.home.id || null,
+      awayId: existing.match?.away?.id || snapshot.away.id || null,
+      homeName: snapshot.home.name,
+      awayName: snapshot.away.name,
+      homeScore: snapshot.home.score,
+      awayScore: snapshot.away.score,
+      status: 'STATUS_IN_PROGRESS',
+      date: snapshot.timestamp,
+      venue: snapshot.venue || '',
+      completed: false,
+    },
+    snapshot: {
+      matchId: snapshot.matchId,
+      homeWin: basePrediction.homeWin,
+      draw: basePrediction.draw,
+      awayWin: basePrediction.awayWin,
+      predictedScore: basePrediction.likelyScore || null,
+      homeExpectedGoals: basePrediction.goals?.homeExpected ?? null,
+      awayExpectedGoals: basePrediction.goals?.awayExpected ?? null,
+      createdAt: new Date().toISOString(),
+      source: 'live-monitor',
+    },
+    evidence: {
+      liveSnapshots: timeline,
+      timeline,
+      events: snapshot.details || [],
+    },
+    generatedBy: 'live-monitor',
+  });
+  review.status = 'live_tracking';
+  review.liveTimelineI18n = timeline;
+  review.liveSnapshots = timeline;
+  if (!DRY_RUN) savePostMatchReview(snapshot.matchId, review);
 }
 
 // ============================================================
@@ -347,20 +503,43 @@ async function pollOnce() {
       minute: m.minute,
       home: { name: m.home.name, score: m.home.score, stats: m.home.stats },
       away: { name: m.away.name, score: m.away.score, stats: m.away.stats },
+      odds: null,
       livePrediction: liveAnalysis,
       groupImpact,
       details: m.details,
       venue: m.venue,
     };
 
+    if (trigger === 'first_sight') {
+      snapshot.kickoffContext = await buildKickoffContext(m, basePrediction);
+    }
+
+    try {
+      snapshot.odds = await fetchMatchOdds(m);
+    } catch (e) {
+      snapshot.odds = { source: 'odds_fetch_error', error: e.message };
+    }
+
     // 生成实时文字分析
     snapshot.summary = generateSummary(snapshot, basePrediction, live);
+    const timeline = appendLiveTimeline(m.matchId, snapshot);
     saveSnapshot(snapshot);
+    persistLiveReview(snapshot, basePrediction, timeline);
 
     // 打印到控制台
     console.log('');
     console.log(snapshot.summary);
     console.log('');
+
+    if (trigger === 'fulltime' && !DRY_RUN) {
+      const finalSummary = buildFinalMatchSummary(m.matchId);
+      if (finalSummary) {
+        const dir = path.join(DATA_DIR, TODAY, m.matchId);
+        fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(path.join(dir, 'final-summary.json'), JSON.stringify(finalSummary, null, 2));
+        console.log(`  🧾 final summary saved: ${dir}/final-summary.json`);
+      }
+    }
 
     // 更新状态
     matchState[m.matchId] = {
@@ -429,6 +608,8 @@ function generateSummary(snapshot, basePrediction, allLive) {
     halftime: '⏱ 半场',
     first_half_hydration: '💧 上半场补水',
     second_half_hydration: '💧 下半场补水',
+    extra_time_first_half: '➕ 加时上半场',
+    extra_time_second_half: '➕ 加时下半场',
     fulltime: '🏁 终场',
     periodic: '📊 ' + minute + "'",
   }[trigger] || trigger;
@@ -518,6 +699,27 @@ function generateSummary(snapshot, basePrediction, allLive) {
     lines.push(`  📌 最终概率 vs 赛前: 主胜${pct(base.h)}→${pct(p.homeWin)} | 客胜${pct(base.a)}→${pct(p.awayWin)}`);
   }
 
+  if (snapshot.odds && snapshot.odds.source && snapshot.odds.source !== 'api_key_not_configured') {
+    const odds = snapshot.odds;
+    const priceDesc = odds.homeWin && odds.draw && odds.awayWin
+      ? `  📈 赔率: 主胜${odds.homeWin} 平${odds.draw} 客胜${odds.awayWin}`
+      : `  📈 赔率: ${odds.source}`;
+    lines.push(priceDesc);
+    if (odds.impliedProb) {
+      lines.push(`  📉 隐含概率: 主${odds.impliedProb.home} 平${odds.impliedProb.draw} 客${odds.impliedProb.away}${odds.impliedProb.vig ? ` | 水位${odds.impliedProb.vig}` : ''}`);
+    }
+  }
+
+  if (trigger === 'extra_time_first_half') {
+    lines.push(`  ➕ 进入加时赛上半场，常规时间无法分出胜负。体能、换人深度和定位球质量开始放大作用。`);
+    if (diff === 0) lines.push(`  📌 平局被延长，任何一次失误都可能直接决定胜负。`);
+  }
+
+  if (trigger === 'extra_time_second_half') {
+    lines.push(`  ➕ 进入加时赛下半场，比赛接近终局。若仍平局，点球大战概率上升。`);
+    if (diff === 0) lines.push(`  📌 双方都已接近极限，下一次有效射门的价值被放大。`);
+  }
+
   // ---- 预测终场走向（剩余时间推演） ----
   if (trigger !== 'fulltime' && minute >= 60 && remaining > 0) {
     const xgH = Math.max(hs, (basePrediction.goals?.homeExpected || 2.0) * (minute / 90));
@@ -575,6 +777,35 @@ function generateSummary(snapshot, basePrediction, allLive) {
   }
 
   return lines.join('\n');
+}
+
+function buildFinalMatchSummary(matchId) {
+  const snaps = getRecent(matchId);
+  if (!snaps.length) return null;
+  const first = snaps[0];
+  const last = snaps[snaps.length - 1];
+  return {
+    matchId,
+    startedAt: first.timestamp,
+    endedAt: last.timestamp,
+    finalScore: `${last.home.score}-${last.away.score}`,
+    finalMinute: last.minute,
+    snapshotCount: snaps.length,
+    keyTriggers: snaps.map(s => ({
+      minute: s.minute,
+      trigger: s.trigger,
+      score: `${s.home.score}-${s.away.score}`,
+    })),
+    goals: snaps
+      .filter(s => s.trigger === 'goal')
+      .map(s => ({
+        minute: s.minute,
+        score: `${s.home.score}-${s.away.score}`,
+        home: s.home.name,
+        away: s.away.name,
+      })),
+    finalSummary: last.summary,
+  };
 }
 
 // ============================================================

@@ -97,7 +97,8 @@ var require_state = __commonJS({
         scrollLeft: "\u5411\u5DE6\u6EDA\u52A8\u65E5\u671F",
         scrollRight: "\u5411\u53F3\u6EDA\u52A8\u65E5\u671F",
         tzSuffix: "\u5317\u4EAC\u65F6\u95F4",
-        teamsError: "\u7403\u961F\u6570\u636E\u52A0\u8F7D\u5931\u8D25"
+        teamsError: "\u7403\u961F\u6570\u636E\u52A0\u8F7D\u5931\u8D25",
+        dataAttribution: "\u6570\u636E\u6765\u6E90\uFF1AFIFA \u516C\u5F00 API\uFF08\u975E\u5B98\u65B9\u7C89\u4E1D\u9879\u76EE\uFF0C\u672A\u83B7 FIFA \u6388\u6743\u6216\u80CC\u4E66\uFF09\xB7 Wikipedia \xB7 Open-Meteo \xB7 \u90E8\u5206\u6570\u636E\u540C\u6B65\u81EA 26worldcup.github.io\uFF08MIT License\uFF09"
       },
       en: {
         liveTitle: "Live Scores",
@@ -152,7 +153,8 @@ var require_state = __commonJS({
         scrollLeft: "Scroll dates left",
         scrollRight: "Scroll dates right",
         tzSuffix: "CST (UTC+8)",
-        teamsError: "Failed to load teams"
+        teamsError: "Failed to load teams",
+        dataAttribution: "Data: FIFA public API (unofficial fan project, not affiliated with or endorsed by FIFA) \xB7 Wikipedia \xB7 Open-Meteo \xB7 partially synced from 26worldcup.github.io (MIT License)"
       }
     };
     window.WorldCup.I18N = I18N;

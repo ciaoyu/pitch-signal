@@ -73,6 +73,7 @@ const I18N = {
         scrollRight: '向右滚动日期',
         tzSuffix: '北京时间',
         teamsError: '球队数据加载失败',
+        dataAttribution: '数据来源：FIFA 公开 API（非官方粉丝项目，未获 FIFA 授权或背书）· Wikipedia · Open-Meteo · 部分数据同步自 26worldcup.github.io（MIT License）',
     },
     en: {
         liveTitle: 'Live Scores',
@@ -128,6 +129,7 @@ const I18N = {
         scrollRight: 'Scroll dates right',
         tzSuffix: 'CST (UTC+8)',
         teamsError: 'Failed to load teams',
+        dataAttribution: 'Data: FIFA public API (unofficial fan project, not affiliated with or endorsed by FIFA) · Wikipedia · Open-Meteo · partially synced from 26worldcup.github.io (MIT License)',
     },
 };
 

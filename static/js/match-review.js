@@ -14,6 +14,7 @@
         const match = review.match || {}, ai = review.aiPrediction || {}, bias = review.biasAnalysis || {};
         const summary = review.matchSummary || {}, eloChange = review.eloChange || {};
         const factors = bias.factors || [], aiPostmortem = review.aiPostmortem || {};
+        const liveTimeline = review.liveTimelineI18n || [];
         const uiLang = window.WorldCup.State?.uiLang || 'zh';
         const pmLang = uiLang === 'zh' ? 'zh' : 'en';
         const pmArr = (f, l) => (f && Array.isArray(f[pmLang]) ? f[pmLang] : (l || []));
@@ -66,6 +67,16 @@
                 html += `<div class="border ${impCls} rounded-lg p-2"><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full ${dotCls} shrink-0"></span><span class="text-[11px] font-bold text-gray-300">${i18nText(f.factorI18n||f.nameI18n,f.factor||f.name||'')}</span><span class="text-[9px] text-gray-500 ml-auto uppercase">${f.impact||''}</span></div><div class="text-[11px] text-gray-400 mt-0.5 ml-3">${i18nText(f.detailI18n,f.detail||'')}</div></div>`;
             }
             html += '</div></div>';
+        }
+
+        if (liveTimeline.length > 0) {
+            html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="flex items-center justify-between mb-2"><div class="text-xs font-bold text-gray-400">🕒 ${tx('实时时间线','Live Timeline')}</div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${liveTimeline.length}</span></div><div class="space-y-1.5">`;
+            for (const item of liveTimeline) {
+                const label = i18nText(item.titleI18n, item.title || '');
+                const summary = i18nText(item.summaryI18n, item.summary || '');
+                html += `<div class="bg-white/5 rounded-lg p-2.5 border border-white/5"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-mono text-gray-500">${displayValue(item.minute,'')}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-bold">${esc(label)}</span><span class="text-[10px] text-gray-600 ml-auto">${esc(item.score || '')}</span></div><div class="text-[11px] text-gray-300 leading-relaxed">${esc(summary)}</div></div>`;
+            }
+            html += `</div></div>`;
         }
 
         if (momentumScript !== 'unknown' || momentumBuckets.length > 0) {
