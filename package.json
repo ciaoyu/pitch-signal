@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "PitchSignal — analytics dashboard for the 2026 FIFA World Cup (live scores, Poisson/Elo predictions, spatial matchups).",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciao-zbbb/pitch-signal.git"
+  },
+  "homepage": "https://pitch-signal-production.up.railway.app",
   "scripts": {
     "build:css": "npx tailwindcss -i static/css/tailwind-input.css -o static/css/tailwind-output.css --minify",
     "build:js": "node scripts/build-js.js",

@@ -23,11 +23,11 @@ function rateLimit(req, res, options = {}) {
     buckets.set(key, bucket);
   }
 
-  // 防止 Map 无限增长
+  // Prevent unbounded Map growth
   if (buckets.size > MAX_BUCKETS) {
     cleanupExpiredBuckets();
     if (buckets.size > MAX_BUCKETS) {
-      // 仍然溢出，拒绝新 IP 的请求
+      // Still overflowing, reject requests from new IPs
       res.writeHead(429, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Server busy, try again later' }));
       return true;

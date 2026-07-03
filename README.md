@@ -1,6 +1,11 @@
+<!-- Note: update README.zh.md when this file changes -->
 # ⚽ PitchSignal
 
 **PitchSignal** is a comprehensive analytics dashboard for the 2026 FIFA World Cup, featuring real-time standings, match predictions using Poisson and Elo models, spatial matchups, and interactive bracket visualizations.
+
+👉 [Try the public beta now!](https://pitch-signal-production.up.railway.app) Some features are currently gated in Beta.
+
+README in [中文](README.zh.md)
 
 ## 🌟 Key Features
 - **Live Match Integration**: Fetches real-time fixtures, scores, and standings from the ESPN API.
@@ -128,6 +133,10 @@ Quick overview:
 - **[docs/prediction-model-methodology.md](docs/prediction-model-methodology.md)** ([中文](docs/prediction-model-methodology.zh.md)) - Full methodology paper: architecture, evaluation protocol, 964-match backtest results, and honest limitations
 - **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway deployment guide
 - **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - Public beta safety & gates
+
+## 📄 License
+
+Code: [ISC](LICENSE). Third-party data attribution (FIFA, Open-Meteo, 26worldcup.github.io, and others): see [COPYRIGHT.md](COPYRIGHT.md).
 
 ## ⚠️ Disclaimer
 
