@@ -32,8 +32,11 @@ function scheduleRound(match) {
   if (text.includes('quarterfinal') && text.includes('winner at')) return 'semifinal';
   if (text.includes('round of 16') && !text.includes('winner at')) return 'round of 16';
   if (text.includes('round of 16') && text.includes('winner at')) return 'quarterfinal';
-  if (text.includes('round of 32') && !text.includes('winner at')) return 'round of 32';
-  if (text.includes('round of 32') && text.includes('winner at')) return 'round of 16';
+  // Any mention of "round of 32" in a fixture name is a forward-reference to an R32 winner
+  // (e.g. "Spain at Round of 32 11 Winner" once one side has already qualified, or
+  // "Round of 32 16 Winner at Round of 32 14 Winner" while both sides are still open) —
+  // an actual round-of-32 match never describes itself this way, it just uses real team names.
+  if (text.includes('round of 32')) return 'round of 16';
   if (/\b(group [a-l] (winner|2nd place)|third place group)\b/.test(text)) return 'round of 32';
   return null;
 }
