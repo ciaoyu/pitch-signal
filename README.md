@@ -79,6 +79,9 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 | `BALLDONTLIE_API_KEY` | No | — | balldontlie.io roster/stats enrichment |
 | `TAVILY_API_KEY` | No | — | Tavily search (AI post-match research) |
 | `ANTHROPIC_API_KEY` | No | — | AI post-match review (experimental, beta disabled) |
+| `VAPID_PUBLIC_KEY` | No | — | Web Push public key (goal notifications) |
+| `VAPID_PRIVATE_KEY` | No | — | Web Push private key (goal notifications) |
+| `VAPID_SUBJECT` | No | `mailto:ops@pitchsignal.app` | Contact URI required by the Web Push protocol |
 | `ADMIN_TOKEN` | **Beta: must be unset** | — | Fallback token for protected endpoints |
 | `BOT_API_TOKEN` | **Beta: must be unset** | — | Bot chat endpoint token |
 | `WRITE_API_TOKEN` | **Beta: must be unset** | — | Write endpoint token |
