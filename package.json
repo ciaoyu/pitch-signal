@@ -14,7 +14,7 @@
     "diagnose:venue-factor": "node scripts/diagnose-venue-factor.js",
     "validate:bracket-ids": "node scripts/validate-bracket-ids.js",
     "test": "node scripts/test-runner.js",
-    "test:ui": "node test/ui.spec.js",
+    "test:ui": "node scripts/test-ui.spec.js",
     "start": "node server.js"
   },
   "keywords": [],
