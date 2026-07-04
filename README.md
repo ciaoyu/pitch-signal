@@ -48,6 +48,52 @@ Runs the test suites for Prediction Models, Elo rating, and Poisson distribution
 - `/scripts` - Utilities for data scraping (e.g., Transfermarkt values).
 - `/middleware`, `/services` - HTTP middleware and domain services.
 
+## 🔄 Data Flow
+
+```mermaid
+flowchart LR
+    FIFA["FIFA API"] --> Bridge["lib/services/fifa-api.js<br/>(FIFA bridge client)"]
+    Bridge --> DB["SQLite<br/>lib/db.js"]
+    DB --> Prediction["Prediction engine<br/>lib/prediction.js"]
+    Prediction --> Frontend["Frontend<br/>static/js/"]
+
+    JobManager["Job manager<br/>lib/jobs/index.js"]
+    Registry["Job health registry<br/>lib/jobs/registry.js"]
+
+    subgraph ScheduledJobs["Background jobs (lib/jobs/)"]
+        Moment["moment-sync.js"]
+        Lineups["lineups-sync.js"]
+        Snapshot["match-snapshot.js"]
+        Postmortem["ai-postmortem.js"]
+        Odds["odds-collector.js"]
+        XG["xg-collector.js"]
+    end
+
+    JobManager --> Moment
+    JobManager --> Lineups
+    JobManager --> Snapshot
+    JobManager --> Postmortem
+    JobManager --> Odds
+    JobManager --> XG
+
+    Moment --> Bridge
+    Moment --> Writeback["Score writeback service<br/>lib/services/score-writeback.js"]
+    Writeback --> DB
+    Lineups --> Bridge
+    Snapshot --> Prediction
+    Snapshot --> DB
+    Postmortem --> DB
+    XG --> DB
+    Odds --> RuntimeFiles["Runtime odds snapshots<br/>data/odds_*.json"]
+
+    Moment -. status .-> Registry
+    Lineups -. status .-> Registry
+    Snapshot -. status .-> Registry
+    Postmortem -. status .-> Registry
+    Odds -. status .-> Registry
+    XG -. status .-> Registry
+```
+
 ## 🚢 Deployment
 
 ### Railway (Recommended)

@@ -18,7 +18,7 @@
 
 ---
 
-## 已完成（截至 2026-07-02，逐项代码核实）
+## 已完成（截至 2026-07-04，逐项代码核实）
 
 | 功能 | 文件 | 核实证据 |
 |------|------|------|
@@ -26,7 +26,7 @@
 | Pressure Index 后端 + 前端 | `lib/services/pressure-index.js`, `static/js/match-renderers.js` | — |
 | Match Moments 引擎 | `lib/services/moment-detector.js`, `lib/jobs/moment-sync.js` | — |
 | FIFA API 桥接 | `lib/services/fifa-api.js`, `scripts/build-fifa-match-bridge.js` | — |
-| xG 框架（等 key） | `lib/services/xg-service.js`, `lib/jobs/xg-collector.js` | 仍空转，见 P4-2 后续 |
+| xG 框架（等 key） | `lib/services/xg-service.js`, `lib/jobs/xg-collector.js` | 仍空转，等待 API key |
 | 置信区间输出 | `lib/prediction.js` → `calcConfidenceInterval()` | — |
 | 概率走势线 / 三色胜率弧形 / 出线概率 / bracket 点击 / 角球模型 / 赔率采集 | 同 v2 | — |
 | **回测样本扩容至 964 场（1930-2022 全部世界杯）+ Elo 全历史热启动** ⓝ³ | `data/history/worldcup_*.json`, `data/elo-seed.json`, `lib/backtest.js`, `scripts/{fetch-worldcup-history,build-elo-seed}.js` | commit `fbb5713`+`8ec3172`+`761c2d2`+`4e6ca76`；方向准确率 42.19%→57.88% [95% CI 54.8-61.1%]，与业界 Elo 基线重叠；三方独立审计（数据对账/泄漏检查+独立复算/引用数字核查）通过 |
@@ -34,6 +34,7 @@
 | **P0-1~P0-5 全部完成** ⓝ³ | 见下 P0 表 | git merge 记录 + 代码证据双重核实 |
 | **P1-1（最佳第三名）、P1-3（温度单位）完成** ⓝ³ | `lib/qualification.js:123-147/174/281`, `static/js/match-detail.js:526-550` | — |
 | **P2-3（市场赔率分歧）、P2-4（用户预测vs模型）、P2-5（新闻/伤停注入）完成** ⓝ³ | `lib/routes/odds-divergence.js`, `lib/routes/user-predictions.js`, `lib/teamContext.js:169-`（真实 Tavily fetch，`TAVILY_API_KEY` 门控，无 key 优雅降级） | P2-5 此前一次审计误判为"半成品"——实际 fetch 循环存在，只是没滚动到那一段代码 |
+| **P4-1~P4-5 预测模型深化全部完成** | `lib/prediction.js`, `lib/services/{market-value-signal,continental-strength-signal}.js`, `lib/backtest-calibration.js`, `lib/routes/calibration.js`, `static/js/elo-prediction.js` | commits `cb2897b`/`fd9c30c`/`99a79f0`/`4925cd1`/`0409fea`/`7b3ea63`；专项测试 `test-shin-devig.js`、`test-prediction-market-ui.js`、`test-market-value-signal.js`、`test-continental-strength-signal.js`、`test-calibration-report.js`、`test-elo-guided-base-lambda.js` 均已注册进全量测试 |
 
 > ⓝ³ = v3 新核实为「已完成」或「重大进展」。ⓝ（v2 认定）见历史 diff。
 
@@ -83,7 +84,7 @@
 | 项 | 状态 | 说明 |
 |---|---|---|
 | P3-1 Track B 压力指数校准 | ❌ 未做 | 待有效样本量后再做，等赛事推进 |
-| P3-2 Calibration 校准报告面板 | ❌ 未做，**与 P4-4 合并** | 见下 P4-4，范围扩大（不只是展示面板，还要做 Platt 校准修正） |
+| P3-2 Calibration 校准报告面板 | ✅ **已通过 P4-4 完成** | 已实现 Brier/校准桶报告、`GET /api/calibration-report` 与前端「模型表现」面板；见下 P4-4 |
 | P3-3 点球专项模型 | ❌ 未做 | 保持原计划，低优先 |
 | P3-4 阵容 CI 动态收窄 | 🟡 部分（`lineupUncertainty` 已接但无数据源驱动） | 保持原计划 |
 | P3-5 回测样本扩充 | ✅ **已完成，但路径与原计划不同** | 原计划是"混入 Euro/Copa 到 300+ 场"；实际做法是全量 1930-2022 世界杯正赛 964 场（openfootball，CC0）+ martj42 49k 场用于 Elo 热启动，不混赛事等级做评估——这是三方研究交叉验证过的更优方案（详见 [prediction-methodology-review.md](prediction-methodology-review.md)）。**Euro/Copa 继续导入进正赛评估集仍是可选加强项，非阻塞，价值有限**（964 场 CI 已经和业界基线重叠） |
@@ -91,38 +92,17 @@
 
 ---
 
-## P4 — 预测模型深化（新增，源自方法论专题）
+## P4 — 预测模型深化 ✅ 全部完成
 
 > 背景：session6-7 做了两轮外部研究（制度化系统 + 10 个开源同行项目）+ 964 场实证回测，结论见 [prediction-methodology-review.md](prediction-methodology-review.md)。核心判断：**数学模型（Elo+Poisson）已到该模型族天花板（~60%），继续调参收益趋近于零**；真正还有空间的是三个新信号轨道。按预期收益排序：
 
-### P4-1 市场赔率轨道（最高优先级，唯一确证能超越60%的路径）
-**目的**：所有研究源一致结论——市场赔率是唯一稳定跑赢纯 Elo/Poisson 的信号。
-**做什么**：
-- `lib/prediction.js calcOddsFactor()` 当前用简单比例去水（`1/odds` 归一化），换成 **Shin's method**（处理冷门溢价，业界公认更准，尤其在世界杯小组赛这种大冷门常见的场景）
-- **复用 P2-3 已建成的基建**：`lib/services/the-odds-api.js`、`lib/jobs/odds-collector.js`、`lib/routes/odds-divergence.js` 已经在跑，这不是从零开始的专题，是在已有采集链路上换一个更准的去水算法 + 决定融合策略
-- 决定"并排展示 vs 贝叶斯融合"：playmobil 的哲学是"市场只做基准，绝不进模型输入"；我们 `prediction.js` 现有 Polymarket 贝叶斯融合设计（当前 `POLYMARKET_ENABLED=false` 闸门关闭）是相反哲学。这个决策需要专门讨论，不是纯技术问题
-**工作量**：Shin's method 替换 0.5天 + 融合策略讨论与实现 1-2天（取决于选哪条路）
-
-### P4-2 阵容身价信号（三个独立项目支持）
-**目的**：hjjbh1314、playmobil、SilvioBaratto 三个互不相关的项目都独立发现阵容市场身价（Transfermarkt 类数据）是有效强度锚点，尤其在实力悬殊场次能把模型拉近市场共识。
-**做什么**：调研 Transfermarkt 数据可得性（有无免费/合规 API 或数据集）；作为 Elo 先验的混合权重，用 `compareBaseline()` 验收，不达标不上线。
-**工作量**：数据调研 0.5天 + 实现验收 1天（数据源不确定，工作量有浮动）
-
-### P4-3 洲际强度修正（有具体实测数字支撑）
-**目的**：hjjbh1314 实测：跨洲比赛用洲际强度修正能把方向准确率从 56.8% 提到 58.3%。我们已有 49k 场全历史数据（`data/elo-seed.json` 生成用的 CSV），不需要额外拉数据。
-**做什么**：按 UEFA/CONMEBOL/AFC/CONCACAF/CAF/OFC 拟合跨洲比赛的强度修正量（学习值参考 hjjbh1314：UEFA +117/CONMEBOL +104/AFC +18/CONCACAF −27/CAF −40/OFC −171 Elo分），**注入概率头**而不是当普通 ML 特征喂（playmobil 已证明后者无效——这是两个项目结论看似矛盾、实为做法不同的关键点）。
-**工作量**：1-1.5天
-
-### P4-4 校准层（合并原 P3-2）
-**目的**：hjjbh1314 实测 Platt scaling 能修正"疫情后主场优势系统性衰减未被发现"这类真实偏差（RPS 0.1704→0.1698，小而真）。我们自己的 964 场回测 Brier 也还有约 0.057 的差距，主要来自校准而非方向。
-**做什么**：`lib/backtest-calibration.js`（新建，原 P3-2 计划）读 `prediction_snapshots` 对比实际结果，算 Brier + 10 桶校准曲线；Platt scaling 拟合修正系数；`GET /api/calibration-report` + 前端「模型表现」子 Tab。
-**依赖**：P0-3（已完成，终场比分回写）。
-**工作量**：后端 1.5 + 前端 1 + 校准拟合 0.5
-
-### P4-5 参数打扫（低优先，现在可以安全做）
-**目的**：`lib/prediction.js:59` `eloGuidedLambda()` 里的 `baseLambda = 1.5` 是 `globalAvgGoals` 从 2.5 改成 1.2 时漏改的孤立过期常数（session6 定位，一直未修）。现在有 964 场基线，可以用 `compareBaseline()` 安全验收这类小改动了。
-**做什么**：改成与当前 `globalAvgGoals=1.2` 一致的量纲（约 0.6），跑 `compareBaseline` 验收后再定是否合并。
-**工作量**：0.5天（含验收）
+| 项 | 状态 | 证据 |
+|---|---|---|
+| P4-1 市场赔率轨道 | ✅ 已完成（commits `cb2897b`, `fd9c30c`） | `calcOddsFactor()` 已采用 Shin's method 去水；市场赔率保留为独立基准/分歧排名，不把未验证市场信号强行写入主预测；`test-shin-devig.js`、`test-prediction-market-ui.js` 覆盖算法与展示。 |
+| P4-2 阵容身价信号 | ✅ 已完成（commits `99a79f0`, `4925cd1`） | 已新增 `market-value-signal.js`，按阵容身价生成有界信号并接入预测服务；闸门默认关闭，须通过 baseline 验收才启用；`test-market-value-signal.js` 覆盖信号和基线保护。 |
+| P4-3 洲际强度修正 | ✅ 已完成（commit `0409fea`） | 已新增 `continental-strength-signal.js`，按足联映射提供有界洲际强度修正并接入概率头；闸门默认关闭；`test-continental-strength-signal.js` 覆盖映射、修正和基线保护。 |
+| P4-4 校准层（合并原 P3-2） | ✅ 已完成（commit `7b3ea63`） | `lib/backtest-calibration.js` 已基于 `prediction_snapshots`/赛果生成 Brier、校准桶与 Platt 参数；已提供 `GET /api/calibration-report` 和前端「模型表现」面板；`test-calibration-report.js` 覆盖报告链路。 |
+| P4-5 lambda 过期常数修复 | ✅ 已完成（commit `7b3ea63`） | `eloGuidedBaseLambda` 已改为可配置参数并由回测显式传入，消除孤立硬编码常数；`test-elo-guided-base-lambda.js` 验证默认值、覆盖值及预测影响。 |
 
 ### 明确不做（有三重独立证据支撑）
 - 不引入 ML/梯度提升层——同特征下无增益，小样本更差
@@ -137,9 +117,9 @@
 |---|---|
 | a11y / 色盲 | ✅ 完成近期快修 | 核心按钮/Tab ≥44px；Standings 与 HUD Tab 有选中状态；概率条有 ARIA 标签、百分比常显及非纯颜色图案区分；320px 无页面级横向溢出。 |
 | 新模块补测试 | ✅ `test-bot-kb.js` 已注册进 `test-runner.js`（2026-07-03 核实，文档之前过期）；P0/P1 系列多数靠既有测试间接覆盖，无专项 |
-| README 数据流图 | 🟡 后台任务 `task_0368a662` 进行中（2026-07-03 发出） |
+| README 数据流图 | ✅ 完成（2026-07-04，手动补做）：`README.md` 新增 Mermaid 图，覆盖 FIFA API → Bridge → DB → Prediction → Frontend 主链路 + 全部 6 个后台任务（`lib/jobs/*.js`），经核实图中文件名与代码库一致 |
 | env/闸门治理 | ✅ `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY`/`VAPID_SUBJECT` 已补录 README（2026-07-03） |
-| AI 复盘历史回填 | 🟡 后台任务 `task_d6f98ff4` 进行中（2026-07-03 发出） |
+| AI 复盘历史回填 | ✅ 完成（2026-07-04）：卡住根因是 `AI_POSTMORTEM_ENABLED` Beta 默认 false（非代码强制），已决定开启。本地/生产均设 `AI_POSTMORTEM_ENABLED=true` + 配好 `ANTHROPIC_API_KEY`/`DEEPSEEK_API_KEY`；跑 `scripts/backfill-ai-postmortems.js` 清空积压；核实本地 `predictions.db` 85/85 `completed`（含真实 AI 生成文案，非占位符），生产 86/86 `completed`；生产后台 worker 已确认自动接管新比赛复盘（deployment `c1bfc4d3`，启动日志显示已处理 1 条新复盘）；`npm test` 44/44 suites、569/569 asserts 全绿 |
 
 ---
 
@@ -148,7 +128,7 @@
 - ~~ratings.json 数据源~~ → 已纠正（v2）
 - ~~botKnowledgeBase 注入~~ → 已升级为 P2-6（进行中）
 - i18n 迁移 → 仍是低优先，不变
-- **新增（v3）**：`lib/prediction.js:59 baseLambda=1.5` 过期常数 → 见 P4-5
+- ~~`lib/prediction.js:59 baseLambda=1.5` 过期常数~~ → ✅ 已通过 P4-5 修复（commit `7b3ea63`）
 
 ---
 
@@ -156,9 +136,10 @@
 
 1. ~~P2-6 收尾~~ ✅ 完成（`fe7d167`，2026-07-02）
 2. ~~P2-2 PWA 推送~~ ✅ 完成（`ab2b030`，分支 `p2/pwa-push`，2026-07-02；待部署 VAPID key 后真机验收）
-3. **P4-1 市场赔率轨道**（预测模型侧最高杠杆，且不占直播关键路径，当前最高优先级）
-4. **P1-2/P1-4 诊断脚本 + P1-5 真机验收**（低成本，插空做）
-5. P2-1、P4-2~P4-5、a11y、P3 系列——按团队带宽排
+3. ~~P4-1~P4-5 预测模型深化~~ ✅ 全部完成（`cb2897b`/`fd9c30c`/`99a79f0`/`4925cd1`/`0409fea`/`7b3ea63`）
+4. ~~README 数据流图~~ ✅ 完成（2026-07-04）
+5. ~~AI 复盘历史回填~~ ✅ 完成（2026-07-04）
+6. **P3 系列剩余项**（P3-1/P3-3/P3-4/P3-6）——等待足够比赛样本后再推进
 
 ## 分工与分支
-见 [EXECUTION_GUIDE.md](EXECUTION_GUIDE.md)：角色分工矩阵、分支体系、工作顺序、每任务 IN/OUT 边界与核查标准。（v3 未改动分支体系，P4 系列建议沿用 `p2/*` 同款分支命名，如 `p4/odds-shin-method`）
+见 [EXECUTION_GUIDE.md](EXECUTION_GUIDE.md)：角色分工矩阵、分支体系、工作顺序、每任务 IN/OUT 边界与核查标准。（v3 未改动分支体系；P4 系列实施时沿用了 `p4/*` 分支命名。）
