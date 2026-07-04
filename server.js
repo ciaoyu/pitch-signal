@@ -200,6 +200,11 @@ const server = http.createServer(async (req, res) => {
   if (pathname.startsWith('/manifest.json')) {
     return serveStatic(res, path.join(STATIC, 'manifest.json'));
   }
+
+  // Serve the worker from the origin root so it can control the app at `/`.
+  if (pathname === '/sw.js') {
+    return serveStatic(res, path.join(STATIC, 'sw.js'));
+  }
   
   // 默认页面
   serveStatic(res, path.join(TEMPLATES, 'index.html'));

@@ -119,6 +119,13 @@ const logger = { info() {}, warn() {}, error() {}, log() {} };
   assert(sw.includes("addEventListener('push'") && sw.includes('showNotification'), 'service worker renders push notification');
   assert(sw.includes("addEventListener('notificationclick'") && sw.includes('OPEN_MATCH'), 'service worker click opens match');
 
+  const app = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'app.js'), 'utf8');
+  const server = fs.readFileSync(path.join(__dirname, '..', 'server.js'), 'utf8');
+  const pushUi = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'push-notifications.js'), 'utf8');
+  assert(app.includes("serviceWorker.register('/sw.js?"), 'app registers service worker from origin root');
+  assert(server.includes("pathname === '/sw.js'"), 'server exposes root-scoped service worker route');
+  assert(pushUi.includes("'pending'") && pushUi.includes('push-notification-status'), 'push opt-in shows immediate visible status');
+
   console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
   process.exit(failed ? 1 : 0);
 })().catch(error => {

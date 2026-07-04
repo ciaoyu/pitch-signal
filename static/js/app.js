@@ -399,9 +399,13 @@
 
     // ========== Service Worker (PWA) ==========
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/static/sw.js?v=20260703-push', { updateViaCache: 'none' })
+        navigator.serviceWorker.register('/sw.js?v=20260704-push-scope', { updateViaCache: 'none' })
             .then(() => window.PitchSignalPush?.refresh())
-            .catch(() => {});
+            .catch(() => window.PitchSignalPush?.setState(
+                'error',
+                '推送服务初始化失败，请重新打开应用',
+                'Push service initialization failed. Reopen the app.',
+            ));
         navigator.serviceWorker.addEventListener('message', event => {
             if (event.data?.type === 'OPEN_MATCH' && event.data.matchId) {
                 window.openMatch(String(event.data.matchId));
