@@ -20,6 +20,7 @@ const TEST_DIR = path.join(ROOT, 'scripts');
 const TEST_FILES = [
   'test-backtest-sort.js',
   'test-bracket-updater.js',
+  'test-corner-backtest.js',
   'test-data-resolver.js',
   'test-diagnostic-scripts.js',
   'test-elo.js',
@@ -56,6 +57,7 @@ const TEST_FILES = [
   'test-bot-kb.js',
   'test-calibration-report.js',
   'test-odds-divergence.js',
+  'test-penalty-model.js',
   'test-pwa-push.js',
   'test-user-predictions.js',
   'test-teamcontext-news.js',
