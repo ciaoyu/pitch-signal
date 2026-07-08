@@ -30,7 +30,7 @@ const { espn } = require('../services/espn');
 const PredictionService = require('../lib/services/PredictionService');
 const teamResolver = require('../lib/team_resolver');
 const { buildPostMatchReview, savePostMatchReview, getSavedPostMatchReview } = require('../lib/postMatchReview');
-const TeamContextManager = require('../lib/teamContext');
+const teamContext = require('../lib/teamContext');
 
 const DATA_DIR = path.join(__dirname, '..', 'data', 'live-snapshots');
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -39,7 +39,6 @@ const POLL_INTERVAL = 5 * 60 * 1000; // 5 分钟
 // 赛前预测缓存（matchId → prediction result），避免每次轮询都重新计算
 let predictionService = null;
 const basePredictionCache = {};
-const teamContext = new TeamContextManager();
 
 function getPredictionService() {
   if (predictionService) return predictionService;
