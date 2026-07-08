@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+- **赛后复盘接入实时 Moment 数据 (Task D)**: 此前 `moment-sync` 每 60s 抓取的补水/中场/换人/进球结构化节点（含实时概率快照）完全没进赛后复盘 AI,`postMatchReview.js` prompt 里"识别补水→换人→进球"的指令形同空转。现 `lib/services/ReviewService.js` 新增 `getMatchMomentsTimeline()`,从 `match_moments` 表按 `match_id` 拉取本场全部节点(不再按 `prob_home_win` 过滤——真实数据里该列常为 NULL,过滤会导致查空),映射成 `summarizeSnapshotNode()` 认识的 node 形状（`trigger/minute/home/away/odds + 概率漂移 summary`,概率缺失时 `odds` 优雅降级为 `null`）,注入 `evidence.timeline`,经 `buildLiveTimelineI18n` 进入 `liveTimelineI18n` 与 AI prompt 上下文。同时补全 `nodeLabelI18n()` 映射表至 `moment-detector.js` 全部类型,避免新类型把英文 snake_case 当中文标签显示。去重按 `${minute}-${type}-${teamId}` 折叠跨 tick 重复换人、保留不同球队合法换人。回归测试 `scripts/test-moment-review-integration.js`(4 项测试 / 26 项断言)。已知限制：真实 `match_moments` 的 `prob_*` 列在直播无赛前预测快照时为 NULL（Track A 重定价未注入),此时 odds 优雅缺省,属 `moment-sync` 上游范畴(见 Task E)。
+
 ## v1.0.0-beta (2026-06)
 
 ### Public Beta
