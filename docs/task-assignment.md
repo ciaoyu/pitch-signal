@@ -149,6 +149,32 @@ Week 2:
 
 ---
 
+## Task D — 赛后复盘接入实时 Moment 数据
+
+背景：`lib/jobs/moment-sync.js` 每 60s 轮询进行中的比赛，把 kickoff/hydration_break/halftime/goal 等触发点连同当时的实时概率（Track A repricing）写进 `match_moments` 表（`lib/services/moment-detector.js`），已在生产验证正常运行（2026-07-07 阿根廷 vs 埃及一场就抓到 28' 补水、45' 中场等真实数据）。但 AI 赛后复盘（`lib/services/ReviewService.js` → `lib/postMatchReview.js`）目前完全没有消费这份数据——`ReviewService.js` 传给 `buildPostMatchReview()` 的 `evidence` 只有 `{events, commentary, news}`（解析自 ESPN 原始文字解说），而 AI prompt 里明确要求识别"hydration-break → substitution → goal"这类模式（`lib/postMatchReview.js:75`），却拿不到任何真实的补水/中场时间戳和概率漂移数据去支撑这个判断。
+
+- [ ] 在 `lib/services/ReviewService.js` 的 `reviewMatch()` 里（约第 90-120 行，`buildPostMatchReview` 调用前）新增一段查询，从 `match_moments` 表按 `match_id` 取出该场比赛全部记录（可参考 `lib/routes/prediction.js` 里 `/api/match/:id/live-probability` 路由已有的查询：`SELECT minute, minute_added, type, prob_home_win, prob_draw, prob_away_win, detected_at FROM match_moments WHERE match_id = ? AND prob_home_win IS NOT NULL ORDER BY minute ASC, minute_added ASC`）
+- [ ] 把每条记录映射成 `lib/postMatchReview.js` 里 `summarizeSnapshotNode()`（第 165 行）期望的 node 形状：`{ trigger, minute, home: {name, score}, away: {name, score}, odds: {homeWin, draw, awayWin}, summary }`（trigger 直接用 match_moments.type 的值；odds 用 prob_home_win/prob_draw/prob_away_win）
+- [ ] 把映射后的数组作为 `evidence.timeline`（或 `evidence.liveSnapshots`，两者 `buildLiveTimelineI18n` 都认，见 `lib/postMatchReview.js:192-195`）加进 `buildPostMatchReview()` 调用的 `evidence` 对象里
+- [ ] 扩充 `lib/postMatchReview.js` 的 `nodeLabelI18n()`（第 150-163 行）的 `map`：现在只认识 `first_sight/goal/halftime/first_half_hydration/second_half_hydration/extra_time_first_half/extra_time_second_half/fulltime/periodic` 这套旧命名，缺 `moment-detector.js` 实际产出的类型——补齐 `kickoff、hydration_break、goal_disallowed、woodwork、red_card、yellow_card、substitution_key、second_half_start、ht_added_time、ft_added_time、et_start、et_halftime、et_ht_added、et_fulltime、penalty_shootout、sustained_pressure_alert`（完整清单见 `lib/services/moment-detector.js:9-27` 的注释），否则这些类型会落到 fallback 分支，直接把英文 snake_case 原样当中文标签显示
+- [ ] 确认 `match_moments` 里同一 minute 同 type 出现重复记录时（已观察到 substitution_key 偶发重复，见本次会话记录）不会让 timeline 里出现同一节点两次——去重可以按 `${minute}-${type}` 做，或者交给上面查询加 `GROUP BY`/`DISTINCT`，自行判断哪种更合适
+- **涉及文件**：`lib/services/ReviewService.js`（约第 90-120 行）、`lib/postMatchReview.js`（`summarizeSnapshotNode` 第 165 行、`nodeLabelI18n` 第 150 行、`buildLiveTimelineI18n` 第 190 行）
+- **完成标志**：对一场已经跑过 moment-sync 的比赛（例如 match_id 760509）调用 `POST /api/match/:id/review?persist=false` 或直接跑 `ReviewService.reviewMatch()`，生成的复盘 JSON 里 `evidence`/timeline 字段包含真实的补水/中场分钟数和概率漂移，且 AI 输出的 processNotes 或 whyRight/whyWrong 里能看到具体引用这些时间点（而不是泛泛而谈）
+
+---
+
+## Task E — moment-sync 无赛前快照时的概率兜底（Task D 验收时发现的上游缺口）
+
+背景：Task D 验收时发现，生产库里真实的 `match_moments`（760496/760497/760498，共 25 条）`prob_home_win/prob_draw/prob_away_win` **全部为 NULL**。原因是 `lib/jobs/moment-sync.js` 的 Track A 重定价注入只在 `getPreMatchPrediction(matchId)` 返回非空时才执行（`if (prePred && moments.length) { ... reprice(...) }`），而这三场比赛直播时没有对应的 `prediction_snapshots` 行，所以 `prePred` 是 null，reprice 整段被跳过，moment 落库时概率列全空。Task D 已经让 AI 复盘拿到真实的补水/中场/换人分钟数，但拿不到概率漂移这块数据——因为上游压根没算。
+
+- [ ] 在 `lib/jobs/moment-sync.js` 里（`getPreMatchPrediction(matchId)` 调用处，约第 158-160 行）为 `prePred` 增加一个兜底：无赛前快照时，实时调用 `predictionService.predictMatch(matchId)` 现算一个基线（可参考 `lib/routes/prediction.js` 的 `/api/match/:id/live-probability` 路由里已有的兜底写法：`pred.goals?.homeExpected ?? pred.components?.poisson?.homeLambda ?? 1.2` 这种 fallback 链）
+- [ ] 注意 `moment-sync.js` 是常驻轮询 job（比赛进行中每 60s 一次），实时调用 predictionService 比读一行 snapshot 更慢——评估是否需要加一层内存缓存（同一 matchId 在同一场比赛内只算一次基线，别每个 tick 都重算），别把 60s 轮询拖慢
+- [ ] 决定拿不到任何基线（连实时计算都失败，比如队伍 ID 解析不了）时的最终兜底：是完全跳过概率注入（现状），还是用一个通用默认值——建议维持现状（跳过），不要编造假数据
+- **涉及文件**：`lib/jobs/moment-sync.js`（Track A 重定价注入段，约第 158-175 行）
+- **完成标志**：找一场当前没有 `prediction_snapshots` 记录的进行中比赛（或本地造数据模拟），跑一轮 moment-sync tick，确认 `match_moments` 新插入的行 `prob_home_win` 不再是 NULL；`npm test` 全绿；确认 60s 轮询在有多场同时进行的比赛时不会因为新增的实时预测调用而明显变慢（可加日志观察单次 tick 耗时）
+
+---
+
 ## 现有清单归档状态
 
 | 清单 | 状态 |
@@ -158,6 +184,8 @@ Week 2:
 | `docs/git-hygiene-checklist.md` | 全部分配给 Person A |
 | `docs/backtest-backlog.md` | 全部分配给 Person C |
 | 全面审计新发现 | HIGH→Person A（A4, A9）、MEDIUM→Person A+B（A5-A6, B3-B4）、LOW→Person A（A7-A10） |
+| Task D（moment-sync 数据接入赛后复盘） | ✅ 已完成（2026-07-08）：`lib/services/ReviewService.js` 新增 `getMatchMomentsTimeline()` 从 `match_moments` 拉取带实时概率快照的节点并映射成 `summarizeSnapshotNode()` 认识的 node 形状，注入 `evidence.timeline`；`lib/postMatchReview.js` 的 `nodeLabelI18n()` 映射表补全 `moment-detector.js` 全部类型（kickoff/goal_disallowed/woodwork/red_card/yellow_card/substitution_key/hydration_break/ht_added_time/second_half_start/ft_added_time/et_*/penalty_shootout/sustained_pressure_alert 等），去重按 `${minute}-${type}-${teamId}`；回归测试见 `scripts/test-moment-review-integration.js`（4 项测试 / 26 项断言，已接入 test-runner）。注：真实 `match_moments`（760496/97/98）的 `prob_*` 列为 NULL，因这些比赛直播时无赛前预测快照、Track A 重定价未注入——属上游 moment-sync 范畴，Task D 已做优雅降级（odds 缺失时不展示）。 |
+| Task E（moment-sync 无赛前快照时的概率兜底） | 待分配，独立任务，不阻塞 Task D 已上线的部分（2026-07-08 新增，Task D 验收时发现的上游缺口） |
 
 ## 前端测试（testing 问题 3）
 > 由用户自行处理（app.js 拆分中），不分配。
