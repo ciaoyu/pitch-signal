@@ -32,6 +32,7 @@ const TEST_FILES = [
   'test-import-market-values.js',
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
+  'test-ko2-intel-card.js',
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',

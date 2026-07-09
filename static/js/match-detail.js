@@ -647,6 +647,10 @@
         // P2-4: user prediction voting panel
         html += renderUserVotePanel(pred);
         if(pred.tacticalScenario?.applicable) html+=renderTacticalScenario(pred.tacticalScenario);
+        if(pred.knockoutIntel) {
+            const renderer = typeof renderKnockoutIntel === 'function' ? renderKnockoutIntel : (window.MatchRenderers && window.MatchRenderers.renderKnockoutIntel);
+            if (renderer) html += renderer(pred.knockoutIntel);
+        }
         html+='</div>';
         return html;
     }
