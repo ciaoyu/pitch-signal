@@ -85,6 +85,12 @@ const TEST_FILES = [
   'test-w1d-pipeline-audit.js',
     // KO-3 knockout prediction parameter wiring
   'test-knockout-prediction-wiring.js',
+    // KO-4 suspension ledger rules engine
+  'test-suspension-rules.js',
+    // KO-4 player-event extraction (ESPN keyEvents -> player_match_events)
+  'test-player-events.js',
+    // KO-4 suspensions section contract (wired into knockout-intel)
+  'test-knockout-intel-suspensions.js',
 ];
 
 const filter = process.argv.includes('--match')
