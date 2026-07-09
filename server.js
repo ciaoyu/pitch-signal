@@ -214,15 +214,15 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   logger.info(`⚽ PitchSignal: http://0.0.0.0:${PORT}`);
 
-  // 确保赛程表已播种：P0-3 终场比分回写 / P4-4 校准报告 / P3-1 Track-B 都依赖
-  // matches 表有真实赛程。此前 seedRealGroups 虽定义却从未被调用，导致该表为空、
-  // 相关功能静默失效。此处启动时幂等补种（已有数据则跳过）。
+  // Ensure schedule table is seeded: P0-3 final score writeback / P4-4 calibration report / P3-1 Track-B all depend on
+  // matches table having actual match schedule. Previously seedRealGroups was defined but never called, leaving the table empty
+  // and silently breaking related features. Idempotently seed on boot (skipped if data already exists).
   try {
     const { groups } = require('./lib/db');
     const seeded = groups.seedRealGroups();
-    if (seeded > 0) logger.info(`[boot] 已播种 ${seeded} 个小组赛程到 matches 表`);
+    if (seeded > 0) logger.info(`[boot] Seeded ${seeded} group matches into matches table`);
   } catch (e) {
-    logger.warn('[boot] 赛程播种失败', { error: e.message });
+    logger.warn('[boot] Match schedule seeding failed', { error: e.message });
   }
 
   // Start background jobs

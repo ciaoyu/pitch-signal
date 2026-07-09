@@ -229,7 +229,7 @@ function syncToDb(completedMatches) {
 }
 
 async function main() {
-  // 确保 matches 表已有赛程：findMatch 依赖其存在，否则同步会静默 matched:0
+  // Ensure matches table has schedule data: findMatch depends on it, otherwise sync silently yields matched:0
   try {
     const { groups } = require('../lib/db');
     groups.seedRealGroups();
