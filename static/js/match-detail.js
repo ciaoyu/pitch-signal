@@ -647,8 +647,32 @@
         // P2-4: user prediction voting panel
         html += renderUserVotePanel(pred);
         if(pred.tacticalScenario?.applicable) html+=renderTacticalScenario(pred.tacticalScenario);
+        if(window.WorldCup.TacticalScenarios && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout || (pred.stage && !/Group/i.test(pred.stage)))) {
+            html += renderKnockoutScenariosBlock(pred);
+        }
         html+='</div>';
         return html;
+    }
+    function renderKnockoutScenariosBlock(pred) {
+        if (!window.WorldCup.TacticalScenarios) return '';
+        const homeTags = pred.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
+        const awayTags = pred.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
+        const penaltySkill = pred.knockoutIntel?.sections?.penalty || {};
+        const scenarios = window.WorldCup.TacticalScenarios.getRelevantScenarios({
+            homeTags,
+            awayTags,
+            penaltySkill,
+            limit: 3
+        });
+        if (!scenarios || !scenarios.length) return '';
+        const L = (obj) => esc(window.WorldCup.I18n.i18nText(obj, ''));
+        const cards = scenarios.map(sc => `
+            <div class="elo-card mb-2">
+                <div class="text-xs font-bold text-amber-300 mb-1">⚡ ${L(sc.title)}</div>
+                <div class="text-[10px] text-gray-400 mb-1">${tx('前提','Condition')}: ${L(sc.condition)}</div>
+                <div class="text-[10px] text-gray-300 leading-snug">${tx('推演','Analysis')}: ${L(sc.deduction)}</div>
+            </div>`).join('');
+        return `<div class="pred-section"><div class="pred-section-title text-amber-400"><span class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-xs">🧠</span>${tx('淘汰赛战术推演 (Top 3)','Knockout Tactical Scenarios (Top 3)')}</div>${cards}</div>`;
     }
     function renderTacticalScenario(ts) {
         const L=(o)=>esc(window.WorldCup.I18n.i18nText(o,'')),focusIds=Object.keys(ts.teams||{});

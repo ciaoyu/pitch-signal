@@ -40,6 +40,7 @@ const MODULES = [
     'pre-match.js',
     'odds-card.js',
     'ui-helpers.js',
+    'tactical-scenarios.js',
     'match-renderers.js',
     'push-notifications.js',
     'app.js',
