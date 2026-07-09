@@ -41,19 +41,18 @@
 - 证据：`templates/index.html:356-360`，三个 tab 按钮硬编码 DOM 顺序：小组赛→淘汰赛→射手榜。
 - 修复方向：调整为 淘汰赛→射手榜→小组赛，默认激活 tab 改成淘汰赛（实现前跟总控制确认默认项）。
 
-### PF-7【方案 B：真实接入 + 完全展示 + 融合】Polymarket 从假数据变真实
-- 证据：`lib/polymarketClient.js:1-27`——`fetchMatchMarkets()` 里真实 API 调用代码已写好但被注释掉（`https://gamma-api.polymarket.com/events`），实际执行的是 `_mockFetchMarket()` 伪随机假数据；注释写着"World Cup markets aren't live currently"——这个判断在 2026 世界杯正在进行时已过期。
-- `server.js:96-117` `assertFeatureGates()` **无条件强制**把 `POLYMARKET_ENABLED` 改成 `false`，不读环境变量实际值。
-- **接入方式核实结果**（查了 Polymarket 官方文档 `docs.polymarket.com/cn/concepts/markets-events` + 公开资料确认）：
-  - **Gamma API 完全公开，不需要注册、不需要 API Key、不需要钱包**——`https://gamma-api.polymarket.com` 的市场/事件读取接口本来就是免费公开的 REST 接口，`lib/polymarketClient.js` 里已经写好的那段注释代码就是正确路径，取消注释接真实数据即可。
-  - 只有下单/交易（CLOB API 的写操作）才需要钱包签名认证，只读市场数据用不到。
-  - CoinGecko 对 Polymarket 数据的整合目前只覆盖加密货币价格预测市场（比特币/以太坊等），不是世界杯足球赛事市场，不建议作为数据源。
+### PF-7【方案已调整：降级为独立"冠军赔率"卡片，不做单场融合】Polymarket 从假数据变真实
+- 原方案 B（真实接入 + 单场比赛融合）已放弃：实测确认 Polymarket 这届世界杯**没有任何单场比赛胜平负盘口**——查了 `world-cup`、`fifa-world-cup` 两个 tag 下全部 97 个市场（`tag_slug=world-cup` 47 个 + `tag_slug=fifa-world-cup` 50 个），清一色是冠军赔率、出线概率、金靴/金球等奖项、"是否会有点球大战"这类花式盘、"决赛具体对阵"预测——**没有一个是"法国 vs 摩洛哥谁赢"这种单场盘口**。`lib/prediction.js` 里现成的 Shin 去水 + Sigmoid 融合逻辑吃的是单场胜平负概率，Polymarket 现在的数据形状根本对不上，接了也是空转（返回 null，不改变任何展示概率）。
+- **新方案：Polymarket 真实数据接入 + 独立"冠军赔率"卡片，不进融合**：
+  - 证据：`https://gamma-api.polymarket.com/events?slug=world-cup-winner` 是真实存在、活跃的市场，每支队伍一个"Will X win the 2026 FIFA World Cup?"二元市场，返回真实隐含概率——实测法国 31.95%、阿根廷 19.55%、西班牙 19.35%、英格兰 16.05%，已淘汰的队伍（巴西/德国/葡萄牙/荷兰等）已经是 0%。
+  - Gamma API 完全公开、不需要注册/API Key/钱包认证——这个是只读市场数据端点，不涉及 `docs.polymarket.com` 交易文档里说的 CLOB 下单认证（那一套 L1/L2 钱包签名是用来下单交易的，我们不下单，用不上，不要被这部分文档带偏）。
+  - `lib/polymarketClient.js:1-27` 里注释掉的真实 API 调用代码目前指向的是单场匹配（`query: ${homeTeam} vs ${awayTeam}`），需要改成指向 `world-cup-winner` 这个 slug，解析 `markets[].question`/`outcomePrices` 提取每队夺冠概率。
 - 修复方向：
-  1. 把 `lib/polymarketClient.js` 里注释掉的真实 Gamma API 调用代码启用，替换 `_mockFetchMarket`，处理好无匹配市场/请求失败的兜底；
-  2. 从 `assertFeatureGates()` 的强制清单里去掉 `POLYMARKET_ENABLED`，让环境变量真正生效；
-  3. 确认 `lib/prediction.js` 里已有的 Shin 去水 + Sigmoid 融合逻辑在真实数据接入后走得通；
-  4. 同步更新 `CLAUDE.md`，去掉"POLYMARKET_ENABLED 强制 false"的过期描述。
-- 风险提示：这是把一个安全闸门永久打开，且直接影响用户看到的胜率数字。验收时重点核对：真实 API 报错/无数据时的兜底行为（不能崩、不能静默回退到假数据）、融合后 Brier/回归测试是否还过得去。
+  1. 把 `lib/polymarketClient.js` 改成拉取 `world-cup-winner` 事件（及视需要补充 `world-cup-nation-to-reach-semifinals` 等出线相关市场），替换 `_mockFetchMarket`，处理好队伍名匹配（Polymarket 用英文全名，需要跟 `lib/team-data.js` 的球队名做映射）和请求失败兜底；
+  2. **不需要动 `server.js` 的 `assertFeatureGates()` 强制闸门**——这个闸门管的是"是否融合进预测概率"，这次不融合，闸门维持现状即可，不用碰这个安全开关；
+  3. 新增一个独立的"冠军赔率"展示卡片（前端位置待实现者提议，比如放在赛程/积分页顶部或球队详情里），展示各队夺冠概率、可选出线概率，数据来源标注"Polymarket 预测市场"，跟单场比赛预测页面完全不共用组件、不影响任何已有的胜率数字；
+  4. `CLAUDE.md` 不需要改——`POLYMARKET_ENABLED` 闸门语义没变（依然是"是否融合"），只是这次我们压根不用这个闸门管的那条路径。
+- 风险大幅降低：不碰安全闸门、不改任何展示概率，纯新增一张独立信息卡片，验收只需核对真实数据显示正确、队伍名匹配没错、无匹配/请求失败时优雅隐藏卡片（不崩、不显示空数据）。
 
 ### PF-8 比分预测展示多个选项，不止一个
 - 证据：`lib/poisson.js:87-96` `goalProbabilityMatrix(homeLambda, awayLambda, maxGoals=5)` 已经算出完整 6×6 比分联合概率矩阵；内部只取概率最高的一格作为 `likelyScore`/`likelyScoreProb`，第二、第三名算完就丢了；`lib/prediction.js:393-403` 只往外暴露这一个 mode 比分；前端 `static/js/match-renderers.js`、`static/js/elo-prediction.js` 也只渲染这一个。
@@ -70,7 +69,7 @@
 | PF-3 关键事件 i18n + 筛选 | `feat/pf3-key-events-i18n` | `pf3-key-events-i18n` | A |
 | PF-4 AI 归因阵容证据（新增证据，不动老数据） | `feat/pf4-postmortem-lineup-evidence` | `pf4-postmortem-lineup-evidence` | A |
 | PF-5 积分 Tab 顺序 | `feat/pf5-standings-tab-order` | `pf5-standings-tab-order` | A |
-| PF-7 Polymarket 真实接入（方案 B） | `feat/pf7-polymarket-real-fusion` | `pf7-polymarket-real-fusion` | B（风险最高，动手前必须先跟总控制过实现方案） |
+| PF-7 Polymarket 冠军赔率卡片（独立展示，不融合） | `feat/pf7-polymarket-winner-odds` | `pf7-polymarket-winner-odds` | B |
 | PF-8 比分矩阵多选项展示 | `feat/pf8-top-scores-display` | `pf8-top-scores-display` | A |
 
 **规约**：
@@ -78,8 +77,7 @@
 - 每个任务验收要求：`npm test` 全绿 + 对应端点的真实 curl/UI 验证，附验证输出。
 - PF-1/PF-6 合并为一个任务，避免同文件双分支冲突。
 - PF-4 实现者动手前必须先看一遍 Railway 生产环境现有的复盘内容长什么样，确认新增证据字段不会破坏已验证的 prompt 结构，且不重新生成/覆盖任何已有复盘。
-- PF-7 与 PF-8 都会碰 `lib/prediction.js`——两者独立开发，但**合并顺序上先合 PF-8（改动小）再合 PF-7（改动大）**，由总控制在合并时把关，避免大改动的 PF-7 需要反复对齐。
-- PF-7 范围最大、风险最高（动了安全闸门+接真实外部 API+影响展示概率），实现前必须先跟总控制过一遍具体实现方案（真实 API 的错误处理、融合权重是否复用现有 Sigmoid 逻辑）。
+- PF-7 已降级为独立展示卡片，不再触碰 `lib/prediction.js`/融合逻辑/安全闸门，与 PF-8 无文件冲突，可独立合并，风险等级降到跟 PF-5 一档（纯新增展示，不影响任何已有数字）。
 
 **不包含**：方法论文档更新——这是用户与总控制之间单独的任务，不在本批次派工范围内。
 
@@ -89,6 +87,6 @@
 
 - 每个 PF 任务：拉分支 → `npm test` → 起本地服务器 → 用真实比赛 ID/球队 ID 走一遍对应接口/页面，确认修复生效且不影响 Wave 1 已验证的红线（回测主数字、赛中纪律端点等）。
 - PF-3/PF-4 需要人工核查内容是否真的是中文、是否引用了阵容变化，不能只看接口返回 200。
-- PF-7 额外验证：真实 Polymarket API 不可用时的兜底行为、融合后跑一次 `node scripts/run-backtest.js` 确认历史回测口径不受意外耦合影响。
+- PF-7 额外验证：真实 Polymarket API 数据（各队夺冠概率）展示正确、队伍名匹配无误、API 不可用/无匹配数据时卡片优雅隐藏（不崩、不显示空白/假数据）；确认没有任何单场比赛的展示概率被这张卡片影响。
 - PF-8 验证：抽几场比赛确认 `topScores` 按概率从高到低排列且总和不超过 1，前端列表展示正常。
 - 全部通过后，合并进本地 main，push 前再检查一次；push 目标固定是 `backup`（`ciaoyu/pitch-signal`），不是 `origin`。
