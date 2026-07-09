@@ -92,6 +92,8 @@ const TEST_FILES = [
   'test-knockout-intel.js',
     // KO-5 fatigue index signal
   'test-fatigue-signal.js',
+    // KO-7 penalty shootout readiness section
+  'test-penalty-section.js',
 ];
 
 const filter = process.argv.includes('--match')
