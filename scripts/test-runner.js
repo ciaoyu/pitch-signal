@@ -30,6 +30,7 @@ const TEST_FILES = [
   'test-fuzzy-match.js',
   'test-health-enhance.js',
   'test-import-market-values.js',
+  'test-ko11-star-form.js',
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
   'test-matchup-spatial.js',
