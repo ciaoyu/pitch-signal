@@ -29,6 +29,7 @@ const MODULES = [
     'standings.js',
     'match-detail.js',
     'team-detail.js',
+    'world-cup-odds.js',
     'elo-prediction.js',
     'players-tab.js',
     'spatial-matchup.js',

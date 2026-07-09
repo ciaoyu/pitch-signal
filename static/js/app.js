@@ -44,6 +44,7 @@
             loadTeams();
         }
         if (state.tab === 'prediction') loadPrediction();
+        if (state.tab === 'markets') loadWorldCupOdds();
         history.replaceState(null, '', '#' + state.tab);
     }
 

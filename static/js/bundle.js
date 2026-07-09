@@ -3926,12 +3926,25 @@ var require_team_detail = __commonJS({
       const translateCoachField = (...a) => (window.WorldCup.I18n?.translateCoachField || ((x) => x))(...a);
       let allTeams = [];
       async function refreshTeamsFromStandings() {
-        const d = await api("/api/standings");
+        const [d, b] = await Promise.all([api("/api/standings"), api("/api/bracket")]);
+        const eliminatedNames = /* @__PURE__ */ new Set();
+        if (b?.matches) {
+          for (const [slotId, m] of Object.entries(b.matches)) {
+            if (m.status === "final" && m.winner) {
+              const loser = m.winner === "A" ? m.teamB : m.teamA;
+              if (loser?.name && !slotId.startsWith("SF-")) {
+                eliminatedNames.add(loser.name);
+                if (loser.nameI18n) eliminatedNames.add(loser.nameI18n);
+              }
+            }
+          }
+        }
         if (d?.groups) {
           allTeams = [];
           for (const g of d.groups) {
             for (const t of g.standings) {
-              allTeams.push({ ...t, group: g.name });
+              const isEliminated = t.status === "eliminated" || t.eliminated === true || eliminatedNames.has(t.name) || t.nameI18n && eliminatedNames.has(t.nameI18n);
+              allTeams.push({ ...t, group: g.name, eliminated: !!isEliminated });
             }
           }
         }
@@ -3963,12 +3976,17 @@ var require_team_detail = __commonJS({
             return;
           }
         }
-        el.innerHTML = allTeams.map((team) => `
-            <div style="background:rgba(0,0,0,.28);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 14px;cursor:pointer;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(52,211,153,.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,.05)'" data-action="open-team-detail" data-team-id="${attr(team.id)}" data-team-name="${attr(team.name)}" data-group="${attr(team.group)}">
+        const sortedTeams = [...allTeams].sort((a, b) => {
+          if (a.eliminated !== b.eliminated) return a.eliminated ? 1 : -1;
+          return (Number(b.pts) || 0) - (Number(a.pts) || 0);
+        });
+        el.innerHTML = sortedTeams.map((team) => `
+            <div style="background:rgba(0,0,0,.28);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 14px;cursor:pointer;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04);transition:border-color .2s;opacity:${team.eliminated ? "0.6" : "1"}" onmouseover="this.style.borderColor='rgba(52,211,153,.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,.05)'" data-action="open-team-detail" data-team-id="${attr(team.id)}" data-team-name="${attr(team.name)}" data-group="${attr(team.group)}">
                 ${team.logo ? `<img src="${attr(team.logo)}" style="width:36px;height:36px;object-fit:contain;margin:0 auto 8px" onerror="this.style.display='none'">` : `<div style="font-size:28px;margin-bottom:8px">\u{1F3F3}\uFE0F</div>`}
                 <div style="font:500 14px/1 'Inter';color:#f8fafc;margin-bottom:2px">${esc(displayMaybeTeamName(team))}</div>
                 <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15);margin-bottom:6px">${esc(displayGroupName(team.group))}</div>
-                <div style="display:flex;justify-content:center;gap:8px;font:400 9px/1 'JetBrains Mono',monospace">
+                <div style="display:flex;justify-content:center;align-items:center;gap:6px;font:400 9px/1 'JetBrains Mono',monospace">
+                    ${team.eliminated ? `<span style="padding:2px 6px;border-radius:4px;background:rgba(248,113,113,.1);color:rgba(248,113,113,.7)">${esc(tx("\u5DF2\u6DD8\u6C70", "Out"))}</span>` : `<span style="padding:2px 6px;border-radius:4px;background:rgba(52,211,153,.1);color:#34d399">${esc(tx("\u5728\u5F79", "Active"))}</span>`}
                     <span style="padding:2px 7px;border-radius:4px;background:rgba(52,211,153,.06);color:rgba(52,211,153,.5)">${esc(tx("\u79EF\u5206", "Pts"))} <span style="font-weight:600;color:#34d399">${esc(team.pts)}</span></span>
                     <span style="padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.03);color:rgba(248,250,252,.2)">${esc(team.wins)}-${esc(team.draws)}-${esc(team.losses)}</span>
                 </div>
@@ -4095,7 +4113,7 @@ var require_team_detail = __commonJS({
         const [enhancedData, wcMatches] = await window.WorldCup.ApiClient.allData(["/api/team/" + teamId + "/enhanced", "/api/team/" + teamId + "/recent-matches"]);
         if (enhancedData && !enhancedData.error) {
           const wcGroupRecord = (() => {
-            const ms = wcMatches?.matches?.filter((m) => m.stage === "group" && m.state === "post");
+            const ms = wcMatches?.matches?.filter((m) => m.state === "post");
             if (!ms?.length) return null;
             const w = ms.filter((m) => m.result === "W").length;
             const d = ms.filter((m) => m.result === "D").length;
@@ -4143,7 +4161,8 @@ var require_team_detail = __commonJS({
         if (d.overview) {
           h += `<div style="${card}"><div style="${secHdr}">\u{1F4CA} ${tx("\u7403\u961F\u6982\u51B5", "Team Overview")}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font:400 11px/1 'Inter'"><div><span style="color:rgba(248,250,252,.25)">${tx("\u4E16\u754C\u6392\u540D", "World Rank")}</span><span style="font-weight:600;margin-left:4px;color:${getRankingColor(d.overview.worldRanking)}">#${d.overview.worldRanking || "?"}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("FIFA\u79EF\u5206", "FIFA Points")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.fifaPoints || "?"}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u5E02\u503C", "Market Value")}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${d.overview.marketValue || "?"}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u5E73\u5747\u5E74\u9F84", "Avg Age")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.avgAge || "?"}${tx("\u5C81", "")}</span></div></div>`;
           if (d.overview.groupRecord) {
-            h += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)"><div style="font:400 11px/1 'Inter';color:rgba(248,250,252,.25);margin-bottom:6px">${tx("\u5C0F\u7EC4\u8D5B\u6218\u7EE9", "Group Record")}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:500 12px/1 'Inter'"><div style="color:#34d399">${d.overview.groupRecord.w || 0}${tx("\u80DC", "W")}</div><div style="color:#f59e0b">${d.overview.groupRecord.d || 0}${tx("\u5E73", "D")}</div><div style="color:rgba(248,113,113,.6)">${d.overview.groupRecord.l || 0}${tx("\u8D1F", "L")}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:400 11px/1 'Inter';margin-top:4px"><div><span style="color:rgba(248,250,252,.25)">${tx("\u8FDB\u7403", "GF")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.groupRecord.gf || 0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u5931\u7403", "GA")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.groupRecord.ga || 0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u79EF\u5206", "Pts")}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${d.overview.groupRecord.pts || 0}</span></div></div></div>`;
+            const rec = d.overview.groupRecord;
+            h += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)"><div style="font:400 11px/1 'Inter';color:rgba(248,250,252,.25);margin-bottom:6px">${tx("\u672C\u5C4A\u4E16\u754C\u676F\u6218\u7EE9", "World Cup Record")}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:500 12px/1 'Inter'"><div style="color:#34d399">${rec.w || 0}${tx("\u80DC", "W")}</div><div style="color:#f59e0b">${rec.d || 0}${tx("\u5E73", "D")}</div><div style="color:rgba(248,113,113,.6)">${rec.l || 0}${tx("\u8D1F", "L")}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:400 11px/1 'Inter';margin-top:4px"><div><span style="color:rgba(248,250,252,.25)">${tx("\u8FDB\u7403", "GF")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${rec.gf || 0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u5931\u7403", "GA")}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${rec.ga || 0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx("\u51C0\u80DC\u7403", "GD")}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${rec.gd ?? (rec.gf || 0) - (rec.ga || 0)}</span></div></div></div>`;
           }
           h += `</div>`;
         }
@@ -4183,6 +4202,56 @@ var require_team_detail = __commonJS({
         renderPlayerRadarChart
       };
       Object.assign(window, { loadTeams: loadTeams2, openTeamDetail, closeTeamModal, refreshTeamsFromStandings });
+    })();
+  }
+});
+
+// static/js/world-cup-odds.js
+var require_world_cup_odds = __commonJS({
+  "static/js/world-cup-odds.js"() {
+    (function() {
+      "use strict";
+      const { tx, esc } = window.WorldCup.Utils;
+      function loadWorldCupOdds2() {
+        const el = document.getElementById("tab-markets");
+        if (!el) return;
+        el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u52A0\u8F7D\u593A\u51A0\u8D54\u7387...", "Loading title odds...")}</div>`;
+        window.WorldCup.ApiClient.get("/api/world-cup-winner").then((res) => {
+          if (!res || !res.odds || res.odds.length === 0) {
+            el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u6570\u636E\u6682\u65E0", "No title odds available")}</div>`;
+            return;
+          }
+          const rows = res.odds.map((o, i) => {
+            const eliminated = o.probability < 1;
+            const barW = Math.max(2, o.probability);
+            return `
+            <div class="glass-light rounded-lg p-2 flex items-center justify-between" style="opacity:${eliminated ? "0.55" : "1"}">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-[11px] text-gray-500 w-5 text-right shrink-0">${i + 1}</span>
+                <span class="text-sm font-medium text-gray-100 truncate">${esc(o.team)}</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="w-24 h-1.5 rounded bg-white/10 overflow-hidden">
+                  <div class="h-full" style="width:${barW}%;background:#34d399"></div>
+                </div>
+                <span class="text-sm font-bold text-green-400 w-12 text-right">${o.probability.toFixed(1)}%</span>
+              </div>
+            </div>`;
+          }).join("");
+          el.innerHTML = `
+          <div class="glass rounded-xl p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-yellow-400">\u{1F3C6} ${tx("\u593A\u51A0\u8D54\u7387", "Title Odds")}</h3>
+              <span class="text-[11px] text-gray-600">Polymarket</span>
+            </div>
+            <div class="space-y-1.5">${rows}</div>
+            <div class="text-[10px] text-gray-600 mt-3">${tx("\u6570\u636E\u6765\u6E90 Polymarket \u771F\u5B9E\u5E02\u573A\uFF0C\u4EC5\u4F9B\u53C2\u8003", "Source: Polymarket live markets. Informational only.")}</div>
+          </div>`;
+        }).catch(() => {
+          el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u52A0\u8F7D\u5931\u8D25", "Failed to load title odds")}</div>`;
+        });
+      }
+      window.loadWorldCupOdds = loadWorldCupOdds2;
     })();
   }
 });
@@ -7192,6 +7261,7 @@ var require_app = __commonJS({
           loadTeams();
         }
         if (state.tab === "prediction") loadPrediction();
+        if (state.tab === "markets") loadWorldCupOdds();
         history.replaceState(null, "", "#" + state.tab);
       }
       function togglePredDetail(id) {
@@ -7531,6 +7601,7 @@ var require_entry = __commonJS({
     var import_standings = __toESM(require_standings());
     var import_match_detail = __toESM(require_match_detail());
     var import_team_detail = __toESM(require_team_detail());
+    var import_world_cup_odds = __toESM(require_world_cup_odds());
     var import_elo_prediction = __toESM(require_elo_prediction());
     var import_players_tab = __toESM(require_players_tab());
     var import_spatial_matchup = __toESM(require_spatial_matchup());
