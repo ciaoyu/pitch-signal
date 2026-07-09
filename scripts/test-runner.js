@@ -35,6 +35,7 @@ const TEST_FILES = [
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',
+  'test-pf4-lineup-evidence.js',
   'test-poisson.js',
   'test-post-match-review.js',
   'test-pre-match-snapshot-guard.js',
