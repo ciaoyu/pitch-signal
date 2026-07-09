@@ -67,6 +67,7 @@ const TEST_FILES = [
   // 缺陷修复回归测试
   'test-matches-seed.js',
   'test-surge-detection.js',
+  'test-knockout-writeback.js',
 ];
 
 const filter = process.argv.includes('--match')
