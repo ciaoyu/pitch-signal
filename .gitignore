@@ -59,3 +59,21 @@ data/wc2026/
 scratch/previews/
 docs/archive/
 docs/deployment-strategy.md
+
+# Internal / operational docs
+docs/EXECUTION_GUIDE.md
+docs/FEEDBACK_CONSOLIDATION.md
+docs/REMAINING_FEATURES_PLAN.md
+docs/task-assignment.md
+docs/pitch-signal-audit_20260628.md
+docs/pitch-signal-remediation-work-orders-20260629.md
+docs/P1-5_UX_ACCEPTANCE.md
+docs/P2-6_BOT_PRODUCTION_ACCEPTANCE.md
+docs/git-hygiene-checklist.md
+docs/server-refactor-checklist.md
+docs/testing-checklist.md
+docs/backtest-backlog.md
+docs/continental-strength-signal-research.md
+docs/elo-guided-base-lambda-review.md
+docs/market-value-signal-research.md
+docs/operations/public-beta-safety-manual.md
