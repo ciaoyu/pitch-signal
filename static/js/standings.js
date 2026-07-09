@@ -169,6 +169,11 @@
         </div>`;
 
         container.innerHTML = html;
+
+        // PF-5: default standings sub-tab is Knockout (bracket) — activate it so the
+        // bracket lazy-loads instead of showing a permanent "loading…" placeholder.
+        const defaultSub = document.getElementById('standings-sub-knockout');
+        if (defaultSub) switchStandingsSubTab('knockout', defaultSub);
     }
 
     // Event delegation for bracket match clicks
