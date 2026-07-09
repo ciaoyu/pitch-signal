@@ -26,26 +26,20 @@ const deps = {
         },
         header: {
           competitions: [
-            { status: { displayClock: '0' } },
+            {
+              competitors: [
+                { id: HOME_ID, homeAway: 'home' },
+                { id: AWAY_ID, homeAway: 'away' },
+              ],
+              status: { displayClock: '0' },
+            },
           ],
         },
       };
     }
     if (path === '/scoreboard') {
       return {
-        events: [
-          {
-            id: MATCH_ID,
-            competitions: [
-              {
-                competitors: [
-                  { id: HOME_ID, homeAway: 'home' },
-                  { id: AWAY_ID, homeAway: 'away' },
-                ],
-              },
-            ],
-          },
-        ],
+        events: [],
       };
     }
     return {};
