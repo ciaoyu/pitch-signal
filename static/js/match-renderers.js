@@ -1483,15 +1483,29 @@ window.WorldCup.MatchRenderers = (() => {
             </div>
         </div>`;
 
-        // Predicted score
-        html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
-            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('预测比分', 'PREDICTED SCORE')}</div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-                <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
-                <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
-                <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
-            </div>
-        </div>`;
+        // Predicted scores
+        if (Array.isArray(pred.topScores) && pred.topScores.length > 0) {
+            html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('可能比分矩阵', 'TOP PREDICTED SCORES')}</div>
+                <div style="display:flex;flex-direction:column;gap:5px">`;
+            pred.topScores.slice(0, 4).forEach((item, idx) => {
+                const probPct = item.prob != null ? `${Math.round(item.prob * 1000) / 10}%` : '';
+                html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
+                    <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? 'rgba(52,211,153,.85)' : 'rgba(248,250,252,.65)'}">${esc(item.score)}</span>
+                    ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ''}
+                </div>`;
+            });
+            html += `</div></div>`;
+        } else {
+            html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('预测比分', 'PREDICTED SCORE')}</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+                    <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
+                    <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
+                    <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
+                </div>
+            </div>`;
+        }
 
         html += `</div>`;
         return html;

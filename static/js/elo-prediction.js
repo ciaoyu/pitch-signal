@@ -237,7 +237,9 @@
                 const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
                 const coachPred = p.components?.coach || {};
                 const weights = pred.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.10, odds: 0.20 };
-                const topScores = `${score}${p.likelyScoreProb != null ? ` ${Fmt().pct(p.likelyScoreProb)}` : ''}`;
+                const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0
+                    ? p.topScores.slice(0, 4).map(s => `${s.score} (${Fmt().pct(s.prob)})`).join(' · ')
+                    : `${score}${p.likelyScoreProb != null ? ` ${Fmt().pct(p.likelyScoreProb)}` : ''}`;
                 const confLabel = conf > 70 ? tx('高', 'High') : conf > 50 ? tx('中', 'Medium') : tx('低', 'Low');
 
                 let headerText = '';
@@ -301,8 +303,8 @@
                             <div style="color:rgba(248,250,252,.35)">${tx('主胜','Home')} ${(coachPred.home*100).toFixed(0)}%  ${tx('平','Draw')} ${(coachPred.draw*100).toFixed(0)}%  ${tx('客','Away')} ${(coachPred.away*100).toFixed(0)}%</div>
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
-                            <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">🎯 ${tx('最可能比分','Most Likely Score')}</div>
-                            <div style="color:rgba(248,250,252,.35)">${topScores}</div>
+                            <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">🎯 ${tx('可能比分','Top Scores')}</div>
+                            <div style="color:rgba(248,250,252,.35)">${topScoresList}</div>
                         </div>
                     </div>
                     <div style="font-size:9px;color:rgba(248,250,252,.12);margin-top:8px">${tx('权重','Weights')}: Elo ${(weights.elo*100).toFixed(0)}% · Poisson ${(weights.poisson*100).toFixed(0)}% · ${tx('赔率','Odds')} ${(weights.odds*100).toFixed(0)}% · ${tx('教练','Coach')} ${(weights.coach*100).toFixed(0)}% · ${tx('场馆','Venue')} ${(weights.venue*100).toFixed(0)}%</div>

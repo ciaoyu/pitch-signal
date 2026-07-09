@@ -4400,7 +4400,7 @@ var require_elo_prediction = __commonJS({
             const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
             const coachPred = p.components?.coach || {};
             const weights = pred.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.1, odds: 0.2 };
-            const topScores = `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
+            const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0 ? p.topScores.slice(0, 4).map((s) => `${s.score} (${Fmt2().pct(s.prob)})`).join(" \xB7 ") : `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
             const confLabel = conf > 70 ? tx("\u9AD8", "High") : conf > 50 ? tx("\u4E2D", "Medium") : tx("\u4F4E", "Low");
             let headerText = "";
             if (m.group && m.matchday !== void 0) headerText = `${m.group} \xB7 ${tx("\u7B2C", "MD")} ${m.matchday}`;
@@ -4452,8 +4452,8 @@ var require_elo_prediction = __commonJS({
                             <div style="color:rgba(248,250,252,.35)">${tx("\u4E3B\u80DC", "Home")} ${(coachPred.home * 100).toFixed(0)}%  ${tx("\u5E73", "Draw")} ${(coachPred.draw * 100).toFixed(0)}%  ${tx("\u5BA2", "Away")} ${(coachPred.away * 100).toFixed(0)}%</div>
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
-                            <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">\u{1F3AF} ${tx("\u6700\u53EF\u80FD\u6BD4\u5206", "Most Likely Score")}</div>
-                            <div style="color:rgba(248,250,252,.35)">${topScores}</div>
+                            <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">\u{1F3AF} ${tx("\u53EF\u80FD\u6BD4\u5206", "Top Scores")}</div>
+                            <div style="color:rgba(248,250,252,.35)">${topScoresList}</div>
                         </div>
                     </div>
                     <div style="font-size:9px;color:rgba(248,250,252,.12);margin-top:8px">${tx("\u6743\u91CD", "Weights")}: Elo ${(weights.elo * 100).toFixed(0)}% \xB7 Poisson ${(weights.poisson * 100).toFixed(0)}% \xB7 ${tx("\u8D54\u7387", "Odds")} ${(weights.odds * 100).toFixed(0)}% \xB7 ${tx("\u6559\u7EC3", "Coach")} ${(weights.coach * 100).toFixed(0)}% \xB7 ${tx("\u573A\u9986", "Venue")} ${(weights.venue * 100).toFixed(0)}%</div>
@@ -6777,14 +6777,28 @@ var require_match_renderers = __commonJS({
                 <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || "AWAY")}</div>
             </div>
         </div>`;
-        html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
-            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u9884\u6D4B\u6BD4\u5206", "PREDICTED SCORE")}</div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-                <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
-                <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
-                <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
-            </div>
-        </div>`;
+        if (Array.isArray(pred.topScores) && pred.topScores.length > 0) {
+          html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u53EF\u80FD\u6BD4\u5206\u77E9\u9635", "TOP PREDICTED SCORES")}</div>
+                <div style="display:flex;flex-direction:column;gap:5px">`;
+          pred.topScores.slice(0, 4).forEach((item, idx) => {
+            const probPct = item.prob != null ? `${Math.round(item.prob * 1e3) / 10}%` : "";
+            html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
+                    <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? "rgba(52,211,153,.85)" : "rgba(248,250,252,.65)"}">${esc(item.score)}</span>
+                    ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ""}
+                </div>`;
+          });
+          html += `</div></div>`;
+        } else {
+          html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
+                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u9884\u6D4B\u6BD4\u5206", "PREDICTED SCORE")}</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+                    <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
+                    <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
+                    <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
+                </div>
+            </div>`;
+        }
         html += `</div>`;
         return html;
       }
