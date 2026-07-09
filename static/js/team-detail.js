@@ -17,12 +17,25 @@
     let allTeams = [];
 
     async function refreshTeamsFromStandings() {
-        const d = await api('/api/standings');
+        const [d, b] = await Promise.all([api('/api/standings'), api('/api/bracket')]);
+        const eliminatedNames = new Set();
+        if (b?.matches) {
+            for (const [slotId, m] of Object.entries(b.matches)) {
+                if (m.status === 'final' && m.winner) {
+                    const loser = m.winner === 'A' ? m.teamB : m.teamA;
+                    if (loser?.name && !slotId.startsWith('SF-')) {
+                        eliminatedNames.add(loser.name);
+                        if (loser.nameI18n) eliminatedNames.add(loser.nameI18n);
+                    }
+                }
+            }
+        }
         if (d?.groups) {
             allTeams = [];
             for (const g of d.groups) {
                 for (const t of g.standings) {
-                    allTeams.push({ ...t, group: g.name });
+                    const isEliminated = t.status === 'eliminated' || t.eliminated === true || eliminatedNames.has(t.name) || (t.nameI18n && eliminatedNames.has(t.nameI18n));
+                    allTeams.push({ ...t, group: g.name, eliminated: !!isEliminated });
                 }
             }
         }
@@ -52,12 +65,17 @@
                 return;
             }
         }
-        el.innerHTML = allTeams.map(team => `
-            <div style="background:rgba(0,0,0,.28);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 14px;cursor:pointer;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04);transition:border-color .2s" onmouseover="this.style.borderColor='rgba(52,211,153,.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,.05)'" data-action="open-team-detail" data-team-id="${attr(team.id)}" data-team-name="${attr(team.name)}" data-group="${attr(team.group)}">
+        const sortedTeams = [...allTeams].sort((a, b) => {
+            if (a.eliminated !== b.eliminated) return a.eliminated ? 1 : -1;
+            return (Number(b.pts) || 0) - (Number(a.pts) || 0);
+        });
+        el.innerHTML = sortedTeams.map(team => `
+            <div style="background:rgba(0,0,0,.28);backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:16px 14px;cursor:pointer;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.04);transition:border-color .2s;opacity:${team.eliminated ? '0.6' : '1'}" onmouseover="this.style.borderColor='rgba(52,211,153,.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,.05)'" data-action="open-team-detail" data-team-id="${attr(team.id)}" data-team-name="${attr(team.name)}" data-group="${attr(team.group)}">
                 ${team.logo ? `<img src="${attr(team.logo)}" style="width:36px;height:36px;object-fit:contain;margin:0 auto 8px" onerror="this.style.display='none'">` : `<div style="font-size:28px;margin-bottom:8px">🏳️</div>`}
                 <div style="font:500 14px/1 'Inter';color:#f8fafc;margin-bottom:2px">${esc(displayMaybeTeamName(team))}</div>
                 <div style="font:400 9px/1 'Inter';color:rgba(248,250,252,.15);margin-bottom:6px">${esc(displayGroupName(team.group))}</div>
-                <div style="display:flex;justify-content:center;gap:8px;font:400 9px/1 'JetBrains Mono',monospace">
+                <div style="display:flex;justify-content:center;align-items:center;gap:6px;font:400 9px/1 'JetBrains Mono',monospace">
+                    ${team.eliminated ? `<span style="padding:2px 6px;border-radius:4px;background:rgba(248,113,113,.1);color:rgba(248,113,113,.7)">${esc(tx('已淘汰', 'Out'))}</span>` : `<span style="padding:2px 6px;border-radius:4px;background:rgba(52,211,153,.1);color:#34d399">${esc(tx('在役', 'Active'))}</span>`}
                     <span style="padding:2px 7px;border-radius:4px;background:rgba(52,211,153,.06);color:rgba(52,211,153,.5)">${esc(tx('积分', 'Pts'))} <span style="font-weight:600;color:#34d399">${esc(team.pts)}</span></span>
                     <span style="padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.03);color:rgba(248,250,252,.2)">${esc(team.wins)}-${esc(team.draws)}-${esc(team.losses)}</span>
                 </div>
@@ -188,9 +206,9 @@
         const liveGroupRecord = groupRecordFromStanding(standingTeam);
         const [enhancedData, wcMatches] = await window.WorldCup.ApiClient.allData(['/api/team/' + teamId + '/enhanced', '/api/team/' + teamId + '/recent-matches']);
         if (enhancedData && !enhancedData.error) {
-            // Compute group record from wcMatches (more up-to-date than standings)
+            // Compute World Cup record from wcMatches (across all stages: group + knockout)
             const wcGroupRecord = (() => {
-                const ms = wcMatches?.matches?.filter(m => m.stage === 'group' && m.state === 'post');
+                const ms = wcMatches?.matches?.filter(m => m.state === 'post');
                 if (!ms?.length) return null;
                 const w = ms.filter(m => m.result === 'W').length;
                 const d = ms.filter(m => m.result === 'D').length;
@@ -226,7 +244,8 @@
         if (d.overview) {
             h += `<div style="${card}"><div style="${secHdr}">📊 ${tx('球队概况', 'Team Overview')}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font:400 11px/1 'Inter'"><div><span style="color:rgba(248,250,252,.25)">${tx('世界排名', 'World Rank')}</span><span style="font-weight:600;margin-left:4px;color:${getRankingColor(d.overview.worldRanking)}">#${d.overview.worldRanking || '?'}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('FIFA积分', 'FIFA Points')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.fifaPoints || '?'}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('市值', 'Market Value')}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${d.overview.marketValue || '?'}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('平均年龄', 'Avg Age')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.avgAge || '?'}${tx('岁', '')}</span></div></div>`;
             if (d.overview.groupRecord) {
-                h += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)"><div style="font:400 11px/1 'Inter';color:rgba(248,250,252,.25);margin-bottom:6px">${tx('小组赛战绩', 'Group Record')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:500 12px/1 'Inter'"><div style="color:#34d399">${d.overview.groupRecord.w||0}${tx('胜','W')}</div><div style="color:#f59e0b">${d.overview.groupRecord.d||0}${tx('平','D')}</div><div style="color:rgba(248,113,113,.6)">${d.overview.groupRecord.l||0}${tx('负','L')}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:400 11px/1 'Inter';margin-top:4px"><div><span style="color:rgba(248,250,252,.25)">${tx('进球','GF')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.groupRecord.gf||0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('失球','GA')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${d.overview.groupRecord.ga||0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('积分','Pts')}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${d.overview.groupRecord.pts||0}</span></div></div></div>`;
+                const rec = d.overview.groupRecord;
+                h += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)"><div style="font:400 11px/1 'Inter';color:rgba(248,250,252,.25);margin-bottom:6px">${tx('本届世界杯战绩', 'World Cup Record')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:500 12px/1 'Inter'"><div style="color:#34d399">${rec.w||0}${tx('胜','W')}</div><div style="color:#f59e0b">${rec.d||0}${tx('平','D')}</div><div style="color:rgba(248,113,113,.6)">${rec.l||0}${tx('负','L')}</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font:400 11px/1 'Inter';margin-top:4px"><div><span style="color:rgba(248,250,252,.25)">${tx('进球','GF')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${rec.gf||0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('失球','GA')}</span><span style="font-weight:600;margin-left:4px;color:rgba(248,250,252,.6)">${rec.ga||0}</span></div><div><span style="color:rgba(248,250,252,.25)">${tx('净胜球','GD')}</span><span style="font-weight:600;margin-left:4px;color:#34d399">${rec.gd ?? ((rec.gf||0)-(rec.ga||0))}</span></div></div></div>`;
             }
             h += `</div>`;
         }
