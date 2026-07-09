@@ -12,12 +12,13 @@
 
     window.WorldCup.ApiClient.get('/api/world-cup-winner')
       .then((res) => {
-        if (!res || !res.odds || res.odds.length === 0) {
+        const odds = res?.ok ? res.data?.odds : null;
+        if (!Array.isArray(odds) || odds.length === 0) {
           el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx('夺冠赔率数据暂无', 'No title odds available')}</div>`;
           return;
         }
 
-        const rows = res.odds.map((o, i) => {
+        const rows = odds.map((o, i) => {
           const eliminated = o.probability < 1;
           const barW = Math.max(2, o.probability);
           return `

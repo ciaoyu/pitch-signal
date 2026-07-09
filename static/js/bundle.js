@@ -4219,11 +4219,12 @@ var require_world_cup_odds = __commonJS({
         if (!el) return;
         el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u52A0\u8F7D\u593A\u51A0\u8D54\u7387...", "Loading title odds...")}</div>`;
         window.WorldCup.ApiClient.get("/api/world-cup-winner").then((res) => {
-          if (!res || !res.odds || res.odds.length === 0) {
+          const odds = res?.ok ? res.data?.odds : null;
+          if (!Array.isArray(odds) || odds.length === 0) {
             el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u6570\u636E\u6682\u65E0", "No title odds available")}</div>`;
             return;
           }
-          const rows = res.odds.map((o, i) => {
+          const rows = odds.map((o, i) => {
             const eliminated = o.probability < 1;
             const barW = Math.max(2, o.probability);
             return `
