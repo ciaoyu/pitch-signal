@@ -66,6 +66,9 @@ const TEST_FILES = [
   'test-shin-devig.js',
   // 缺陷修复回归测试
   'test-moment-review-integration.js',
+  'test-matches-seed.js',
+  'test-surge-detection.js',
+  'test-knockout-writeback.js',
 ];
 
 const filter = process.argv.includes('--match')

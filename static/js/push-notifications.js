@@ -4,15 +4,33 @@
 
     const button = () => document.getElementById('push-notification-btn');
 
+    function announce(message) {
+        let notice = document.getElementById('push-notification-status');
+        if (!notice) {
+            notice = document.createElement('div');
+            notice.id = 'push-notification-status';
+            notice.setAttribute('role', 'status');
+            notice.setAttribute('aria-live', 'polite');
+            notice.style.cssText = 'position:fixed;top:72px;right:16px;z-index:10000;max-width:280px;padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:10px;background:#111827;color:#f8fafc;font:500 12px/1.4 Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)';
+            document.body.appendChild(notice);
+        }
+        notice.textContent = message;
+        notice.hidden = false;
+        clearTimeout(announce._timer);
+        announce._timer = setTimeout(() => { notice.hidden = true; }, 5000);
+    }
+
     function setState(state, zh, en) {
         const el = button();
         if (!el) return;
         el.dataset.pushState = state;
         el.title = window.WorldCup?.State?.uiLang === 'en' ? en : zh;
         const label = el.querySelector('[data-push-label]');
-        if (label) label.textContent = state === 'enabled' ? '✓' : '🔔';
+        const icons = { enabled: '✓', pending: '…', denied: '×', unsupported: '×', error: '!' };
+        if (label) label.textContent = icons[state] || '🔔';
         el.setAttribute('aria-label', el.title);
         el.style.color = state === 'enabled' ? '#34d399' : 'rgba(248,250,252,.45)';
+        if (state !== 'idle') announce(el.title);
     }
 
     function base64UrlToUint8Array(value) {
@@ -55,6 +73,7 @@
 
         const el = button();
         if (el) el.disabled = true;
+        setState('pending', '正在开启进球推送…', 'Enabling goal notifications…');
         try {
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
@@ -113,5 +132,5 @@
         }
     }
 
-    window.PitchSignalPush = { enable: enablePushNotifications, refresh: refreshPushState };
+    window.PitchSignalPush = { enable: enablePushNotifications, refresh: refreshPushState, setState };
 })();

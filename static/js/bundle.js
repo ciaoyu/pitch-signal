@@ -4917,6 +4917,7 @@ var require_match_review = __commonJS({
         const match = review.match || {}, ai = review.aiPrediction || {}, bias = review.biasAnalysis || {};
         const summary = review.matchSummary || {}, eloChange = review.eloChange || {};
         const factors = bias.factors || [], aiPostmortem = review.aiPostmortem || {};
+        const liveTimeline = review.liveTimelineI18n || [];
         const uiLang2 = window.WorldCup.State?.uiLang || "zh";
         const pmLang = uiLang2 === "zh" ? "zh" : "en";
         const pmArr = (f, l) => f && Array.isArray(f[pmLang]) ? f[pmLang] : l || [];
@@ -4973,6 +4974,15 @@ var require_match_review = __commonJS({
             html += `<div class="border ${impCls} rounded-lg p-2"><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full ${dotCls} shrink-0"></span><span class="text-[11px] font-bold text-gray-300">${i18nText(f.factorI18n || f.nameI18n, f.factor || f.name || "")}</span><span class="text-[9px] text-gray-500 ml-auto uppercase">${f.impact || ""}</span></div><div class="text-[11px] text-gray-400 mt-0.5 ml-3">${i18nText(f.detailI18n, f.detail || "")}</div></div>`;
           }
           html += "</div></div>";
+        }
+        if (liveTimeline.length > 0) {
+          html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="flex items-center justify-between mb-2"><div class="text-xs font-bold text-gray-400">\u{1F552} ${tx("\u5B9E\u65F6\u65F6\u95F4\u7EBF", "Live Timeline")}</div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${liveTimeline.length}</span></div><div class="space-y-1.5">`;
+          for (const item of liveTimeline) {
+            const label = i18nText(item.titleI18n, item.title || "");
+            const summary2 = i18nText(item.summaryI18n, item.summary || "");
+            html += `<div class="bg-white/5 rounded-lg p-2.5 border border-white/5"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-mono text-gray-500">${displayValue(item.minute, "")}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-bold">${esc(label)}</span><span class="text-[10px] text-gray-600 ml-auto">${esc(item.score || "")}</span></div><div class="text-[11px] text-gray-300 leading-relaxed">${esc(summary2)}</div></div>`;
+          }
+          html += `</div></div>`;
         }
         if (momentumScript !== "unknown" || momentumBuckets.length > 0) {
           const sl = { comeback: { zh: "\u9006\u8F6C", en: "Comeback", cls: "bg-orange-500/15 text-orange-400 border-orange-500/20", icon: "\u{1F504}" }, control_win: { zh: "\u63A7\u573A\u80DC", en: "Control Win", cls: "bg-green-500/15 text-green-400 border-green-500/20", icon: "\u{1F3AF}" }, smash_and_grab: { zh: "\u5077\u88AD", en: "Smash & Grab", cls: "bg-red-500/15 text-red-400 border-red-500/20", icon: "\u{1F977}" }, collapse: { zh: "\u5D29\u76D8", en: "Collapse", cls: "bg-red-500/15 text-red-400 border-red-500/20", icon: "\u{1F4C9}" }, even: { zh: "\u50F5\u6301", en: "Even", cls: "bg-gray-500/15 text-gray-400 border-gray-500/20", icon: "\u2696\uFE0F" } };
@@ -7002,15 +7012,34 @@ var require_push_notifications = __commonJS({
     (function() {
       "use strict";
       const button = () => document.getElementById("push-notification-btn");
+      function announce(message) {
+        let notice = document.getElementById("push-notification-status");
+        if (!notice) {
+          notice = document.createElement("div");
+          notice.id = "push-notification-status";
+          notice.setAttribute("role", "status");
+          notice.setAttribute("aria-live", "polite");
+          notice.style.cssText = "position:fixed;top:72px;right:16px;z-index:10000;max-width:280px;padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:10px;background:#111827;color:#f8fafc;font:500 12px/1.4 Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35)";
+          document.body.appendChild(notice);
+        }
+        notice.textContent = message;
+        notice.hidden = false;
+        clearTimeout(announce._timer);
+        announce._timer = setTimeout(() => {
+          notice.hidden = true;
+        }, 5e3);
+      }
       function setState(state, zh, en) {
         const el = button();
         if (!el) return;
         el.dataset.pushState = state;
         el.title = window.WorldCup?.State?.uiLang === "en" ? en : zh;
         const label = el.querySelector("[data-push-label]");
-        if (label) label.textContent = state === "enabled" ? "\u2713" : "\u{1F514}";
+        const icons = { enabled: "\u2713", pending: "\u2026", denied: "\xD7", unsupported: "\xD7", error: "!" };
+        if (label) label.textContent = icons[state] || "\u{1F514}";
         el.setAttribute("aria-label", el.title);
         el.style.color = state === "enabled" ? "#34d399" : "rgba(248,250,252,.45)";
+        if (state !== "idle") announce(el.title);
       }
       function base64UrlToUint8Array(value) {
         const padding = "=".repeat((4 - value.length % 4) % 4);
@@ -7046,6 +7075,7 @@ var require_push_notifications = __commonJS({
         }
         const el = button();
         if (el) el.disabled = true;
+        setState("pending", "\u6B63\u5728\u5F00\u542F\u8FDB\u7403\u63A8\u9001\u2026", "Enabling goal notifications\u2026");
         try {
           const permission = await Notification.requestPermission();
           if (permission !== "granted") {
@@ -7100,7 +7130,7 @@ var require_push_notifications = __commonJS({
           setState("error", "\u8FDB\u7403\u63A8\u9001\u72B6\u6001\u68C0\u67E5\u5931\u8D25", "Could not check notification status");
         }
       }
-      window.PitchSignalPush = { enable: enablePushNotifications, refresh: refreshPushState };
+      window.PitchSignalPush = { enable: enablePushNotifications, refresh: refreshPushState, setState };
     })();
   }
 });
@@ -7449,8 +7479,11 @@ var require_app = __commonJS({
         if (!document.hidden && state.tab === "live") loadScores();
       });
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/static/sw.js?v=20260703-push", { updateViaCache: "none" }).then(() => window.PitchSignalPush?.refresh()).catch(() => {
-        });
+        navigator.serviceWorker.register("/sw.js?v=20260704-push-scope", { updateViaCache: "none" }).then(() => window.PitchSignalPush?.refresh()).catch(() => window.PitchSignalPush?.setState(
+          "error",
+          "\u63A8\u9001\u670D\u52A1\u521D\u59CB\u5316\u5931\u8D25\uFF0C\u8BF7\u91CD\u65B0\u6253\u5F00\u5E94\u7528",
+          "Push service initialization failed. Reopen the app."
+        ));
         navigator.serviceWorker.addEventListener("message", (event) => {
           if (event.data?.type === "OPEN_MATCH" && event.data.matchId) {
             window.openMatch(String(event.data.matchId));
