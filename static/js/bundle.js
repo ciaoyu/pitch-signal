@@ -3153,6 +3153,8 @@ var require_standings = __commonJS({
             <div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:2px;border-radius:1px;background:rgba(52,211,153,.18)"></div> ${tx("\u6709\u671B\u664B\u7EA7", "Likely qualified")}</div>
         </div>`;
         container.innerHTML = html;
+        const defaultSub = document.getElementById("standings-sub-knockout");
+        if (defaultSub) switchStandingsSubTab("knockout", defaultSub);
       }
       document.addEventListener("click", (e) => {
         const card = e.target.closest('[data-action="open-match-from-bracket"]');

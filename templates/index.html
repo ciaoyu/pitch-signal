@@ -355,17 +355,17 @@
     <section id="tab-standings" class="tab-content hidden">
         <!-- Sub-tabs: Groups / Knockout -->
         <div style="display:flex;gap:1px;background:rgba(255,255,255,.03);border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
-        <button id="standings-sub-groups" role="tab" aria-selected="true" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛 Groups</button>
-        <button id="standings-sub-knockout" role="tab" aria-selected="false" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛 Knockout</button>
+        <button id="standings-sub-knockout" role="tab" aria-selected="true" data-action="switch-standings-sub-tab" data-standings-tab="knockout" class="tab-btn tab-on" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">淘汰赛 Knockout</button>
         <button id="standings-sub-scorers" role="tab" aria-selected="false" data-action="switch-standings-sub-tab" data-standings-tab="scorers" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">射手榜 Scorers</button>
+        <button id="standings-sub-groups" role="tab" aria-selected="false" data-action="switch-standings-sub-tab" data-standings-tab="groups" class="tab-btn" style="font:500 10px/1 'DM Sans', sans-serif;padding:6px 14px;min-height:44px;border-radius:6px;cursor:pointer;white-space:nowrap">小组赛 Groups</button>
         </div>
-        <div id="standings-sub-groups-content"></div>
-        <div id="standings-sub-scorers-content" class="hidden"></div>
-        <div id="standings-sub-knockout-content" class="hidden">
+        <div id="standings-sub-knockout-content">
             <div id="bracket-container-standings" class="w-full overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide text-center min-h-[200px]">
                 <div class="text-gray-500 py-10">加载对阵图...</div>
             </div>
         </div>
+        <div id="standings-sub-scorers-content" class="hidden"></div>
+        <div id="standings-sub-groups-content" class="hidden"></div>
     </section>
 
     <!-- TEAMS -->
@@ -513,6 +513,6 @@ function toggleQualityPopover() {
 }
 </script>
 
-<script type="module" src="/static/js/bundle.js?v=86008c01"></script>
+<script type="module" src="/static/js/bundle.js?v=95f207b8"></script>
 </body>
 </html>
