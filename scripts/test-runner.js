@@ -88,6 +88,8 @@ const TEST_FILES = [
   'test-player-events.js',
     // KO-4 suspensions section contract (wired into knockout-intel)
   'test-knockout-intel-suspensions.js',
+    // KO-1 knockout-intel foundation + venue-distance + schedule-lookup + ET/Pens backfill
+  'test-knockout-intel.js',
 ];
 
 const filter = process.argv.includes('--match')
