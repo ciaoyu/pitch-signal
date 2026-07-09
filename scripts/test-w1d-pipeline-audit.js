@@ -74,18 +74,29 @@ async function testW1DPipelineAudit() {
   assert.ok(Math.abs(fsRes.meanLogLoss - 0.964406) < 1e-4, 'Default LogLoss must be bit-identical ~0.9644');
 
   // 4. daysAgo Plumbing verification (§4.2)
-  // Run with useDaysAgo enabled to confirm plumbing passes daysAgo into updateRatings
-  const history = runner.loadHistory();
-  const decayedRes = await runner._walkForward(
-    history.all,
-    null,
-    null,
-    { useDaysAgo: true, decayHalfLifeDays: 180, referenceDate: '2022-11-20' }
-  );
-  assert.strictEqual(decayedRes.evaluatedCount, 964, 'Decayed walkForward must evaluate 964 matches');
-  assert.strictEqual(typeof decayedRes.meanBrier, 'number', 'Decayed walkForward must return valid Brier score');
+  // Verify public entry points (compareBaseline and run) correctly plumb useDaysAgo/decayHalfLifeDays
+  // and alter numerical results away from default un-decayed baseline.
+  const decayConfig = { useDaysAgo: true, decayHalfLifeDays: 180, referenceDate: '2022-11-20' };
 
-  console.log('20 passed');
+  // (a) Test compareBaseline public gatekeeper interface
+  const cmpRes = await runner.compareBaseline(decayConfig);
+  assert.ok(cmpRes.proposed, 'compareBaseline must accept decayConfig without throwing');
+  assert.notStrictEqual(cmpRes.proposed.brier, cmpRes.baseline.brier, 'Decayed proposed Brier must differ from default baseline Brier');
+  assert.ok(Math.abs(cmpRes.proposed.brier - 0.5721) < 1e-4, `Decayed compareBaseline Brier expected ~0.5721, got ${cmpRes.proposed.brier}`);
+
+  // (b) Test run() public entry point
+  const decayRunRes = await runner.run({ silent: true, ...decayConfig });
+  assert.notStrictEqual(
+    decayRunRes.fullSeeded.meanBrier,
+    fsRes.meanBrier,
+    'run({ useDaysAgo: true }) must plumb options and produce decayed Brier different from default'
+  );
+  assert.ok(
+    Math.abs(decayRunRes.fullSeeded.meanBrier - 0.5721424) < 1e-5,
+    `Decayed run() Brier expected ~0.5721424, got ${decayRunRes.fullSeeded.meanBrier}`
+  );
+
+  console.log('24 passed');
   console.log('✅ W1-D Data Pipeline Audit tests passed successfully!');
 }
 

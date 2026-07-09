@@ -45,14 +45,12 @@
   1. 默认执行流程中不过早强制开启衰减，确保 Wave 1 红线数字不变；
   2. 开放透传接口供 Wave 2 消融与衰减实验使用。
 - **实现方法**：
-  - 在 `_walkForward` 方法中，仅在参数配置明确开启 `useDaysAgo: true` 时，计算 `match.date` 相对指定基准日期的 `daysAgo` 并透传至 `eloEngine.updateRatings`；
+  - 在 `compareBaseline` 闸门方法的白名单中增加了 `useDaysAgo`、`decayHalfLifeDays`、`decayLambda`、`referenceDate`；
+  - 打通 `compareBaseline` 与 `run` 两个公开调用入口，将其配置经由 `paramOverrides` / `opts` 完整透传至 `_walkForward` 与 `eloEngine.updateRatings`；
   - 默认未开启时，入参严格为 `{ matchType: 'world_cup' }`。
-- **基线对齐检验**：
-  - 默认运行命令 `node scripts/run-backtest.js` 产生的 964 场指标与规范基准**绝对逐位一致**：
-    - 评估场次：`964`
-    - 胜负预测准确率：`57.88%`
-    - Brier 得分：`0.5708`
-    - LogLoss 得分：`0.9644`
+- **基线与衰减检验**：
+  - **默认情况（零回滚）**：运行命令 `node scripts/run-backtest.js` 产生的 964 场指标与规范基准**绝对逐位一致**（准确率：`57.88%`，Brier 得分：`0.5708`，LogLoss 得分：`0.9644`）；
+  - **开启衰减情况（有效响应）**：通过 `compareBaseline({ useDaysAgo: true, decayHalfLifeDays: 180 })` 或 `run({ useDaysAgo: true, decayHalfLifeDays: 180 })` 调用时，能成功触发半衰期时间差衰减，产出有别于基线的有效 Brier 得分（约 `0.5721424`），不再发生静默未生效或被闸门报错拒绝。
 
 ### 2.4 Elo 种子无泄漏确认 (§4.4)
 - **背景**：回测通过读取 `data/elo-seed.json` 解决冷启动问题。若某届世界杯快照包含了该届比赛发生后的 Elo 评分，将构成严重的数据泄漏。
@@ -66,7 +64,7 @@
 
 ## 3. 自动化测试套件与持续交付
 
-为了将审计规则固化为长期防腐守卫，新增了集成测试 `scripts/test-w1d-pipeline-audit.js`：
+为了将审计规则固化为长期防腐守卫，新增了集成回归测试 `scripts/test-w1d-pipeline-audit.js`：
 - 已集成至统一测试入口 `npm test`（由 `scripts/test-runner.js` 统一调度）；
-- 覆盖全部 20 项断言（含涵盖 22 届快照日期防反串检验、87.45% 中立场比例断言、红线精确数值对比、以及启用 `useDaysAgo` 的管线畅通性校验）；
-- 当前全部 **50 个测试套件，616 个断言全部通过 (50 passed, 0 failed)**。
+- 严密断言覆盖共 **24 项**（包括 22 届历史快照日期无泄漏断言、87.45% 中立场比例精准校验、默认路径逐位恒定一致校验、以及 `compareBaseline` 和 `run` 两个公开入口分别传入 `useDaysAgo` 后的数值变化精确校验）；
+- 当前全部 **50 个测试套件，620 个断言全部通过 (50 passed, 0 failed)**。
