@@ -72,6 +72,8 @@ const TEST_FILES = [
   'test-eval-baselines.js',
     // W1-A live-endpoint discipline regression
   'test-live-endpoint-discipline.js',
+    // W1-B deterministic-bug regression
+  'test-deterministic-bugs.js',
 ];
 
 const filter = process.argv.includes('--match')
