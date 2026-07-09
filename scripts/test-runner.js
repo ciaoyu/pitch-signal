@@ -45,6 +45,7 @@ const TEST_FILES = [
   'test-poisson.js',
   'test-post-match-review.js',
   'test-pre-match-snapshot-guard.js',
+  'test-ko15-leakage-guard.js',
   'test-prediction.js',
   'test-roster-cache.js',
   'test-same-day-leakage.js',
