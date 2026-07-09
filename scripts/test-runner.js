@@ -80,6 +80,8 @@ const TEST_FILES = [
     // W1-B deterministic-bug regression
   'test-deterministic-bugs.js',
   'test-w1d-pipeline-audit.js',
+    // KO-3 knockout prediction parameter wiring
+  'test-knockout-prediction-wiring.js',
 ];
 
 const filter = process.argv.includes('--match')
