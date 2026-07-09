@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * P2-3: odds-divergence 纯函数测试
+  * P2-3: odds-divergence pure-function tests
  */
 'use strict';
 

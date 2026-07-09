@@ -1,16 +1,16 @@
 'use strict';
 
 /**
- * 淘汰赛比分回写 (Knockout Upsert) 测试套件
+  * Knockout score writeback (Knockout Upsert) test suite
  *
- * 背景：writebackMatchScore() 原是纯 UPDATE 语义，查不到 matches 行就返回
- * match_not_found，导致小组赛之外的所有终场比分（整个淘汰赛阶段）静默回写失败。
- * 本套件验证修复后的自愈式 upsert 行为：
- *   1. 两支球队在 matches 表从未出现 → 成功插入新行、比分/played=1 正确、group_id=NULL
- *   2. 幂等：同一淘汰赛重复回写不重复插入（走已有行的幂等保护）
- *   3. 防覆盖：重复回写不同比分被拒绝且不覆盖已确立比分
- *   4. group_id=NULL 在 foreign_keys=ON 下不被 FK 拒绝；多行 NULL 不违反 (group_id, match_number) 唯一索引
- *   5. stage 兜底：未透传 stage 时落 'Knockout'，不留空
+  * Background: writebackMatchScore() was originally pure-UPDATE semantics — if no matches row is found it returns
+  * match_not_found, causing all full-time scores outside the group stage (the entire knockout phase) to silently fail to write back.
+  * This suite verifies the self-healing upsert behavior after the fix:
+  *   1. Both teams never appeared in the matches table → successfully insert a new row, score/played=1 correct, group_id=NULL
+  *   2. Idempotent: re-writing the same knockout match does not insert a duplicate (uses existing-row idempotency protection)
+  *   3. Overwrite protection: re-writing a different score is rejected and does not overwrite the established score
+  *   4. group_id=NULL is not rejected by FK under foreign_keys=ON; multiple NULL rows do not violate the (group_id, match_number) unique index
+  *   5. stage fallback: when stage is not passed through, store 'Knockout' instead of leaving it empty
  */
 
 const assert = require('assert');
@@ -43,11 +43,11 @@ function test(name, fn) {
 
 console.log('=== Knockout Score Writeback (upsert) Tests ===\n');
 
-// 镜像 fix/matches-seed-surge (#7) 新增的唯一索引，验证淘汰赛 group_id=NULL 多行插入不会与之冲突。
-// 若该索引已随 #7 合入 db.js，则此处 CREATE IF NOT EXISTS 为 no-op。
+// Mirrors the unique index added in fix/matches-seed-surge (#7); verifies that knockout group_id=NULL multi-row inserts don't conflict with it.
+// If that index was already merged into db.js with #7, then this CREATE IF NOT EXISTS is a no-op.
 db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_group_num ON matches(group_id, match_number)').run();
 
-// 清空 matches，保证干净基线（避免任何自动播种的 72 场小组赛干扰 upsert 分支）
+// Clear matches to ensure a clean baseline (avoid any auto-seeded 72 group-stage matches interfering with the upsert branch)
 db.prepare('DELETE FROM matches').run();
 
 function resolveOrFail(name) {
@@ -181,7 +181,7 @@ test('5. stage 兜底：未透传 stage 时落 Knockout', () => {
   assert.strictEqual(row.stage, 'Knockout');
 });
 
-// 清理临时测试库
+// clean up the temporary test DB
 db.close();
 if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
 

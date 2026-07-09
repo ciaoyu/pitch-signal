@@ -1,6 +1,6 @@
 'use strict';
 /**
- * 验证 BacktestRunner._walkForward 的同日批量隔离与日期排序行为（直接验证 lib/backtest.js 的真实回归测试）
+  * Verify BacktestRunner._walkForward same-day batch isolation and date sorting behavior (real regression test that directly exercises lib/backtest.js)
  */
 
 const assert = require('assert');
@@ -20,7 +20,7 @@ function testAssert(condition, label) {
   }
 }
 
-// 拦截 PredictionEngine.prototype.predictWithMarket 检查真实传入的评分
+// Intercept PredictionEngine.prototype.predictWithMarket to inspect the actual ratings passed in
 const ratingsDuringPredict = [];
 const originalPredict = PredictionEngine.prototype.predictWithMarket;
 PredictionEngine.prototype.predictWithMarket = async function(args) {
@@ -33,11 +33,11 @@ PredictionEngine.prototype.predictWithMarket = async function(args) {
   return originalPredict.call(this, args);
 };
 
-// 1. 同日隔离性验证
+// 1. Same-day isolation verification
 async function testSameDayIsolation() {
   console.log('\n[1] Same-day matches isolation validation (via BacktestRunner._walkForward)');
   
-  ratingsDuringPredict.length = 0; // 重置
+  ratingsDuringPredict.length = 0; // reset
   const runner = new BacktestRunner();
 
   const SAME_DATE = '2018-06-14';
@@ -47,10 +47,10 @@ async function testSameDayIsolation() {
     // Day 1 Match 1: TeamA vs TeamB at 12:00. TeamA wins 2-0.
     { date: SAME_DATE + 'T12:00:00Z', home: 'TeamA', away: 'TeamB', homeScore: 2, awayScore: 0, stage: 'Group Stage' },
     // Day 1 Match 2: TeamA vs TeamC at 18:00.
-    // 在同日隔离下，TeamA 的预测分必须维持初始的 1500，不能被 12:00 的比赛结果所污染。
+    // Under same-day isolation, TeamA's rating must stay at the initial 1500 and not be contaminated by the 12:00 match result.
     { date: SAME_DATE + 'T18:00:00Z', home: 'TeamA', away: 'TeamC', homeScore: 0, awayScore: 1, stage: 'Group Stage' },
     // Day 2 Match 3: TeamA vs TeamD at 15:00.
-    // 次日比赛，TeamA 的评分应该累积 Day 1 的两场结算结果。
+    // On the next day's match, TeamA's rating should accumulate the two Day 1 settlement results.
     { date: NEXT_DATE + 'T15:00:00Z', home: 'TeamA', away: 'TeamD', homeScore: 1, awayScore: 1, stage: 'Group Stage' },
   ];
 
@@ -84,7 +84,7 @@ async function testSameDayIsolation() {
   testAssert(teamAAfterDay2 !== undefined && teamAAfterDay2 !== expectedEloAfterDay1, `TeamA Elo at the end of Day 2 is updated to ${teamAAfterDay2}`);
 }
 
-// 2. 日期提取验证
+// 2. Date extraction verification
 function testDateKeyExtraction() {
   console.log('\n[2] Date key extraction verification');
   const dates = [
@@ -99,7 +99,7 @@ function testDateKeyExtraction() {
   }
 }
 
-// 3. 排序验证
+// 3. Sorting verification
 function testDateOrdering() {
   console.log('\n[3] Date ordering verification');
   const matchDates = [
@@ -110,7 +110,7 @@ function testDateOrdering() {
   testAssert(JSON.stringify(sorted) === JSON.stringify(expected), 'Dates sorted in ascending order correctly');
 }
 
-// 4. evalFilter 隔离评估验证
+// 4. evalFilter isolated-evaluation verification
 function testEvalFilter() {
   console.log('\n[4] evalFilter verification');
   const matches = [
@@ -129,7 +129,7 @@ function testEvalFilter() {
   testAssert(shouldEval[3], '2022 match included by evalFilter');
 }
 
-// 执行
+// Run
 (async () => {
   console.log('\n==================================================');
   console.log('Running lib/backtest.js Regression Tests');

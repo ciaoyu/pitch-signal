@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * fetch-altitudes.js
- * 从 Open-Elevation API 获取海拔数据，补充到 teams.json 和 venues.json
+  * Fetch altitude data from the Open-Elevation API and augment teams.json and venues.json
  */
 
 const fs = require('fs');
@@ -15,7 +15,7 @@ const VENUES_READ_PATH = resolveDataPath('venues.json');
 const OPEN_ELEVATION_URL = 'https://api.open-elevation.com/api/v1/lookup';
 
 async function fetchElevations(locations) {
-  const batchSize = 50; // API 限制
+  const batchSize = 50; // API limit
   const results = [];
   
   for (let i = 0; i < locations.length; i += batchSize) {
@@ -52,13 +52,13 @@ async function fetchElevations(locations) {
       }
     } catch (err) {
       console.error(`Batch ${i}-${i + batchSize} failed:`, err.message);
-      // 填充 null
+            // Fill with null
       for (const loc of batch) {
         results.push({ ...loc, altitude: null });
       }
     }
     
-    // 避免速率限制
+        // Avoid rate limiting
     if (i + batchSize < locations.length) {
       await new Promise(r => setTimeout(r, 1000));
     }
@@ -68,13 +68,13 @@ async function fetchElevations(locations) {
 }
 
 async function main() {
-  console.log('🏔️  获取海拔数据...\n');
+  console.log('🏔️  Fetching altitude data...\n');
   
-  // 加载数据
+    // Load data
   const teams = JSON.parse(fs.readFileSync(TEAMS_READ_PATH, 'utf8'));
   const venues = JSON.parse(fs.readFileSync(VENUES_READ_PATH, 'utf8'));
   
-  // 收集需要查询的位置
+    // Collect locations to query
   const teamLocations = [];
   const venueLocations = [];
   
@@ -100,44 +100,44 @@ async function main() {
     }
   }
   
-  console.log(`📊 球队大本营: ${teamLocations.length}`);
-  console.log(`📊 比赛场馆: ${venueLocations.length}`);
+  console.log(`📊 Team base camps: ${teamLocations.length}`);
+  console.log(`📊 Match venues: ${venueLocations.length}`);
   
-  // 批量查询
-  console.log('\n⏳ 查询球队大本营海拔...');
+    // Batch query
+  console.log('\n⏳ Querying team base camp altitudes...');
   const teamResults = await fetchElevations(teamLocations);
   
-  console.log('⏳ 查询比赛场馆海拔...');
+  console.log('⏳ Querying match venue altitudes...');
   const venueResults = await fetchElevations(venueLocations);
   
-  // 更新 teams.json
+    // Update teams.json
   for (const result of teamResults) {
     if (result.altitude !== null) {
       teams.teams[result.code].baseCamp.altitude = result.altitude;
     }
   }
   
-  // 更新 venues.json
+    // Update venues.json
   for (const result of venueResults) {
     if (result.altitude !== null) {
       venues.venues[result.id].altitude = result.altitude;
     }
   }
   
-  // 写入文件
+    // Write files
   const TEAMS_WRITE_PATH = writeJsonAtomic('teams.json', teams);
   const VENUES_WRITE_PATH = writeJsonAtomic('venues.json', venues);
   
-  // 统计
+    // Statistics
   const teamsWithAlt = Object.values(teams.teams).filter(t => t.baseCamp?.altitude != null).length;
   const venuesWithAlt = Object.values(venues.venues).filter(v => v.altitude != null).length;
   
-  console.log('\n✅ 完成！');
-  console.log(`   球队大本营: ${teamsWithAlt}/${teamLocations.length} 有海拔数据`);
-  console.log(`   比赛场馆: ${venuesWithAlt}/${venueLocations.length} 有海拔数据`);
+  console.log('\n✅ Done!');
+  console.log(`   Team base camps: ${teamsWithAlt}/${teamLocations.length} have altitude data`);
+  console.log(`   Match venues: ${venuesWithAlt}/${venueLocations.length} have altitude data`);
 }
 
 main().catch(err => {
-  console.error('❌ 错误:', err.message);
+  console.error('❌ Error:', err.message);
   process.exit(1);
 });

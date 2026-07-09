@@ -1,34 +1,34 @@
 /**
  * backfill-bilingual-reviews.js
  *
- * 一次性脚本：把存量纯英文（v1）赛后复盘批量重生为中英双语。
+  * One-shot script: batch-rebirth existing English-only (v1) post-match reviews into bilingual (zh+en).
  *
- * 背景：
- *   schema 和 worker 现在已产双语，但 data/predictions.db 的 post_match_reviews
- *   里旧行是 v1 英文、永远不会被重排，所以不会自动刷新。
+  * Background:
+  *   The schema and worker now produce bilingual output, but the post_match_reviews in data/predictions.db
+  *   still hold old v1 English rows that are never re-queued, so they won't refresh automatically.
  *
- * 做法：
- *   遍历 status='completed' 的复盘行，逐个取出 → 把 review.status 设为 'ready_for_ai'、
- *   注入最新 aiPromptContext（instruction + requiredOutputFormat）→ savePostMatchReview
- *   写回，让后台 worker（server.js runAndSchedule）用 DeepSeek 逐批复生成。
+  * Approach:
+  *   Iterate over review rows with status='completed', take them one by one → set review.status to 'ready_for_ai',
+  *   inject the latest aiPromptContext (instruction + requiredOutputFormat) → savePostMatchReview
+  *   write back, so the background worker (server.js runAndSchedule) regenerates them in batches with DeepSeek.
  *
- * 成本与限速：
- *   N 行 = N 次 DeepSeek 调用。后台 worker 每轮 LIMIT 10 + nextAnalysisDelay 间隔
- *   （最少 1 min，闲时 2 h），天然限速。建议先 dry-run 确认数据量再实跑。
+  * Cost and rate limiting:
+  *   N rows = N DeepSeek calls. The background worker uses LIMIT 10 per round + a nextAnalysisDelay interval
+  *   (at least 1 min, 2 h when idle), which is natural rate limiting. Suggest a dry-run first to confirm data volume before the real run.
  *
- * 用法：
+  * Usage:
  *   node scripts/backfill-bilingual-reviews.js [--dry-run] [--batch=N]
  *
- *   --dry-run    仅查看有哪些存量行，不做写操作
- *   --batch=N    每批最多标记 N 行（默认 10），标记完一批后暂停 2 秒再做下一批
- *   --all        一次性标记全部（默认分批，防止一次性全排）
+  *   --dry-run    only preview which existing rows exist; no writes
+  *   --batch=N    mark at most N rows per batch (default 10); pause 2s after each batch before the next
+  *   --all       mark all at once (default is batched, to avoid queuing everything in one go)
  */
 
 'use strict';
 
 const path = require('path');
 
-// ── 参数解析 ──────────────────────────────────────────────────────────
+// ── argument parsing ───────────────────────────────────────────────────────
 const argv = process.argv.slice(2);
 const DRY_RUN  = argv.includes('--dry-run');
 const ALL_AT_ONCE = argv.includes('--all');
@@ -40,7 +40,7 @@ if (batchArg) {
   if (v > 0 && v <= 50) BATCH_SIZE = v;
 }
 
-// ── DB 连接 ────────────────────────────────────────────────────────────
+// ── DB connection ──────────────────────────────────────────────────────────
 const { db } = require('../lib/db');
 const {
   AI_POSTMORTEM_INSTRUCTION,
@@ -49,7 +49,7 @@ const {
   savePostMatchReview,
 } = require('../lib/postMatchReview');
 
-// ── 工具 ───────────────────────────────────────────────────────────────
+// ── utilities ──────────────────────────────────────────────────────────────
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -58,11 +58,11 @@ function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
-// ── 主逻辑 ─────────────────────────────────────────────────────────────
+// ── main logic ─────────────────────────────────────────────────────────────
 async function main() {
   log('🔍 开始扫描存量 completed 复盘行...');
 
-  // 1. 查出所有 status='completed' 的行
+    // 1. query all rows with status='completed'
   const rows = db.prepare(
     "SELECT id, match_id, review_json, status, created_at FROM post_match_reviews WHERE status='completed' ORDER BY created_at ASC"
   ).all();
@@ -83,7 +83,7 @@ async function main() {
     log(`  ${i+1}. match_id=${r.match_id} | ${label} | 已有双语=${hasI18n ? 'YES' : 'NO'}`);
   });
 
-  // 2. 过滤：跳过已经有双语 prompt 的行（可能已经被重排过）
+    // 2. filter: skip rows that already have a bilingual prompt (may have been re-queued already)
   const toProcess = [];
   for (const row of rows) {
     const review = getSavedPostMatchReview(row.match_id);
@@ -91,7 +91,7 @@ async function main() {
       log(`  ⚠️ 跳过 match_id=${row.match_id}：review JSON 解析失败`);
       continue;
     }
-    // 检查是否已经是双语 prompt（requiredOutputFormat 里有 headlineI18n）
+        // check whether it already has a bilingual prompt (requiredOutputFormat contains headlineI18n)
     const fmt = review.aiPromptContext?.requiredOutputFormat || {};
     if (fmt.headlineI18n !== undefined) {
       log(`  ⏭️ 跳过 match_id=${row.match_id}：已有双语输出格式（可能已刷新）`);
@@ -113,7 +113,7 @@ async function main() {
     return;
   }
 
-  // 3. 分流：一次性 vs 分批
+    // 3. branching: all-at-once vs batched
   if (ALL_AT_ONCE) {
     log('\n🚀 一次性标记全部（后台 worker LIMIT 10 + 间隔延迟会自动限速）');
     for (const { match_id, review } of toProcess) {
@@ -126,7 +126,7 @@ async function main() {
     }
     log(`\n🏁 完毕。共标记 ${toProcess.length} 行，后台 worker 将逐批取出 LIMIT 10 处理。`);
   } else {
-    // 分批标记，中间暂停让 worker 消费
+        // mark in batches, pausing in between to let the worker consume
     log(`\n🚀 分批标记，每批 ${BATCH_SIZE} 行，批次间暂停 2 秒...`);
     let totalMarked = 0;
     for (let i = 0; i < toProcess.length; i += BATCH_SIZE) {
@@ -153,12 +153,12 @@ async function main() {
     log(`\n🏁 完毕。共标记 ${totalMarked} 行，后台 worker 将逐批取出 LIMIT 10 处理。`);
   }
 
-  // 4. 关闭连接
+    // 4. close connection
   db.close();
   log('📦 DB 连接已关闭。');
 }
 
 main().catch(err => {
-  console.error('❌ 脚本异常:', err);
+  console.error('❌ script error:', err);
   process.exit(1);
 });

@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 /**
- * Live Match Monitor — 赛中实时数据采集 + 预测 + 出线形势
+ * Live Match Monitor — in-match real-time data collection + prediction + qualification scenario
  * 
- * 独立脚本，不影响主 server.js。
- * 用法：node scripts/live-match-monitor.js [--once] [--dry-run]
+ * Standalone script; does not affect the main server.js.
+ * Usage: node scripts/live-match-monitor.js [--once] [--dry-run]
  * 
- * 功能：
- *   1. 每 5 分钟轮询 ESPN /scoreboard，检测进行中的比赛
- *   2. 在关键时间点记录快照：进球/补水(27-33',72-78')/半场(45')/终场
- *   3. 调 buildLiveAnalysis 赛中实时概率修正
- *   4. 同组平行场比分 → qualification.js 出线概率变化
- *   5. 进球发生时 → 计算对平行场出线的即时影响
+ * Features:
+ *   1. Poll ESPN /scoreboard every 5 minutes, detect matches in progress
+ *   2. Record snapshots at key moments: goal / water break (27-33', 72-78') / half-time (45') / full-time
+ *   3. Call buildLiveAnalysis for in-match real-time probability adjustment
+ *   4. Parallel same-group scores -> qualification.js qualification-probability change
+ *   5. On goal -> compute immediate impact on parallel matches' qualification
  *
- * 输出：data/live-snapshots/YYYY-MM-DD/matchId-MMDDHHmm.json
+ * Output: data/live-snapshots/YYYY-MM-DD/matchId-MMDDHHmm.json
  * 
- * --once   只运行一次（测试用）
- * --dry-run 不写文件，只打印到 stdout
+ * --once    run only once (for testing)
+ * --dry-run do not write files, only print to stdout
  */
 
 'use strict';
@@ -23,7 +23,7 @@
 const path = require('path');
 const fs = require('fs');
 
-// 加载 .env
+// Load .env
 require('../lib/env').loadEnv();
 
 const { espn } = require('../services/espn');
@@ -34,9 +34,9 @@ const TeamContextManager = require('../lib/teamContext');
 
 const DATA_DIR = path.join(__dirname, '..', 'data', 'live-snapshots');
 const TODAY = new Date().toISOString().slice(0, 10);
-const POLL_INTERVAL = 5 * 60 * 1000; // 5 分钟
+const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
-// 赛前预测缓存（matchId → prediction result），避免每次轮询都重新计算
+// Pre-match prediction cache (matchId -> prediction result), avoid recomputing on every poll
 let predictionService = null;
 const basePredictionCache = {};
 const teamContext = new TeamContextManager();
@@ -64,7 +64,7 @@ async function getBasePrediction(matchId) {
   return { homeWin: 0.46, draw: 0.247, awayWin: 0.293, goals: { homeExpected: 2.7, awayExpected: 2.3 } };
 }
 
-// 关键时间点（分钟）
+// Key time points (minutes)
 const HYDRATION_WINDOWS = [
   { start: 27, end: 33, label: 'first_half_hydration' },
   { start: 72, end: 78, label: 'second_half_hydration' },
@@ -73,17 +73,17 @@ const HALFTIME_MINUTE = 45;
 const EXTRA_TIME_FIRST_HALF_MINUTE = 105;
 const EXTRA_TIME_SECOND_HALF_MINUTE = 120;
 
-// CLI 参数
+// CLI arguments
 const args = process.argv.slice(2);
 const ONCE = args.includes('--once');
 const DRY_RUN = args.includes('--dry-run');
 
-// 状态追踪（跨轮次比较）
+// State tracking (compare across poll rounds)
 const matchState = {};  // matchId → { score, minute, lastTrigger, lastGoalMinute }
 const liveTimelineState = {}; // matchId → array of snapshot summaries
 
 // ============================================================
-// buildLiveAnalysis（从 prediction.js 提取，自包含）
+// buildLiveAnalysis (extracted from prediction.js, self-contained)
 // ============================================================
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -216,7 +216,7 @@ function buildLiveAnalysis(basePrediction, matchMeta, liveStats = {}) {
 }
 
 // ============================================================
-// ESPN 数据拉取
+// ESPN data fetching
 // ============================================================
 
 async function fetchLiveMatches() {
@@ -227,22 +227,22 @@ async function fetchLiveMatches() {
     const comp = e.competitions?.[0];
     if (!comp) continue;
     const status = comp.status?.type;
-    if (status?.state !== 'in') continue;  // 只看进行中
+    if (status?.state !== 'in') continue;  // only in-progress
 
     const homeComp = comp.competitors?.find(c => c.homeAway === 'home');
     const awayComp = comp.competitors?.find(c => c.homeAway === 'away');
 
-    // 从 status.detail 提取分钟："35'" → 35
+    // Extract minutes from status.detail: "35'" -> 35
     const minuteStr = String(status?.detail || '').replace(/[^0-9]/g, '');
     const minute = Number(minuteStr) || 0;
 
-    // 从 competitors 提取统计数据（赛后/赛中均可用）
+    // Extract stats from competitors (available both post- and in-match)
     const homeStats = {};
     const awayStats = {};
     for (const s of (homeComp?.statistics || [])) homeStats[s.name] = s.displayValue || s.value;
     for (const s of (awayComp?.statistics || [])) awayStats[s.name] = s.displayValue || s.value;
 
-    // 从 comp.details 提取进球/红黄牌事件
+    // Extract goal / red-yellow card events from comp.details
     const details = (comp.details || []).map(d => ({
       type: d.type?.text || String(d.type || ''),
       minute: d.clock?.displayValue || '',
@@ -276,23 +276,23 @@ async function fetchLiveMatches() {
 }
 
 // ============================================================
-// 触发器判定（vs 上一轮快照）
+// Trigger determination (vs previous snapshot)
 // ============================================================
 
 function classifyTrigger(matchId, current) {
   const prev = matchState[matchId];
-  if (!prev) return 'first_sight';  // 第一次看到
+  if (!prev) return 'first_sight';  // first sighting
 
   const prevScore = prev.score?.home ?? 0 + '' + prev.score?.away ?? 0;
   const curScore = current.home.score + '' + current.away.score;
 
-  // 进球
+  // Goal
   if (curScore !== prevScore) return 'goal';
 
-  // 半场
+  // Half-time
   if (current.minute >= HALFTIME_MINUTE && (prev.minute || 0) < HALFTIME_MINUTE) return 'halftime';
 
-  // 补水窗口
+  // Water break window
   for (const w of HYDRATION_WINDOWS) {
     if (current.minute >= w.start && current.minute <= w.end &&
         !((prev.minute || 0) >= w.start && (prev.minute || 0) <= w.end)) {
@@ -300,28 +300,28 @@ function classifyTrigger(matchId, current) {
     }
   }
 
-  // 终场
+  // Full-time
   if (current.minute >= 90 && (prev.minute || 0) < 90) return 'fulltime';
 
-  // 加时赛节点（淘汰赛专用）
+  // Extra-time nodes (knockout only)
   if (current.minute >= EXTRA_TIME_FIRST_HALF_MINUTE && (prev.minute || 0) < EXTRA_TIME_FIRST_HALF_MINUTE) return 'extra_time_first_half';
   if (current.minute >= EXTRA_TIME_SECOND_HALF_MINUTE && (prev.minute || 0) < EXTRA_TIME_SECOND_HALF_MINUTE) return 'extra_time_second_half';
 
-  // 每 5 分钟定期
+  // Every 5 minutes (periodic)
   const minuteDiff = current.minute - (prev.minute || 0);
   if (minuteDiff >= 5) return 'periodic';
 
-  return null;  // 无需记录
+  return null;  // no snapshot needed
 }
 
 // ============================================================
-// 出线形势计算（轻量版）
+// Qualification scenario calculation (lightweight)
 // ============================================================
 
 async function computeGroupImpact(matchData, allLive) {
   try {
     const sim = new QualificationSimulator({ simulations: 5000 });
-    const groups = sim.loadGroups();  // 从 DB 加载真实分组
+    const groups = sim.loadGroups();  // load real groups from DB
     const impact = {};
     for (const group of groups) {
       const result = sim.simulateGroup(group);
@@ -343,7 +343,7 @@ async function computeGroupImpact(matchData, allLive) {
 }
 
 // ============================================================
-// 快照写入
+// Snapshot writing
 // ============================================================
 
 function saveSnapshot(snapshot) {
@@ -435,7 +435,7 @@ function persistLiveReview(snapshot, basePrediction, timeline) {
 }
 
 // ============================================================
-// 主循环
+// Main loop
 // ============================================================
 
 async function pollOnce() {
@@ -466,7 +466,7 @@ async function pollOnce() {
 
     console.log(`  📍 ${m.matchId} ${m.home.name} ${m.home.score}-${m.away.score} ${m.away.name} @ ${m.minute}' — trigger: ${trigger}`);
 
-    // 从 PredictionService 读取真实赛前预测（首次调用后缓存）
+    // Read real pre-match prediction from PredictionService (cached after first call)
     let basePrediction;
     try {
       basePrediction = await getBasePrediction(m.matchId);
@@ -489,13 +489,13 @@ async function pollOnce() {
       awayPossession: Number(m.away.stats.possessionPct || null),
     });
 
-    // 出线形势（仅末轮有效）
+    // Qualification scenario (only valid for final round)
     let groupImpact = null;
     try {
       groupImpact = await computeGroupImpact(m, live);
     } catch {}
 
-    // 组装快照
+    // Assemble snapshot
     const snapshot = {
       timestamp: now.toISOString(),
       matchId: m.matchId,
@@ -520,13 +520,13 @@ async function pollOnce() {
       snapshot.odds = { source: 'odds_fetch_error', error: e.message };
     }
 
-    // 生成实时文字分析
+    // Generate real-time text analysis
     snapshot.summary = generateSummary(snapshot, basePrediction, live);
     const timeline = appendLiveTimeline(m.matchId, snapshot);
     saveSnapshot(snapshot);
     persistLiveReview(snapshot, basePrediction, timeline);
 
-    // 打印到控制台
+    // Print to console
     console.log('');
     console.log(snapshot.summary);
     console.log('');
@@ -541,7 +541,7 @@ async function pollOnce() {
       }
     }
 
-    // 更新状态
+    // Update state
     matchState[m.matchId] = {
       score: { home: m.home.score, away: m.away.score },
       minute: m.minute,
@@ -552,7 +552,7 @@ async function pollOnce() {
 }
 
 // ============================================================
-// 实时文字分析生成
+// Real-time text analysis generation
 // ============================================================
 
 const GROUP_TAG = {
@@ -562,7 +562,7 @@ const GROUP_TAG = {
   '760469': 'H', '760470': 'H',
 };
 
-// 历史快照队列（同场次近 5 条，用于趋势分析）
+// Historical snapshot queue (last 5 of same match, for trend analysis)
 const recentSnapshots = {};
 function pushRecent(matchId, snap) {
   if (!recentSnapshots[matchId]) recentSnapshots[matchId] = [];
@@ -573,7 +573,7 @@ function getRecent(matchId) { return recentSnapshots[matchId] || []; }
 
 function pct(v) { return Math.round(v * 1000) / 10 + '%'; }
 
-// 用 Poisson 进行简单终场比分蒙特卡洛推演（200 次）
+// Simple Monte-Carlo full-time score simulation with Poisson (200 runs)
 function poissonSample(lambda) {
   let L = Math.exp(-lambda), k = 0, p = 1;
   do { k++; p *= Math.random(); } while (p > L);
@@ -601,7 +601,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
   const prevSnap = getRecent(matchId).slice(-1)[0];
   pushRecent(matchId, snapshot);
 
-  // 触发器中文标签
+  // Trigger labels (zh)
   const triggerLabel = {
     first_sight: '🔍 开球',
     goal: '⚽ 进球',
@@ -617,11 +617,11 @@ function generateSummary(snapshot, basePrediction, allLive) {
   let lines = [];
   lines.push(`【${triggerLabel}】${hn} ${hs}-${as} ${an}（${minute}'）`);
 
-  // 概率
+  // Probability
   const hShift = p.homeWin - base.h;
   lines.push(`  胜平负: 主胜${pct(p.homeWin)}（${hShift >= 0 ? '+' : ''}${pct(hShift)}）平局${pct(p.draw)} 客胜${pct(p.awayWin)}`);
 
-  // ---- 趋势（和上一次快照比） ----
+  // ---- Trend (vs previous snapshot) ----
   if (prevSnap && prevSnap.livePrediction) {
     const pp = prevSnap.livePrediction.probabilities;
     const dp = p.homeWin - pp.homeWin;
@@ -630,7 +630,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     }
   }
 
-  // ---- 比赛表现分析 ----
+  // ---- Match performance analysis ----
   const shots = Number(snapshot.home.stats?.totalShots || 0) + Number(snapshot.away.stats?.totalShots || 0);
   const sot  = Number(snapshot.home.stats?.shotsOnTarget || 0) + Number(snapshot.away.stats?.shotsOnTarget || 0);
   const poss = Number(snapshot.home.stats?.possessionPct || 0);
@@ -647,7 +647,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     lines.push(`  📊 场面: ${possDesc}，${shotDesc}${effDesc ? '，' + effDesc : ''}`);
   }
 
-  // ---- 进球时刻分析 ----
+  // ---- Goal timing analysis ----
   if (trigger === 'goal') {
     const prevScore = prevSnap ? `${prevSnap.home.score}-${prevSnap.away.score}` : '?-?';
     if (diff > 0) {
@@ -665,7 +665,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     }
   }
 
-  // ---- 半场总结 ----
+  // ---- Half-time summary ----
   if (trigger === 'halftime') {
     if (diff > 0) {
       lines.push(`  📌 半场结束，${hn} 领先。下半场${an}必须加强进攻，阵型可能前压，留出反击空间`);
@@ -678,7 +678,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     }
   }
 
-  // ---- 补水窗口分析 ----
+  // ---- Water break window analysis ----
   if (trigger === 'first_half_hydration' || trigger === 'second_half_hydration') {
     const half = trigger === 'first_half_hydration' ? '上半场' : '下半场';
     const minLeft = trigger === 'first_half_hydration' ? 45 - minute : 90 - minute;
@@ -687,7 +687,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     else if (Math.abs(diff) === 1) lines.push(`  📌 一球差距，补水后落后方大概率加码进攻`);
   }
 
-  // ---- 终场总结 ----
+  // ---- Full-time summary ----
   if (trigger === 'fulltime') {
     if (diff > 0) {
       lines.push(`  🏆 ${hn} 主场全取三分！赛前预测主胜${pct(base.h)}，最终兑现`);
@@ -720,7 +720,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     if (diff === 0) lines.push(`  📌 双方都已接近极限，下一次有效射门的价值被放大。`);
   }
 
-  // ---- 预测终场走向（剩余时间推演） ----
+  // ---- Predict full-time trajectory (remaining-time simulation) ----
   if (trigger !== 'fulltime' && minute >= 60 && remaining > 0) {
     const xgH = Math.max(hs, (basePrediction.goals?.homeExpected || 2.0) * (minute / 90));
     const xgA = Math.max(as, (basePrediction.goals?.awayExpected || 1.5) * (minute / 90));
@@ -728,7 +728,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     lines.push(`  🔮 剩余 ${remaining}' 推演: 维持现状${pct(sim.homeWin)} | 翻盘${pct(sim.awayWin)} | 平局${pct(sim.draw)}`);
   }
 
-  // ---- 同组平行场 ----
+  // ---- Parallel same-group matches ----
   const parallelMatch = allLive.find(l => l.matchId !== matchId && GROUP_TAG[l.matchId] === group);
   if (parallelMatch) {
     const ph = parallelMatch.home.name, pa = parallelMatch.away.name;
@@ -736,15 +736,15 @@ function generateSummary(snapshot, basePrediction, allLive) {
     lines.push('');
     lines.push(`  🔗 同组平行场: ${ph} ${pScore}-${pScoreA} ${pa}（${parallelMatch.minute}'）`);
 
-    // 平行场进球对本场影响
+    // Impact of parallel-match goals on this match
     const pParallelPrev = getRecent(parallelMatch.matchId).slice(-1)[0];
     if (pParallelPrev && (pScore !== pParallelPrev.home.score || pScoreA !== pParallelPrev.away.score)) {
       lines.push(`  ⚠️ 平行场刚刚进球！这对本场两队的出线形势产生了直接影响`);
     }
 
-    // 四队当前积分推演
+    // Current points simulation for the four teams
     lines.push(`  📊 当前比分组合下四队出线推演:`);
-    // E组举例（实际用 qualification.js 计算）
+    // Example with Group E (actual calc uses qualification.js)
     if (snapshot.groupImpact && !snapshot.groupImpact.error) {
       for (const [team, info] of Object.entries(snapshot.groupImpact)) {
         const status = info.qualifyPct >= 75 ? '🟢 晋级在望' : info.qualifyPct >= 40 ? '🟡 形势胶着' : '🔴 危险';
@@ -752,7 +752,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
       }
     } else {
       lines.push(`    → （蒙特卡洛出线计算未就绪，仅基于当前比分直推）`);
-      // 简化判断
+      // Simplified judgment
       if (diff > 0 && hs - as >= 2) lines.push(`    → ${hn} 大胜概率高，大概率锁定出线`);
       if (diff === 0 && pScore === pScoreA) lines.push(`    → 两场均平局，四队形势极度紧张，净胜球成关键`);
       if (diff > 0 && pScore > pScoreA) lines.push(`    → 两场主队均领先，主队出线组合非常有利`);
@@ -762,7 +762,7 @@ function generateSummary(snapshot, basePrediction, allLive) {
     lines.push(`  🔗 本组无同时进行的平行场`);
   }
 
-  // ---- 对平行场局势的特别影响（当本场进球时） ----
+  // ---- Special impact on parallel-match situation (when this match scores) ----
   if (parallelMatch && trigger === 'goal') {
     const pg = GROUP_TAG[parallelMatch.matchId];
     const pDiff = parallelMatch.home.score - parallelMatch.away.score;
@@ -809,7 +809,7 @@ function buildFinalMatchSummary(matchId) {
 }
 
 // ============================================================
-// 启动
+// Startup
 // ============================================================
 
 async function main() {
@@ -825,15 +825,15 @@ async function main() {
     return;
   }
 
-  // 连续模式
+  // Continuous mode
   await pollOnce();
   const timer = setInterval(pollOnce, POLL_INTERVAL);
 
-  // 优雅退出
+  // Graceful shutdown
   process.on('SIGINT', () => {
     console.log('\n🛑 Shutting down...');
     clearInterval(timer);
-    // 写入最终汇总
+    // Write final summary
     const summary = { endedAt: new Date().toISOString(), trackedMatches: Object.keys(matchState), finalState: matchState };
     if (!DRY_RUN) {
       const dir = path.join(DATA_DIR, TODAY);

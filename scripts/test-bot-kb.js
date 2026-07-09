@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * P2-6: bot-kb — 出线概率 + 积分榜注入 Bot system prompt
+ * P2-6: bot-kb — qualification probability + standings injection into Bot system prompt
  *
- * 不启动 server，直接测试 fetchGlobalContext + buildSystemPrompt。
+ * Does not start the server; directly tests fetchGlobalContext + buildSystemPrompt.
  */
 'use strict';
 

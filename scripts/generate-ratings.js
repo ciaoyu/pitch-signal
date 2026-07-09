@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// generate-ratings.js — 生成 ratings.json（FIFA 25 风格球员评分）
-// 48 队核心球员，每队约 15 人（首发 11 + 关键替补 4）
+// generate-ratings.js — Generate ratings.json (FIFA 25 style player ratings)
+// 48 teams, core players, ~15 players per team (11 starters + 4 key subs)
 
 const fs = require('fs');
 
-// 基于 FIFA 25 / 实际水平的球员评分数据
-// 格式: teamId → { formation, players: [{ id, name, pos, rating }] }
+// Player rating data based on FIFA 25 / real-world ability
+// Format: teamId → { formation, players: [{ id, name, pos, rating }] }
 const DATA = {
   // ═══════════════════════════════════════
-  // 🇪🇺 欧洲 (UEFA)
+  // 🇪🇺 Europe (UEFA)
   // ═══════════════════════════════════════
   "478": { // France
     formation: "4-3-3",
@@ -331,7 +331,7 @@ const DATA = {
     ]
   },
   // ═══════════════════════════════════════
-  // 🌎 南美洲 (CONMEBOL)
+  // 🌎 South America (CONMEBOL)
   // ═══════════════════════════════════════
   "202": { // Argentina
     formation: "4-3-3",
@@ -434,7 +434,7 @@ const DATA = {
     ]
   },
   // ═══════════════════════════════════════
-  // 🌎 北中美及加勒比 (CONCACAF)
+  // 🌎 North/Central America & Caribbean (CONCACAF)
   // ═══════════════════════════════════════
   "660": { // USA
     formation: "4-3-3",
@@ -557,7 +557,7 @@ const DATA = {
     ]
   },
   // ═══════════════════════════════════════
-  // 🌍 非洲 (CAF)
+  // 🌍 Africa (CAF)
   // ═══════════════════════════════════════
   "654": { // Senegal
     formation: "4-3-3",
@@ -780,7 +780,7 @@ const DATA = {
     ]
   },
   // ═══════════════════════════════════════
-  // 🌏 亚洲 (AFC)
+  // 🌏 Asia (AFC)
   // ═══════════════════════════════════════
   "627": { // Japan
     formation: "4-3-3",
@@ -964,7 +964,7 @@ const DATA = {
     ]
   },
   // ═══════════════════════════════════════
-  // 🏝️ 中北美/大洋洲 (遗漏补全)
+  // 🏝️ North America / Oceania (fill-in for missed teams)
   // ═══════════════════════════════════════
   "11678": { // Curaçao
     formation: "4-3-3",
@@ -986,10 +986,10 @@ const DATA = {
       { id: "213548", name: "Jarzinho Pieter", pos: "GK", rating: 66 },
     ]
   },
-  // 已有但需要修正的 (Saudi Arabia 已在非洲段，不重复)
+  // Already present but needs correction (Saudi Arabia already in Africa section, not duplicated)
 };
 
-// 输出统计
+// Output statistics
 let totalTeams = 0;
 let totalPlayers = 0;
 
@@ -1020,4 +1020,4 @@ const output = {
 };
 
 fs.writeFileSync('ratings.json', JSON.stringify(output, null, 2), 'utf8');
-console.log(`✅ ratings.json 生成完成: ${totalTeams} 队, ${totalPlayers} 名球员`);
+console.log(`✅ ratings.json generated: ${totalTeams} teams, ${totalPlayers} players`);

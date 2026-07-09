@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * 预测融合引擎测试 - v4
- * 使用真实 ratings.json（从 2018+2022 历史数据生成的 Elo）
+  * Prediction fusion engine tests - v4
+  * Uses real ratings.json (Elo generated from 2018+2022 historical data)
  */
 const PredictionEngine = require('../lib/prediction');
 let QualificationSimulator = null;
@@ -35,9 +35,9 @@ const ratings = require('../data/ratings.json').teams;
 // PRECHECK: ratings must be loaded
 assert(Object.keys(ratings).length >= 40, `Ratings loaded: ${Object.keys(ratings).length} teams`);
 
-console.log('=== 预测融合引擎测试 (v4) ===\n');
+console.log('=== Prediction fusion engine test (v4) ===\n');
 
-// ========== 1. 真实比赛预测 ==========
+// ========== 1. Real match prediction ==========
 console.log('📊 Test 1: Australia vs Türkiye');
 const aus = ratings['Australia'];
 const tur = ratings['Türkiye'];
@@ -57,7 +57,7 @@ assert(pred1.goals && typeof pred1.goals.awayExpected === 'number', 'awayExpecte
 assert(pred1.components && typeof pred1.components === 'object', 'components object exists');
 assert(typeof pred1.components.poisson === 'object', 'poisson component exists');
 
-// ========== 2. 强队 vs 弱队 ==========
+// ========== 2. Strong team vs weak team ==========
 console.log('\n📊 Test 2: Germany vs Haiti');
 const ger = ratings['Germany'];
 const hai = ratings['Haiti'];
@@ -70,8 +70,8 @@ assert(pred2.homeWin > pred2.awayWin, 'Stronger team has higher win probability'
 assert(pred2.homeWin > 0.5, 'Germany strong favorite (homeWin > 50%)');
 assert(pred2.awayWin < 0.3, 'Haiti heavy underdog (awayWin < 30%)');
 
-// ========== 3. 势均力敌 ==========
-console.log('\n📊 Test 3: Switzerland vs Sweden (势均力敌)');
+// ========== 3. Evenly matched ==========
+console.log('\n📊 Test 3: Switzerland vs Sweden (evenly matched)');
 const swi = ratings['Switzerland'];
 const swe = ratings['Sweden'];
 assert(swi && swe, 'Both teams found');
@@ -82,12 +82,12 @@ const pred3 = engine.predict({
 const maxDiff = Math.max(pred3.homeWin, pred3.draw, pred3.awayWin) - Math.min(pred3.homeWin, pred3.draw, pred3.awayWin);
 assert(maxDiff < 0.5, 'Balanced match: probabilities within 0.5 range');
 
-// ========== 4. Elo 引导效果 ==========
-console.log('\n📊 Test 4: Elo 引导效果');
+// ========== 4. Elo guidance effect ==========
+console.log('\n📊 Test 4: Elo guidance effect');
 assert(pred1.components.poisson.valid !== undefined, 'Poisson valid flag exists');
 
-// ========== 5. 出线模拟 (requires DB) ==========
-console.log('\n📊 Test 5: 小组出线模拟');
+// ========== 5. Qualification simulation (requires DB) ==========
+console.log('\n📊 Test 5: Group stage advancement simulation');
 let dbAvailable = false;
 try {
   // require db to test whether the native module loads

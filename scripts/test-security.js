@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * lib/security.js — constantTimeEqual 测试
+  * lib/security.js — constantTimeEqual tests
  */
 const assert = require('assert');
 const { constantTimeEqual } = require('../lib/security');

@@ -239,7 +239,7 @@
             const pmEl = document.getElementById('detail-content-pre-match');
             if (pmEl && pred && !pred.error && pred.homeWin !== undefined) pmEl.innerHTML = renderPreMatchPrediction(pred);
             else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
-            // P2-3: 拉取模型 vs 市场分歧
+            // P2-3: fetch model vs market divergence
             api('/api/odds-divergence/' + id).then(function(divRes) {
               if (myReqId !== _openMatchReqId) return;
               const div = divRes?.data || divRes;
@@ -598,7 +598,7 @@
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3">${venueBlock}</div>${w?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">${weatherIcon} ${tx('天气状况','Weather')}</span><span class="text-[11px] text-gray-500">${esc(w.description)||''}</span></div><div class="grid grid-cols-3 gap-3 text-center"><div><div class="text-xl font-bold">${esc(w.temp)||'-'}°C</div><div class="text-[11px] text-gray-500">${tx('温度','Temp')}</div><div class="text-[11px] text-gray-600">${tx('体感','Feels')} ${esc(w.feelsLike)||'-'}°C</div></div><div><div class="text-xl font-bold">${esc(w.humidity)||'-'}%</div><div class="text-[11px] text-gray-500">${tx('湿度','Humidity')}</div></div><div><div class="text-xl font-bold">${w.windSpeed?esc(Math.round(w.windSpeed)):'-'}</div><div class="text-[11px] text-gray-500">${tx('风速','Wind')} km/h</div></div></div></div>`:`<div class="glass-light rounded-lg p-3"><div class="text-center text-gray-500 text-xs"><div class="mb-1">🌤️ ${tx('天气数据','Weather')}</div><div>${tx('暂无实时天气','No weather data')}</div></div></div>`}${impact?`<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">📊 ${tx('场地影响分析','Venue Impact')}</span><span class="text-xs ${impactColor} font-bold">${impactEmoji} ${impact.overall>0?'+':''}${esc(impact.overall)}</span></div><div class="grid grid-cols-2 gap-2 text-[11px] mb-2"><div><span class="text-gray-500">${tx('进攻','Attack')}</span><span class="font-bold ml-1 ${impact.attack>0?'text-green-400':impact.attack<0?'text-red-400':''}">${impact.attack>0?'+':''}${esc(impact.attack)}%</span></div><div><span class="text-gray-500">${tx('防守','Defense')}</span><span class="font-bold ml-1 ${impact.defense>0?'text-green-400':impact.defense<0?'text-red-400':''}">${impact.defense>0?'+':''}${esc(impact.defense)}%</span></div><div><span class="text-gray-500">${tx('控球','Poss')}</span><span class="font-bold ml-1 ${impact.possession>0?'text-green-400':impact.possession<0?'text-red-400':''}">${impact.possession>0?'+':''}${esc(impact.possession)}%</span></div><div><span class="text-gray-500">${tx('体能','Stamina')}</span><span class="font-bold ml-1 ${impact.physical>0?'text-green-400':impact.physical<0?'text-red-400':''}">${impact.physical>0?'+':''}${esc(impact.physical)}%</span></div></div>${impact.details?.length?`<div class="border-t border-white/5 pt-2">${impact.details.map(d=>`<div class="text-[11px] text-gray-400 mb-1">• ${esc(d)}</div>`).join('')}</div>`:''}</div>`:''}</div>`;
     }
 
-    // P2-4: 用户预测投票面板
+    // P2-4: user prediction voting panel
     function renderUserVotePanel(pred) {
         const matchId = pred?.match?.id || window._currentMatchId || '';
         if (!matchId) return '';
@@ -613,7 +613,7 @@
           '  </div>\n' +
           '  <div id="user-vote-result" class="text-xs text-gray-400 leading-snug">' + tx('点击投票查看球迷预测', 'Vote to see fan predictions') + '</div>\n' +
           '</div>';
-        // 异步拉取聚合数据
+        // asynchronously fetch aggregated data
         setTimeout(function() { loadUserVoteAggregate(matchId); }, 200);
         return html;
     }
@@ -629,7 +629,7 @@
         let html=`<div class="space-y-3"><div class="pred-section"><div class="pred-section-title text-purple-400"><span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">⚡</span>${tx('Elo 实力对比','Elo Comparison')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(homeName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloHomePct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloHomePct}%</span></div><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(awayName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloAwayPct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloAwayPct}%</span></div><div class="text-[10px] text-gray-500 text-center mt-1.5">${tx('Elo 差值','Elo Diff')}: ${eloDiff}</div></div></div>`;
         html+=`<div class="pred-section"><div class="pred-section-title text-blue-400"><span class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-xs">🎯</span>${tx('胜平负概率','W/D/L Probability')}</div><div class="prob-bar mb-2" role="img" aria-label="${tx('胜平负概率','Win draw loss probability')}: ${tx('主胜','Home')} ${hw}%, ${tx('平局','Draw')} ${dr}%, ${tx('客胜','Away')} ${aw}%"><div class="prob-bar-home" style="width:${hw}%">${hw>12?hw+'%':''}</div><div class="prob-bar-draw" style="width:${dr}%">${dr>10?dr+'%':''}</div><div class="prob-bar-away" style="width:${aw}%">${aw>12?aw+'%':''}</div></div><div class="flex justify-between text-[11px]"><span class="text-green-400 font-bold">${tx('主胜','Home')} ${hw}%</span><span class="text-yellow-400 font-bold">${tx('平局','Draw')} ${dr}%</span><span class="text-red-400 font-bold">${tx('客胜','Away')} ${aw}%</span></div></div>`;
         html+=`<div class="pred-section"><div class="pred-section-title text-emerald-400"><span class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-xs">📊</span>${tx('进球期望值 (λ)','Expected Goals (λ)')}</div><div class="grid grid-cols-2 gap-2"><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-emerald-300">${esc(homeName)}</div><div class="text-sm font-mono font-bold text-emerald-400">${homeLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx('场均进球','Avg Goals')}</div></div><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-red-300">${esc(awayName)}</div><div class="text-sm font-mono font-bold text-red-400">${awayLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx('场均进球','Avg Goals')}</div></div></div></div>`;
-        // P2-4: 用户预测投票面板
+        // P2-4: user prediction voting panel
         html += renderUserVotePanel(pred);
         if(pred.tacticalScenario?.applicable) html+=renderTacticalScenario(pred.tacticalScenario);
         html+='</div>';
@@ -655,7 +655,7 @@
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">📐 ${tx('角球预测','Corner Forecast')}</span><span class="text-xs text-gray-500">${tx('盘口线','Line')} <span class="font-bold text-white">${o?.line||9.5}</span></span></div><div class="flex items-center gap-3 mb-3"><div class="text-center"><div class="text-2xl font-bold text-white">${p?.total||'-'}</div><div class="text-[11px] text-gray-500">${tx('预测总角球','Projected Corners')}</div></div><div class="flex-1"><div class="flex items-center gap-1 mb-1"><span class="text-xs">${trendEmoji}</span><span class="text-xs font-bold ${trend.includes('over')?'text-red-400':trend.includes('under')?'text-blue-400':'text-gray-400'}">${esc(trend.replace('_',' ').toUpperCase())}</span><span class="ml-auto">${conf}</span></div><div class="text-[11px] text-gray-500">${tx('实际','Actual')} <span class="font-bold text-white">${r.current?.total||0}</span> / ${o?.line||9.5}</div></div></div><div class="relative h-4 bg-white/5 rounded-full overflow-hidden mb-2"><div class="absolute top-0 bottom-0 w-0.5 bg-yellow-500/50" style="left:${expectedPct}%"></div><div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-700" style="width:${progressPct}%"></div><div class="absolute inset-0 flex items-center justify-between px-2 text-[9px]"><span class="text-white font-bold">${r.current?.total||0}</span><span class="text-gray-400">${Math.round(progressPct)}%</span></div></div><div class="flex items-center justify-between text-[11px]"><span class="text-gray-500">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle,'style')||tx('均衡型','Balanced'))} ${tx('对阵','vs')} ${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle,'style')||tx('均衡型','Balanced'))}</span><span class="${paceColor} font-bold">${paceStatus}</span></div></div><div class="grid grid-cols-2 gap-2"><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">🔵 ${tx('主队','Home')}</div><div class="text-sm font-bold">${h?.homeAvg||'-'} ${tx('场均','avg')}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.homeStyle,'style')||tx('均衡型','Balanced'))} (${esc(h?.homeStyleCoeff)||1}x)</div></div><div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">🔴 ${tx('客队','Away')}</div><div class="text-sm font-bold">${h?.awayAvg||'-'} ${tx('场均','avg')}</div><div class="text-[11px] text-gray-600">${esc(window.WorldCup.I18n.translateCoachField(h?.awayStyle,'style')||tx('均衡型','Balanced'))} (${esc(h?.awayStyleCoeff)||1}x)</div></div></div>${data.verdict?.reason||data.verdict?.reasonI18n?`<div class="glass-light rounded-lg p-2"><div class="text-[11px] text-gray-500 mb-1">📊 ${tx('分析结论','Verdict')}</div><div class="text-xs text-gray-300">${esc(window.WorldCup.I18n.i18nText(data.verdict.reasonI18n,data.verdict.reason||''))}</div></div>`:''}</div>`;
     }
 
-    // P2-3: 模型 vs 市场分歧提示条
+    // P2-3: model vs market divergence hint bar
     function renderOddsDivergenceHint(divData) {
         if (!divData || !divData.divergence) return '';
         var direction = divData.direction || '';
@@ -679,7 +679,7 @@
     window.switchDetailTab = switchDetailTab;
     window.closeModal = closeModal;
 
-    // P2-4: 用户预测投票逻辑
+    // P2-4: user prediction voting logic
     var _userVoteUid = null;
     function _saveUid(uid) {
         _userVoteUid = uid;

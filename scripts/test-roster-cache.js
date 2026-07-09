@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * lib/roster_cache.js 测试
- * 覆盖：init, getStats, clear (纯内存操作，不触发 ESPN fetch)
+  * lib/roster_cache.js tests
+  * Covers: init, getStats, clear (in-memory only, does not trigger ESPN fetch)
  */
 const assert = require('assert');
 

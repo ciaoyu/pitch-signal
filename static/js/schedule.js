@@ -23,7 +23,7 @@
             res.data.matches.forEach(m => matchMap.set(String(m.id), Object.assign(matchMap.get(String(m.id)) || {}, m)));
             // To ensure matches are sorted by date or whatever order the API returns
             // It's probably better to use the API's sorting order but populate missing from cache
-            // Actually the requirement is: "用完整结果替换或规范合并临时缓存"
+            // Actually the requirement is: "replace with full results or normalize-merge the temporary cache"
             state.scheduleCache = Array.from(matchMap.values());
             state.scheduleLoaded = true;
         };

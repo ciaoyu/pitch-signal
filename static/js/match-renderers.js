@@ -39,15 +39,15 @@ window.WorldCup.MatchRenderers = (() => {
     const FORMATION_POSITIONS = {};
 
     /**
-     * 通用阵型坐标模板（复刻后端 calcFormationCoords，保证"后端 y 已是此序"成立）
-     * 交错序：home GK(y6)→DEF(y22)→MID(y45)→FWD(y74)；
-     *         away 镜像 GK(y94)→DEF(y78)→MID(y55)→FWD(y26)
-     * 渲染时 cy = y * 1.6 不翻转，从上到下自然呈现：
-     *   蓝GK → 蓝后卫 → 红前锋 → 蓝中场 → 红中场 → 蓝前锋 → 红后卫 → 红GK
+     * Generic formation-coordinate template (mirrors backend calcFormationCoords; ensures "backend y is already in this order").
+     * Interleaved order: home GK(y6)→DEF(y22)→MID(y45)→FWD(y74);
+     *         away mirror GK(y94)→DEF(y78)→MID(y55)→FWD(y26)
+     * At render time cy = y * 1.6, no flip, laid out top-to-bottom naturally:
+     *   blue GK → blue DEF → red FWD → blue MID → red MID → blue FWD → red DEF → red GK
      *
-     * @param {string} formation 如 '4-3-3' / '4-2-3-1' / '3-5-2'
+     * @param {string} formation e.g. '4-3-3' / '4-2-3-1' / '3-5-2'
      * @param {'home'|'away'} side
-     * @returns {Array<{x,y,pos,line}>} 11 人坐标（GK→DEF→MID→FWD 序）
+     * @returns {Array<{x,y,pos,line}>} 11 player coordinates (GK→DEF→MID→FWD order)
      */
     function formationTemplate(formation, side, opponentFormation = '') {
         const isHome = side === 'home';
@@ -161,7 +161,7 @@ window.WorldCup.MatchRenderers = (() => {
         return out;
     }
 
-    /** 阵型字符串解析（与后端 parseFormation 一致） */
+    /** Parse formation string (consistent with backend parseFormation) */
     function parseFormationStr(f) {
         const parts = String(f || '4-3-3').split('-').map(Number);
         if (parts.length === 3) return { def: parts[0], mid: parts[1], fwd: parts[2] };
@@ -363,10 +363,10 @@ window.WorldCup.MatchRenderers = (() => {
         svg += `<path d="M 100 158 A 2 2 0 0 0 98 160" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
         svg += `<path d="M 0 158 A 2 2 0 0 1 2 160" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.3"/>`;
 
-        // ── Source 徽标（official / projected）──
-        // 优先级：matchupData.source > matchupData.lineupSource；其次各队 source
-        // official → 绿底白字「FIFA 官方首发 · HH:MM 公布」
-        // projected → 琥珀底「预测阵容（本届众数/最近一场）」
+        // ── Source badge (official / projected) ──
+        // Priority: matchupData.source > matchupData.lineupSource; then per-team source
+        // official → green bg, white text: "FIFA official lineup · announced HH:MM"
+        // projected → amber bg: "projected lineup (mode of this tournament / most recent match)"
         const renderSourceBadge = (source, announceTime, x, y) => {
             if (!source) return '';
             const isOfficial = source === 'official';
@@ -384,7 +384,7 @@ window.WorldCup.MatchRenderers = (() => {
                 <text x="${w/2}" y="3.1" text-anchor="middle" font-size="2.2" font-weight="600" fill="white" dominant-baseline="middle">${esc(text)}</text>
             </g>`;
         };
-        // 全局 source（同源）置于顶部居中
+        // Global source (same source) placed top-center
         const globalSource = matchupData.source || matchupData.lineupSource || null;
         const globalTime = matchupData.announceTime || matchupData.publishedAt || null;
         if (globalSource) {
@@ -418,7 +418,7 @@ window.WorldCup.MatchRenderers = (() => {
         const matchups = matchupData.matchups || [];
         const substitutions = matchupData.substitutions || [];
 
-        // ── Helper: find player by name (含去重音符) ──
+        // ── Helper: find player by name (strips diacritics) ──
         const normalizeName = (s) => String(s || '').toLowerCase().replace(/['\u0301\u0300\u0308]/g, '').trim();
         const findPlayer = (players, name) => {
             if (!players || !name) return null;
@@ -641,8 +641,8 @@ window.WorldCup.MatchRenderers = (() => {
         });
         svg += `</g>`;
 
-        // ── 各队独立 source 徽标（当主客 source 不同时）──
-        // 全局 source 已显示则跳过；否则按各队 source 在各自半场显示
+        // ── Per-team independent source badges (when home/away sources differ) ──
+        // Skip if global source already shown; otherwise show each team's source in its own half
         if (!globalSource) {
             const homeSrc = home.source || home.lineupSource || null;
             const awaySrc = away.source || away.lineupSource || null;

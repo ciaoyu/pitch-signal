@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * lib/team_resolver.js 测试
- * 覆盖：levenshtein, resolve (精确匹配), getRatingsIdByEspnId, getAllTeams, resolveMatch
+  * lib/team_resolver.js tests
+  * Covers: levenshtein, resolve (exact match), getRatingsIdByEspnId, getAllTeams, resolveMatch
  */
 const assert = require('assert');
 const resolver = require('../lib/team_resolver');

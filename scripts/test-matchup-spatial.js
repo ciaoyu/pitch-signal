@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * lib/matchup-spatial.js 测试
- * 覆盖：resolveTeam, getPlayerRatingData, buildSpatialMatchup (public API)
- * 私有函数 (parseFormation, pickLineup, calcFormationCoords) 通过 buildSpatialMatchup 间接覆盖
+ * Tests for lib/matchup-spatial.js
+ * Covers: resolveTeam, getPlayerRatingData, buildSpatialMatchup (public API)
+ * Private functions (parseFormation, pickLineup, calcFormationCoords) are covered indirectly via buildSpatialMatchup
  */
 const assert = require('assert');
 

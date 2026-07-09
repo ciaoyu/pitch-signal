@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Poisson 回归模型测试
+ * Poisson regression model tests
  */
 const PoissonModel = require('../lib/poisson');
 
@@ -23,9 +23,9 @@ function failIfNoAssert() {
   // No-op; assertions are explicit.
 }
 
-console.log('=== Poisson 回归模型测试 ===\n');
+console.log('=== Poisson regression model test ===\n');
 
-// 1. PMF 测试
+// 1. PMF test
 console.log('📊 Poisson PMF (λ=2.5):');
 assertNear(model.poissonPMF(0, 2.5), 0.0821, 0.001, 'P(X=0) ≈ 0.0821');
 assertNear(model.poissonPMF(1, 2.5), 0.2052, 0.001, 'P(X=1) ≈ 0.2052');
@@ -36,15 +36,15 @@ let pmfSum = 0;
 for (let k = 0; k <= 10; k++) pmfSum += model.poissonPMF(k, 2.5);
 assertNear(pmfSum, 1, 0.01, 'PMF sum ≈ 1');
 
-// 2. 进球期望值
-console.log('\n📊 进球期望值 λ:');
+// 2. Expected goals
+console.log('\n📊 Expected goals λ:');
 const lambdaStrong = model.calculateLambda(1.3, 1.2, true);
 const lambdaWeak = model.calculateLambda(0.8, 0.7, false);
 assert(lambdaStrong > 2.0, 'Strong attack vs weak defense → λ > 2');
 assert(lambdaWeak < 1.5, 'Weak attack vs strong defense → λ < 1.5');
 assert(lambdaStrong > lambdaWeak, 'Stronger attack → higher lambda');
 
-// 3. 概率矩阵
+// 3. Probability matrix
 console.log('\n📊 Brazil (atk=1.3, def=0.8) vs Germany (atk=1.2, def=0.9):');
 const prediction = model.predictMatch(
   { attack_strength: 1.3, defense_strength: 0.8 },
@@ -56,7 +56,7 @@ assert(prediction.homeWinProb > prediction.awayWinProb, 'Home team more likely t
 assert(prediction.topScores.length >= 3, 'At least 3 top scores returned');
 assert(typeof prediction.likelyScore === 'string', 'likelyScore is a string');
 
-// 4. 势均力敌比赛
+// 4. Evenly-matched match
 console.log('\n📊 Argentina (atk=1.1, def=0.9) vs France (atk=1.1, def=0.9):');
 const even = model.predictMatch(
   { attack_strength: 1.1, defense_strength: 0.9 },
@@ -65,8 +65,8 @@ const even = model.predictMatch(
 assertNear(even.homeWinProb + even.drawProb + even.awayWinProb, 1, 0.01, 'Probabilities sum to ~1');
 assert(even.homeWinProb > even.awayWinProb, 'Home advantage gives edge in even match');
 
-// 5. 历史数据训练测试
-console.log('\n📊 历史数据训练测试:');
+// 5. Historical data training test
+console.log('\n📊 Historical data training test:');
 const mockMatches = [
   { home_team: 'Brazil', away_team: 'Germany', home_score: 3, away_score: 1 },
   { home_team: 'Brazil', away_team: 'Argentina', home_score: 2, away_score: 2 },
@@ -85,8 +85,8 @@ assert(strengths['Brazil'].avgGoalsFor > 0, 'Brazil has positive avg goals');
 assert(typeof strengths['Brazil'].attack_strength === 'number', 'Attack strength is number');
 assert(typeof strengths['Brazil'].defense_strength === 'number', 'Defense strength is number');
 
-// 6. λ单调性检查
-console.log('\n📊 λ单调性检查:');
+// 6. λ monotonicity check
+console.log('\n📊 λ monotonicity check:');
 const λhiHi = model.calculateLambda(2.0, 0.5, true);
 const λloLo = model.calculateLambda(0.5, 2.0, false);
 const λmid = model.calculateLambda(1.0, 1.0, true);

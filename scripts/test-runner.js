@@ -2,11 +2,11 @@
 'use strict';
 
 /**
- * 统一测试运行器 — PitchSignal Test Suite
+ * Unified test runner — PitchSignal Test Suite
  *
- * 用法:
- *   node scripts/test-runner.js                    # 运行所有
- *   node scripts/test-runner.js --match "Elo"      # 匹配过滤
+ * Usage:
+ *   node scripts/test-runner.js                    # run all
+ *   node scripts/test-runner.js --match "Elo"      # match filter
  */
 
 const { execSync } = require('child_process');
@@ -16,7 +16,7 @@ const fs = require('fs');
 const ROOT = path.join(__dirname, '..');
 const TEST_DIR = path.join(ROOT, 'scripts');
 
-// 所有测试文件（字母序，含核心+边界）
+// All test files (alphabetical, core + boundary)
 const TEST_FILES = [
   'test-backtest-sort.js',
   'test-bracket-updater.js',
@@ -52,19 +52,19 @@ const TEST_FILES = [
   'test-tournament-stats-sync.js',
   'test-venue-factor.js',
   'test-venueFactors.js',
-  // P2 专项测试
+    // P2 dedicated tests
   'test-bot-kb.js',
   'test-calibration-report.js',
   'test-odds-divergence.js',
   'test-pwa-push.js',
   'test-user-predictions.js',
   'test-teamcontext-news.js',
-  // P4 专项测试
+    // P4 dedicated tests
   'test-continental-strength-signal.js',
   'test-market-value-signal.js',
   'test-prediction-market-ui.js',
   'test-shin-devig.js',
-  // 缺陷修复回归测试
+    // Defect-fix regression tests
   'test-moment-review-integration.js',
   'test-matches-seed.js',
   'test-surge-detection.js',

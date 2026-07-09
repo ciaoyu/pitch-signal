@@ -2,17 +2,17 @@
 
 /**
  * build-player-id-bridge.js
- * 构建 player_id_bridge.json，连接本地 slug ID ↔ ESPN athlete ID
+  * Build player_id_bridge.json, linking local slug IDs ↔ ESPN athlete IDs
  *
- * 匹配策略：按 姓名+号码+位置 使用 fuzzy-match.js 把 lineups 中的球员
- * 匹配到 squads 中的球员，构建双向桥接。
+  * Matching strategy: by name + number + position, use fuzzy-match.js to match the players in lineups
+  * to the players in squads, building a bidirectional bridge.
  *
- * 输入：
- * - runtime 或 resources/seed/wc2026/lineups.json (ESPN athlete ID + name + number + fieldPos)
- * - runtime 或 resources/seed/wc2026/squads.json  (本地 slug ID + name + no + pos)
- * - runtime 或 resources/seed/wc2026/matches.json (home.code / away.code)
+  * Inputs:
+  * - runtime or resources/seed/wc2026/lineups.json (ESPN athlete ID + name + number + fieldPos)
+  * - runtime or resources/seed/wc2026/squads.json  (local slug ID + name + no + pos)
+  * - runtime or resources/seed/wc2026/matches.json (home.code / away.code)
  *
- * 输出：
+  * Outputs:
  * - $DATA_PATH/wc2026/player_id_bridge.json
  * - $DATA_PATH/wc2026/player_id_bridge_report.txt
  */
@@ -26,21 +26,21 @@ const LINEUPS_PATH = resolveDataPath('lineups.json');
 const SQUADS_PATH = resolveDataPath('squads.json');
 const MATCHES_PATH = resolveDataPath('matches.json');
 
-/** fieldPos → squad pos 映射 */
+/** fieldPos → squad pos mapping */
 const FIELDPOS_TO_POS = { 0: 'GK', 1: 'DF', 2: 'MF', 3: 'FW' };
 
 /**
- * 从 squad 团队对象中提取球员数组
+  * Extract the player array from a squad team object
  */
 function getSquadPlayers(teamSquad) {
   if (!teamSquad) return [];
   if (Array.isArray(teamSquad.players)) return teamSquad.players;
-  // 兼容扁平结构
+  // Support flat structure
   return Object.values(teamSquad).filter(p => typeof p === 'object' && p.name && p.id);
 }
 
 /**
- * 标准化姓名用于匹配（同 fuzzy-match.js 的 normalizeString）
+  * Normalize names for matching (same as fuzzy-match.js's normalizeString)
  */
 function normalizeName(str) {
   if (!str) return '';
@@ -48,41 +48,41 @@ function normalizeName(str) {
 }
 
 /**
- * ESPN 头像 URL 构造（标准 CDN 直链，无需 API 调用）
+  * ESPN avatar URL construction (standard CDN direct link, no API call needed)
  */
 function espnPhotoUrl(espnAthleteId) {
   return `https://a.espncdn.com/combiner/i?img=/i/headshots/soccer/players/full/${espnAthleteId}.png`;
 }
 
 function main() {
-  console.log('🔧 构建 Player ID Bridge...\n');
+  console.log('🔧 Building Player ID Bridge...\n');
 
-  // ─── 加载数据 ───
+  // ─── Load data ───
   const lineups = JSON.parse(fs.readFileSync(LINEUPS_PATH, 'utf8'));
   const squads = JSON.parse(fs.readFileSync(SQUADS_PATH, 'utf8'));
   const matchesData = JSON.parse(fs.readFileSync(MATCHES_PATH, 'utf8'));
 
-  // 构建 FIFA match ID → match info 的快速查找
+  // Build fast lookup from FIFA match ID → match info
   const matchMap = new Map();
   for (const m of matchesData.matches) {
     matchMap.set(String(m.id), m);
   }
 
-  // ─── 桥接结果 ───
+  // ─── Bridge results ───
   const bySlug = {};   // slug → { espnId, ... }
   const byEspnId = {}; // espnId → { slug, ... }
   const unmatched = [];
-  const triedFailed = new Set(); // 避免重复记录同一 espnId 的失败
+  const triedFailed = new Set(); // avoid recording the same espnId failure repeatedly
 
   const fifaMatchIds = Object.keys(lineups);
-  console.log(`📋 共 ${fifaMatchIds.length} 场比赛有 lineups 数据\n`);
+  console.log(`📋 Total ${fifaMatchIds.length} matches have lineups data\n`);
 
   for (const fifaMatchId of fifaMatchIds) {
     const matchLineup = lineups[fifaMatchId];
     const matchInfo = matchMap.get(fifaMatchId);
 
     if (!matchInfo) {
-      console.log(`⚠️  ${fifaMatchId}: 在 matches.json 中未找到，跳过`);
+      console.log(`⚠️  ${fifaMatchId}: not found in matches.json, skipping`);
       continue;
     }
 
@@ -90,14 +90,14 @@ function main() {
     const awayCode = matchInfo.away?.code;
 
     if (!homeCode || !awayCode) {
-      console.log(`⚠️  ${fifaMatchId}: 缺少球队代码，跳过`);
+      console.log(`⚠️  ${fifaMatchId}: missing team code, skipping`);
       continue;
     }
 
-    // ─── 处理主队 ───
+    // ─── Process home team ───
     const homeSquadPlayers = getSquadPlayers(squads[homeCode]);
     if (homeSquadPlayers.length === 0) {
-      console.log(`⚠️  ${homeCode}: squads.json 中无球员数据`);
+      console.log(`⚠️  ${homeCode}: no player data in squads.json`);
     }
 
     const homePlayers = [
@@ -109,7 +109,7 @@ function main() {
       const espnId = String(lineupPlayer.id);
       const lineupPos = FIELDPOS_TO_POS[lineupPlayer.fieldPos] || 'MF';
 
-      // 跳过已匹配或已尝试失败的 espnId（同一球员多次出场）
+      // Skip already-matched or already-failed espnIds (same player appearing multiple times)
       if (byEspnId[espnId] || triedFailed.has(espnId)) continue;
 
       const target = {
@@ -123,7 +123,7 @@ function main() {
       if (best) {
         byEspnId[espnId] = { slug: best.id, teamCode: homeCode };
 
-        // 去重：同一个 slug 可能匹配到不同 espnId（极少见，取第一个）
+        // Dedupe: the same slug may match different espnIds (rare; take the first)
         if (!bySlug[best.id]) {
           bySlug[best.id] = {
             espnId,
@@ -149,10 +149,10 @@ function main() {
       }
     }
 
-    // ─── 处理客队 ───
+    // ─── Process away team ───
     const awaySquadPlayers = getSquadPlayers(squads[awayCode]);
     if (awaySquadPlayers.length === 0) {
-      console.log(`⚠️  ${awayCode}: squads.json 中无球员数据`);
+      console.log(`⚠️  ${awayCode}: no player data in squads.json`);
     }
 
     const awayPlayers = [
@@ -203,14 +203,14 @@ function main() {
     }
   }
 
-  // ─── 统计 ───
+  // ─── Statistics ───
   const uniqueSlugs = Object.keys(bySlug).length;
   const uniqueEspnIds = Object.keys(byEspnId).length;
   const uniqueUnmatched = unmatched.length;
   const totalUnique = uniqueEspnIds + uniqueUnmatched;
   const matchRate = totalUnique > 0 ? (uniqueEspnIds / totalUnique * 100).toFixed(1) : '0.0';
 
-  // ─── 写出 bridge.json ───
+  // ─── Write bridge.json ───
   const bridge = {
     generatedAt: new Date().toISOString(),
     bySlug,
@@ -227,9 +227,9 @@ function main() {
   };
 
   const BRIDGE_PATH = writeJsonAtomic('player_id_bridge.json', bridge);
-  console.log(`\n✅ 已写入: ${BRIDGE_PATH}`);
+  console.log(`\n✅ Written: ${BRIDGE_PATH}`);
 
-  // ─── 报告 ───
+  // ─── Report ───
   const lines = [];
   lines.push('Player ID Bridge 构建报告');
   lines.push('='.repeat(60));
@@ -247,7 +247,7 @@ function main() {
   lines.push('首发 XI 匹配率');
   lines.push('-'.repeat(40));
 
-  // 统计 XI 层面
+  // Statistics at the XI level
   let xiAttempted = 0, xiMatched = 0;
   for (const fifaMatchId of fifaMatchIds) {
     const matchLineup = lineups[fifaMatchId];
@@ -262,7 +262,7 @@ function main() {
   const xiRate = xiAttempted > 0 ? (xiMatched / xiAttempted * 100).toFixed(1) : '0.0';
   lines.push(`  XI 球员: ${xiMatched}/${xiAttempted} (${xiRate}%)`);
 
-  // 三分档统计
+  // Statistics by position group
   const posCounts = {};
   for (const fifaMatchId of fifaMatchIds) {
     const matchLineup = lineups[fifaMatchId];
@@ -288,7 +288,7 @@ function main() {
     lines.push('');
     lines.push('未匹配球员清单');
     lines.push('-'.repeat(40));
-    // 按球队分组
+    // Group by team
     const byTeam = {};
     for (const u of unmatched) {
       if (!byTeam[u.teamCode]) byTeam[u.teamCode] = [];
@@ -305,16 +305,16 @@ function main() {
 
   const report = lines.join('\n');
   const REPORT_PATH = writeTextAtomic('player_id_bridge_report.txt', report);
-  console.log(`✅ 已写入报告: ${REPORT_PATH}`);
+  console.log(`✅ Report written: ${REPORT_PATH}`);
 
-  // 终端汇总
+  // Terminal summary
   console.log('\n' + '='.repeat(60));
-  console.log('📊 Player ID Bridge 构建完成');
-  console.log(`   唯一球员: ${totalUnique}`);
-  console.log(`   匹配成功: ${uniqueEspnIds} (${matchRate}%)`);
-  console.log(`   XI 匹配率: ${xiMatched}/${xiAttempted} (${xiRate}%)`);
-  console.log(`   未匹配:   ${uniqueUnmatched}`);
-  console.log(`   唯一 slug: ${uniqueSlugs} / 唯一 espnId: ${uniqueEspnIds}`);
+  console.log('📊 Player ID Bridge build complete');
+  console.log(`   Unique players: ${totalUnique}`);
+  console.log(`   Matched: ${uniqueEspnIds} (${matchRate}%)`);
+  console.log(`   XI match rate: ${xiMatched}/${xiAttempted} (${xiRate}%)`);
+  console.log(`   Unmatched:   ${uniqueUnmatched}`);
+  console.log(`   Unique slug: ${uniqueSlugs} / unique espnId: ${uniqueEspnIds}`);
 }
 
 main();
