@@ -1575,7 +1575,7 @@
         const state = getState();
         if (!name) return name;
         if (state.uiLang === 'en') return name;
-        // 优先使用后端返回的 nameZh，fallback 到本地字典
+        // Prefer the backend-returned nameZh, falling back to the local dictionary
         if (nameZh) return nameZh;
         if (ZH_NAMES[name]) return ZH_NAMES[name];
         // Fuzzy fallback: case-insensitive + accent-stripped

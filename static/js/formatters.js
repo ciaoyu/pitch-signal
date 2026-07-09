@@ -102,7 +102,7 @@ const Fmt = (() => {
 
     /**
      * Display team name based on language.
-     * Handles bilingual names like "沙特阿拉伯 Saudi Arabia".
+     * Handles bilingual names such as "Saudi Arabia".
      * @param {string} name
      * @param {string} [lang] - defaults to uiLang global
      * @returns {string}
