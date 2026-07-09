@@ -138,9 +138,9 @@ console.log('\n📊 Test 10: evaluateRoster home/away split');
 {
   const r = evaluateRoster(
     [
-      { player_name: 'P Home', team_id: 'H', round: 'Round of 32', event_type: 'yellow' },
-      { player_name: 'P Home', team_id: 'H', round: 'Round of 16', event_type: 'yellow' },
-      { player_name: 'P Away', team_id: 'A', round: 'Round of 16', event_type: 'red' },
+      { player_name: 'P Home', team_id: 'H', match_id: 'm1', round: 'Round of 32', event_type: 'yellow' },
+      { player_name: 'P Home', team_id: 'H', match_id: 'm2', round: 'Round of 16', event_type: 'yellow' },
+      { player_name: 'P Away', team_id: 'A', match_id: 'm3', round: 'Round of 16', event_type: 'red' },
     ],
     { nextRound: 'Quarter-finals', homeTeamId: 'H', awayTeamId: 'A' }
   );
@@ -155,6 +155,73 @@ console.log('\n📊 Test 11: reset constants (2026 two-reset rule)');
     'two reset points defined (group-stage + QF)');
   check(YELLOW_CARD_RESET_AFTER_ROUNDS.includes('Group') && YELLOW_CARD_RESET_AFTER_ROUNDS.includes('Quarter-finals'),
     'resets AFTER Group and AFTER Quarter-finals');
+}
+
+// ---- 12. Served ban: R16 straight red, assessing SF (ban served in QF) ----
+console.log('\n📊 Test 12: 已服完停赛 (R16 red, assessing SF - ban served in QF)');
+{
+  const v = evaluatePlayerSuspension(
+    [{ match_id: 'm1', round: 'Round of 16', event_type: 'red' }],
+    { nextRound: 'Semi-finals' }
+  );
+  check(!v.suspended, 'NOT suspended (1-match ban already served in QF)');
+  check(v.reason === null, `reason === null (got ${v.reason})`);
+  check(!v.atRisk, 'not at-risk');
+}
+
+// ---- 13. Active ban: QF straight red, assessing SF (ban applies) ----
+console.log('\n📊 Test 13: 活跃停赛 (QF red, assessing SF - ban applies)');
+{
+  const v = evaluatePlayerSuspension(
+    [{ match_id: 'm1', round: 'Quarter-finals', event_type: 'red' }],
+    { nextRound: 'Semi-finals' }
+  );
+  check(v.suspended, 'suspended for SF');
+  check(v.reason === 'red', `reason === 'red' (got ${v.reason})`);
+  check(v.pendingDisciplinary === true, 'straight red => pendingDisciplinary');
+}
+
+// ---- 14. Served ban: same-match double yellow in R16, assessing SF ----
+console.log('\n📊 Test 14: 已服完两黄变红 (R16 double-yellow, assessing SF)');
+{
+  const v = evaluatePlayerSuspension(
+    [
+      { match_id: 'm1', round: 'Round of 16', event_type: 'yellow' },
+      { match_id: 'm1', round: 'Round of 16', event_type: 'yellow' },
+    ],
+    { nextRound: 'Semi-finals' }
+  );
+  check(!v.suspended, 'NOT suspended (sending-off ban served in QF)');
+  check(v.yellowCount === 0, 'the consumed yellows do not count toward accumulation');
+}
+
+// ---- 15. Active ban: same-match double yellow in QF, assessing SF ----
+console.log('\n📊 Test 15: 活跃两黄变红 (QF double-yellow, assessing SF)');
+{
+  const v = evaluatePlayerSuspension(
+    [
+      { match_id: 'm1', round: 'Quarter-finals', event_type: 'yellow' },
+      { match_id: 'm1', round: 'Quarter-finals', event_type: 'yellow' },
+    ],
+    { nextRound: 'Semi-finals' }
+  );
+  check(v.suspended, 'suspended for SF');
+  check(v.reason === 'second_yellow', `reason === 'second_yellow' (got ${v.reason})`);
+}
+
+// ---- 16. Served R16 red does NOT mask a fresh SF yellow (at-risk for Final) ----
+console.log('\n📊 Test 16: 旧红已服完+新黄在身 (R16 red served + SF yellow => at-risk for Final)');
+{
+  const v = evaluatePlayerSuspension(
+    [
+      { match_id: 'm1', round: 'Round of 16', event_type: 'red' }, // served in QF
+      { match_id: 'm2', round: 'Semi-finals', event_type: 'yellow' }, // active window for Final
+    ],
+    { nextRound: 'Final' }
+  );
+  check(!v.suspended, 'NOT suspended (old red served, only 1 active yellow)');
+  check(v.atRisk, 'at-risk from the fresh SF yellow');
+  check(v.yellowCount === 1, `yellowCount === 1 (got ${v.yellowCount})`);
 }
 
 console.log(`\n============================`);
