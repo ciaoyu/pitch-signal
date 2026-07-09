@@ -3444,7 +3444,8 @@ var require_match_detail = __commonJS({
           }).catch(() => {
           });
         }
-        if (isLive || isFinishedMatch) {
+        const pressureExperimentOn = window.__ENABLE_PRESSURE_INDEX__ === true;
+        if (isFinishedMatch || isLive && pressureExperimentOn) {
           api("/api/match/" + id + "/pressure").then((pressureRes) => {
             if (myReqId !== _openMatchReqId) return;
             const pd = pressureRes?.data || pressureRes;
@@ -3452,7 +3453,15 @@ var require_match_detail = __commonJS({
             const el = document.getElementById("hud-pressure");
             if (el && pd && !pd.error && (pd.current || pd.curve && pd.curve.length > 0)) {
               el.innerHTML = MR().renderPressurePanel(pd, homeName, awayName);
-              if (wrap) wrap.style.display = "";
+              if (wrap) {
+                wrap.style.display = "";
+                if (isLive && pressureExperimentOn) {
+                  const note = document.createElement("div");
+                  note.style.cssText = "margin-top:8px;font-size:10px;line-height:1.4;color:rgba(251,191,36,.85)";
+                  note.textContent = tx("\u5B9E\u9A8C\u6570\u636E\u5C42\uFF1A\u538B\u529B\u6307\u6570\u672A\u88AB\u8BC1\u660E\u80FD\u6709\u6548\u9884\u6D4B\u8FDB\u7403", "Experimental layer: this pressure index is not proven to predict goals");
+                  wrap.appendChild(note);
+                }
+              }
             }
           }).catch(() => {
           });

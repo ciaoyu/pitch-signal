@@ -309,8 +309,15 @@
             }).catch(() => {});
         }
 
-        // Pressure → HUD right panel (live + finished matches only)
-        if (isLive || isFinishedMatch) {
+        // §1.4 Pressure Index display policy:
+        // The pressure index must NOT render in the live (in-play) UI by default — an
+        // unverified signal must not influence how users read win probability (Track-B
+        // philosophy, and anchoring effect per Tversky & Kahneman 1974). It is shown in the
+        // post-match review view. A live "experimental data layer" may be enabled only via the
+        // explicit window.__ENABLE_PRESSURE_INDEX__ flag, and then shows an informed-consent
+        // notice that the index is not proven to predict goals.
+        const pressureExperimentOn = window.__ENABLE_PRESSURE_INDEX__ === true;
+        if (isFinishedMatch || (isLive && pressureExperimentOn)) {
             api('/api/match/' + id + '/pressure').then(pressureRes => {
                 if (myReqId !== _openMatchReqId) return;
                 const pd = pressureRes?.data || pressureRes;
@@ -318,7 +325,15 @@
                 const el = document.getElementById('hud-pressure');
                 if (el && pd && !pd.error && (pd.current || (pd.curve && pd.curve.length > 0))) {
                     el.innerHTML = MR().renderPressurePanel(pd, homeName, awayName);
-                    if (wrap) wrap.style.display = '';
+                    if (wrap) {
+                        wrap.style.display = '';
+                        if (isLive && pressureExperimentOn) {
+                            const note = document.createElement('div');
+                            note.style.cssText = 'margin-top:8px;font-size:10px;line-height:1.4;color:rgba(251,191,36,.85)';
+                            note.textContent = tx('实验数据层：压力指数未被证明能有效预测进球', 'Experimental layer: this pressure index is not proven to predict goals');
+                            wrap.appendChild(note);
+                        }
+                    }
                 }
             }).catch(() => {});
         }
