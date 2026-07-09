@@ -37,9 +37,9 @@ async function testW1CEvalBaselines() {
   assert.ok(Math.abs(fs.baselines.uniform.accuracy - 1 / 3) < 1e-6, 'Uniform accuracy should be 1/3');
   assert.ok(Math.abs(fs.baselines.uniform.meanBrier - 2 / 3) < 1e-6, 'Uniform Brier should be 2/3');
 
-  // 2. Historical Frequency check
-  assert.ok(Math.abs(fs.baselines.historicalFrequency.accuracy - 0.52074688) < 1e-4, 'Historical frequency accuracy should be ~52.07%');
-  assert.ok(Math.abs(fs.baselines.historicalFrequency.meanBrier - 0.6133589) < 1e-4, 'Historical frequency Brier should be ~0.6134');
+  // 2. Historical Frequency check (expanding window walk-forward)
+  assert.ok(Math.abs(fs.baselines.historicalFrequency.accuracy - 0.51970954) < 1e-4, 'Historical frequency accuracy should be ~51.97%');
+  assert.ok(Math.abs(fs.baselines.historicalFrequency.meanBrier - 0.61611681) < 1e-4, 'Historical frequency Brier should be ~0.6161%');
 
   // 3. Model Baseline check (Wave 1 Red Line invariant)
   assert.ok(Math.abs(fs.baselines.model.accuracy - 0.57883817) < 1e-4, 'Model accuracy must be 57.88%');
@@ -54,6 +54,7 @@ async function testW1CEvalBaselines() {
   assert.strictEqual(fs.reliabilityDiagram.away.bins.length, 10);
   assert.strictEqual(typeof fs.reliabilityDiagram.home.tail_calibration_pass, 'boolean');
 
+  console.log('15 passed');
   console.log('✅ W1-C Eval Baselines & Reliability Diagram tests passed!');
 }
 
