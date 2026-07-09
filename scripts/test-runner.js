@@ -69,6 +69,7 @@ const TEST_FILES = [
   'test-matches-seed.js',
   'test-surge-detection.js',
   'test-knockout-writeback.js',
+  'test-eval-baselines.js',
 ];
 
 const filter = process.argv.includes('--match')
