@@ -70,6 +70,7 @@ const TEST_FILES = [
   'test-surge-detection.js',
   'test-knockout-writeback.js',
   'test-eval-baselines.js',
+  'test-w1d-pipeline-audit.js',
 ];
 
 const filter = process.argv.includes('--match')
