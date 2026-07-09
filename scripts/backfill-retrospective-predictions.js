@@ -2,16 +2,16 @@
 'use strict';
 
 /**
- * 赛后参考预测回填脚本
+  * Post-match reference prediction backfill script
  *
- * 为所有 kickoff_passed 比赛生成当前模型的回溯模拟预测,
- * 存入 retrospective_predictions 表 (而非 prediction_snapshots)。
+  * Generate retrospective simulation predictions for all kickoff_passed matches using the current model,
+  * stored in the retrospective_predictions table (not prediction_snapshots).
  *
- * 用法:
- *   node scripts/backfill-retrospective-predictions.js           # 回填全部
- *   node scripts/backfill-retrospective-predictions.js --dry-run # 预览
- *   node scripts/backfill-retrospective-predictions.js --clear   # 清空后重填
- *   node scripts/backfill-retrospective-predictions.js --match 760414  # 单场
+  * Usage:
+  *   node scripts/backfill-retrospective-predictions.js           # backfill all
+  *   node scripts/backfill-retrospective-predictions.js --dry-run # preview
+  *   node scripts/backfill-retrospective-predictions.js --clear   # clear then refill
+  *   node scripts/backfill-retrospective-predictions.js --match 760414  # single match
  */
 
 const path = require('path');
@@ -175,7 +175,7 @@ async function main() {
     }
   }
 
-  console.log(`\n完成: 成功 ${ok} 场, 失败 ${failed} 场。`);
+  console.log(`\nDone: succeeded ${ok} matches, failed ${failed} matches.`);
   if (failed > 0) process.exitCode = 1;
 }
 

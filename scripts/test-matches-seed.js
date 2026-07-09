@@ -1,14 +1,14 @@
 'use strict';
 
 /**
- * matches 表播种（缺陷修复）回归测试
+  * matches table seeding (bugfix) regression test
  *
- * 背景：seedRealGroups 虽定义却从未被调用，导致生产 matches 表为空，
- * 使 P0-3 终场比分回写 / P4-4 校准报告 / P3-1 Track-B 静默失效。
- * 本测试验证：
- *   1. 首次播种填充 groups(12) + matches(72)
- *   2. 重复调用幂等（不重复插入）
- *   3. sync_completed_matches 的 findMatch 能命中已播种对阵
+  * Background: seedRealGroups is defined but never called, leaving the production matches table empty,
+  * silently breaking P0-3 final-score writeback / P4-4 calibration report / P3-1 Track-B.
+  * This test verifies:
+  *   1. First seeding populates groups(12) + matches(72)
+  *   2. Repeated calls are idempotent (no duplicate inserts)
+  *   3. sync_completed_matches's findMatch can match the seeded fixture
  */
 
 const assert = require('assert');
@@ -38,7 +38,7 @@ function test(name, fn) {
   }
 }
 
-console.log('=== matches 表播种（P0-3 / P3-1 / P4-4 依赖）测试 ===\n');
+console.log('=== matches table seeding (P0-3 / P3-1 / P4-4 dependencies) test ===\n');
 
 test('1. 首次播种填充 matches / groups 表', () => {
   const seeded = groups.seedRealGroups();
@@ -70,14 +70,14 @@ test('3. sync 的 findMatch 能命中已播种对阵（修复前为空表会 mat
 });
 
 test('4. INSERT OR IGNORE + 唯一索引防止重复对阵', () => {
-  // 取已播种的 Mexico vs South Korea 的真实 (group, match_number)
+  // Get the real (group, match_number) of the seeded Mexico vs South Korea fixture
   const seeded = db.prepare(`
     SELECT group_id, match_number FROM matches
     WHERE home_team_id = 'Mexico' AND away_team_id = 'South Korea'
     LIMIT 1
   `).get();
   assert.ok(seeded, '应存在 Mexico vs South Korea 的已播种对阵');
-  // 用完全一致的 (group_id, match_number, 主客) 再次插入，应被唯一索引忽略
+  // Re-insert with identical (group_id, match_number, home/away); should be ignored by the unique index
   db.prepare(`
     INSERT OR IGNORE INTO matches (group_id, match_number, home_team_id, away_team_id)
     VALUES (?, ?, 'Mexico', 'South Korea')
@@ -89,6 +89,6 @@ test('4. INSERT OR IGNORE + 唯一索引防止重复对阵', () => {
   assert.strictEqual(dup, 1, '同一对阵 + match_number 只能有 1 行');
 });
 
-console.log(`\n通过 ${passed} / 失败 ${failed}`);
+console.log(`\npassed ${passed} / failed ${failed}`);
 if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
 process.exit(failed > 0 ? 1 : 0);

@@ -1,26 +1,26 @@
 #!/usr/bin/env node
 /**
- * 用 martj42/international_results（CC0，49k 场，1872 至今）按时间全量回放，
- * 生成各届世界杯开赛前的 Elo 快照，写入 data/elo-seed.json。
+  * Replay all matches in chronological order using martj42/international_results (CC0, 49k matches, 1872 to present),
+  * generate an Elo snapshot before each World Cup kickoff, and write it to data/elo-seed.json.
  *
- * 解决回测冷启动问题：lib/backtest.js 原先所有队从 1500 起步，首轮预测
- * 零信息；生产环境却用 ratings.json 种子分，两边口径不一致。
+  * Solves the backtest cold-start problem: lib/backtest.js originally started every team at 1500, so the first-round prediction
+  * had zero information; however production uses seed ratings from ratings.json, so the two sides were inconsistent.
  *
- * 用法：
- *   node scripts/build-elo-seed.js --csv <results.csv 路径>
+  * Usage:
+  *   node scripts/build-elo-seed.js --csv <path to results.csv>
  *
- * 设计要点：
- *   - K 值复用 lib/elo.js 的 kFactorByType（世界杯60/洲际正赛50/预选赛45/友谊赛30/其他40）
- *   - 中立场比赛不给主场 +100（用第二个 homeAdvantage=0 的引擎实例）
- *   - 快照口径：严格早于该届世界杯首场比赛日的所有比赛（无未来信息泄漏）
- *   - 队名别名：martj42 用现名回溯（Russia/Germany/DR Congo），openfootball
- *     历史文件用当时名（Soviet Union/West Germany/Zaire），快照里两套名字都写入
+  * Design notes:
+  *   - Reuse kFactorByType from lib/elo.js for the K value (World Cup 60 / continental finals 50 / qualifiers 45 / friendlies 30 / other 40)
+  *   - Neutral-venue matches get no +100 home advantage (use a second engine instance with homeAdvantage=0)
+  *   - Snapshot scope: strictly all matches earlier than that World Cup's first match day (no future-information leakage)
+  *   - Team-name aliases: martj42 uses current names retroactively (Russia/Germany/DR Congo), openfootball
+  *     history files use contemporary names (Soviet Union/West Germany/Zaire); the snapshot writes both name sets
  */
 const fs = require('fs');
 const path = require('path');
 const EloRating = require('../lib/elo');
 
-// openfootball 当时名 → martj42 现名
+// openfootball contemporary name -> martj42 current name
 const ALIASES = {
   'USA': 'United States',
   'West Germany': 'Germany',
@@ -32,8 +32,8 @@ const ALIASES = {
   'Serbia and Montenegro': 'Serbia',
   'East Germany': 'German DR',
   "Côte d'Ivoire": 'Ivory Coast',
-  // 注：'China' 两边都直接叫 "China"，无需别名（方法审计核实过，此前误加过
-  // 'China'→'China PR' 一条，martj42 里根本没有 "China PR" 这个名字，纯死代码，已删除）
+  // Note: 'China' is called "China" directly on both sides, no alias needed (verified during method audit; previously a wrong entry was added
+  // 'China'->'China PR', but martj42 has no name "China PR" at all - pure dead code, already removed)
 };
 
 const CONTINENTAL_FINALS = /^(UEFA Euro|Copa América|African Cup of Nations|AFC Asian Cup|CONCACAF Championship|Gold Cup|CONCACAF Gold Cup|Oceania Nations Cup|OFC Nations Cup)$/;
@@ -46,7 +46,7 @@ function matchType(tournament) {
   return 'default';
 }
 
-/** 最小 CSV 解析（处理带引号字段） */
+/** Minimal CSV parser (handles quoted fields) */
 function parseCsvLine(line) {
   const fields = [];
   let cur = '', inQuotes = false;
@@ -74,7 +74,7 @@ function loadWorldCupStartDates() {
     const dates = (doc.matches || []).map(x => x.date).filter(Boolean).sort();
     if (dates.length) cutoffs[m[1]] = dates[0];
   }
-  // 2026 届（进行中，不在 history 目录）：官方揭幕战日期
+    // 2026 edition (in progress, not in history dir): official opening match date
   if (!cutoffs['2026']) cutoffs['2026'] = '2026-06-11';
   return cutoffs;
 }
@@ -84,7 +84,7 @@ function snapshot(ratings) {
   for (const [team, r] of Object.entries(ratings)) {
     out[team] = Math.round(r * 10) / 10;
   }
-  // 写入 openfootball 当时名的别名条目
+    // write alias entries for openfootball's contemporary names
   for (const [oldName, newName] of Object.entries(ALIASES)) {
     if (out[newName] !== undefined) out[oldName] = out[newName];
   }
@@ -107,7 +107,7 @@ function main() {
   for (let i = 1; i < lines.length; i++) {
     const f = parseCsvLine(lines[i]);
     const hs = f[col.home_score], as = f[col.away_score];
-    if (hs === 'NA' || as === 'NA' || hs === '' || as === '') continue; // 未赛
+    if (hs === 'NA' || as === 'NA' || hs === '' || as === '') continue; // not played
     rows.push({
       date: f[col.date],
       home: f[col.home_team],
@@ -121,9 +121,9 @@ function main() {
   rows.sort((a, b) => a.date.localeCompare(b.date));
   console.log(`Replaying ${rows.length} completed matches...`);
 
-  const eloHome = new EloRating();               // 真主场：+100
-  // 中立场：无主场加成。不能传 0 —— lib/elo.js 用 `options.homeAdvantage || 100`，
-  // 0 是 falsy 会被当作"未传参"覆盖回默认 100；用一个可忽略的极小值绕开这个陷阱。
+  const eloHome = new EloRating();               // true home: +100
+    // Neutral venue: no home advantage. Cannot pass 0 -- lib/elo.js uses `options.homeAdvantage || 100`,
+    // 0 is falsy and would be treated as "not passed", overriding back to the default 100; use a negligible tiny value to bypass this trap.
   const eloNeutral = new EloRating({ homeAdvantage: 0.0001 });
   const ratings = {};
   const get = (t) => ratings[t] !== undefined ? ratings[t] : 1500;
@@ -134,7 +134,7 @@ function main() {
   let cutoffPtr = 0;
 
   for (const m of rows) {
-    // 跨过 cutoff 时先落快照（严格早于开赛日的状态）
+        // When crossing the cutoff, drop the snapshot first (state strictly before the kickoff date)
     while (cutoffPtr < cutoffList.length && m.date >= cutoffList[cutoffPtr][1]) {
       const [year, asOf] = cutoffList[cutoffPtr];
       snapshots[year] = { asOf, teams: snapshot(ratings) };
@@ -145,7 +145,7 @@ function main() {
     ratings[m.home] = upd.homeRating;
     ratings[m.away] = upd.awayRating;
   }
-  // 未跨过的 cutoff（未来赛事）与最终状态
+    // Cutoffs not yet crossed (future events) and final state
   while (cutoffPtr < cutoffList.length) {
     const [year, asOf] = cutoffList[cutoffPtr];
     snapshots[year] = { asOf, teams: snapshot(ratings) };
@@ -164,7 +164,7 @@ function main() {
   fs.writeFileSync(outPath, JSON.stringify(out, null, 1) + '\n');
   console.log(`Wrote ${outPath} (${Object.keys(snapshots).length} snapshots)`);
 
-  // 覆盖率检查：每届 history 文件里的队名必须能在对应快照里查到
+    // Coverage check: every team name in each history file must be findable in the corresponding snapshot
   const dir = path.join(__dirname, '..', 'data', 'history');
   const misses = {};
   for (const f of fs.readdirSync(dir)) {
@@ -185,7 +185,7 @@ function main() {
     console.log('Coverage check: all history team names resolve in their snapshots.');
   }
 
-  // 快照抽查：2026 开赛前 Top 10
+    // Snapshot spot-check: Top 10 before 2026 kickoff
   const top = Object.entries(snapshots['2026'].teams).sort((a, b) => b[1] - a[1]).slice(0, 10);
   console.log('\nTop 10 (pre-2026):');
   for (const [t, r] of top) console.log(`  ${t}: ${r}`);

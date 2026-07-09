@@ -1,7 +1,7 @@
 'use strict';
 /**
- * bracket-updater.js 测试
- * 运行: node scripts/test-bracket-updater.js
+  * Tests for bracket-updater.js
+  * Run: node scripts/test-bracket-updater.js
  */
 const assert = require('assert');
 const {
@@ -18,10 +18,10 @@ const ok = (name) => { console.log(`  ✅ ${name}`); passed += 1; };
 const fail = (name, err) => { console.log(`  ❌ ${name}: ${err.message}`); failed += 1; };
 
 // ============================================================
-// Mock 数据
+// Mock data
 // ============================================================
 
-// 简单 posMap: 部分小组已完成
+// Simple posMap: some groups already finished
 const mockPosMap = {
   A1: 'Spain', A2: 'Mexico', A3: 'South Africa', A4: 'Qatar',
   B1: 'Argentina', B2: 'Brazil', B3: 'Croatia', B4: 'Iran',
@@ -37,7 +37,7 @@ const mockPosMap = {
   L1: 'Senegal', L2: 'Australia', L3: 'Canada', L4: 'New Zealand',
 };
 
-// 12 组第三名数据（pts, gd, gf 不同，用于排序测试）
+// 12 groups' third-place data (varying pts, gd, gf, for sorting tests)
 const mockThirdPlaceData = {
   A: { name: 'South Africa', id: '467', pts: 4, gd: -1, gf: 3 },
   B: { name: 'Croatia', id: '4398', pts: 3, gd: 0, gf: 4 },
@@ -53,7 +53,7 @@ const mockThirdPlaceData = {
   L: { name: 'Canada', id: '2659', pts: 3, gd: -1, gf: 3 },
 };
 
-// 简化 bracket（只有 R32 涉及第三名的 slot）
+// Simplified bracket (only R32 involves third-place slots)
 const mockBracketMatches = {
   'R32-1': { teamA: 'A2', teamB: 'B2' },
   'R32-2': { teamA: 'E1', teamB: '3rd A/B/C/D/F' },
@@ -132,36 +132,36 @@ try {
 console.log('\n=== resolveThirdPlaceTeams ===');
 
 // ============================================================
-// Test 5: 正常分配（12 组全部有第三名）
+// Test 5: normal assignment (all 12 groups have a third place)
 // ============================================================
 try {
   const result = resolveThirdPlaceTeams(mockThirdPlaceData, mockBracketMatches);
-  // 应该有 8 个 slot 被分配
+    // should have 8 slots assigned
   const assigned = Object.keys(result);
   assert.strictEqual(assigned.length, 8, `Expected 8 slots, got ${assigned.length}`);
   ok('8 third-place slots assigned');
 } catch (e) { fail('8 slots assigned', e); }
 
 // ============================================================
-// Test 6: 排序正确性 — pts 优先
+// Test 6: sort correctness — pts first
 // ============================================================
 try {
-  // C(6pts) 和 H(6pts) 应该排在最前
+    // C (6pts) and H (6pts) should be ranked first
   const result = resolveThirdPlaceTeams(mockThirdPlaceData, mockBracketMatches);
   const groups = Object.values(result).map(t => t.group);
-  // C 和 H 都是 6 分，应该都在已晋级名单里
+    // C and H are both 6 points, both should be in the qualified list
   assert.ok(groups.includes('C') || groups.includes('H'), 'Top-pts groups should be in result');
   ok('Sorting: pts priority verified');
 } catch (e) { fail('Sorting: pts priority', e); }
 
 // ============================================================
-// Test 7: 排序正确性 — gd 作为 tie-breaker
+// Test 7: sort correctness — gd as tie-breaker
 // ============================================================
 try {
   // A(4pts,-1gd), D(4pts,1gd), F(4pts,0gd), I(4pts,0gd), J(4pts,1gd)
-  // D 和 J 都是 4pts+1gd，D gf=4, J gf=5 → J 排在 D 前面
+    // D and J are both 4pts+1gd; D gf=4, J gf=5 → J ranks ahead of D
   const result = resolveThirdPlaceTeams(mockThirdPlaceData, mockBracketMatches);
-  // 验证 D 和 J 都晋级（都是 4pts 1gd，在前 8 内）
+    // verify D and J both advance (both 4pts 1gd, within top 8)
   const groups = Object.values(result).map(t => t.group);
   assert.ok(groups.includes('D'), 'D should qualify (4pts 1gd)');
   assert.ok(groups.includes('J'), 'J should qualify (4pts 1gd)');
@@ -169,11 +169,11 @@ try {
 } catch (e) { fail('Tie-breaker: gd', e); }
 
 // ============================================================
-// Test 8: 排序正确性 — gf 作为第三级 tie-breaker
+// Test 8: sort correctness — gf as third-level tie-breaker
 // ============================================================
 try {
-  // F(4pts,0gd,3gf) vs I(4pts,0gd,2gf) → F 排在 I 前
-  // A(4pts,-1gd,3gf) 应该排在 F 和 I 后面（因为 gd 更低）
+    // F (4pts,0gd,3gf) vs I (4pts,0gd,2gf) → F ranks ahead of I
+    // A (4pts,-1gd,3gf) should rank after F and I (because gd is lower)
   const result = resolveThirdPlaceTeams(mockThirdPlaceData, mockBracketMatches);
   const groups = Object.values(result).map(t => t.group);
   assert.ok(groups.includes('F'), 'F should qualify (4pts 0gd 3gf)');
@@ -181,7 +181,7 @@ try {
 } catch (e) { fail('Tie-breaker: gf', e); }
 
 // ============================================================
-// Test 9: 不足 12 组 → 返回空
+// Test 9: fewer than 12 groups → return empty
 // ============================================================
 try {
   const result = resolveThirdPlaceTeams({ A: mockThirdPlaceData.A }, mockBracketMatches);
@@ -190,7 +190,7 @@ try {
 } catch (e) { fail('Less than 12 groups', e); }
 
 // ============================================================
-// Test 10: 每个 team group 只分配一次
+// Test 10: each team group assigned only once
 // ============================================================
 try {
   const result = resolveThirdPlaceTeams(mockThirdPlaceData, mockBracketMatches);
@@ -238,10 +238,10 @@ try {
 console.log('\n=== buildResolvedBracket ===');
 
 // ============================================================
-// Test 14: 完整 bracket — R32 解析为真实队名
+// Test 14: full bracket — R32 resolved to real team names
 // ============================================================
 try {
-  // 使用真实的 bracket_2026.json
+    // use the real bracket_2026.json
   const bracket = require('../data/bracket_2026.json');
   const schedule = require('../data/match_snapshot_schedule.json');
 
@@ -259,7 +259,7 @@ try {
 } catch (e) { fail('R32-1 resolved', e); }
 
 // ============================================================
-// Test 15: R32 有 kickoff 时间
+// Test 15: R32 has kickoff time
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -272,7 +272,7 @@ try {
     schedule,
   });
 
-  // R32-1 应该有 kickoff（如果 schedule 里有对应的 match）
+    // R32-1 should have a kickoff (if the schedule has a matching match)
   const r32_1 = result.matches['R32-1'];
   if (r32_1.kickoff) {
     assert.ok(typeof r32_1.kickoff === 'string');
@@ -285,7 +285,7 @@ try {
 } catch (e) { fail('R32 kickoff', e); }
 
 // ============================================================
-// Test 16: R16+ 为 TBD（无淘汰赛结果时）
+// Test 16: R16+ is TBD (when no knockout results)
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -307,7 +307,7 @@ try {
 } catch (e) { fail('R16 TBD', e); }
 
 // ============================================================
-// Test 17: R16+ 有 kickoff 时间
+// Test 17: R16+ has kickoff time
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -320,7 +320,7 @@ try {
     schedule,
   });
 
-  // R16-1 通过 bracket_slot_map 有 espnMatchId → 应该有 kickoff
+    // R16-1 has espnMatchId via bracket_slot_map → should have kickoff
   const r16_1 = result.matches['R16-1'];
   if (r16_1.kickoff) {
     assert.ok(typeof r16_1.kickoff === 'string');
@@ -331,7 +331,7 @@ try {
 } catch (e) { fail('R16 kickoff', e); }
 
 // ============================================================
-// Test 18: 第三名 slot 被解析
+// Test 18: third-place slot resolved
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -344,7 +344,7 @@ try {
     schedule,
   });
 
-  // R32-2: E1(Germany) vs 3rd A/B/C/D/F → 应该不再是"待定"
+    // R32-2: E1 (Germany) vs 3rd A/B/C/D/F → should no longer be "TBD"
   const r32_2 = result.matches['R32-2'];
   assert.strictEqual(r32_2.teamA.name, 'Germany');
   assert.notStrictEqual(r32_2.teamB.name, '待定', '3rd place should be resolved');
@@ -353,7 +353,7 @@ try {
 } catch (e) { fail('3rd resolved in bracket', e); }
 
 // ============================================================
-// Test 19: thirdPlaceResolved 标记
+// Test 19: thirdPlaceResolved flag
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -371,7 +371,7 @@ try {
 } catch (e) { fail('thirdPlaceResolved', e); }
 
 // ============================================================
-// Test 20: thirdPlaceMatch 存在
+// Test 20: thirdPlaceMatch exists
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -390,13 +390,13 @@ try {
 } catch (e) { fail('thirdPlaceMatch', e); }
 
 // ============================================================
-// Test 21: 部分小组未完成 → 对应 slots 为 TBD
+// Test 21: some groups unfinished → corresponding slots are TBD
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
   const schedule = require('../data/match_snapshot_schedule.json');
 
-  // 只有 A、B 组完成
+    // only groups A and B finished
   const partialPosMap = { A1: 'Spain', A2: 'Mexico', B1: 'Argentina', B2: 'Brazil' };
 
   const result = buildResolvedBracket({
@@ -408,13 +408,13 @@ try {
 
   assert.strictEqual(result.matches['R32-1'].teamA.name, 'Mexico');
   assert.strictEqual(result.matches['R32-1'].teamB.name, 'Brazil');
-  // E1 组未完成 → TBD
+    // group E1 unfinished → TBD
   assert.strictEqual(result.matches['R32-2'].teamA.name, 'TBD');
   ok('Partial groups: resolved slots correct, unresolved are TBD');
 } catch (e) { fail('Partial groups', e); }
 
 // ============================================================
-// Test 22: propagateResults 骨架（原样返回）
+// Test 22: propagateResults skeleton (returns as-is)
 // ============================================================
 console.log('\n=== propagateResults ===');
 try {
@@ -438,7 +438,7 @@ try {
 } catch (e) { fail('propagateResults skeleton', e); }
 
 // ============================================================
-// Test 23: tree 结构保留
+// Test 23: tree structure preserved
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -459,7 +459,7 @@ try {
 } catch (e) { fail('Tree structure', e); }
 
 // ============================================================
-// Test 24: rounds 列表
+// Test 24: rounds list
 // ============================================================
 try {
   const bracket = require('../data/bracket_2026.json');
@@ -477,7 +477,7 @@ try {
 } catch (e) { fail('Rounds list', e); }
 
 // ============================================================
-// 结果
+// results
 // ============================================================
 console.log(`\n============================`);
 console.log(`  Total: ${passed + failed} | ✅ ${passed} | ❌ ${failed}`);

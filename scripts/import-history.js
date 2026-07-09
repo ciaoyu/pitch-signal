@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * 历史世界杯数据导入脚本
- * 读取 data/history/*.json，写入 SQLite，训练 Poisson 模型
+ * Historical World Cup data import script
+ * Read data/history/*.json, write to SQLite, train Poisson model
  */
 const fs = require('fs');
 const path = require('path');
@@ -10,20 +10,20 @@ const PoissonModel = require('../lib/poisson');
 
 const HISTORY_DIR = path.join(__dirname, '..', 'data', 'history');
 
-console.log('📥 开始导入历史世界杯数据...\n');
+console.log('📥 Importing historical World Cup data...\n');
 
-// 1. 读取数据文件
+// 1. Read data files
 const files = fs.readdirSync(HISTORY_DIR).filter(f => f.endsWith('.json'));
-console.log(`📁 找到 ${files.length} 个数据文件`);
+console.log(`📁 Found ${files.length} data files`);
 
 let totalImported = 0;
 
 for (const file of files) {
   const data = JSON.parse(fs.readFileSync(path.join(HISTORY_DIR, file), 'utf8'));
   const matches = data.matches || [];
-  console.log(`\n📊 ${data.tournament}: ${matches.length} 场比赛`);
+  console.log(`\n📊 ${data.tournament}: ${matches.length} matches`);
 
-  // 2. 写入 historical_matches 表
+    // 2. Write to historical_matches table
   const stmt = db.prepare(`
     INSERT OR IGNORE INTO historical_matches (match_date, home_team, away_team, home_score, away_score, tournament, stage, venue, source)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -40,18 +40,18 @@ for (const file of files) {
 
   const imported = insertAll(matches);
   totalImported += imported;
-  console.log(`  ✅ 导入 ${imported} 场比赛`);
+  console.log(`  ✅ Imported ${imported} matches`);
 }
 
-// 3. 训练 Poisson 模型
-console.log('\n🧠 训练 Poisson 模型...');
+// 3. Train Poisson model
+console.log('\n🧠 Training Poisson model...');
 const allMatches = all('SELECT home_team, away_team, home_score, away_score FROM historical_matches');
 const model = new PoissonModel();
 const strengths = model.trainFromMatches(allMatches);
 
-console.log(`  全局场均进球: ${model.globalAvgGoals.toFixed(2)}`);
+console.log(`  Global avg goals per match: ${model.globalAvgGoals.toFixed(2)}`);
 
-// 4. 更新 team_features 表
+// 4. Update team_features table
 const updateStmt = db.prepare(`
   INSERT OR REPLACE INTO team_features (team_id, team_name, attack_strength, defense_strength, last_updated)
   VALUES (?, ?, ?, ?, ?)
@@ -62,23 +62,23 @@ for (const [team, s] of Object.entries(strengths)) {
   updateStmt.run(team, team, s.attack_strength, s.defense_strength, new Date().toISOString());
   updated++;
 }
-console.log(`  ✅ 更新 ${updated} 支球队攻防强度`);
+console.log(`  ✅ Updated ${updated} teams attack/defense strength`);
 
-// 5. 显示 Top 10 攻防排名
-console.log('\n📊 攻击强度 Top 10:');
+// 5. Show Top 10 attack/defense rankings
+console.log('\n📊 Top 10 attack strength:');
 Object.entries(strengths)
   .sort((a, b) => b[1].attack_strength - a[1].attack_strength)
   .slice(0, 10)
   .forEach(([team, s], i) => {
-    console.log(`  ${i + 1}. ${team}: 攻=${s.attack_strength.toFixed(3)} 守=${s.defense_strength.toFixed(3)} (${s.matches}场)`);
+    console.log(`  ${i + 1}. ${team}: atk=${s.attack_strength.toFixed(3)} def=${s.defense_strength.toFixed(3)} (${s.matches} matches)`);
   });
 
-console.log('\n📊 防守强度 Top 10 (值越小越好):');
+console.log('\n📊 Top 10 defense strength (lower is better):');
 Object.entries(strengths)
   .sort((a, b) => a[1].defense_strength - b[1].defense_strength)
   .slice(0, 10)
   .forEach(([team, s], i) => {
-    console.log(`  ${i + 1}. ${team}: 守=${s.defense_strength.toFixed(3)} (${s.matches}场)`);
+    console.log(`  ${i + 1}. ${team}: def=${s.defense_strength.toFixed(3)} (${s.matches} matches)`);
   });
 
-console.log(`\n🎉 导入完成！共 ${totalImported} 场比赛，${updated} 支球队`);
+console.log(`\n🎉 Import complete! Total ${totalImported} matches, ${updated} teams`);

@@ -2,9 +2,9 @@
 
 /**
  * sync-fifa-data.js
- * 从 26worldcup GitHub 仓库拉取 JSON 数据文件到 $DATA_PATH/wc2026/
+  * Pull JSON data files from the 26worldcup GitHub repo into $DATA_PATH/wc2026/
  * 
- * 数据源：
+  * Data sources:
  * - public/data/: teams, squads, lineups, probs, venues, weather, wc-history
  * - scripts/curated/: climate, fifa-ranking
  */
@@ -19,7 +19,7 @@ const {
 const BASE_URL = 'https://raw.githubusercontent.com/26worldcup/26worldcup.github.io/main';
 const OUTPUT_DIR = getRuntimeDataDir();
 
-// 10 个需要下载的文件及其源路径
+// The 10 files to download and their source paths
 const FILES_TO_SYNC = [
   { name: 'teams.json', source: 'public/data/teams.json' },
   { name: 'squads.json', source: 'public/data/squads.json' },
@@ -34,7 +34,7 @@ const FILES_TO_SYNC = [
 ];
 
 /**
- * 下载单个 JSON 文件
+  * Download a single JSON file
  */
 function downloadJSON(url) {
   return new Promise((resolve, reject) => {
@@ -64,22 +64,22 @@ function downloadJSON(url) {
 }
 
 /**
- * 主函数
+  * Main function
  */
 async function main() {
-  // 确保输出目录存在
+  // Ensure the output directory exists
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    console.log(`✅ 创建目录: ${OUTPUT_DIR}`);
+    console.log(`✅ Created directory: ${OUTPUT_DIR}`);
   }
 
   const results = [];
   const errors = [];
 
-  // 逐个下载文件
+  // Download files one by one
   for (const file of FILES_TO_SYNC) {
     const url = `${BASE_URL}/${file.source}`;
-    console.log(`📥 下载 ${file.name}...`);
+    console.log(`📥 Downloading ${file.name}...`);
     
     try {
       const data = await downloadJSON(url);
@@ -106,16 +106,16 @@ async function main() {
     }
   }
 
-  // 输出汇总
+  // Output summary
   console.log('\n' + '='.repeat(60));
-  console.log(`📊 同步完成: ${results.length}/${FILES_TO_SYNC.length} 个文件成功`);
+  console.log(`📊 Sync complete: ${results.length}/${FILES_TO_SYNC.length} files succeeded`);
   
   if (errors.length > 0) {
-    console.log(`\n❌ 失败的文件:`);
+    console.log(`\n❌ Failed files:`);
     errors.forEach(e => console.log(`   - ${e.name}: ${e.error}`));
   }
 
-  // 写入同步日志
+  // Write sync log
   const log = {
     timestamp: new Date().toISOString(),
     results,
@@ -125,15 +125,15 @@ async function main() {
     failed: errors.length
   };
   const logPath = writeJsonAtomic('sync-log.json', log);
-  console.log(`\n📝 同步日志: ${logPath}`);
+  console.log(`\n📝 Sync log: ${logPath}`);
 
-  // 返回成功状态
+  // Return success status
   process.exit(errors.length > 0 ? 1 : 0);
 }
 
 /**
- * 选择性同步指定文件（供 cron 调用）
- * @param {string[]} names - 要同步的文件名数组，如 ['lineups.json', 'matches.json']
+  * Selectively sync specified files (for cron invocation)
+  * @param {string[]} names - array of filenames to sync, e.g. ['lineups.json', 'matches.json']
  * @returns {Promise<{results: object[], errors: object[]}>}
  */
 async function syncSelected(names) {
@@ -159,7 +159,7 @@ async function syncSelected(names) {
     }
   }
 
-  // 写入同步日志
+  // Write sync log
   const log = {
     timestamp: new Date().toISOString(),
     results,
@@ -173,13 +173,13 @@ async function syncSelected(names) {
   return { results, errors };
 }
 
-// 导出模块接口供 cron 使用
+// Export module interface for cron use
 module.exports = { syncSelected, OUTPUT_DIR, FILES_TO_SYNC, downloadJSON };
 
-// 直接运行时执行全量同步
+// Run a full sync when executed directly
 if (require.main === module) {
   main().catch(err => {
-    console.error('❌ 致命错误:', err.message);
+    console.error('❌ Fatal error:', err.message);
     process.exit(1);
   });
 }

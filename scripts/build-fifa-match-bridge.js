@@ -4,13 +4,13 @@
 /**
  * build-fifa-match-bridge.js
  *
- * 从 FIFA 官方 API 拉取 IdMatch + IdStage（UUID），
- * 与本地 match_id_bridge.json（ESPN match_id + 日期 + 球队代码）对齐，
- * 写入 SQLite fifa_match_bridge 表。
+ * Fetch IdMatch + IdStage (UUID) from the official FIFA API,
+ * and align with the local match_id_bridge.json (ESPN match_id + date + team codes),
+ * then write into the SQLite fifa_match_bridge table.
  *
- * 有了这张表，moment-sync.js 才能调 FIFA live API 拿实时阵型和换人数据。
+ * With this table, moment-sync.js can call the FIFA live API for real-time formations and substitution data.
  *
- * 用法：
+ * Usage:
  *   node scripts/build-fifa-match-bridge.js
  *   node scripts/build-fifa-match-bridge.js --dry-run
  */
@@ -21,7 +21,7 @@ const path  = require('path');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
-// ─── 读取本地 ESPN bridge ────────────────────────────────────────────────────
+// ─── Read local ESPN bridge ────────────────────────────────────────────────────
 const { resolveDataPath } = require('../lib/data-resolver');
 const { db } = require('../lib/db');
 
@@ -29,10 +29,10 @@ function loadLocalBridge() {
   try {
     const p = resolveDataPath('match_id_bridge.json');
     const d = JSON.parse(fs.readFileSync(p, 'utf8'));
-    // bridge 结构：{ "espnId": { espn_match_id, home, away, date, ... } }
+    // bridge structure: { "espnId": { espn_match_id, home, away, date, ... } }
     return d.bridge ?? {};
   } catch (e) {
-    console.error('❌ match_id_bridge.json 未找到，先运行 build-match-id-bridge.js');
+    console.error('❌ match_id_bridge.json not found, run build-match-id-bridge.js first');
     process.exit(1);
   }
 }
@@ -71,7 +71,7 @@ async function main() {
 
   const localBridge = loadLocalBridge();
   // localBridge: { espnId → { espn_match_id, fifa_match_id, home, away, date } }
-  // fifa_match_id 来自 26worldcup，与 FIFA API 的 IdMatch 数字完全一致
+  // fifa_match_id comes from 26worldcup and matches the FIFA API's IdMatch numeric ID exactly
 
   console.log(`   Local ESPN entries: ${Object.keys(localBridge).length}`);
 
@@ -84,7 +84,7 @@ async function main() {
     process.exit(1);
   }
 
-  // FIFA index：IdMatch → entry（数字 ID 与 26worldcup 一致）
+  // FIFA index: IdMatch → entry (numeric ID matches 26worldcup)
   const fifaById = {};
   for (const f of fifaCalendar) {
     if (f.IdMatch) fifaById[String(f.IdMatch)] = f;

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * 战术板交错布局自测
+  * Tactical board staggered-layout self-test
  *
- * 验证 formationTemplate 在常见阵型两两组合下，主客队 22 个圆点无重叠。
- * 圆点半径 r=3.2（直径 6.4），判定阈值：任意两点圆心距 > 6.4（严格不重叠）。
+  * Verify that under pairwise combinations of common formations, the home and away teams' 22 dots have no overlap.
+  * Dot radius r=3.2 (diameter 6.4); threshold: distance between any two dots > 6.4 (strictly no overlap).
  *
- * 注意：formationTemplate / parseFormationStr 与 static/js/match-renderers.js
- * 中的实现必须保持完全一致。本脚本内联一份独立复刻用于离线自测。
+  * Note: formationTemplate / parseFormationStr must stay exactly consistent with static/js/match-renderers.js
+  * implementation. This script inlines an independent replica for offline self-testing.
  *
- * 覆盖阵型：4-3-3 / 4-2-3-1 / 3-5-2 / 3-4-2-1 / 4-1-4-1 / 5-3-2 / 4-4-2 / 3-4-3 / 4-5-1
- * 验收用例：4-3-3 vs 4-3-3、4-2-3-1 vs 3-5-2 单独打印布点图。
+  * Formations covered: 4-3-3 / 4-2-3-1 / 3-5-2 / 3-4-2-1 / 4-1-4-1 / 5-3-2 / 4-4-2 / 3-4-3 / 4-5-1
+  * Acceptance cases: 4-3-3 vs 4-3-3, 4-2-3-1 vs 3-5-2 print their dot layouts separately.
  */
 
 let pass = 0, fail = 0;
@@ -23,7 +23,7 @@ function assertApprox(actual, expected, msg, eps = 1e-4) {
     assert(ok, `${msg} (expected ${expected}, got ${actual})`);
 }
 
-// ── 与 match-renderers.js 完全一致的实现（复刻） ──
+// ── implementation fully identical to match-renderers.js (replica) ──
 function parseFormationStr(f) {
     const parts = String(f || '4-3-3').split('-').map(Number);
     if (parts.length === 3) return { def: parts[0], mid: parts[1], fwd: parts[2] };
@@ -77,29 +77,29 @@ function formationTemplate(formation, side, opponentFormation = '') {
     return out;
 }
 
-// ── 渲染坐标（与 match-renderers.js renderTacticalBoard 一致） ──
-const R = 3.2; // 圆点半径
+// ── render coordinates (consistent with match-renderers.js renderTacticalBoard) ──
+const R = 3.2; // dot radius
 const DIAMETER = R * 2; // 6.4
 const renderCoord = (p) => ({ cx: p.x, cy: p.y * 1.6 });
 
 const FORMATIONS = ['4-3-3', '4-2-3-1', '4-1-2-3', '3-5-2', '3-4-2-1', '4-1-4-1', '5-3-2', '4-4-2', '3-4-3', '4-5-1'];
 
-console.log('=== 战术板交错布局自测 ===\n');
+console.log('=== Tactical board staggered layout self-test ===\n');
 
-// ── 1. 每个阵型产出 11 人 ──
-console.log('📊 1. 阵型解析：每阵型产出 11 人');
+// ── 1. each formation produces 11 players ──
+console.log('📊 1. Formation parsing: each formation produces 11 players');
 for ( const f of FORMATIONS) {
     const home = formationTemplate(f, 'home');
     const away = formationTemplate(f, 'away');
     assert(home.length === 11, `${f} home → 11 人 (实际 ${home.length})`);
     assert(away.length === 11, `${f} away → 11 人 (实际 ${away.length})`);
-    // 首人是 GK
+        // first is GK
     assert(home[0].pos === 'GK', `${f} home[0] 是 GK`);
     assert(away[0].pos === 'GK', `${f} away[0] 是 GK`);
 }
 
-// ── 2. 单阵型内部无重叠（同队 11 人） ──
-console.log('📊 2. 单阵型内部无重叠');
+// ── 2. no overlap within a single formation (11 players, same team) ──
+console.log('📊 2. No overlap within a single formation');
 for (const f of FORMATIONS) {
     for (const side of ['home', 'away']) {
         const players = formationTemplate(f, side).map(renderCoord);
@@ -108,8 +108,8 @@ for (const f of FORMATIONS) {
     }
 }
 
-// ── 3. 两两组合主客队 22 人无重叠 ──
-console.log('📊 3. 两两组合（主×客）22 人无重叠');
+// ── 3. pairwise combination of home/away teams, 22 players, no overlap ──
+console.log('📊 3. Pairwise combinations (home×away) 22 players no overlap');
 let combos = 0;
 const overlapCombos = [];
 for (const hf of FORMATIONS) {
@@ -125,22 +125,22 @@ for (const hf of FORMATIONS) {
         }
     }
 }
-// 阈值说明：r=3.2 直径 6.4。允许"接触"（>=6.0）但要求严格不重叠（>6.4）。
-// 个别极端组合（4-2-3-1 AM vs 3-5-2 MID 同 x 同 cy）可能恰好 6.4，视为边界可接受。
+// Threshold note: r=3.2 diameter 6.4. "Touching" (>=6.0) is allowed, but strict non-overlap (>6.4) is required.
+// A few extreme combinations (4-2-3-1 AM vs 3-5-2 MID, same x and cy) may land exactly at 6.4, treated as an acceptable boundary case.
 const strictFail = overlapCombos.filter(c => !c.includes('6.4 (接触'));
 assert(overlapCombos.length === 0 || strictFail.length === 0,
     `两两组合无严格重叠 (共 ${combos} 组合，严格重叠 ${strictFail.length} 个)`);
 if (overlapCombos.length > 0) {
-    console.log(`  ℹ️ 边界接触（=6.4，可接受）${overlapCombos.length} 个：`);
+    console.log(`  ℹ️ Boundary contact (=6.4, acceptable) ${overlapCombos.length}:`);
     overlapCombos.slice(0, 5).forEach(c => console.log(`     ${c}`));
-    if (overlapCombos.length > 5) console.log(`     ... 共 ${overlapCombos.length} 个`);
+    if (overlapCombos.length > 5) console.log(`     ... total ${overlapCombos.length}`);
 }
 
-// ── 4. 交错序验证：从上到下 蓝GK→蓝后卫→红前锋→蓝中场→红中场→蓝前锋→红后卫→红GK ──
-// 前锋 y 已调到相邻两层中点：
-//   红前锋(away fwd) y=33.5 → cy=53.6 = (蓝后卫35.2 + 蓝中场72.0)/2
-//   蓝前锋(home fwd) y=66.5 → cy=106.4 = (红中场88.0 + 红后卫124.8)/2
-console.log('📊 4. 交错序验证（4-3-3 vs 4-3-3）');
+// ── 4. interleave-order verification: top to bottom blueGK→blueDef→redFwd→blueMid→redMid→blueFwd→redDef→redGK ──
+// forward y adjusted to the midpoint of the two adjacent layers:
+//   red forward (away fwd) y=33.5 → cy=53.6 = (blue defender 35.2 + blue mid 72.0)/2
+//   blue forward (home fwd) y=66.5 → cy=106.4 = (red mid 88.0 + red defender 124.8)/2
+console.log('📊 4. Stagger order verification (4-3-3 vs 4-3-3)');
 {
     const home = formationTemplate('4-3-3', 'home').map(renderCoord);
     const away = formationTemplate('4-3-3', 'away').map(renderCoord);
@@ -164,7 +164,7 @@ console.log('📊 4. 交错序验证（4-3-3 vs 4-3-3）');
     }
     assert(orderOk, '4-3-3 vs 4-3-3 交错序正确（蓝GK→蓝后卫→红前锋→蓝中场→红中场→蓝前锋→红后卫→红GK）');
 
-    // 前锋中点验证
+        // forward midpoint verification
     const redFwdCy = 33.5 * 1.6;
     const blueDefCy = 22 * 1.6;
     const blueMidCy = 45 * 1.6;
@@ -176,23 +176,23 @@ console.log('📊 4. 交错序验证（4-3-3 vs 4-3-3）');
     assertApprox(blueFwdCy, (redMidCy + redDefCy) / 2, '蓝前锋在红中场与红后卫中点', 0.01);
 }
 
-// ── 5. 验收用例布点图 ──
-console.log('\n📊 5. 验收布点图：4-3-3 vs 4-3-3');
+// ── 5. acceptance-case dot layout ──
+console.log('\n📊 5. Acceptance layout diagram: 4-3-3 vs 4-3-3');
 printBoard('4-3-3', '4-3-3');
 
-console.log('\n📊 6. 验收布点图：4-2-3-1 vs 3-5-2');
+console.log('\n📊 6. Acceptance layout diagram: 4-2-3-1 vs 3-5-2');
 printBoard('4-2-3-1', '3-5-2');
 
-// ── 总结 ──
-console.log('\n=== 总结 ===');
-console.log(`  通过: ${pass}`);
-console.log(`  失败: ${fail}`);
+// ── summary ──
+console.log('\n=== Summary ===');
+console.log(`  Passed: ${pass}`);
+console.log(`  Failed: ${fail}`);
 if (fail > 0) {
-    console.error('\n❌ 战术板自测失败:');
+    console.error('\n❌ Tactical board self-test failed:');
     failures.forEach(m => console.error('   -', m));
     process.exit(1);
 }
-console.log('\n✅ 战术板交错布局自测全部通过!');
+console.log('\n✅ Tactical board staggered layout self-test all passed!');
 
 // ── helpers ──
 function dist(a, b) {
@@ -215,7 +215,7 @@ function findOverlapDetailed(players) {
     for (let i = 0; i < players.length; i++) {
         for (let j = i + 1; j < players.length; j++) {
             const d = dist(players[i], players[j]);
-            if (d < DIAMETER - 0.01) { // 严格小于，接触(=6.4)不算
+            if (d < DIAMETER - 0.01) { // strictly less; touching (=6.4) doesn't count
                 return `点${i}[${players[i].side}:${players[i].cx},${players[i].cy}] 与 点${j}[${players[j].side}:${players[j].cx},${players[j].cy}] 距离 ${d.toFixed(2)}`;
             }
         }
@@ -230,9 +230,9 @@ function printBoard(hf, af) {
         ...home.map((p, i) => ({ ...renderCoord(p), side: 'H', idx: i, pos: p.pos })),
         ...away.map((p, i) => ({ ...renderCoord(p), side: 'A', idx: i, pos: p.pos })),
     ];
-    // 按 cy 排序打印
+        // print sorted by cy
     all.sort((a, b) => a.cy - b.cy);
-    console.log(`  从上到下（cy=y*1.6）：`);
+    console.log(`  From top to bottom (cy=y*1.6):`);
     let prevCy = -1;
     for (const p of all) {
         const mark = p.side === 'H' ? '🔵' : '🔴';

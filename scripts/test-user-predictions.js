@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * P2-4: user-predictions 纯逻辑 + HTTP 结构验证（不依赖 better-sqlite3）
+ * P2-4: user-predictions pure logic + HTTP structure validation (no better-sqlite3 dependency)
  */
 'use strict';
 
@@ -12,7 +12,7 @@ function assert(cond, label) { cond ? (console.log('  ✅', label), passed++) : 
 // 1. COOKIE_UID constant
 assert(COOKIE_UID === 'ps_uid', 'COOKIE_UID = ps_uid');
 
-// 2. 模拟 cookie 解析逻辑
+// 2. Simulate cookie parsing logic
 {
   const getUid = (cookie) => {
     if (!cookie) return null;
@@ -26,7 +26,7 @@ assert(COOKIE_UID === 'ps_uid', 'COOKIE_UID = ps_uid');
   assert(getUid('no-uid-here') === null, 'no ps_uid → null');
 }
 
-// 3. 模拟 POST 校验逻辑（不走 DB）
+// 3. Simulate POST validation logic (no DB access)
 {
   const validatePost = (body) => {
     const { matchId, choice, confidence } = body || {};
@@ -44,7 +44,7 @@ assert(COOKIE_UID === 'ps_uid', 'COOKIE_UID = ps_uid');
   assert(validatePost({ matchId: '760432', choice: 'home', confidence: -0.1 }).code === 400, 'confidence<0 → 400');
 }
 
-// 4. 模拟 SET-Cookie 构造
+// 4. Simulate SET-Cookie construction
 {
   const uidCookie = (uid) => `${COOKIE_UID}=${uid}; Path=/; Max-Age=31536000; SameSite=Lax`;
   const c = uidCookie('anon_test42');
@@ -53,7 +53,7 @@ assert(COOKIE_UID === 'ps_uid', 'COOKIE_UID = ps_uid');
   assert(c.includes('Max-Age=31536000'), 'cookie includes 1-year expiry');
 }
 
-// 5. 聚合百分比计算
+// 5. Aggregate percentage calculation
 {
   const votes = { home: 7, draw: 2, away: 1 };
   const total = 10;
@@ -68,7 +68,7 @@ assert(COOKIE_UID === 'ps_uid', 'COOKIE_UID = ps_uid');
   assert(Math.abs(pct.home + pct.draw + pct.away - 100) < 0.1, 'sum = 100%');
 }
 
-// 6. 零票处理
+// 6. Zero-vote handling
 {
   const votes = { home: 0, draw: 0, away: 0 };
   const total = 0;

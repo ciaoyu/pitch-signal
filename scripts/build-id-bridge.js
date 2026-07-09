@@ -2,15 +2,15 @@
 
 /**
  * build-id-bridge.js
- * 构建 id_bridge.json，连接 FIFA code/id ↔ ESPN id ↔ 国家名
+  * Build id_bridge.json, linking FIFA code/id ↔ ESPN id ↔ country name
  * 
- * 输入：
- * - runtime 或 resources/seed/wc2026/teams.json (FIFA 数据)
- * - data/id_map_center.json (ESPN 数据)
+  * Inputs:
+  * - runtime or resources/seed/wc2026/teams.json (FIFA data)
+  * - data/id_map_center.json (ESPN data)
  * 
- * 输出：
+  * Outputs:
  * - $DATA_PATH/wc2026/id_bridge.json
- * - $DATA_PATH/wc2026/unmatched.txt (无法匹配的球队)
+  * - $DATA_PATH/wc2026/unmatched.txt (teams that cannot be matched)
  */
 
 const fs = require('fs');
@@ -21,41 +21,41 @@ const TEAMS_PATH = resolveDataPath('teams.json');
 const ID_MAP_PATH = path.join(__dirname, '..', 'data', 'id_map_center.json');
 
 /**
- * 加载 JSON 文件
+  * Load JSON files
  */
 function loadJSON(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(content);
   } catch (err) {
-    console.error(`❌ 无法加载 ${filePath}: ${err.message}`);
+    console.error(`❌ Failed to load ${filePath}: ${err.message}`);
     process.exit(1);
   }
 }
 
 /**
- * 标准化名称用于匹配
+  * Normalize names for matching
  */
 function normalizeName(name) {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s]/g, '') // 移除特殊字符
-    .replace(/\s+/g, ' '); // 合并多个空格
+    .replace(/[^a-z0-9\s]/g, '') // remove special characters
+    .replace(/\s+/g, ' '); // merge multiple spaces
 }
 
 /**
- * 构建名称匹配映射
+  * Build name-matching map
  */
 function buildNameMapping(idMap) {
   const mapping = new Map();
   
   for (const [name, data] of Object.entries(idMap)) {
-    // 主名称
+    // Primary name
     const normalizedName = normalizeName(name);
     mapping.set(normalizedName, { name, ...data });
     
-    // 别名
+    // Aliases
     if (data.aliases) {
       for (const alias of data.aliases) {
         const normalizedAlias = normalizeName(alias);
@@ -68,23 +68,23 @@ function buildNameMapping(idMap) {
 }
 
 /**
- * 主函数
+  * Main function
  */
 function main() {
-  console.log('🔧 构建 ID Bridge...\n');
+  console.log('🔧 Building ID Bridge...\n');
   
-  // 加载数据
+  // Load data
   const teamsData = loadJSON(TEAMS_PATH);
   const idMap = loadJSON(ID_MAP_PATH);
   
-  // 构建名称映射
+  // Build name map
   const nameMapping = buildNameMapping(idMap);
   
-  // 结果容器
+  // Result container
   const bridge = {};
   const unmatched = [];
   
-  // 遍历 FIFA teams
+  // Iterate over FIFA teams
   const teams = teamsData.teams || teamsData;
   
   for (const [fifaCode, teamData] of Object.entries(teams)) {
@@ -93,12 +93,12 @@ function main() {
     const zhName = teamData.name?.zh || '';
     const iso2 = teamData.iso2 || '';
     
-    // 尝试匹配
+    // Attempt match
     const normalizedName = normalizeName(englishName);
     const match = nameMapping.get(normalizedName);
     
     if (match && match.espn_id) {
-      // 匹配成功
+      // Match succeeded
       bridge[fifaCode] = {
         fifa_code: fifaCode,
         fifa_id: fifaId,
@@ -113,7 +113,7 @@ function main() {
       
       console.log(`✅ ${fifaCode} (${englishName}) → ESPN: ${match.espn_id}`);
     } else {
-      // 无法匹配
+      // No match
       unmatched.push({
         fifa_code: fifaCode,
         fifa_id: fifaId,
@@ -125,16 +125,16 @@ function main() {
         reason: match ? 'ESPN ID 为空' : '名称无法匹配'
       });
       
-      console.log(`⚠️  ${fifaCode} (${englishName}) → 无法匹配`);
+      console.log(`⚠️  ${fifaCode} (${englishName}) → no match`);
     }
   }
   
-  // 写入 bridge.json
+  // Write bridge.json
   const BRIDGE_PATH = writeJsonAtomic('id_bridge.json', bridge);
-  console.log(`\n✅ 已写入: ${BRIDGE_PATH}`);
-  console.log(`   匹配成功: ${Object.keys(bridge).length} 支球队`);
+  console.log(`\n✅ Written: ${BRIDGE_PATH}`);
+  console.log(`   Matched: ${Object.keys(bridge).length} teams`);
   
-  // 写入 unmatched.txt
+  // Write unmatched.txt
   if (unmatched.length > 0) {
     const unmatchedContent = unmatched.map(team => {
       return [
@@ -151,19 +151,19 @@ function main() {
     }).join('\n');
     
     const UNMATCHED_PATH = writeTextAtomic('unmatched.txt', unmatchedContent);
-    console.log(`\n⚠️  未匹配球队: ${UNMATCHED_PATH}`);
-    console.log(`   未匹配: ${unmatched.length} 支球队`);
+    console.log(`\n⚠️  Unmatched teams: ${UNMATCHED_PATH}`);
+    console.log(`   Unmatched: ${unmatched.length} teams`);
   } else {
-    console.log('\n🎉 所有球队都已匹配！');
+    console.log('\n🎉 All teams matched!');
   }
   
-  // 输出汇总
+  // Output summary
   console.log('\n' + '='.repeat(60));
-  console.log('📊 ID Bridge 构建完成');
-  console.log(`   FIFA 球队总数: ${Object.keys(teams).length}`);
-  console.log(`   匹配成功: ${Object.keys(bridge).length}`);
-  console.log(`   未匹配: ${unmatched.length}`);
+  console.log('📊 ID Bridge build complete');
+  console.log(`   FIFA total teams: ${Object.keys(teams).length}`);
+  console.log(`   Matched: ${Object.keys(bridge).length}`);
+  console.log(`   Unmatched: ${unmatched.length}`);
 }
 
-// 运行
+// Run
 main();

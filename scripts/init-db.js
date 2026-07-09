@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 数据库初始化脚本 - 创建表并验证
+  * Database initialization script - creates tables and validates
  */
 const path = require('path');
 const { db, tables, count, run, get, all } = require('../lib/db');

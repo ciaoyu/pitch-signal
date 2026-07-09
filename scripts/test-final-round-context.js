@@ -1,7 +1,7 @@
 'use strict';
 /**
- * 末轮战略情境模块测试
- * 运行: /opt/homebrew/bin/node scripts/test-final-round-context.js
+  * Final-round strategic scenario module test
+  * Run: /opt/homebrew/bin/node scripts/test-final-round-context.js
  */
 const assert = require('assert');
 const { buildFinalRoundContext, _internals } = require('../lib/finalRoundContext');
@@ -9,8 +9,8 @@ const { buildFinalRoundContext, _internals } = require('../lib/finalRoundContext
 let passed = 0;
 const ok = (name) => { console.log(`  ✅ ${name}`); passed += 1; };
 
-// ---- mock 构造:用真实英文队名(id 即 name,可被 team_resolver 解析出 Elo) ----
-// 行顺序即榜序(模块假设 groupRows 已排序)
+// ---- mock construction: use real English team names (id is the name, resolvable by team_resolver to Elo) ----
+// row order is the standings order (module assumes groupRows is already sorted)
 function makeGroup(letter, names, opts = {}) {
   const ptsArr = opts.pts || [6, 3, 1, 1];
   const gdArr = opts.gd || [5, 0, -2, -3];
@@ -29,16 +29,16 @@ function makeGroup(letter, names, opts = {}) {
   };
 }
 
-// 强队 / 弱队(用真实 Elo 制造对手强度差)
+// strong team / weak team (use real Elo to create opponent-strength difference)
 const STRONG = 'Brazil';        // 1824
 const WEAK = ['Saudi Arabia', 'Qatar', 'New Zealand', 'Curacao', 'Bosnia-Herzegovina'];
 
-// A 组剧情:Spain 锁定第一;本场 = Mexico(home) vs South Africa(away);平行 = Spain vs Qatar
+// Group A scenario: Spain locked in 1st; this match = Mexico (home) vs South Africa (away); parallel = Spain vs Qatar
 const groups = [
   makeGroup('A', ['Spain', 'Mexico', 'South Africa', 'Qatar']),
-  // B 组第 2 名 = 超强队 Brazil(A2 出线路径 R32-1 对手 = B2)
+    // Group B 2nd place = powerhouse Brazil (A2 qualification path R32-1 opponent = B2)
   makeGroup('B', ['Argentina', STRONG, 'Croatia', 'Iran']),
-  // C/E/F/H/I 组第 3 名 = 弱队(A1 出线路径 R32-5 对手 = "3rd C/E/F/H/I")
+    // Group C/E/F/H/I 3rd place = weak team (A1 path R32-5 opponent = "3rd C/E/F/H/I")
   makeGroup('C', ['France', 'Senegal', WEAK[0], 'Australia']),
   makeGroup('D', ['England', 'Netherlands', 'Ecuador', 'Tunisia']),
   makeGroup('E', ['Germany', 'Belgium', WEAK[1], 'Panama']),
@@ -53,7 +53,7 @@ const groups = [
 
 console.log('\n=== Final-Round Context Tests ===\n');
 
-// --- 1. 基本可用性 + 末轮判定 ---
+// --- 1. basic usability + final-round determination ---
 {
   const ctx = buildFinalRoundContext({ homeId: 'Mexico', awayId: 'South Africa', standingsGroups: groups });
   assert.strictEqual(ctx.applicable, true, 'should be applicable');
@@ -61,14 +61,14 @@ console.log('\n=== Final-Round Context Tests ===\n');
   assert.strictEqual(ctx.finalRound, true);
   ok('末轮可用,正确识别 A 组');
 
-  // 平行比赛 = Spain vs Qatar(组内非本场两队)
+    // parallel match = Spain vs Qatar (the two teams not in this match within the group)
   const pm = ctx.parallelMatch;
   const pmIds = [pm.homeId, pm.awayId].sort();
   assert.deepStrictEqual(pmIds, ['Qatar', 'Spain'], 'parallel = Spain vs Qatar');
   ok('正确推导同时进行的另一场 (Spain vs Qatar)');
 }
 
-// --- 2. 非末轮(played=1)→ 不可用 ---
+// --- 2. non-final round (played=1) → unavailable ---
 {
   const notFinal = groups.map((g) => ({ ...g, standings: g.standings.map((r) => ({ ...r, played: 1 })) }));
   const ctx = buildFinalRoundContext({ homeId: 'Mexico', awayId: 'South Africa', standingsGroups: notFinal });
@@ -77,7 +77,7 @@ console.log('\n=== Final-Round Context Tests ===\n');
   ok('非末轮(played=1)正确返回 applicable:false');
 }
 
-// --- 3. 锁定第一:Spain 无论平行场结果恒第一 ---
+// --- 3. locked 1st: Spain is always 1st regardless of parallel match result ---
 {
   const ctx = buildFinalRoundContext({ homeId: 'Spain', awayId: 'Qatar', standingsGroups: groups });
   const spain = ctx.teams['Spain'];
@@ -85,13 +85,13 @@ console.log('\n=== Final-Round Context Tests ===\n');
   assert.strictEqual(spain.locked.state, 'first', 'Spain locks top spot');
   ok('Spain 锁定小组第一 (locked.state=first)');
 
-  // Qatar 已出局(pts1,gd-3,即便赢 Spain 也难翻盘看场景)
+    // Qatar already eliminated (pts1, gd-3; even beating Spain it's hard to overturn the scenario)
   const qatar = ctx.teams['Qatar'];
   assert.ok(qatar.ifLose.ranks.every((r) => r >= 3), 'Qatar if lose stays bottom-2');
   ok('Qatar 负则维持后两位(出局风险)');
 }
 
-// --- 4. bracket 对手 token 正确 ---
+// --- 4. bracket opponent token correct ---
 {
   const ctx = buildFinalRoundContext({ homeId: 'Mexico', awayId: 'South Africa', standingsGroups: groups });
   const mex = ctx.teams['Mexico'];
@@ -99,12 +99,12 @@ console.log('\n=== Final-Round Context Tests ===\n');
   assert.strictEqual(mex.bracket.asSecond.opponent.token, 'B2', 'A2 → B2');
   ok('R32 对手位置正确 (A1→3rd C/E/F/H/I, A2→B2)');
 
-  // asSecond 对手 = B 组第二 = Brazil,elo 应解析
+    // asSecond opponent = Group B 2nd = Brazil, elo should resolve
   assert.ok(mex.bracket.asSecond.opponent.elo > 1700, 'B2 = Brazil strong elo');
   ok(`A2 路径对手 Elo 解析正确 (Brazil=${mex.bracket.asSecond.opponent.elo})`);
 }
 
-// --- 5. 避强动机方向:A1 路径对手(弱第三名均值) << A2 路径对手(Brazil) → prefer first ---
+// --- 5. avoid-strong motivation direction: A1 path opponent (weak 3rd-place average) << A2 path opponent (Brazil) → prefer first ---
 {
   const ctx = buildFinalRoundContext({ homeId: 'Mexico', awayId: 'South Africa', standingsGroups: groups });
   const inc = ctx.teams['Mexico'].bracket.incentive;
@@ -114,13 +114,13 @@ console.log('\n=== Final-Round Context Tests ===\n');
   ok(`识别赛程动机:第一名路径对手更弱 → prefer first (Δ${inc.deltaElo} Elo)`);
 }
 
-// --- 6. 单元:rankAfter 平分检测净胜球依赖 ---
+// --- 6. unit: rankAfter tie detection depends on goal difference ---
 {
   const { rankAfter } = _internals;
   const t = [
     { id: 'x', pts: 6, gd: 3, gf: 5 },
     { id: 'y', pts: 4, gd: 1, gf: 3 },
-    { id: 'z', pts: 4, gd: 0, gf: 2 }, // y,z 同分卡在出线线 → gdDependent
+    { id: 'z', pts: 4, gd: 0, gf: 2 }, // y,z tied on points stuck on the qualification line → gdDependent
     { id: 'w', pts: 1, gd: -4, gf: 1 },
   ];
   const { rankById, gdDependent } = rankAfter(t);
@@ -129,7 +129,7 @@ console.log('\n=== Final-Round Context Tests ===\n');
   ok('rankAfter 正确检测出线线净胜球依赖');
 }
 
-// --- 7. summarizeRanks 文案归纳 ---
+// --- 7. summarizeRanks text summary ---
 {
   const { summarizeRanks } = _internals;
   assert.strictEqual(summarizeRanks(new Set([1]), false).status.zh, '锁定小组第一');
@@ -138,4 +138,4 @@ console.log('\n=== Final-Round Context Tests ===\n');
   ok('summarizeRanks 文案归纳正确');
 }
 
-console.log(`\n🎉 全部 ${passed} 组断言通过\n`);
+console.log(`\n🎉 all ${passed} assertion groups passed\n`);

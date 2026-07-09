@@ -3,11 +3,11 @@
 /**
  * build-bracket-slot-map.js
  *
- * 一次性脚本：从 match_snapshot_schedule.json 和 bracket_2026.json
- * 自动生成 ESPN matchId → bracket slot ID 的静态映射。
+  * One-off script: from match_snapshot_schedule.json and bracket_2026.json
+  * auto-generate the static mapping from ESPN matchId → bracket slot ID.
  *
- * 运行: node scripts/build-bracket-slot-map.js
- * 输出: data/bracket_slot_map.json
+  * Run: node scripts/build-bracket-slot-map.js
+  * Output: data/bracket_slot_map.json
  */
 
 const fs = require('fs');
@@ -18,16 +18,16 @@ const SCHEDULE_FILE = path.join(ROOT, 'data', 'match_snapshot_schedule.json');
 const BRACKET_FILE = path.join(ROOT, 'data', 'bracket_2026.json');
 const OUTPUT_FILE = path.join(ROOT, 'data', 'bracket_slot_map.json');
 
-// 加载数据
+// Load data
 const schedule = JSON.parse(fs.readFileSync(SCHEDULE_FILE, 'utf8'));
 const bracket = JSON.parse(fs.readFileSync(BRACKET_FILE, 'utf8'));
 
 const knockoutMatches = schedule.matches.filter(m => m.stage === 'knockout');
 
 /**
- * 将 bracket 的 teamA/teamB slot token 转换为 shortName 模式
- * 例如: teamA="A2", teamB="B2" → "2B @ 2A"
- * 例如: teamA="E1", teamB="3rd A/B/C/D/F" → "3RD @ 1E"
+  * Convert the bracket's teamA/teamB slot tokens into shortName pattern
+  * Example: teamA="A2", teamB="B2" → "2B @ 2A"
+  * Example: teamA="E1", teamB="3rd A/B/C/D/F" → "3RD @ 1E"
  */
 function slotToShortPattern(teamA, teamB) {
   function slotToToken(slot) {
@@ -40,11 +40,11 @@ function slotToShortPattern(teamA, teamB) {
   const tokenA = slotToToken(teamA);
   const tokenB = slotToToken(teamB);
   if (!tokenA || !tokenB) return null;
-  return `${tokenB} @ ${tokenA}`; // 注意顺序：teamB 是 away，teamA 是 home
+  return `${tokenB} @ ${tokenA}`; // note order: teamB is away, teamA is home
 }
 
 /**
- * 从 R16+ schedule 的 name 字段解析 feed slot
+  * Parse the feed slot from the R16+ schedule's name field
  * "Round of 32 3 Winner at Round of 32 1 Winner" → ["R32-3", "R32-1"]
  */
 function parseR16Name(name) {
@@ -72,7 +72,7 @@ function parseSFName(name) {
 const slotMap = {};
 let unmatched = [];
 
-// Step 1: 匹配 R32（通过 shortName pattern）
+// Step 1: match R32 (via shortName pattern)
 for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   if (!slotId.startsWith('R32-')) continue;
 
@@ -91,7 +91,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   }
 }
 
-// Step 2: 匹配 R16（通过 name 字段解析 feed）
+// Step 2: match R16 (parse feed via name field)
 for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   if (!slotId.startsWith('R16-')) continue;
   if (slotMap[slotId]) continue;
@@ -114,7 +114,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   }
 }
 
-// Step 3: 匹配 QF
+// Step 3: match QF
 for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   if (!slotId.startsWith('QF-')) continue;
   if (slotMap[slotId]) continue;
@@ -136,7 +136,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   }
 }
 
-// Step 4: 匹配 SF
+// Step 4: match SF
 for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   if (!slotId.startsWith('SF-')) continue;
   if (slotMap[slotId]) continue;
@@ -158,7 +158,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   }
 }
 
-// Step 5: 匹配 FINAL
+// Step 5: match FINAL
 for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   if (slotId !== 'FINAL') continue;
   if (slotMap[slotId]) continue;
@@ -176,7 +176,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
       name: scheduleMatch.name,
     };
   } else {
-    // FINAL 可能用不同的命名
+    // FINAL may use a different naming
     const finalMatch = knockoutMatches.find(m =>
       m.name.includes('Semifinal') && m.name.includes('Final') && m.shortName.includes('SF')
     );
@@ -192,7 +192,7 @@ for (const [slotId, bracketMatch] of Object.entries(bracket.matches)) {
   }
 }
 
-// Step 6: 处理季军赛（3rd place match）- 不在 bracket 结构中，单独记录
+// Step 6: handle the 3rd-place match — not in the bracket structure, recorded separately
 const thirdPlaceMatch = knockoutMatches.find(m =>
   m.shortName.includes('SF L') || m.name.includes('Loser')
 );
@@ -205,7 +205,7 @@ if (thirdPlaceMatch && !Object.values(slotMap).find(s => s.espnMatchId === third
   };
 }
 
-// 输出
+// Output
 const result = {
   generatedAt: new Date().toISOString(),
   totalSlots: Object.keys(slotMap).length,

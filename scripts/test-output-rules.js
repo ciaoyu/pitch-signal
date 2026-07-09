@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 /**
- * lib/output-rules.js 测试
- * 覆盖：fuseProbabilities, scoreConfidence, gatherExternalSignals, applyOutputRules
+  * lib/output-rules.js tests
+  * Covers: fuseProbabilities, scoreConfidence, gatherExternalSignals, applyOutputRules
  */
 const assert = require('assert');
 const { fuseProbabilities, scoreConfidence, gatherExternalSignals, applyOutputRules } = require('../lib/output-rules');

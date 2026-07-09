@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /**
- * 从 openfootball/worldcup.json（CC0 公共领域）拉取 1930-2022 历届世界杯
- * 比赛结果，转换成 data/history/worldcup_<year>.json 的既有 schema：
+  * Fetch 1930–2022 World Cup editions from openfootball/worldcup.json (CC0 public domain)
+  * match results, and convert them into the existing schema of data/history/worldcup_<year>.json:
  *   { tournament, year, host, matches: [{ date, home, away, homeScore, awayScore, stage, venue }] }
  *
- * 用法：
- *   node scripts/fetch-worldcup-history.js [--src <本地克隆目录>] [--force]
+  * Usage:
+  *   node scripts/fetch-worldcup-history.js [--src <local clone dir>] [--force]
  *
- *   --src    使用已有的本地克隆（跳过 git clone）
- *   --force  覆盖已存在的 data/history/worldcup_<year>.json（默认跳过，
- *            保护手工校对过的 2018/2022 文件）
+  *   --src    use an existing local clone (skip git clone)
+  *   --force  overwrite existing data/history/worldcup_<year>.json (skip by default;
+  *            protects the manually-proofread 2018/2022 files)
  *
- * 比分口径：取 et（加时赛累计），没有才取 ft；永不取 p（点球不是进球）。
- * 与现有 worldcup_2022.json 一致（2022 决赛记为 3-3）。
+  * Score convention: prefer et (extra-time aggregate), fall back to ft if absent; never use p (penalties are not goals).
+  * Consistent with the existing worldcup_2022.json (2022 final recorded as 3-3).
  */
 const fs = require('fs');
 const path = require('path');
@@ -20,7 +20,7 @@ const { execFileSync } = require('child_process');
 const { normalizeStage } = require('../lib/knockoutStage');
 
 const REPO_URL = 'https://github.com/openfootball/worldcup.json';
-// 2025 是世俱杯（俱乐部赛事）、2026 尚在进行中，都不进回测历史
+// 2025 is the Club World Cup (club competition), 2026 is still ongoing — neither enters backtest history
 const EXCLUDED_YEARS = new Set(['2025', '2026']);
 
 const HOSTS = {
@@ -48,7 +48,7 @@ function cloneRepo() {
   return dest;
 }
 
-/** et 优先、ft 兜底；点球比分（p）永不采用 */
+/** Prefer et, fall back to ft; never use penalty score (p) */
 function pickScore(score) {
   if (!score) return null;
   const pair = score.et || score.ft;
@@ -57,7 +57,7 @@ function pickScore(score) {
   return pair;
 }
 
-/** "Estadio Azteca, Mexico City" → "Estadio Azteca"，与现有 venue 字段风格一致 */
+/** "Estadio Azteca, Mexico City" → "Estadio Azteca", matching the style of the existing venue field */
 function pickVenue(ground) {
   if (!ground) return '';
   return String(ground).split(',')[0].trim();
@@ -79,7 +79,7 @@ function convertYear(srcDir, year) {
       continue;
     }
     const stage = normalizeStage(m.round, m.group);
-    // 规范词表之外、又不是小组类轮次的，提示人工检查
+    // Outside the canonical vocabulary and not a group-stage round; flag for manual review
     const canonical = /^(Group |Round of 32|Round of 16|Quarter-finals|Semi-finals|Third place|Final|Final Round|First round|Matchday )/;
     if (!canonical.test(stage)) {
       unknownRounds.add(m.round);

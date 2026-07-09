@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * P2-5: teamcontext-news 行为测试
+ * P2-5: teamcontext-news behavior tests
  *
- * 测试原则：
- * - 不复制生产逻辑到测试
- * - 不 inspect teamContext.js 源码字符串 (no eval/regex on production module)
- * - 直接 require 生产模块,覆盖真实行为
- * - mock fetch 控制 API 返回值
+ * Testing principles:
+ * - Do not copy production logic into the test
+ * - Do not inspect teamContext.js source string (no eval/regex on production module)
+ * - Directly require the production module, overriding real behavior
+ * - Mock fetch to control the API return value
  *
- * 例外：Part A 的 buildContextAwareSearchTerms 是 pure function 但未导出,
- * 通过 eval(function body) 提取，这是访问该函数的唯一入口。
+ * Exception: Part A's buildContextAwareSearchTerms is a pure function but is not exported,
+ * extracted via eval(function body); this is the only entry point to access it.
  */
 'use strict';
 

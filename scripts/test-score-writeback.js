@@ -1,22 +1,22 @@
 'use strict';
 
 /**
- * P0-3 终场比分回写 (Score Writeback) 测试套件
+  * P0-3 Final score writeback (Score Writeback) test suite
  * 
- * 覆盖场景：
- * 1. 正常终场比分回写 (played = 1, home_score, away_score 落库)
- * 2. 幂等性测试 (完全一样比分重复回写为 no-op)
- * 3. 防覆盖保护测试 (已回写的正确比分不会被后续不同比分或错误接口数据覆盖)
- * 4. 主客队映射颠倒测试 (传入的主客顺序与 DB seed 数据相反时正确自动映射比分)
- * 5. 未结束比赛状态不回写
- * 6. 球队名称与 ID (ESPN ID / FIFA Code) 自动转换解析
+  * Covered scenarios:
+  * 1. Normal final score writeback (played = 1, home_score, away_score persisted)
+  * 2. Idempotency test (re-writing identical scores is a no-op)
+  * 3. Overwrite-protection test (already-written correct scores are not overwritten by later differing scores or bad API data)
+  * 4. Home/away swap mapping test (correctly auto-maps scores when input home/away order is reversed vs DB seed data)
+  * 5. Unfinished match status is not written back
+  * 6. Team name & ID (ESPN ID / FIFA Code) auto-conversion parsing
  */
 
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 
-// 准备隔离测试环境变量
+// Prepare isolated test env variables
 process.env.NODE_ENV = 'test';
 process.env.TEST_MODE = '1';
 const TEST_DB_PATH = path.join(__dirname, '..', 'data', 'test_score_writeback.db');
@@ -43,7 +43,7 @@ function test(name, fn) {
 
 console.log('=== Running P0-3 Score Writeback Tests ===\n');
 
-// 准备测试数据行
+// Prepare test data rows
 db.prepare(`
   INSERT INTO groups (id, group_name) VALUES (99, 'Test Group')
 `).run();
@@ -117,7 +117,7 @@ test('4. 防覆盖保护测试 (防止已确立比分被错误接口 0-0 覆盖)
   assert.strictEqual(res.updated, false);
   assert.strictEqual(res.reason, 'idempotent_protected');
 
-  // DB 数据保持不变
+  // DB data unchanged
   const row = db.prepare("SELECT * FROM matches WHERE home_team_id = 'USA' AND away_team_id = 'Mexico'").get();
   assert.strictEqual(row.played, 1);
   assert.strictEqual(row.home_score, 2);
@@ -125,7 +125,7 @@ test('4. 防覆盖保护测试 (防止已确立比分被错误接口 0-0 覆盖)
 });
 
 test('5. 主客队颠倒映射回写测试 (DB seeded: Brazil vs France, API: France vs Brazil 3-2)', () => {
-  // API 传过来的主队是 France 进了 3 球，客队是 Brazil 进了 2 球
+  // API reports home team France scored 3, away team Brazil scored 2
   const res = writebackMatchScore({
     homeTeam: 'France',
     awayTeam: 'Brazil',
@@ -138,7 +138,7 @@ test('5. 主客队颠倒映射回写测试 (DB seeded: Brazil vs France, API: Fr
   assert.strictEqual(res.success, true);
   assert.strictEqual(res.updated, true);
 
-  // DB 中 Brazil 是 home_team_id，因此应该映射为 home_score = 2, away_score = 3
+  // In DB, Brazil is home_team_id, so should map to home_score = 2, away_score = 3
   const row = db.prepare('SELECT * FROM matches WHERE id = ?').get(res.matchId);
   assert.strictEqual(row.home_team_id, 'Brazil');
   assert.strictEqual(row.away_team_id, 'France');
@@ -166,7 +166,7 @@ test('6. 非终场状态比赛不回写 (STATUS_FIRST_HALF)', () => {
   assert.strictEqual(row.home_score, null);
 });
 
-// 清理临时测试库
+// Clean up temporary test DB
 db.close();
 if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
 
