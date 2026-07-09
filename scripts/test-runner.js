@@ -37,6 +37,7 @@ const TEST_FILES = [
   'test-parse-event-stage.js',
   'test-pf3-key-events-i18n.js',
   'test-pf4-lineup-evidence.js',
+  'test-pf10-official-bracket-graph.js',
   'test-pf8-top-scores.js',
   'test-poisson.js',
   'test-post-match-review.js',
