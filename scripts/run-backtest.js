@@ -12,7 +12,8 @@ runner.run({ silent: isJson }).then(results => {
         meanLogLoss: results.fullSeeded.meanLogLoss,
         baselines: results.fullSeeded.baselines,
         hypothesisReport: results.fullSeeded.hypothesisReport,
-        reliabilityDiagram: results.fullSeeded.reliabilityDiagram
+        reliabilityDiagram: results.fullSeeded.reliabilityDiagram,
+        venueAudit: results.fullSeeded.venueAudit
       }
     };
     console.log(JSON.stringify(output, null, 2));
