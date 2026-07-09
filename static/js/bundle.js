@@ -4187,6 +4187,56 @@ var require_team_detail = __commonJS({
   }
 });
 
+// static/js/world-cup-odds.js
+var require_world_cup_odds = __commonJS({
+  "static/js/world-cup-odds.js"() {
+    (function() {
+      "use strict";
+      const { tx, esc } = window.WorldCup.Utils;
+      function loadWorldCupOdds2() {
+        const el = document.getElementById("tab-markets");
+        if (!el) return;
+        el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u52A0\u8F7D\u593A\u51A0\u8D54\u7387...", "Loading title odds...")}</div>`;
+        window.WorldCup.ApiClient.get("/api/world-cup-winner").then((res) => {
+          if (!res || !res.odds || res.odds.length === 0) {
+            el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u6570\u636E\u6682\u65E0", "No title odds available")}</div>`;
+            return;
+          }
+          const rows = res.odds.map((o, i) => {
+            const eliminated = o.probability < 1;
+            const barW = Math.max(2, o.probability);
+            return `
+            <div class="glass-light rounded-lg p-2 flex items-center justify-between" style="opacity:${eliminated ? "0.55" : "1"}">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-[11px] text-gray-500 w-5 text-right shrink-0">${i + 1}</span>
+                <span class="text-sm font-medium text-gray-100 truncate">${esc(o.team)}</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="w-24 h-1.5 rounded bg-white/10 overflow-hidden">
+                  <div class="h-full" style="width:${barW}%;background:#34d399"></div>
+                </div>
+                <span class="text-sm font-bold text-green-400 w-12 text-right">${o.probability.toFixed(1)}%</span>
+              </div>
+            </div>`;
+          }).join("");
+          el.innerHTML = `
+          <div class="glass rounded-xl p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-yellow-400">\u{1F3C6} ${tx("\u593A\u51A0\u8D54\u7387", "Title Odds")}</h3>
+              <span class="text-[11px] text-gray-600">Polymarket</span>
+            </div>
+            <div class="space-y-1.5">${rows}</div>
+            <div class="text-[10px] text-gray-600 mt-3">${tx("\u6570\u636E\u6765\u6E90 Polymarket \u771F\u5B9E\u5E02\u573A\uFF0C\u4EC5\u4F9B\u53C2\u8003", "Source: Polymarket live markets. Informational only.")}</div>
+          </div>`;
+        }).catch(() => {
+          el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u52A0\u8F7D\u5931\u8D25", "Failed to load title odds")}</div>`;
+        });
+      }
+      window.loadWorldCupOdds = loadWorldCupOdds2;
+    })();
+  }
+});
+
 // static/js/elo-prediction.js
 var require_elo_prediction = __commonJS({
   "static/js/elo-prediction.js"() {
@@ -7178,6 +7228,7 @@ var require_app = __commonJS({
           loadTeams();
         }
         if (state.tab === "prediction") loadPrediction();
+        if (state.tab === "markets") loadWorldCupOdds();
         history.replaceState(null, "", "#" + state.tab);
       }
       function togglePredDetail(id) {
@@ -7517,6 +7568,7 @@ var require_entry = __commonJS({
     var import_standings = __toESM(require_standings());
     var import_match_detail = __toESM(require_match_detail());
     var import_team_detail = __toESM(require_team_detail());
+    var import_world_cup_odds = __toESM(require_world_cup_odds());
     var import_elo_prediction = __toESM(require_elo_prediction());
     var import_players_tab = __toESM(require_players_tab());
     var import_spatial_matchup = __toESM(require_spatial_matchup());

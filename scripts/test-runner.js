@@ -63,6 +63,7 @@ const TEST_FILES = [
   'test-continental-strength-signal.js',
   'test-market-value-signal.js',
   'test-prediction-market-ui.js',
+  'test-polymarket-world-cup.js',
   'test-shin-devig.js',
     // Defect-fix regression tests
   'test-moment-review-integration.js',
