@@ -1777,6 +1777,230 @@ window.WorldCup.MatchRenderers = (() => {
     }
 
     // Export functions
+    function renderKnockoutIntel(intel) {
+        if (!intel || !intel.meta || !intel.meta.isKnockout || !intel.sections || typeof intel.sections !== 'object') {
+            return '';
+        }
+        const sectionKeys = Object.keys(intel.sections);
+        if (sectionKeys.length === 0) {
+            return '';
+        }
+
+        const L = (o) => {
+            if (!o) return '';
+            if (typeof o === 'string') return esc(o);
+            if (window.WorldCup && window.WorldCup.I18n && typeof window.WorldCup.I18n.i18nText === 'function') {
+                return esc(window.WorldCup.I18n.i18nText(o, ''));
+            }
+            return esc(o.zh || o.en || '');
+        };
+
+        const roundText = intel.meta.roundLabel ? L(intel.meta.roundLabel) : esc(intel.meta.round || '');
+
+        const renderSectionHeader = (title, sec) => {
+            const confColor = sec.confidence === 'high' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' :
+                              sec.confidence === 'medium' ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' :
+                              'bg-gray-500/15 text-gray-400 border border-gray-500/30';
+            const confLabel = esc((sec.confidence || 'low').toUpperCase());
+            const sourceBadge = sec.source ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400 font-mono">${esc(sec.source)}</span>` : '';
+            const modelBadge = sec.usedInModel ?
+                `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">${tx('已入量化模型', 'MODEL SIGNAL')}</span>` :
+                `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${tx('仅战术参考', 'INFO ONLY')}</span>`;
+            return `<div class="flex items-center justify-between mb-1.5 gap-1.5 flex-wrap border-b border-white/5 pb-1">
+                <span class="text-xs font-bold text-gray-200">${title}</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-[9px] px-1.5 py-0.5 rounded ${confColor}">${confLabel}</span>
+                    ${sourceBadge}
+                    ${modelBadge}
+                </div>
+            </div>`;
+        };
+
+        const renderNote = (sec) => {
+            if (!sec || !sec.note) return '';
+            return `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">• ${L(sec.note)}</div>`;
+        };
+
+        const SECTION_ORDER = ['suspensions', 'fatigue', 'penalty', 'referee', 'superSubs', 'starForm', 'familiarity', 'gameState', 'experience', 'lessons'];
+        const orderedKeys = [...SECTION_ORDER.filter(k => intel.sections[k]), ...sectionKeys.filter(k => !SECTION_ORDER.includes(k))];
+
+        let cardsHtml = '';
+        orderedKeys.forEach(key => {
+            const sec = intel.sections[key];
+            if (!sec) return;
+
+            let cardContent = '';
+            if (key === 'suspensions') {
+                const renderSide = (sideLabel, data) => {
+                    if (!data) return '';
+                    const outList = (data.out || []).map(p => {
+                        const name = L(p.playerZh) || esc(p.player);
+                        const reason = L(p.reason);
+                        return `<div class="text-[10px] text-red-300">🚫 ${name} (${reason})</div>`;
+                    }).join('');
+                    const riskList = (data.atRisk || []).map(p => {
+                        const name = L(p.playerZh) || esc(p.player);
+                        return `<div class="text-[10px] text-amber-300">⚠️ ${name} (${p.yellows || 1} ${tx('黄', 'Y')})</div>`;
+                    }).join('');
+                    return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${outList || `<div class="text-[10px] text-gray-500">${tx('无停赛', 'No suspensions')}</div>`}
+                        ${riskList}
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('停赛与伤停风险', 'Suspensions & Risk'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx('主队', 'Home'), sec.home)}
+                    ${renderSide(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'fatigue') {
+                const renderSide = (sideLabel, data) => {
+                    if (!data) return '';
+                    return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('休息天数', 'Rest Days')}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.restDays, 0)}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('加时负荷', 'Extra Time')}:</span> <span class="font-mono ${data.prevWentToEt ? 'text-amber-400' : 'text-gray-300'}">${Fmt.safeNum(data.cumEtMinutes, 0)} ${tx('分钟', 'min')}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('行程距离', 'Travel')}:</span> <span class="font-mono text-gray-300">${Fmt.safeNum(data.travelKm, 0)} km</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('疲劳指数', 'Fatigue Score')}:</span> <span class="font-mono font-bold text-blue-300">${Fmt.safeNum(data.score, 0).toFixed(2)}</span></div>
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('体能与赛程负荷', 'Fatigue & Travel'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx('主队', 'Home'), sec.home)}
+                    ${renderSide(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                if (sec.differential != null) {
+                    cardContent += `<div class="text-[10px] text-gray-400 mt-1.5">${tx('疲劳指数差值', 'Differential')}: <span class="font-mono font-bold text-gray-200">${Fmt.safeNum(sec.differential, 0).toFixed(2)}</span></div>`;
+                }
+                cardContent += renderNote(sec);
+            } else if (key === 'penalty') {
+                const renderSide = (sideLabel, data) => {
+                    if (!data) return '';
+                    const skillPct = Math.round(Fmt.safeNum(data.skill, 0.5) * 100);
+                    return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
+                        <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx('历史胜率', 'Record')}:</span> <span>${Fmt.safeNum(data.wins, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('点球大战能力', 'Penalty Shootout Skill'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx('主队', 'Home'), sec.home)}
+                    ${renderSide(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'referee') {
+                cardContent += renderSectionHeader(tx('执法主裁判档案', 'Referee Profile'), sec);
+                cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
+                    <div class="flex justify-between"><span class="text-gray-400">${tx('主裁判', 'Referee')}:</span> <span class="font-semibold text-gray-200">${esc(sec.name || tx('未指派', 'Unassigned'))}</span></div>
+                    <div class="grid grid-cols-3 gap-1 text-center mt-1">
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx('场均黄牌', 'Yellows/M')}</div><div class="font-mono text-amber-400">${Fmt.safeNum(sec.yellowsPerMatch, 0)}</div></div>
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx('出示红牌', 'Reds Total')}</div><div class="font-mono text-red-400">${Fmt.safeNum(sec.redsTotal, 0)}</div></div>
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx('判罚点球', 'Pens Total')}</div><div class="font-mono text-purple-400">${Fmt.safeNum(sec.pensTotal, 0)}</div></div>
+                    </div>
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'superSubs') {
+                const renderSubs = (sideLabel, list) => {
+                    const rows = (list || []).map(s => `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${L(s.playerZh) || esc(s.player)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`).join('');
+                    return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx('无显著数据', 'None')}</div>`}
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('超级替补威胁', 'Super Sub Impact'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSubs(tx('主队', 'Home'), sec.home)}
+                    ${renderSubs(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'starForm') {
+                const renderForm = (sideLabel, list) => {
+                    const rows = (list || []).map(s => {
+                        const trendIcon = s.trend === 'up' ? '🔥' : s.trend === 'down' ? '❄️' : '➖';
+                        return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${trendIcon} ${esc(s.player)}</span><span class="font-mono text-gray-400">${Fmt.safeNum(s.last3GA, 0)} GA</span></div>`;
+                    }).join('');
+                    return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx('无显著波动', 'Stable')}</div>`}
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('核心球星近况', 'Star Form Index'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderForm(tx('主队', 'Home'), sec.home)}
+                    ${renderForm(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'familiarity') {
+                cardContent += renderSectionHeader(tx('俱乐部联系与熟人', 'Club Familiarity'), sec);
+                cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
+                    <div class="flex justify-between"><span class="text-gray-400">${tx('跨队队友关系', 'Cross-team Pairs')}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(sec.crossTeamPairs, 0)}</span></div>
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'gameState') {
+                const renderGS = (sideLabel, data) => {
+                    if (!data) return '';
+                    return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('逆风追分率', 'Comeback Rate')}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.comebackRate, 0) * 100)}%</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('领先守成率', 'Lead Hold Rate')}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.leadHoldRate, 0) * 100)}%</span></div>
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('顺逆风战力画像', 'Game State Resilience'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderGS(tx('主队', 'Home'), sec.home)}
+                    ${renderGS(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'experience') {
+                const renderExp = (sideLabel, data) => {
+                    if (!data) return '';
+                    return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('淘汰赛经验', 'KO Minutes')}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.koMinutesTotal, 0)} min</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx('主帅淘汰赛', 'Coach Record')}:</span> <span class="font-mono text-gray-200">${esc(data.coachKoRecord || '-')}</span></div>
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('大赛淘汰赛底蕴', 'Tournament Experience'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderExp(tx('主队', 'Home'), sec.home)}
+                    ${renderExp(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else if (key === 'lessons') {
+                const renderLessons = (sideLabel, list) => {
+                    const rows = (list || []).map(item => `<div class="text-[10px] text-gray-300 leading-snug">• ${L(item)}</div>`).join('');
+                    return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx('无历史教训记录', 'No records')}</div>`}
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('既往淘汰赛复盘教训', 'Lessons Learned'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderLessons(tx('主队', 'Home'), sec.home)}
+                    ${renderLessons(tx('客队', 'Away'), sec.away)}
+                </div>`;
+                cardContent += renderNote(sec);
+            } else {
+                cardContent += renderSectionHeader(esc(key), sec);
+                cardContent += renderNote(sec);
+            }
+
+            cardsHtml += `<div class="elo-card">${cardContent}</div>`;
+        });
+
+        return `<div class="pred-section">
+            <div class="pred-section-title text-purple-400">
+                <span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">⚡</span>
+                ${tx('淘汰赛赛前情报', 'Knockout Intelligence')}
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 ml-2 font-mono">${roundText}</span>
+            </div>
+            <div class="space-y-2 mt-1">
+                ${cardsHtml}
+            </div>
+        </div>`;
+    }
+
     return {
         renderFormation,
         renderTacticalBoard,
@@ -1784,6 +2008,7 @@ window.WorldCup.MatchRenderers = (() => {
         renderBenchAnalysis,
         applySubstitutionsToFormation,
         renderCoachPanel,
+        renderKnockoutIntel,
         getMockMatchupData,
         getMockPrediction,
         formationTemplate,
@@ -1796,3 +2021,10 @@ window.WorldCup.MatchRenderers = (() => {
         renderLiveProbPanel,
     };
 })();
+
+if (typeof window !== 'undefined' && window.WorldCup && window.WorldCup.MatchRenderers) {
+    window.renderKnockoutIntel = window.WorldCup.MatchRenderers.renderKnockoutIntel;
+}
+
+
+

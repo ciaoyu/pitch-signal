@@ -3805,6 +3805,10 @@ var require_match_detail = __commonJS({
         html += `<div class="pred-section"><div class="pred-section-title text-emerald-400"><span class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-xs">\u{1F4CA}</span>${tx("\u8FDB\u7403\u671F\u671B\u503C (\u03BB)", "Expected Goals (\u03BB)")}</div><div class="grid grid-cols-2 gap-2"><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-emerald-300">${esc(homeName)}</div><div class="text-sm font-mono font-bold text-emerald-400">${homeLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-red-300">${esc(awayName)}</div><div class="text-sm font-mono font-bold text-red-400">${awayLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div></div></div>`;
         html += renderUserVotePanel(pred);
         if (pred.tacticalScenario?.applicable) html += renderTacticalScenario(pred.tacticalScenario);
+        if (pred.knockoutIntel) {
+          const renderer = typeof renderKnockoutIntel === "function" ? renderKnockoutIntel : window.MatchRenderers && window.MatchRenderers.renderKnockoutIntel;
+          if (renderer) html += renderer(pred.knockoutIntel);
+        }
         html += "</div>";
         return html;
       }
@@ -7078,6 +7082,216 @@ var require_match_renderers = __commonJS({
         html += `</div>`;
         return html;
       }
+      function renderKnockoutIntel2(intel) {
+        if (!intel || !intel.meta || !intel.meta.isKnockout || !intel.sections || typeof intel.sections !== "object") {
+          return "";
+        }
+        const sectionKeys = Object.keys(intel.sections);
+        if (sectionKeys.length === 0) {
+          return "";
+        }
+        const L = (o) => {
+          if (!o) return "";
+          if (typeof o === "string") return esc(o);
+          if (window.WorldCup && window.WorldCup.I18n && typeof window.WorldCup.I18n.i18nText === "function") {
+            return esc(window.WorldCup.I18n.i18nText(o, ""));
+          }
+          return esc(o.zh || o.en || "");
+        };
+        const roundText = intel.meta.roundLabel ? L(intel.meta.roundLabel) : esc(intel.meta.round || "");
+        const renderSectionHeader = (title, sec) => {
+          const confColor = sec.confidence === "high" ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30" : sec.confidence === "medium" ? "bg-amber-500/15 text-amber-300 border border-amber-500/30" : "bg-gray-500/15 text-gray-400 border border-gray-500/30";
+          const confLabel = esc((sec.confidence || "low").toUpperCase());
+          const sourceBadge = sec.source ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400 font-mono">${esc(sec.source)}</span>` : "";
+          const modelBadge = sec.usedInModel ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">${tx("\u5DF2\u5165\u91CF\u5316\u6A21\u578B", "MODEL SIGNAL")}</span>` : `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u4EC5\u6218\u672F\u53C2\u8003", "INFO ONLY")}</span>`;
+          return `<div class="flex items-center justify-between mb-1.5 gap-1.5 flex-wrap border-b border-white/5 pb-1">
+                <span class="text-xs font-bold text-gray-200">${title}</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-[9px] px-1.5 py-0.5 rounded ${confColor}">${confLabel}</span>
+                    ${sourceBadge}
+                    ${modelBadge}
+                </div>
+            </div>`;
+        };
+        const renderNote = (sec) => {
+          if (!sec || !sec.note) return "";
+          return `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">\u2022 ${L(sec.note)}</div>`;
+        };
+        const SECTION_ORDER = ["suspensions", "fatigue", "penalty", "referee", "superSubs", "starForm", "familiarity", "gameState", "experience", "lessons"];
+        const orderedKeys = [...SECTION_ORDER.filter((k) => intel.sections[k]), ...sectionKeys.filter((k) => !SECTION_ORDER.includes(k))];
+        let cardsHtml = "";
+        orderedKeys.forEach((key) => {
+          const sec = intel.sections[key];
+          if (!sec) return;
+          let cardContent = "";
+          if (key === "suspensions") {
+            const renderSide = (sideLabel, data) => {
+              if (!data) return "";
+              const outList = (data.out || []).map((p) => {
+                const name = L(p.playerZh) || esc(p.player);
+                const reason = L(p.reason);
+                return `<div class="text-[10px] text-red-300">\u{1F6AB} ${name} (${reason})</div>`;
+              }).join("");
+              const riskList = (data.atRisk || []).map((p) => {
+                const name = L(p.playerZh) || esc(p.player);
+                return `<div class="text-[10px] text-amber-300">\u26A0\uFE0F ${name} (${p.yellows || 1} ${tx("\u9EC4", "Y")})</div>`;
+              }).join("");
+              return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${outList || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u505C\u8D5B", "No suspensions")}</div>`}
+                        ${riskList}
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u505C\u8D5B\u4E0E\u4F24\u505C\u98CE\u9669", "Suspensions & Risk"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "fatigue") {
+            const renderSide = (sideLabel, data) => {
+              if (!data) return "";
+              return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u4F11\u606F\u5929\u6570", "Rest Days")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.restDays, 0)}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u52A0\u65F6\u8D1F\u8377", "Extra Time")}:</span> <span class="font-mono ${data.prevWentToEt ? "text-amber-400" : "text-gray-300"}">${Fmt.safeNum(data.cumEtMinutes, 0)} ${tx("\u5206\u949F", "min")}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u884C\u7A0B\u8DDD\u79BB", "Travel")}:</span> <span class="font-mono text-gray-300">${Fmt.safeNum(data.travelKm, 0)} km</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u75B2\u52B3\u6307\u6570", "Fatigue Score")}:</span> <span class="font-mono font-bold text-blue-300">${Fmt.safeNum(data.score, 0).toFixed(2)}</span></div>
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u4F53\u80FD\u4E0E\u8D5B\u7A0B\u8D1F\u8377", "Fatigue & Travel"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            if (sec.differential != null) {
+              cardContent += `<div class="text-[10px] text-gray-400 mt-1.5">${tx("\u75B2\u52B3\u6307\u6570\u5DEE\u503C", "Differential")}: <span class="font-mono font-bold text-gray-200">${Fmt.safeNum(sec.differential, 0).toFixed(2)}</span></div>`;
+            }
+            cardContent += renderNote(sec);
+          } else if (key === "penalty") {
+            const renderSide = (sideLabel, data) => {
+              if (!data) return "";
+              const skillPct = Math.round(Fmt.safeNum(data.skill, 0.5) * 100);
+              return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
+                        <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx("\u5386\u53F2\u80DC\u7387", "Record")}:</span> <span>${Fmt.safeNum(data.wins, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u70B9\u7403\u5927\u6218\u80FD\u529B", "Penalty Shootout Skill"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "referee") {
+            cardContent += renderSectionHeader(tx("\u6267\u6CD5\u4E3B\u88C1\u5224\u6863\u6848", "Referee Profile"), sec);
+            cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
+                    <div class="flex justify-between"><span class="text-gray-400">${tx("\u4E3B\u88C1\u5224", "Referee")}:</span> <span class="font-semibold text-gray-200">${esc(sec.name || tx("\u672A\u6307\u6D3E", "Unassigned"))}</span></div>
+                    <div class="grid grid-cols-3 gap-1 text-center mt-1">
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u573A\u5747\u9EC4\u724C", "Yellows/M")}</div><div class="font-mono text-amber-400">${Fmt.safeNum(sec.yellowsPerMatch, 0)}</div></div>
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u51FA\u793A\u7EA2\u724C", "Reds Total")}</div><div class="font-mono text-red-400">${Fmt.safeNum(sec.redsTotal, 0)}</div></div>
+                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u5224\u7F5A\u70B9\u7403", "Pens Total")}</div><div class="font-mono text-purple-400">${Fmt.safeNum(sec.pensTotal, 0)}</div></div>
+                    </div>
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "superSubs") {
+            const renderSubs = (sideLabel, list) => {
+              const rows = (list || []).map((s) => `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${L(s.playerZh) || esc(s.player)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`).join("");
+              return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6570\u636E", "None")}</div>`}
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u8D85\u7EA7\u66FF\u8865\u5A01\u80C1", "Super Sub Impact"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderSubs(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderSubs(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "starForm") {
+            const renderForm = (sideLabel, list) => {
+              const rows = (list || []).map((s) => {
+                const trendIcon = s.trend === "up" ? "\u{1F525}" : s.trend === "down" ? "\u2744\uFE0F" : "\u2796";
+                return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${trendIcon} ${esc(s.player)}</span><span class="font-mono text-gray-400">${Fmt.safeNum(s.last3GA, 0)} GA</span></div>`;
+              }).join("");
+              return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6CE2\u52A8", "Stable")}</div>`}
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u6838\u5FC3\u7403\u661F\u8FD1\u51B5", "Star Form Index"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderForm(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderForm(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "familiarity") {
+            cardContent += renderSectionHeader(tx("\u4FF1\u4E50\u90E8\u8054\u7CFB\u4E0E\u719F\u4EBA", "Club Familiarity"), sec);
+            cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
+                    <div class="flex justify-between"><span class="text-gray-400">${tx("\u8DE8\u961F\u961F\u53CB\u5173\u7CFB", "Cross-team Pairs")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(sec.crossTeamPairs, 0)}</span></div>
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "gameState") {
+            const renderGS = (sideLabel, data) => {
+              if (!data) return "";
+              return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u9006\u98CE\u8FFD\u5206\u7387", "Comeback Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.comebackRate, 0) * 100)}%</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u9886\u5148\u5B88\u6210\u7387", "Lead Hold Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.leadHoldRate, 0) * 100)}%</span></div>
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u987A\u9006\u98CE\u6218\u529B\u753B\u50CF", "Game State Resilience"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderGS(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderGS(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "experience") {
+            const renderExp = (sideLabel, data) => {
+              if (!data) return "";
+              return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u6DD8\u6C70\u8D5B\u7ECF\u9A8C", "KO Minutes")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.koMinutesTotal, 0)} min</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u4E3B\u5E05\u6DD8\u6C70\u8D5B", "Coach Record")}:</span> <span class="font-mono text-gray-200">${esc(data.coachKoRecord || "-")}</span></div>
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u5927\u8D5B\u6DD8\u6C70\u8D5B\u5E95\u8574", "Tournament Experience"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderExp(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderExp(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "lessons") {
+            const renderLessons = (sideLabel, list) => {
+              const rows = (list || []).map((item) => `<div class="text-[10px] text-gray-300 leading-snug">\u2022 ${L(item)}</div>`).join("");
+              return `<div class="p-1.5 rounded bg-white/[0.02]">
+                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u5386\u53F2\u6559\u8BAD\u8BB0\u5F55", "No records")}</div>`}
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u65E2\u5F80\u6DD8\u6C70\u8D5B\u590D\u76D8\u6559\u8BAD", "Lessons Learned"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
+                    ${renderLessons(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderLessons(tx("\u5BA2\u961F", "Away"), sec.away)}
+                </div>`;
+            cardContent += renderNote(sec);
+          } else {
+            cardContent += renderSectionHeader(esc(key), sec);
+            cardContent += renderNote(sec);
+          }
+          cardsHtml += `<div class="elo-card">${cardContent}</div>`;
+        });
+        return `<div class="pred-section">
+            <div class="pred-section-title text-purple-400">
+                <span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">\u26A1</span>
+                ${tx("\u6DD8\u6C70\u8D5B\u8D5B\u524D\u60C5\u62A5", "Knockout Intelligence")}
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 ml-2 font-mono">${roundText}</span>
+            </div>
+            <div class="space-y-2 mt-1">
+                ${cardsHtml}
+            </div>
+        </div>`;
+      }
       return {
         renderFormation,
         renderTacticalBoard,
@@ -7085,6 +7299,7 @@ var require_match_renderers = __commonJS({
         renderBenchAnalysis,
         applySubstitutionsToFormation,
         renderCoachPanel,
+        renderKnockoutIntel: renderKnockoutIntel2,
         getMockMatchupData,
         getMockPrediction,
         formationTemplate,
@@ -7097,6 +7312,9 @@ var require_match_renderers = __commonJS({
         renderLiveProbPanel
       };
     })();
+    if (typeof window !== "undefined" && typeof MatchRenderers !== "undefined") {
+      window.renderKnockoutIntel = MatchRenderers.renderKnockoutIntel;
+    }
   }
 });
 
