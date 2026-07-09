@@ -70,6 +70,8 @@ const TEST_FILES = [
   'test-surge-detection.js',
   'test-knockout-writeback.js',
   'test-eval-baselines.js',
+    // W1-A live-endpoint discipline regression
+  'test-live-endpoint-discipline.js',
 ];
 
 const filter = process.argv.includes('--match')
