@@ -1910,8 +1910,8 @@ window.WorldCup.MatchRenderers = (() => {
                 };
                 cardContent += renderSectionHeader(tx('超级替补威胁', 'Super Sub Impact'), sec);
                 cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSubs(tx('主队', 'Home'), sec.home)}
-                    ${renderSubs(tx('客队', 'Away'), sec.away)}
+                    ${renderSubs(tx('主队', 'Home'), Array.isArray(sec.home) ? sec.home : (sec.home?.superSubs || []))}
+                    ${renderSubs(tx('客队', 'Away'), Array.isArray(sec.away) ? sec.away : (sec.away?.superSubs || []))}
                 </div>`;
                 cardContent += renderNote(sec);
             } else if (key === 'starForm') {

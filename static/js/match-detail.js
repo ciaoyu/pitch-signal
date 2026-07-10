@@ -208,7 +208,8 @@
         html += `<div id="hud-bottom" style="margin-top:8px;background:rgba(15,23,42,.5);backdrop-filter:blur(var(--glass-blur-md));-webkit-backdrop-filter:blur(var(--glass-blur-md));border-top:1px solid rgba(255,255,255,.06);border-radius:24px 24px 0 0;padding:14px 32px 18px">
             <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
 
-        const showPreMatch = !isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED'));
+        const showPreMatch = (!isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED')))
+            || (isFinishedMatch && (scheduledMatch.stage === 'knockout' || matchData.hasPenalties));
         if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" role="tab" aria-selected="true" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap" style="min-width:44px;min-height:44px">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="review" role="tab" aria-selected="${showPreMatch ? 'false' : 'true'}" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition whitespace-nowrap" style="min-width:44px;min-height:44px">📋 ${tx('回顾', 'Review')}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="bench" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">🔄 ${tx('替补', 'Bench')}</button>`;
