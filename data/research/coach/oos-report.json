@@ -1,0 +1,46 @@
+{
+  "owner": "H",
+  "task": "coach-value-added-oos",
+  "generated_at": "2026-07-10T15:07:51.691Z",
+  "base_commit": "78da1b5",
+  "status": "BLOCKED",
+  "design": {
+    "oos_scheme": "walk-forward with strict as-of cutoff",
+    "shrinkage": "hierarchical: coach_effect_c ~ N(mu_global, tau^2); mu_global~N(0,..); tau~HalfCauchy",
+    "target": "residual of xg_diff after controlling Elo/playerQuality/opponent/competition/venue/rest",
+    "posterior": "per-coach sampled/posterior distribution required in deliverable",
+    "metrics": [
+      "LogLoss",
+      "Brier",
+      "calibration",
+      "delta_vs_base"
+    ],
+    "short_tenure_guard": "match count < 10 -> strong shrinkage to mu_global, wide posterior",
+    "collinearity": "report VIF of coach_effect vs playerQuality; ridge prior if VIF>5",
+    "selection_bias": "control pre-tenure xg_diff sliding mean (as-of) to strip rebound effect",
+    "enter_model_rule": "only if OOS shows stable positive delta AND cross-era stable AND short-tenure interval not degraded; else usedInModel:false"
+  },
+  "input_checks": {
+    "tenure": {
+      "ok": false,
+      "reason": "env COACH_RESEARCH_TENURE_DIR not set"
+    },
+    "pool": {
+      "ok": false,
+      "reason": "env COACH_RESEARCH_POOL_DIR not set"
+    },
+    "xg_ref": {
+      "ok": false,
+      "reason": "COACH_RESEARCH_XG_REF not set (F artifact reference)"
+    }
+  },
+  "blockers": [
+    "tenure history: env COACH_RESEARCH_TENURE_DIR not set",
+    "international results pool: env COACH_RESEARCH_POOL_DIR not set",
+    "xG/lineup reference: COACH_RESEARCH_XG_REF not set (F artifact reference)"
+  ],
+  "coefficients": null,
+  "oos_metrics": null,
+  "posterior_samples": null,
+  "conclusion": "OOS estimation BLOCKED: required read-only inputs missing. No coefficients fabricated. Coach effect remains usedInModel:false. Supply COACH_RESEARCH_TENURE_DIR, COACH_RESEARCH_POOL_DIR and (for xg residual) COACH_RESEARCH_XG_REF to run."
+}

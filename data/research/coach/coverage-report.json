@@ -1,0 +1,53 @@
+{
+  "owner": "H",
+  "task": "coach-history-and-value-added-research",
+  "generated_at": "2026-07-10T15:07:51.638Z",
+  "base_commit": "78da1b5",
+  "summary": {
+    "in_repo_research_grade_tenure_coverage_pct": 0,
+    "conclusion": "In-repo coach data is DISPLAY-ONLY (Chinese-keyword model). It meets 0% of the research-grade tenure schema (no start/end dates, no source, no tenure chain, no match linkage, no xG). Real value-added research requires an EXTERNAL, read-only tenure history + international results pool + xG artifact. Until supplied, coach effect is NOT eligible to enter the production probability (usedInModel:false)."
+  },
+  "display_coaches_json": {
+    "total_entries": 48,
+    "with_precise_start_date_pct": "0.0",
+    "with_end_date_pct": "0.0",
+    "with_source_pct": "0.0",
+    "with_match_linkage_pct": "0.0",
+    "with_formation_array_pct": "100.0",
+    "using_chinese_keywords_pct": "100.0",
+    "teams_with_tenure_chain": 0,
+    "note": "data/coaches.json carries style/adjustment/flexibility/notes (Chinese keywords) which are PROHIBITED as research features per governance."
+  },
+  "worldcup_history": {
+    "files": 22,
+    "matches": 0,
+    "matches_with_coach_field": 0,
+    "coach_field_coverage_pct": "0.00",
+    "note": "No coach field in any historical WC result file."
+  },
+  "team_meta": {
+    "entries_with_coach_field": 0,
+    "note": "No coach field in team_meta.json."
+  },
+  "required_external_inputs": [
+    {
+      "name": "coach tenure history (start/end + source)",
+      "env": "COACH_RESEARCH_TENURE_DIR",
+      "status": "MISSING (read-only, not committed)"
+    },
+    {
+      "name": "international results pool (qualifiers/continental/friendlies/WC)",
+      "env": "COACH_RESEARCH_POOL_DIR",
+      "status": "MISSING (read-only, not committed)"
+    },
+    {
+      "name": "xG / lineup artifact (Owner F)",
+      "env": "n/a",
+      "status": "REFERENCE-ONLY when F ready"
+    }
+  ],
+  "production_signal_status": {
+    "coach_in_lib_prediction_js": "ABSENT (removed by Owner A quarantine; H does not restore)",
+    "current_display_coach": "kept for UI only; not a probability input"
+  }
+}
