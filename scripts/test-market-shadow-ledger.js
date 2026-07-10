@@ -118,11 +118,36 @@ console.log('\n📋 G4: Model vs Market Shadow Benchmark & Governance');
   assert(missingComp.status === 'unavailable', 'Missing market odds cleanly report status: unavailable');
   assert(missingComp.usedInModel === false, 'Missing comparison still enforces usedInModel: false');
 
+  // Test As-Of fail-closed and exclusion of leaked post-kickoff odds from OOS metrics
+  const leakedComp = MarketShadowLedger.compareModelVsMarket({
+    matchId: 'm003',
+    kickoffTime: '2026-06-10T18:00:00Z',
+    modelPred,
+    marketOdds: { homeWin: 1.80, draw: 3.60, awayWin: 4.80, ts: '2026-06-10T19:30:00Z' },
+    actualOutcome: 'home'
+  });
+  assert(leakedComp.asOfAntiLeakageVerified === false, 'Leaked post-kickoff comparison marked false');
+  assert(leakedComp.metrics === null, 'Leaked post-kickoff record excluded from OOS metrics');
+
+  // Test missing timestamp fail-closed
+  const missingTsComp = MarketShadowLedger.compareModelVsMarket({
+    matchId: 'm004',
+    kickoffTime: '2026-06-10T18:00:00Z',
+    modelPred,
+    marketOdds: { homeWin: 1.80, draw: 3.60, awayWin: 4.80 },
+    actualOutcome: 'home'
+  });
+  assert(missingTsComp.asOfAntiLeakageVerified === false, 'Missing timestamp fail-closed marked false');
+  assert(missingTsComp.metrics === null, 'Missing timestamp record excluded from OOS metrics');
+
   // Generate Benchmark Report
-  const report = MarketShadowLedger.generateShadowBenchmarkReport([comp, missingComp]);
-  assert(report.coverage.totalMatches === 2, 'Report tracks total matches (2)');
-  assert(report.coverage.coveredMatches === 1, 'Report tracks covered matches (1)');
-  assert(report.coverage.coverageRate === 0.5, 'Report calculates accurate coverage rate (0.5000)');
+  const report = MarketShadowLedger.generateShadowBenchmarkReport([comp, missingComp, leakedComp, missingTsComp]);
+  assert(report.coverage.totalMatches === 4, 'Report tracks total matches (4)');
+  assert(report.coverage.coveredRaw === 3, 'Report tracks coveredRaw matches (3)');
+  assert(report.coverage.asOfEligible === 1, 'Report tracks asOfEligible matches (1)');
+  assert(report.coverage.excludedLeakage === 2, 'Report tracks excludedLeakage matches (2)');
+  assert(report.coverage.coverageRate === 0.75, 'Report calculates accurate coverage rate (0.7500)');
+  assert(report.outOfSampleBenchmark.note.includes('Shin 去水具有热门/冷门非线性修正'), 'Report states Shin empirical accuracy awaits accumulated ledger');
   assert(report.governanceConclusion.permittedInCoreModel === false, 'Report confirms market odds NOT permitted in core model');
   assert(report.dataSource.license.includes('ODbL'), 'Report includes explicit data source & license info');
 }
@@ -141,6 +166,11 @@ console.log('\n📋 G5: Controlled Odds Collection Quota Protection');
   // Check quota enforcement when missing API key
   job.collectOdds().then(res => {
     assert(res.status === 'unavailable', 'Missing API key returns unavailable status gracefully');
+  });
+
+  // Check force:true requires registered milestone type
+  job.collectOdds({ force: true }).then(res => {
+    assert(res.status === 'unavailable' || res.status === 'quota_exhausted', 'force:true without registered milestone handled safely');
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 }
@@ -170,6 +200,16 @@ console.log('\n📋 G6: Public Core Probability Invariant Check');
   assert(predWithOdds.draw === predWithoutOdds.draw, `Public draw probability identical (${predWithOdds.draw} === ${predWithoutOdds.draw})`);
   assert(predWithOdds.awayWin === predWithoutOdds.awayWin, `Public awayWin probability identical (${predWithOdds.awayWin} === ${predWithoutOdds.awayWin})`);
   assert(predWithOdds.candidates.odds && predWithOdds.candidates.odds.usedInModel === false, 'Odds candidate recorded with usedInModel: false');
+
+  // Verify polymarketOdds injection also does not alter public probabilities
+  const predWithPolymarket = engine.predict({
+    ...matchParams,
+    polymarketOdds: { homeWin: 0.197, draw: 0.211, awayWin: 0.592, liquidity: 'high' }
+  });
+  assert(predWithPolymarket.homeWin === predWithoutOdds.homeWin, 'PolymarketOdds does not alter public homeWin probability');
+  assert(predWithPolymarket.draw === predWithoutOdds.draw, 'PolymarketOdds does not alter public draw probability');
+  assert(predWithPolymarket.awayWin === predWithoutOdds.awayWin, 'PolymarketOdds does not alter public awayWin probability');
+  assert(predWithPolymarket.candidates.polymarket && predWithPolymarket.candidates.polymarket.usedInModel === false, 'Polymarket candidate recorded with usedInModel: false');
 }
 
 setTimeout(() => {
