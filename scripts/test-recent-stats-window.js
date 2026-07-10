@@ -44,6 +44,19 @@ for (let i = 0; i < TOTAL_PAST; i++) {
   });
 }
 
+// This fixture is intentionally absent from the static snapshot. It models a
+// knockout pairing resolved after the snapshot was generated.
+const liveKnockoutEvent = {
+  id: 'live-r16',
+  date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+  dateBJT: '',
+  state: 'post',
+  home: { id: TEAM_ID, name: 'France', abbr: 'FRA' },
+  away: { id: 'knockout-opponent', name: 'Knockout Opponent', abbr: 'KOP' },
+  stage: 'R16',
+  venue: 'Live venue',
+};
+
 const deps = {
   getCached: () => null,            // force real compute path
   setCache: () => {},
@@ -51,6 +64,9 @@ const deps = {
   parseEvent: (ev) => ev,
   loader: { getSchedule: () => ({ matches: scheduleMatches }) },
   espn: async (path) => {
+    if (path.includes('20260611-20260719')) {
+      return { events: [liveKnockoutEvent] };
+    }
     if (path.includes('/scoreboard')) {
       return { events: matchIds.map((id) => ({ id })) };
     }
@@ -71,6 +87,7 @@ const deps = {
 
 const routes = createRecentRoutes(deps);
 const recentStats = routes['GET /api/team/:id/recent-stats'];
+const recentMatches = routes['GET /api/team/:id/recent-matches'];
 
 async function run() {
   // Default (no n) -> 5, and 5 matches consumed.
@@ -113,6 +130,14 @@ async function run() {
   {
     const r = await recentStats({ id: TEAM_ID, n: '5' });
     assert(r.matches <= TOTAL_PAST, `matches consumed (${r.matches}) <= available past (${TOTAL_PAST})`);
+  }
+
+  // Team World Cup record must include a resolved knockout fixture that was
+  // absent from match_snapshot_schedule.json at server startup.
+  {
+    const r = await recentMatches({ id: TEAM_ID });
+    assert(r.matches.some(m => m.matchId === 'live-r16'), 'runtime knockout fixture is included in team record');
+    assert(r.completed === TOTAL_PAST + 1, `completed record includes live knockout fixture (got ${r.completed})`);
   }
 }
 
