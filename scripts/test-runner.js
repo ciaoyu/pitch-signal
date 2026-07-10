@@ -50,6 +50,7 @@ const TEST_FILES = [
   'test-post-match-review.js',
   'test-pre-match-snapshot-guard.js',
   'test-prediction.js',
+  'test-referee-stats.js',
   'test-roster-cache.js',
   'test-same-day-leakage.js',
   'test-score-writeback.js',

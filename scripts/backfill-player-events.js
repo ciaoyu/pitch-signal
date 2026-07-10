@@ -16,6 +16,7 @@
 
 const { fetchJSON } = require('../services/espn');
 const { extractPlayerEvents, upsertPlayerEvents, roundFromSummary } = require('../lib/services/player-events');
+const { extractAndPersistOfficials } = require('../lib/services/referee-stats');
 const { db } = require('../lib/db');
 
 const schedule = require('../data/match_snapshot_schedule.json');
@@ -60,9 +61,10 @@ async function fetchSummary(matchId) {
     };
     const events = extractPlayerEvents(m.matchId, keyEvents, meta);
     const n = upsertPlayerEvents(events);
+    const offCount = extractAndPersistOfficials(m.matchId, data, db);
     total += n;
     matchesDone += 1;
-    console.log(`  ✅ ${m.matchId} round=${round || '?'} events=${events.length} (upserted ${n})`);
+    console.log(`  ✅ ${m.matchId} round=${round || '?'} events=${events.length} (upserted ${n}), officials=${offCount}`);
     await sleep(120); // be polite to the API
   }
   console.log(`\nDONE: ${matchesDone} matches scanned, ${total} player-event rows upserted (idempotent).`);
