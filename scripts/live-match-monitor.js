@@ -87,35 +87,14 @@ const liveTimelineState = {}; // matchId → array of snapshot summaries
 // ============================================================
 
 const { reprice } = require('../lib/live-reprice');
+const liveHelpers = require('../lib/live-helpers');
 
 function safeTeamName(name) {
   return String(name || '').trim().toLowerCase();
 }
 
-function countRedCardsFromDetails(details, teamId) {
-  if (!teamId || !Array.isArray(details) || !details.length) return 0;
-  const tid = String(teamId);
-  let reds = 0;
-  const yellowsByPlayer = new Map();
-
-  for (const d of details) {
-    const dTeamName = String(d.team || '').trim().toLowerCase();
-    const type = String(d.type || '').trim().toLowerCase();
-    const player = String(d.player || '').trim();
-
-    const isOurTeam = dTeamName === safeTeamName(tid) || dTeamName.includes(safeTeamName(tid));
-    if (!isOurTeam) continue;
-
-    if (type.includes('red')) {
-      reds++;
-    } else if (type.includes('yellow') && player) {
-      const prev = yellowsByPlayer.get(player) || 0;
-      yellowsByPlayer.set(player, prev + 1);
-      if (prev + 1 >= 2) reds++;
-    }
-  }
-
-  return reds;
+function countRedCardsFromDetails(details, teamNameOrId) {
+  return liveHelpers.countRedCardsFromDetails(details, teamNameOrId);
 }
 
 async function fetchMatchOdds(match) {
@@ -255,6 +234,11 @@ function buildLiveAnalysis(basePrediction, matchMeta, liveStats = {}) {
   };
 }
 
+// ─── helper: parse added time from status detail (e.g. "90'+4" → 4) ────
+function parseAddedTime(detail) {
+  return liveHelpers.parseAddedTime(detail);
+}
+
 // ============================================================
 // ESPN data fetching
 // ============================================================
@@ -306,6 +290,7 @@ async function fetchLiveMatches() {
         stats: awayStats,
       },
       minute,
+      displayClock: status?.displayClock || status?.detail || '',
       statusDetail: status?.detail || '',
       venue: comp.venue?.fullName || '',
       details,
@@ -530,6 +515,7 @@ async function pollOnce() {
       awayShotsOnTarget: Number(m.away.stats.shotsOnTarget || 0),
       homePossession: Number(m.home.stats.possessionPct || null),
       awayPossession: Number(m.away.stats.possessionPct || null),
+      addedTime: parseAddedTime(m.statusDetail || ''),
       details: m.details || [],
     });
 
