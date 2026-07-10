@@ -94,6 +94,8 @@ const TEST_FILES = [
   'test-knockout-intel-suspensions.js',
     // KO-1 knockout-intel foundation + venue-distance + schedule-lookup + ET/Pens backfill
   'test-knockout-intel.js',
+    // KO-5 fatigue index signal
+  'test-fatigue-signal.js',
 ];
 
 const filter = process.argv.includes('--match')
