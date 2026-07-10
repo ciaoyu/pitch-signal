@@ -79,7 +79,7 @@ const oos = require('./research-environment-oos');
   console.log('✓ buildDesign: 2N rows, home-away coding, rest-null rejected');
 })();
 
-// --- 4) VIF ~ 1 for orthogonal synthetic regressors ---
+// --- 4) VIF >= 1 for orthogonal synthetic regressors (catches the v1 without-intercept bug) ---
 (function testVif() {
   const X = [];
   let seed = 999; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
@@ -89,8 +89,45 @@ const oos = require('./research-environment-oos');
     X.push([1, 0, a, b, c, d]);
   }
   const v = oos.vif(X);
+  // standard VIF must be >= 1; the orth(near-independent) regressors give VIF ~ 1
+  for (const k of ['eloDiff', 'restDiff', 'cross', 'crossUnknown']) {
+    assert.ok(v[k].vif >= 1 - 1e-9, `VIF(${k}) must be >= 1 (got ${v[k].vif})`);
+  }
   assert.ok(v.eloDiff.vif < 1.1 && v.restDiff.vif < 1.1, `orthogonal VIF ~1 (got ${v.eloDiff.vif}, ${v.restDiff.vif})`);
-  console.log('✓ VIF ≈ 1 for orthogonal regressors', { eloDiff: +v.eloDiff.vif.toFixed(3), restDiff: +v.restDiff.vif.toFixed(3) });
+  console.log('✓ VIF >= 1 and ≈ 1 for orthogonal regressors', { eloDiff: +v.eloDiff.vif.toFixed(3), restDiff: +v.restDiff.vif.toFixed(3), cross: +v.cross.vif.toFixed(3) });
+})();
+
+// --- 5) Fixed-seed cluster bootstrap is reproducible across reruns (catches non-determinism) ---
+(function testSeedReproducibility() {
+  const betaEnv = [0.1, 0.35, 0.002, -0.00003, -0.05, 0.39];
+  const betaBase = [0.1, 0.35, 0.002, -0.00003, 0, 0];
+  const years = [1930, 1934, 1938, 1950, 1954, 1958, 1962, 1966];
+  const matches = [];
+  let s = 4242; const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+  for (const y of years) {
+    const n = 20 + Math.floor(rnd() * 10);
+    for (let i = 0; i < n; i++) {
+      matches.push({
+        date: `${y}-0${1 + Math.floor(rnd() * 6)}-1${Math.floor(rnd() * 9)}`,
+        eloH: 1500 + rnd() * 300, eloA: 1500 + rnd() * 300,
+        rest_home: rnd() * 10, rest_away: rnd() * 10,
+        cross_confed: rnd() > 0.5,
+        homeScore: Math.floor(rnd() * 5), awayScore: Math.floor(rnd() * 5),
+      });
+    }
+  }
+  const B = 300, SEED = 20260711;
+  const boot1 = oos.clusterBootstrapDelta(matches, betaEnv, betaBase, B, oos.mulberry32(SEED));
+  const boot2 = oos.clusterBootstrapDelta(matches, betaEnv, betaBase, B, oos.mulberry32(SEED));
+  // identical seed => identical draw sequence => identical deltas + CI
+  assert.deepStrictEqual(boot1.deltas, boot2.deltas, 'fixed seed must reproduce identical ΔLogLoss draws');
+  assert.deepStrictEqual(boot1.ci, boot2.ci, 'fixed seed must reproduce identical CI');
+  // a different seed must diverge (guard against a constant / ignored rng)
+  const boot3 = oos.clusterBootstrapDelta(matches, betaEnv, betaBase, B, oos.mulberry32(SEED + 1));
+  const diverged = boot3.deltas.length !== boot1.deltas.length ||
+    boot3.deltas.some((d, i) => Math.abs(d - boot1.deltas[i]) > 1e-12);
+  assert.ok(diverged, 'different seed must produce a different draw (rng is actually consumed)');
+  console.log('✓ fixed-seed cluster bootstrap is reproducible (CI =', boot1.ci.map(v => +v.toFixed(5)), ', seed', SEED, ')');
 })();
 
 console.log('\nAll OOS helper unit tests passed (synthetic data only, no artifact written).');

@@ -21,9 +21,10 @@
   - `rest_diff` 系数 ≈ **-3e-5**（CI[-6e-5, 0]），双方在国际比赛窗口休息相近，对手休息差几乎无信号。
   - `cross` 系数 ≈ **-0.050**（CI[-0.065, -0.032]，符号稳定）：跨洲比赛双方进球强度约低 5%（对称旅行/气候压力），方向合理。
   - `cross_unknown` ≈ +0.39：是**联盟解析缺失的产物**（从未参加洲际特定赛事的球队的可用性代理），**非真实环境暴露**，不计入生产候选（缺失即特征归 Owner A）。
-- OOS 增益判定：WC held-out（1930–2022，964 场）`ΔLogLoss(env−base) = -0.00089`；**cluster bootstrap 95% CI = [-0.0029, +0.0008] 含 0**；walk-forward 6 折 ΔLogLoss 在 0 附近振荡（-0.0007 ~ +0.0028）。
+- OOS 增益判定：WC held-out（1930–2022，964 场）`ΔLogLoss(env−base) = -0.00089`；**cluster bootstrap 95% CI = [-0.00197, +0.00012]（seed 固定、按届次有放回重采样，可复现）含 0**；walk-forward 6 折 ΔLogLoss 在 0 附近振荡（-0.0007 ~ +0.0028）。
 - 治理口径（总控）：**符号稳定 ≠ 真实增益**；OOS 无稳定增益前不得进入生产概率 → `enterModel=false`，env 系数保持 shadow / `usedInModel:false`。
-- VIF ≈ 1.00（eloDiff/restDiff），无共线性问题；模型本身健康，只是增量信息不足以超越 Elo+Poisson 基准。
+- VIF = 1.00（eloDiff 1.002、restDiff 1.002、cross 1.005、crossUnknown 1.005，辅助回归含截距 → VIF≥1 恒成立）；无共线性问题；模型本身健康，只是增量信息不足以超越 Elo+Poisson 基准。
+- **口径澄清**：`base` 是研究用 Elo+Poisson 代理，**非生产 Owner A v4**，本 OOS 仅对比研究基准。
 
 > 边界重申：E 的 `altitude_2026` 历史训练覆盖为 0%（仅 2026 held-out 有），`wbgt/weather` 历史覆盖 0%，`neutral` 100% 无有效变异 → **均不拟合、均 `usedInModel:false`**。绝不因 2026 海拔 100% join 就拟合海拔系数（会泄漏 held-out）。
 
@@ -51,6 +52,7 @@
 - **不估计**：`altitude_2026`（历史训练覆盖 0%）、`wbgt/weather`（0%）、`neutral`（100% 无变异）——均 `usedInModel:false`，不泄漏 held-out。
 - **方法**：Elo 作为 as-of 控制（仅非 WC 比赛更新 → 无 WC 泄漏）；Poisson + Ridge（IRLS + 步长折半保证收敛）；与 Elo+Poisson 基准比 LogLoss/Brier/ECE；WC held-out（1930–2022 已发生评估，2026 已发生作前瞻、未完赛排除）单独打分；系数 bootstrap + VIF + walk-forward + cluster bootstrap Δ。
 - **结论**：无稳定 OOS 增益（ΔLogLoss CI 含 0）→ env 系数保持 shadow，**不进入生产概率**。
+- **E v2 统计实现修正（2026-07-11）**：cluster bootstrap 改为按世界杯届次有放回重采样并固定 seed（`seed=20260711`，可复现）；系数 bootstrap 同 seed；VIF 辅助回归加截距修复（v1 出现 VIF<1 违反标准）；`cross` 与 `cross_unknown` 分离重跑；明确 `base` 是研究代理非生产 A v4。方向性结论与生产裁决不变（仍 `enterModel=false`）。
 - `lib/` 相对 `78da1b5` 仍零 diff；49k 池仍在仓库外，未提交。
 
 ## 后续步骤

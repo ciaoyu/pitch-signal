@@ -67,12 +67,15 @@ node scripts/test-research-environment-oos-lib.js
   休息 99.7%/99.6%、neutral 100%、跨洲 97.3%、2026 海拔 join 100%；历史海拔 0%、天气/WBGT 0%（诚实缺失）。
   SHA-256 `5ddddc5a…`，见 `pool-coverage.json` / `coverage-report.json`。
 - 单元测试通过（`test-research-environment-pool-lib.js` + `test-research-environment-oos-lib.js`，合成数据）；`lib/` 相对 `78da1b5` 零 diff（生产概率未动）。
-- **OOS 系数估计已真实运行**（2026-07-10，CC0 池 SHA-256 `5ddddc5a…`）：
+- **OOS 系数估计已真实运行**（v2，2026-07-11，CC0 池 SHA-256 `5ddddc5a…`）：
   - 估计 `rest_diff` ≈ −3e-5（可忽略）、`cross` ≈ −0.050（跨洲约 −5% 进球，方向合理）、`cross_unknown` ≈ +0.39（联盟解析缺失产物，非环境暴露）。
-  - VIF ≈ 1.00（无共线性）；WC held-out 1930–2022 `ΔLogLoss(env−base) = −0.00089`；**cluster bootstrap 95% CI = [−0.0029, +0.0008] 含 0** → 无稳定增益。
+  - VIF = 1.00（eloDiff 1.002、restDiff 1.002、cross 1.005、crossUnknown 1.005；辅助回归含截距 → VIF≥1 恒成立）；WC held-out 1930–2022 `ΔLogLoss(env−base) = −0.00089`；**cluster bootstrap 95% CI = [−0.00197, +0.00012]（seed 固定、按届次有放回重采样，可复现）含 0** → 无稳定增益。
+  - **`cross` 与 `cross_unknown` 分离重跑**：去掉 `cross_unknown` 标志后 `cross` 系数仍 ≈ −0.063，证明跨洲旅行代理并非联盟解析缺失产物。
+  - **口径澄清**：`base` 是研究用 Elo+Poisson 代理，**非生产 Owner A v4**。
   - **裁决：env 系数保持 shadow / `usedInModel:false`，不进入生产概率**（治理口径：符号稳定 ≠ 真实增益）。
   - `altitude_2026` / `wbgt` / `neutral` 训练覆盖不足，均不拟合、`usedInModel:false`。
 - 入模结论：**当前不允许进入生产概率**（见 `environment-deliverables.md` 第 6 项）。
+- **E v2 统计实现修正（2026-07-11，已定稿）**：cluster bootstrap 改为按届次有放回重采样并固定 seed（`seed=20260711`，可复现，已加重跑一致性断言）；系数 bootstrap 同 seed；VIF 加截距修复（v1 出现 VIF<1）；cross/cross_unknown 分离重跑；明确基准非生产 A v4。统计实现已定稿且可复现。方向性结论与生产裁决不变：**环境信号继续 shadow，绝不进入公开概率**。
 
 ## 不推送 / 不部署
 

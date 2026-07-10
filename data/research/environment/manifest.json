@@ -101,13 +101,20 @@
     "et":   { "unit": "min",  "symmetry": "beta_et*(ET_i - ET_opp)" }
   },
   "oos": {
-    "status": "OOS_ESTIMATED_REAL",
-    "run_at": "2026-07-10",
+    "status": "OOS_ESTIMATED_REAL_V2",
+    "run_at": "2026-07-11",
     "pool_sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
-    "method": "Elo(as-of, NON-WC only) + Poisson + Ridge(IRLS w/ step-halving); symmetric (A-B) env features; benchmarks vs Elo+Poisson; WC held-out + walk-forward + cluster-bootstrap delta",
+    "method": "Elo(as-of, NON-WC only) + Poisson + Ridge(IRLS w/ step-halving); symmetric (A-B) env features; benchmarks vs RESEARCH Elo+Poisson proxy (NOT production A v4); WC held-out + walk-forward + EDITION-LEVEL cluster-bootstrap delta (with-replacement resample by WC year, seed=20260711, reproducible)",
+    "v2_statistical_fixes": [
+      "cluster bootstrap now resamples World Cup EDITIONS with replacement (seed fixed) — v1 used Math.random() per team, not reproducible",
+      "coefficient bootstrap uses the same seeded RNG",
+      "VIF auxiliary regressions now include an intercept -> VIF>=1 by construction (v1 VIF<1 was a without-intercept bug)",
+      "cross physical travel proxy separated from cross_unknown missingness flag via cross-only sensitivity run",
+      "baseline explicitly flagged as research Elo+Poisson proxy, not production A v4"
+    ],
     "estimated": {
       "rest_diff": { "coef": -0.00003, "bootstrap_ci": [-0.00006, 0], "sign_stable": true, "enter_model": false, "note": "negligible magnitude" },
-      "cross_confederation": { "coef": -0.0501, "bootstrap_ci": [-0.06545, -0.03192], "sign_stable": true, "enter_model": false, "note": "plausible ~-5% goal intensity; OOS gain not stable" },
+      "cross_confederation": { "coef": -0.0501, "bootstrap_ci": [-0.06545, -0.03192], "sign_stable": true, "enter_model": false, "note": "plausible ~-5% goal intensity; OOS gain not stable; stable even without cross_unknown flag" },
       "cross_unknown": { "coef": 0.3876, "bootstrap_ci": [0.3378, 0.4421], "sign_stable": true, "enter_model": false, "note": "confederation-resolution ARTIFACT (missingness proxy), NOT physical env exposure" }
     },
     "not_estimated": {
@@ -119,9 +126,11 @@
       "oos_gain_stable": false,
       "enter_model": false,
       "wc1930_2022_delta_logloss": -0.00089,
-      "cluster_bootstrap_ci": [-0.00291, 0.00081],
-      "vif": "~1.00 (eloDiff, restDiff)",
-      "conclusion": "NO stable OOS gain over Elo+Poisson; env coefficients remain shadow (usedInModel:false). Sign stability != production readiness."
+      "cluster_bootstrap_ci": [-0.00197, 0.00012],
+      "cluster_bootstrap_seed": 20260711,
+      "cluster_bootstrap_reproducible": true,
+      "vif": "1.00 (eloDiff 1.002, restDiff 1.002, cross 1.005, crossUnknown 1.005; >=1 by construction)",
+      "conclusion": "NO stable OOS gain over research Elo+Poisson baseline; env coefficients remain shadow (usedInModel:false). Sign stability != production readiness. Directionally consistent with v1; now statistically implemented correctly. NOT the paper's final CI until implementation finalized."
     }
   },
   "artifacts": {

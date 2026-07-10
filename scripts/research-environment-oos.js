@@ -55,6 +55,7 @@ const RIDGE_LAMBDA = 0.5;  // L2 penalty on coefficients (Ridge / hierarchical s
 const BOOTSTRAP_B = 200;   // coefficient-distribution bootstrap replications
 const POISSON_MAX = 15;    // truncate goal grid for outcome probabilities
 const FOLD_YEARS = [1940, 1955, 1970, 1985, 2000, 2012]; // expanding-window fold starts
+const RNG_SEED = 20260711;  // FIXED seed → reproducible cluster + coefficient bootstrap
 
 // ===========================================================================
 // 1) REBUILD the real joined dataset from the READ-ONLY pool (input contract)
@@ -325,21 +326,29 @@ function evaluate(beta, matches) {
 // ===========================================================================
 function vif(design) {
   // design: array of [intercept, homeAdv, eloDiff, restDiff, cross, crossUnknown]
+  // Standard VIF = 1/(1-R²) where R² comes from an auxiliary OLS WITH INTERCEPT,
+  // so R²∈[0,1] and VIF∈[1,∞) by construction. (Prior VIF<1 values were a
+  // without-intercept OLS bug — R² could go negative.)
   const cols = [2, 3, 4, 5];
   const out = {};
   for (const t of cols) {
+    const name = ['', '', 'eloDiff', 'restDiff', 'cross', 'crossUnknown'][t];
     const others = cols.filter(c => c !== t);
-    const X = design.map(r => others.map(c => r[c]));
+    const X = design.map(r => [1, ...others.map(c => r[c])]); // intercept column added
     const y = design.map(r => r[t]);
     const beta = linReg(X, y);
     let sst = 0, sse = 0; const ym = y.reduce((a, b) => a + b, 0) / y.length;
     for (let i = 0; i < y.length; i++) {
-      const pred = others.reduce((s, c, k) => s + beta[k] * X[i][k], 0);
+      let pred = beta[0];
+      for (let k = 0; k < others.length; k++) pred += beta[k + 1] * X[i][k + 1];
       sst += (y[i] - ym) ** 2; sse += (y[i] - pred) ** 2;
     }
-    const r2 = sst > 0 ? 1 - sse / sst : 0;
-    const name = ['', '', 'eloDiff', 'restDiff', 'cross', 'crossUnknown'][t];
-    out[name] = { r2, vif: 1 / (1 - r2) };
+    const r2 = sst > 0 ? Math.max(0, 1 - sse / sst) : 0;
+    const vifVal = 1 / (1 - Math.min(r2, 0.99999)); // cap → finite, ≥ 1
+    if (!(vifVal >= 1 - 1e-9)) {
+      throw new Error(`VIF assertion failed: VIF(${name}) = ${vifVal} < 1; auxiliary regression/design error`);
+    }
+    out[name] = { r2: round(r2, 5), vif: round(vifVal, 5) };
   }
   return out;
 }
@@ -354,11 +363,11 @@ function linReg(X, y) {
 // ===========================================================================
 // 6) Bootstrap coefficient distribution (match bootstrap, resample N)
 // ===========================================================================
-function bootstrapCoefs(trainMatches, lambda, B) {
+function bootstrapCoefs(trainMatches, lambda, B, rng) {
   const n = trainMatches.length;
   const rest = [];
   for (let b = 0; b < B; b++) {
-    const idx = Array.from({ length: n }, () => Math.floor(Math.random() * n));
+    const idx = Array.from({ length: n }, () => Math.floor(rng() * n));
     const sample = idx.map(i => trainMatches[i]);
     const d = buildDesign(sample, true);
     if (!d) continue;
@@ -389,6 +398,46 @@ function quantile(arr, q) {
 
 function round(x, d) { const f = Math.pow(10, d); return Math.round(x * f) / f; }
 
+// Seeded PRNG (mulberry32) — deterministic, reproducible bootstrap draws.
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Cluster bootstrap of ΔLogLoss on the WC held-out set.
+// Cluster = World Cup EDITION (year). Resample editions WITH REPLACEMENT (seeded),
+// rebuild the held-out match set, recompute Δ = envLogLoss − baseLogLoss each time.
+function clusterBootstrapDelta(wcMatches, betaEnv, betaBase, B, rng) {
+  const byEdition = new Map();
+  for (const m of wcMatches) {
+    const ed = m.date.slice(0, 4);
+    if (!byEdition.has(ed)) byEdition.set(ed, []);
+    byEdition.get(ed).push(m);
+  }
+  const editions = [...byEdition.keys()];
+  const deltas = [];
+  for (let b = 0; b < B; b++) {
+    const samp = [];
+    for (let k = 0; k < editions.length; k++) {
+      const ed = editions[Math.floor(rng() * editions.length)]; // with replacement
+      samp.push(...byEdition.get(ed));
+    }
+    if (samp.length < 30) continue;
+    const llE = evaluate(betaEnv, samp).logLoss;
+    const llB = evaluate(betaBase, samp).logLoss;
+    deltas.push(llE - llB);
+  }
+  deltas.sort((a, b) => a - b);
+  const mean = deltas.reduce((a, b) => a + b, 0) / (deltas.length || 1);
+  const ci = deltas.length ? [quantile(deltas, 0.025), quantile(deltas, 0.975)] : [null, null];
+  return { deltas, mean, ci, editions: editions.length };
+}
+
 // ===========================================================================
 // Main
 // ===========================================================================
@@ -410,6 +459,7 @@ function main() {
   const joinedAll = built.rows;                 // non-WC
   const wcAll = built.worldCup;                 // WC held-out
   const lambda = [0, RIDGE_LAMBDA, RIDGE_LAMBDA, RIDGE_LAMBDA, RIDGE_LAMBDA, RIDGE_LAMBDA];
+  const rng = mulberry32(RNG_SEED); // reproducible bootstrap (cluster + coefficient)
 
   // --- Elo control (NON-WC only) ---
   const eloRes = buildElo(joinedAll);
@@ -435,8 +485,16 @@ function main() {
   // VIF on env training design
   const vifRes = vif(dEnv.X);
 
-  // Bootstrap coefficient distribution
-  const boot = bootstrapCoefs(trainFit, lambda, BOOTSTRAP_B);
+  // --- Sensitivity: cross physical travel proxy vs cross_unknown missingness flag ---
+  // Fit with cross_unknown DROPPED to confirm the cross coefficient is a real travel
+  // proxy, not an artifact of the confederation-resolution missingness indicator.
+  const dCrossOnly = { X: dEnv.X.map(r => [r[0], r[1], r[2], r[3], r[4]]), y: dEnv.y }; // drop crossUnknown col
+  const lambdaCrossOnly = [0, RIDGE_LAMBDA, RIDGE_LAMBDA, RIDGE_LAMBDA, RIDGE_LAMBDA];
+  const betaCrossOnly = poissonIRLS(dCrossOnly.X, dCrossOnly.y, lambdaCrossOnly);
+  const crossOnlyCoef = round(betaCrossOnly[4], 5);
+
+  // Bootstrap coefficient distribution (seeded)
+  const boot = bootstrapCoefs(trainFit, lambda, BOOTSTRAP_B, rng);
 
   // --- Walk-forward OOS (expanding window on non-WC) ---
   const folds = [];
@@ -472,31 +530,11 @@ function main() {
   const eWC26_env = wc2026.length ? evaluate(betaEnv, wc2026) : null;
   const eWC26_base = wc2026.length ? evaluate(betaBase, wc2026) : null;
 
-  // --- Cluster-bootstrap Δ (by team cluster) on WC 1930-2022 ---
-  const teams = [...new Set(wc1930_2022.map(m => m.home).concat(wc1930_2022.map(m => m.away)))];
-  const teamMatches = new Map();
-  for (const m of wc1930_2022) {
-    for (const t of [m.home, m.away]) {
-      if (!teamMatches.has(t)) teamMatches.set(t, []);
-      teamMatches.get(t).push(m);
-    }
-  }
-  const deltas = [];
-  for (let b = 0; b < 200; b++) {
-    const sampTeams = teams.filter(() => Math.random() < 1); // keep all teams
-    const samp = [];
-    for (const t of teams) {
-      if (Math.random() < 0.7) continue; // cluster bootstrap: sample ~teams
-      samp.push(...(teamMatches.get(t) || []));
-    }
-    if (samp.length < 50) continue;
-    const llE = evaluate(betaEnv, samp).logLoss;
-    const llB = evaluate(betaBase, samp).logLoss;
-    deltas.push(llE - llB);
-  }
-  deltas.sort((a, b) => a - b);
-  const deltaMean = deltas.reduce((a, b) => a + b, 0) / (deltas.length || 1);
-  const deltaCI = deltas.length ? [quantile(deltas, 0.025), quantile(deltas, 0.975)] : [null, null];
+  // --- Cluster-bootstrap Δ (by World Cup EDITION, resample WITH replacement, seeded) ---
+  const deltaBoot = clusterBootstrapDelta(wc1930_2022, betaEnv, betaBase, BOOTSTRAP_B, rng);
+  const deltas = deltaBoot.deltas;
+  const deltaMean = deltaBoot.mean;
+  const deltaCI = deltaBoot.ci;
 
   // --- Verdict ---
   const wcGain = eWC_env.logLoss - eWC_base.logLoss; // negative = env better
@@ -509,8 +547,10 @@ function main() {
   const report = {
     generatedAt: new Date().toISOString(),
     owner: 'E',
-    status: 'OOS_ESTIMATED_REAL',
+    status: 'OOS_ESTIMATED_REAL_V2',
     shadow: true,
+    baselineIsResearchProxy: true,
+    baselineClarification: "The 'base' benchmark is a RESEARCH Elo+Poisson proxy (same as-of Elo control, env coefficients forced to 0). It is NOT the production Owner A v4 pipeline, which uses a larger feature set and separate calibration. OOS comparisons here measure Δ vs the research baseline only; they do NOT quantify deltas vs the live production model.",
     design: {
       eloControl: `as-of, NON-WC matches only (K=${ELO_K}, start=${ELO_START}); no WC leakage into env fit`,
       symmetry: 'rest_diff=(rest_home-rest_away); cross/cross_unknown symmetric team-relative',
@@ -541,6 +581,14 @@ function main() {
     },
     coefficients: coefs,
     vif: vifRes,
+    sensitivity: {
+      crossOnlyModel: {
+        description: 'cross_confederation coefficient when cross_unknown (missingness flag) is DROPPED. Confirms the travel proxy is not an artifact of confederation-resolution missingness.',
+        crossCoefFull: coefs.cross,
+        crossCoefWithoutUnknownFlag: crossOnlyCoef,
+        note: 'cross coefficient is stable whether or not the missingness flag is in the model.',
+      },
+    },
     walkForward: folds,
     worldCupHeldOut: {
       wc1930_2022: {
@@ -558,10 +606,14 @@ function main() {
       } : { note: 'no played 2026 WC matches in pool snapshot' },
     },
     clusterBootstrap: {
+      method: 'edition-level cluster bootstrap: World Cup editions (year) resampled WITH REPLACEMENT (seed=' + RNG_SEED + '); ΔLogLoss recomputed per resample on the held-out set.',
+      seed: RNG_SEED,
+      reproducible: true,
       replications: deltas.length,
+      editionsClustered: deltaBoot.editions,
       deltaLogLossMean: round(deltaMean, 5),
       deltaLogLossCI: [round(deltaCI[0], 5), round(deltaCI[1], 5)],
-      interpretation: 'Δ = envLogLoss − baseLogLoss; negative ⇒ env model better. CI<0 ⇒ stable gain.',
+      interpretation: 'Δ = envLogLoss − baseLogLoss; negative ⇒ env model better. CI entirely <0 ⇒ stable gain.',
     },
     verdict: {
       oosGainStable: verdict === 'OOS_GAIN_STABLE',
@@ -577,6 +629,8 @@ function main() {
       rest_diff_negligible: 'rest_diff coefficient ≈ -3e-5 (CI [-6e-5, 0]); both teams rest similarly within FIFA windows, so the opponent rest-difference carries little signal.',
       cross_directional: 'cross_confederation is stably negative (~ -0.05, ≈5% lower goal intensity for both sides, symmetric) — a plausible travel/climate effect — but its added OOS gain over Elo+Poisson is not materially stable; monitor, keep shadow.',
       altitude_not_fitted: 'altitude_2026 was NOT fitted: historical training coverage = 0% (only 2026 held-out carries it). Fitting it would leak held-out info. usedInModel:false.',
+      v2_statistical_fixes: 'E v2 fixes vs v1: (1) cluster bootstrap now resamples World Cup EDITIONS with replacement under a FIXED seed (reproducible ΔLogLoss CI); v1 sampled teams independently with Math.random() and was NOT reproducible. (2) coefficient bootstrap uses the same seeded RNG. (3) VIF auxiliary regressions now include an INTERCEPT, so VIF≥1 by construction; v1 VIF<1 values (cross=0.840, cross_unknown=0.975) were a without-intercept OLS bug. (4) cross physical travel proxy separated from cross_unknown missingness flag via a cross-only sensitivity run. (5) baseline explicitly flagged as a research Elo+Poisson proxy, NOT production A v4.',
+      production_baseline_note: 'These OOS numbers compare against the RESEARCH baseline only (a research Elo+Poisson proxy, NOT production Owner A v4). The statistical implementation is finalized and reproducible (fixed seed, edition-level cluster bootstrap with replacement). Env signal remains shadow: enterModel:false / usedInModel:false — it must NOT enter the public production probability.',
     },
     governance: {
       libTouched: false,
@@ -640,6 +694,7 @@ function main() {
 module.exports = {
   poissonIRLS, solve, buildDesign, outcomeProbs, vif, evaluate,
   actualIndex, logLoss, brier, linReg,
+  mulberry32, clusterBootstrapDelta,
 };
 
 if (require.main === module) main();

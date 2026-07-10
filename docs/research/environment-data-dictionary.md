@@ -85,6 +85,7 @@
 - **Elo 控制（as-of，仅非 WC 比赛更新）**：保证 env 系数估计不泄漏任何世界杯结果；WC 仅以开赛前（非 WC 派生）Elo 快照评分。
 - **对称进入**：`rest_diff = rest_home − rest_away`；`cross` / `cross_unknown` 对双方对称。进球模型 Poisson + Ridge（IRLS + 步长折半，标准化特征后回归、系数反变换）。
 - **基准对比**：`base` = Elo+Poisson（无 env 系数）；`env` = Elo+Poisson + rest_diff + cross + cross_unknown。指标：LogLoss / Brier / ECE（3 类赛果）；WC held-out（1930–2022 已发生评估；2026 已发生作前瞻、未完赛排除）；系数 bootstrap + VIF + walk-forward + cluster bootstrap Δ。
+  - **口径澄清**：`base` 是**研究用 Elo+Poisson 代理**（同 as-of Elo 控制、env 系数强制为 0），**并非生产 Owner A v4 管线**（后者有更大特征集与独立校准）。本 OOS 只对比研究基准，**不衡量与线上生产模型的 delta**。
 
 **估计与结果**（非 WC 估计 48,139 场；WC held-out 1,064 场，其中 1930–2022 已发生 964 场）：
 
@@ -96,12 +97,21 @@
 
 **OOS 增益判定**：
 - WC 1930–2022：`ΔLogLoss(env−base) = −0.00089`（env 略优但极小）。
-- cluster bootstrap ΔLogLoss 95% CI = **[−0.0029, +0.0008] 含 0** → 无稳定增益。
+- cluster bootstrap ΔLogLoss 95% CI = **[−0.00197, +0.00012]（seed 固定、按世界杯届次有放回重采样，可复现）含 0** → 无稳定增益。
 - walk-forward 6 折 ΔLogLoss 在 0 附近振荡（−0.0007 ~ +0.0028），无一致改善。
-- VIF ≈ 1.00（eloDiff / restDiff），无共线性问题；模型健康，仅增量信息不足以超越基准。
+- VIF = 1.00（eloDiff 1.002、restDiff 1.002、cross 1.005、crossUnknown 1.005；辅助回归**含截距** → VIF≥1 恒成立）：无共线性问题。
+- **cross / cross_unknown 分离重跑**：单独去掉 `cross_unknown`（缺失机制标志）再拟合，`cross` 系数仍 ≈ −0.050，证明跨洲旅行代理并非联盟解析缺失的产物，二者物理含义独立。
 
 **裁决（治理口径）**：符号稳定 ≠ 真实增益。OOS 无稳定增益前不得进入生产概率 → `enterModel = false`，env 系数保持 shadow / `usedInModel:false`。
 
 **未估计**（按指令，训练期覆盖不足）：`altitude_2026`（历史训练 0%，仅 2026 held-out 有 → 拟合即泄漏 held-out）、`wbgt/weather`（0%）、`neutral`（100% 无有效变异）。均 `usedInModel:false`。
 
 **合成数据纪律**：所有单元测试（`test-research-environment-pool-lib.js`、`test-research-environment-oos-lib.js`）仅用合成数据验证数学/逻辑，**不写入任何 research artifact**。
+
+**E v2 统计实现修正（2026-07-11）**：相对 v1，本轮修正了统计实现缺陷，但仍保持相同方向性结论与生产裁决：
+1. **cluster bootstrap 现按世界杯届次有放回重采样**：v1 用 `Math.random()` 按球队独立抽样、未固定 seed，不可复现；v2 以届次（year）为 cluster、有放回重采样、`seed=20260711`，CI 可复现（重跑一致）。
+2. **系数 bootstrap 也固定 seed**：使用同一 `mulberry32` 种子 RNG。
+3. **VIF 修复**：辅助回归原缺截距导致 R² 可为负、VIF<1（v1：cross=0.840、cross_unknown=0.975，违反标准 VIF≥1）；v2 辅助回归含截距 → VIF≥1 恒成立，并加 `VIF>=1` 回归断言（单元测试捕获该 bug）。
+4. **cross 物理旅行代理与 cross_unknown 缺失机制分离重跑**（见上）。
+5. **基准口径澄清**：明确 `base` 是研究 Elo+Poisson 代理，非生产 A v4。
+> 统计实现已定稿且可复现（固定 seed、届次有放回重采样、VIF≥1 断言、cross/cross_unknown 分离重跑、固定 seed 重跑一致性断言）。本版可作为正式方向性证据。生产裁决不变：`enterModel=false`、`usedInModel:false`；环境信号继续 shadow，绝不进入公开概率。
