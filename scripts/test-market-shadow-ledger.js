@@ -97,6 +97,25 @@ console.log('\n📋 G3: Permanent Archival & Disk Persistence');
   const missingSaved = JSON.parse(fs.readFileSync(missingKickoffFile, 'utf8'));
   assert(missingSaved.snapshots[0].asOfAntiLeakageVerified === false, 'recordSnapshot without kickoffTime fail-closed (false)');
 
+  // Test milestone recording across full chain
+  const milestoneKey = 'Eng_vs_Ger';
+  const milestones = ['OPENING_LINE', 'T_MINUS_24H', 'LINEUP_ANNOUNCED', 'PRE_KICKOFF'];
+  for (const ms of milestones) {
+    MarketShadowLedger.recordSnapshot({
+      matchKey: milestoneKey,
+      kickoffTime: '2028-07-01T20:00:00.000Z',
+      bookmaker: 'Pinnacle',
+      odds: { homeWin: 2.50, draw: 3.10, awayWin: 2.90 },
+      milestone: ms,
+      dataDir: tmpDir
+    });
+  }
+  const milestoneFile = path.join(tmpDir, 'odds_eng_vs_ger.json');
+  const msSaved = JSON.parse(fs.readFileSync(milestoneFile, 'utf8'));
+  assert(msSaved.snapshots.length === 4, 'Saved all 4 milestone snapshots');
+  assert(msSaved.snapshots[0].milestone === 'OPENING_LINE', 'Milestone OPENING_LINE saved correctly');
+  assert(msSaved.snapshots[2].milestone === 'LINEUP_ANNOUNCED', 'Milestone LINEUP_ANNOUNCED saved correctly');
+
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 

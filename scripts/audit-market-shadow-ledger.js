@@ -64,9 +64,10 @@ function main() {
           milestoneCounts.OTHER++;
         }
 
-        const asOfValid = snap.ts && snap.kickoffTime
-          ? MarketShadowLedger.verifyAsOfAntiLeakage(snap.ts, snap.kickoffTime)
-          : true;
+        const asOfValid = Boolean(
+          snap.ts && snap.kickoffTime &&
+          MarketShadowLedger.verifyAsOfAntiLeakage(snap.ts, snap.kickoffTime)
+        );
 
         records.push({
           matchId: data.matchKey || f,
