@@ -30,11 +30,9 @@ const TEST_FILES = [
   'test-fuzzy-match.js',
   'test-health-enhance.js',
   'test-import-market-values.js',
-<<<<<<< HEAD
   'test-ko12-matchup-styles.js',
-=======
   'test-ko14-scenarios.js',
->>>>>>> backup/feat/ko14-scenarios
+  'test-game-state-section.js',
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
   'test-ko2-intel-card.js',
