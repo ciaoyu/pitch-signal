@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const BacktestRunner = require('../lib/backtest');
 const ArtifactGenerator = require('../lib/research/artifactGenerator');
+const PairedDeltaEvaluator = require('../lib/research/pairedDelta');
 
 async function testResearchArtifactsV2() {
   console.log('🧪 Running Owner D v2 — Research Artifacts Test Suite...\n');
@@ -63,6 +64,11 @@ async function testResearchArtifactsV2() {
   assert.ok(typeof pairedData.modelVsUniform.brier.pValueTwoSided === 'number', 'Must report two-sided empirical p-value');
   assert.ok(typeof pairedData.modelVsUniform.brier.pValueDisplay === 'string', 'Must report formatted pValueDisplay (<0.001 or decimal)');
   assert.ok(typeof pairedData.modelVsUniform.brier.pValueOneSided === 'number', 'Must report one-sided empirical p-value');
+  const customResamples = PairedDeltaEvaluator.computeClusteredPairedDelta([
+    { clusterKey: 'A', brierA: 0, brierB: 1, accuracyA: 0, accuracyB: 1, logLossA: 0, logLossB: 1 },
+    { clusterKey: 'B', brierA: 0, brierB: 1, accuracyA: 0, accuracyB: 1, logLossA: 0, logLossB: 1 }
+  ], { nResamples: 200, seed: 42 });
+  assert.strictEqual(customResamples.brier.pValueDisplay, '<0.001 (0/200)', 'p-value display must use actual resample count');
   console.log('  ✅ D3. Clustered bootstrap paired deltas verified across Uniform & Historical Frequency baselines (aligned two-sided CI/p-value & null-centered formatting)');
 
   // D4. Dynamic Prospective Evaluation & Domain Separation (No Hardcoded Evidence Allowed)
