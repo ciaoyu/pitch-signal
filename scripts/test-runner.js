@@ -56,6 +56,7 @@ const TEST_FILES = [
   'test-pre-match-snapshot-guard.js',
   'test-prediction.js',
   'test-prediction-p0-quarantine-v3.js',
+  'test-prediction-model-ledger.js',
   'test-referee-stats.js',
   'test-roster-cache.js',
   'test-same-day-leakage.js',
