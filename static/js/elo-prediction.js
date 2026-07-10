@@ -101,7 +101,7 @@
             const accPct = Number.isFinite(acc) ? Math.round(acc * 100) : 0;
             const confPct = Number.isFinite(conf) ? Math.round(conf * 100) : 0;
             const label = `${Math.round((b.range?.[0] || 0) * 100)}-${Math.round((b.range?.[1] || 0) * 100)}%`;
-            return `<div style="display:grid;grid-template-columns:46px minmax(70px,110px) 34px;align-items:center;gap:8px;min-height:18px">
+            return `<div style="display:grid;grid-template-columns:46px minmax(0,1fr) 34px;align-items:center;gap:8px;min-height:18px">
                 <div style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.32)">${esc(label)}</div>
                 <div style="height:7px;background:rgba(255,255,255,.06);border-radius:999px;position:relative;overflow:hidden">
                     <div style="position:absolute;left:0;top:0;bottom:0;width:${accPct}%;background:#34d399;border-radius:999px"></div>
