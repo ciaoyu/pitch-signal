@@ -1,0 +1,314 @@
+{
+  "evaluatedCount": 964,
+  "reliabilityDiagram": {
+    "home": {
+      "outcome": "home",
+      "bins": [
+        {
+          "bin_low": 0.099,
+          "bin_high": 0.282,
+          "n": 96,
+          "pred_mean": 0.2248,
+          "actual_freq": 0.2708
+        },
+        {
+          "bin_low": 0.283,
+          "bin_high": 0.344,
+          "n": 96,
+          "pred_mean": 0.315,
+          "actual_freq": 0.2813
+        },
+        {
+          "bin_low": 0.345,
+          "bin_high": 0.403,
+          "n": 97,
+          "pred_mean": 0.3739,
+          "actual_freq": 0.3711
+        },
+        {
+          "bin_low": 0.403,
+          "bin_high": 0.438,
+          "n": 96,
+          "pred_mean": 0.4203,
+          "actual_freq": 0.4271
+        },
+        {
+          "bin_low": 0.438,
+          "bin_high": 0.479,
+          "n": 97,
+          "pred_mean": 0.4593,
+          "actual_freq": 0.5361
+        },
+        {
+          "bin_low": 0.48,
+          "bin_high": 0.521,
+          "n": 96,
+          "pred_mean": 0.4994,
+          "actual_freq": 0.6146
+        },
+        {
+          "bin_low": 0.521,
+          "bin_high": 0.566,
+          "n": 96,
+          "pred_mean": 0.5431,
+          "actual_freq": 0.5833
+        },
+        {
+          "bin_low": 0.566,
+          "bin_high": 0.61,
+          "n": 97,
+          "pred_mean": 0.5878,
+          "actual_freq": 0.6701
+        },
+        {
+          "bin_low": 0.611,
+          "bin_high": 0.664,
+          "n": 96,
+          "pred_mean": 0.6367,
+          "actual_freq": 0.6875
+        },
+        {
+          "bin_low": 0.664,
+          "bin_high": 0.9,
+          "n": 97,
+          "pred_mean": 0.7097,
+          "actual_freq": 0.7629
+        }
+      ],
+      "tail_bins": {
+        "lowest": {
+          "bin_low": 0.099,
+          "bin_high": 0.282,
+          "n": 96,
+          "pred_mean": 0.2248,
+          "actual_freq": 0.2708,
+          "ci_95": [
+            0.1413,
+            0.3083
+          ],
+          "calibrated": true
+        },
+        "highest": {
+          "bin_low": 0.664,
+          "bin_high": 0.9,
+          "n": 97,
+          "pred_mean": 0.7097,
+          "actual_freq": 0.7629,
+          "ci_95": [
+            0.6194,
+            0.8
+          ],
+          "calibrated": true
+        }
+      },
+      "no_systematic_bias": false,
+      "tail_calibration_pass": false
+    },
+    "draw": {
+      "outcome": "draw",
+      "bins": [
+        {
+          "bin_low": 0.098,
+          "bin_high": 0.234,
+          "n": 96,
+          "pred_mean": 0.2122,
+          "actual_freq": 0.1563
+        },
+        {
+          "bin_low": 0.234,
+          "bin_high": 0.252,
+          "n": 96,
+          "pred_mean": 0.2438,
+          "actual_freq": 0.1667
+        },
+        {
+          "bin_low": 0.253,
+          "bin_high": 0.261,
+          "n": 97,
+          "pred_mean": 0.2571,
+          "actual_freq": 0.1753
+        },
+        {
+          "bin_low": 0.261,
+          "bin_high": 0.267,
+          "n": 96,
+          "pred_mean": 0.2645,
+          "actual_freq": 0.1875
+        },
+        {
+          "bin_low": 0.267,
+          "bin_high": 0.274,
+          "n": 97,
+          "pred_mean": 0.2708,
+          "actual_freq": 0.2371
+        },
+        {
+          "bin_low": 0.274,
+          "bin_high": 0.28,
+          "n": 96,
+          "pred_mean": 0.2769,
+          "actual_freq": 0.2292
+        },
+        {
+          "bin_low": 0.28,
+          "bin_high": 0.285,
+          "n": 96,
+          "pred_mean": 0.2825,
+          "actual_freq": 0.2813
+        },
+        {
+          "bin_low": 0.285,
+          "bin_high": 0.29,
+          "n": 97,
+          "pred_mean": 0.2878,
+          "actual_freq": 0.2165
+        },
+        {
+          "bin_low": 0.29,
+          "bin_high": 0.295,
+          "n": 96,
+          "pred_mean": 0.2919,
+          "actual_freq": 0.3229
+        },
+        {
+          "bin_low": 0.295,
+          "bin_high": 0.386,
+          "n": 97,
+          "pred_mean": 0.3212,
+          "actual_freq": 0.2474
+        }
+      ],
+      "tail_bins": {
+        "lowest": {
+          "bin_low": 0.098,
+          "bin_high": 0.234,
+          "n": 96,
+          "pred_mean": 0.2122,
+          "actual_freq": 0.1563,
+          "ci_95": [
+            0.1304,
+            0.294
+          ],
+          "calibrated": true
+        },
+        "highest": {
+          "bin_low": 0.295,
+          "bin_high": 0.386,
+          "n": 97,
+          "pred_mean": 0.3212,
+          "actual_freq": 0.2474,
+          "ci_95": [
+            0.2283,
+            0.4141
+          ],
+          "calibrated": true
+        }
+      },
+      "no_systematic_bias": false,
+      "tail_calibration_pass": false
+    },
+    "away": {
+      "outcome": "away",
+      "bins": [
+        {
+          "bin_low": 0.002,
+          "bin_high": 0.097,
+          "n": 96,
+          "pred_mean": 0.0683,
+          "actual_freq": 0.1042
+        },
+        {
+          "bin_low": 0.097,
+          "bin_high": 0.129,
+          "n": 96,
+          "pred_mean": 0.1109,
+          "actual_freq": 0.1146
+        },
+        {
+          "bin_low": 0.129,
+          "bin_high": 0.163,
+          "n": 97,
+          "pred_mean": 0.1466,
+          "actual_freq": 0.1237
+        },
+        {
+          "bin_low": 0.163,
+          "bin_high": 0.196,
+          "n": 96,
+          "pred_mean": 0.181,
+          "actual_freq": 0.1979
+        },
+        {
+          "bin_low": 0.197,
+          "bin_high": 0.23,
+          "n": 97,
+          "pred_mean": 0.2139,
+          "actual_freq": 0.1649
+        },
+        {
+          "bin_low": 0.23,
+          "bin_high": 0.264,
+          "n": 96,
+          "pred_mean": 0.2467,
+          "actual_freq": 0.2292
+        },
+        {
+          "bin_low": 0.264,
+          "bin_high": 0.305,
+          "n": 96,
+          "pred_mean": 0.2839,
+          "actual_freq": 0.2813
+        },
+        {
+          "bin_low": 0.306,
+          "bin_high": 0.368,
+          "n": 97,
+          "pred_mean": 0.3376,
+          "actual_freq": 0.3402
+        },
+        {
+          "bin_low": 0.369,
+          "bin_high": 0.45,
+          "n": 96,
+          "pred_mean": 0.4059,
+          "actual_freq": 0.4688
+        },
+        {
+          "bin_low": 0.45,
+          "bin_high": 0.694,
+          "n": 97,
+          "pred_mean": 0.5216,
+          "actual_freq": 0.5464
+        }
+      ],
+      "tail_bins": {
+        "lowest": {
+          "bin_low": 0.002,
+          "bin_high": 0.097,
+          "n": 96,
+          "pred_mean": 0.0683,
+          "actual_freq": 0.1042,
+          "ci_95": [
+            0.0178,
+            0.1188
+          ],
+          "calibrated": true
+        },
+        "highest": {
+          "bin_low": 0.45,
+          "bin_high": 0.694,
+          "n": 97,
+          "pred_mean": 0.5216,
+          "actual_freq": 0.5464,
+          "ci_95": [
+            0.4222,
+            0.621
+          ],
+          "calibrated": true
+        }
+      },
+      "no_systematic_bias": true,
+      "tail_calibration_pass": true
+    }
+  }
+}

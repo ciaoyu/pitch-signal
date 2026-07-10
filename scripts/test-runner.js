@@ -96,6 +96,7 @@ const TEST_FILES = [
     // W1-B deterministic-bug regression
   'test-deterministic-bugs.js',
   'test-w1d-pipeline-audit.js',
+  'test-research-artifacts-v2.js',
     // KO-3 knockout prediction parameter wiring
   'test-knockout-prediction-wiring.js',
     // KO-4 suspension ledger rules engine

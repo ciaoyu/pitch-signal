@@ -1,0 +1,965 @@
+match_id,tournament_year,date,stage,home_team,away_team,home_win_prob,draw_prob,away_win_prob,actual_outcome,elo_diff,is_knockout,model_version,data_cutoff,brier,log_loss,rps
+hist_1930_1,1930,1930-07-13,"Group 1","France","Mexico",0.311,0.266,0.423,home,-155.2,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.724406,1.167962,0.326825
+hist_1930_2,1930,1930-07-13,"Group 4","United States","Belgium",0.456,0.29,0.254,home,28.1,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.444552,0.785262,0.180226
+hist_1930_3,1930,1930-07-14,"Group 2","Yugoslavia","Brazil",0.314,0.267,0.418,home,-151.5,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.716609,1.158362,0.323078
+hist_1930_4,1930,1930-07-14,"Group 3","Romania","Peru",0.499,0.283,0.218,home,76.3,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.378614,0.695149,0.149262
+hist_1930_5,1930,1930-07-15,"Group 1","Argentina","France",0.704,0.213,0.084,home,429.23,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.140041,0.350977,0.047253
+hist_1930_6,1930,1930-07-16,"Group 1","Chile","Mexico",0.416,0.291,0.293,home,-25.63,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.511586,0.87707,0.213453
+hist_1930_7,1930,1930-07-17,"Group 2","Yugoslavia","Bolivia",0.585,0.265,0.15,home,180.61,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.26495,0.536143,0.097363
+hist_1930_8,1930,1930-07-17,"Group 4","United States","Paraguay",0.407,0.289,0.303,home,-39.22,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.526979,0.898942,0.222033
+hist_1930_9,1930,1930-07-18,"Group 3","Uruguay","Peru",0.672,0.232,0.096,home,335.94,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.170624,0.397497,0.0584
+hist_1930_10,1930,1930-07-19,"Group 1","Chile","France",0.478,0.286,0.236,home,52.18,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.409976,0.738145,0.16409
+hist_1930_11,1930,1930-07-19,"Group 1","Argentina","Mexico",0.707,0.211,0.082,home,439.72,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.137094,0.346725,0.046287
+hist_1930_12,1930,1930-07-20,"Group 2","Brazil","Bolivia",0.653,0.243,0.104,home,281.95,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.190274,0.426178,0.065612
+hist_1930_13,1930,1930-07-20,"Group 4","Paraguay","Belgium",0.512,0.28,0.207,home,91.87,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.359393,0.669431,0.140704
+hist_1930_14,1930,1930-07-21,"Group 3","Uruguay","Romania",0.613,0.257,0.13,home,216.27,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.232718,0.48939,0.083335
+hist_1930_15,1930,1930-07-22,"Group 1","Argentina","Chile",0.683,0.225,0.092,home,369.35,false,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.159578,0.38126,0.054476
+hist_1930_16,1930,1930-07-26,"Semi-finals","Argentina","United States",0.646,0.247,0.107,home,264.59,true,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.197774,0.436956,0.068382
+hist_1930_17,1930,1930-07-27,"Semi-finals","Uruguay","Yugoslavia",0.61,0.258,0.132,home,211.82,true,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.236088,0.494296,0.084762
+hist_1930_18,1930,1930-07-30,"Final","Uruguay","Argentina",0.236,0.229,0.535,home,-91.6,true,p0-quarantine-v3-2026-07-10,pre_1930_kickoff,0.922362,1.443923,0.43496
+hist_1934_19,1934,1934-05-27,"Preliminary round","Sweden","Argentina",0.204,0.23,0.566,home,-216.1,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,1.006872,1.589635,0.476986
+hist_1934_20,1934,1934-05-27,"Preliminary round","Austria","France",0.693,0.22,0.087,home,398.2,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.150218,0.366725,0.050909
+hist_1934_21,1934,1934-05-27,"Preliminary round","Germany","Belgium",0.665,0.236,0.099,home,315.8,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.177722,0.407968,0.061013
+hist_1934_22,1934,1934-05-27,"Preliminary round","Spain","Brazil",0.497,0.283,0.22,home,74.2,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.381498,0.699165,0.150704
+hist_1934_23,1934,1934-05-27,"Preliminary round","Hungary","Egypt",0.486,0.285,0.229,home,61.4,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.397862,0.721547,0.158319
+hist_1934_24,1934,1934-05-27,"Preliminary round","Switzerland","Netherlands",0.397,0.285,0.318,home,-63.1,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.545958,0.923819,0.232367
+hist_1934_25,1934,1934-05-27,"Preliminary round","Italy","United States",0.607,0.259,0.134,home,208.2,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.239486,0.499226,0.086203
+hist_1934_26,1934,1934-05-27,"Preliminary round","Czechoslovakia","Romania",0.548,0.273,0.179,home,134.9,false,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.310874,0.60148,0.118172
+hist_1934_27,1934,1934-05-31,"Quarter-finals","Czechoslovakia","Switzerland",0.622,0.254,0.123,home,229.3,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.222529,0.474815,0.07913
+hist_1934_28,1934,1934-05-31,"Quarter-finals","Germany","Sweden",0.444,0.292,0.264,home,13.82,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.464096,0.811931,0.189416
+hist_1934_29,1934,1934-05-31,"Quarter-finals","Italy","Spain",0.454,0.291,0.256,draw,24.73,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.774333,1.234432,0.135571
+hist_1934_30,1934,1934-05-31,"Quarter-finals","Austria","Hungary",0.584,0.265,0.151,home,178.55,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.266082,0.537854,0.097929
+hist_1934_31,1934,1934-06-01,"Quarter-finals","Italy","Spain",0.436,0.293,0.271,home,4.07,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.477386,0.830113,0.195769
+hist_1934_32,1934,1934-06-03,"Semi-finals","Italy","Austria",0.396,0.284,0.32,home,-65.25,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.547872,0.926341,0.233608
+hist_1934_33,1934,1934-06-03,"Semi-finals","Czechoslovakia","Germany",0.453,0.29,0.257,home,23.77,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.449358,0.791863,0.182629
+hist_1934_34,1934,1934-06-07,"Third place","Germany","Austria",0.278,0.264,0.458,home,-207.08,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.800744,1.280134,0.365524
+hist_1934_35,1934,1934-06-10,"Final","Italy","Czechoslovakia",0.667,0.25,0.083,home,112.86,true,p0-quarantine-v3-2026-07-10,pre_1934_kickoff,0.180278,0.404965,0.058889
+hist_1938_36,1938,1938-06-04,"First round","Switzerland","Germany",0.234,0.25,0.516,draw,-224.2,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.883512,1.386294,0.160506
+hist_1938_37,1938,1938-06-05,"First round","Hungary","Dutch East Indies",0.639,0.249,0.112,home,253,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.204866,0.447851,0.071432
+hist_1938_38,1938,1938-06-05,"First round","France","Belgium",0.49,0.284,0.225,home,66.2,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.391381,0.71335,0.155588
+hist_1938_39,1938,1938-06-05,"First round","Cuba","Romania",0.427,0.293,0.281,draw,-9.5,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.761139,1.227583,0.130364
+hist_1938_40,1938,1938-06-05,"First round","Italy","Norway",0.795,0.188,0.017,home,385.1,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.077658,0.229413,0.021157
+hist_1938_41,1938,1938-06-05,"First round","Brazil","Poland",0.527,0.277,0.196,home,109.1,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.338874,0.640555,0.131072
+hist_1938_42,1938,1938-06-05,"First round","Czechoslovakia","Netherlands",0.565,0.275,0.159,home,97.2,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.290131,0.57093,0.107413
+hist_1938_43,1938,1938-06-09,"First round","Cuba","Romania",0.417,0.291,0.292,home,-24.78,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.509834,0.874669,0.212576
+hist_1938_44,1938,1938-06-09,"First round","Germany","Switzerland",0.603,0.26,0.137,away,203.62,false,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,1.175978,1.987774,0.554189
+hist_1938_45,1938,1938-06-12,"Quarter-finals","Brazil","Czechoslovakia",0.431,0.293,0.276,draw,-2.29,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.761786,1.227583,0.130968
+hist_1938_46,1938,1938-06-12,"Quarter-finals","Switzerland","Hungary",0.285,0.26,0.455,away,-181.83,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.44585,0.787458,0.189125
+hist_1938_47,1938,1938-06-12,"Quarter-finals","Sweden","Cuba",0.469,0.288,0.243,home,41.84,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.423954,0.757153,0.170505
+hist_1938_48,1938,1938-06-12,"Quarter-finals","France","Italy",0.16,0.231,0.609,away,-386.58,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.231842,0.495937,0.089241
+hist_1938_49,1938,1938-06-14,"Quarter-finals","Brazil","Czechoslovakia",0.421,0.292,0.287,home,-18.73,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.502874,0.865122,0.208805
+hist_1938_50,1938,1938-06-16,"Semi-finals","Hungary","Sweden",0.622,0.254,0.123,home,229.68,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.222529,0.474815,0.07913
+hist_1938_51,1938,1938-06-16,"Semi-finals","Italy","Brazil",0.622,0.255,0.124,home,228.62,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.223285,0.474815,0.079007
+hist_1938_52,1938,1938-06-19,"Third place","Sweden","Brazil",0.339,0.272,0.39,away,-118.97,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.561005,0.941609,0.244121
+hist_1938_53,1938,1938-06-19,"Final","Hungary","Italy",0.359,0.277,0.363,away,-104.29,true,p0-quarantine-v3-2026-07-10,pre_1938_kickoff,0.611379,1.013352,0.266688
+hist_1950_54,1950,1950-06-24,"Group 1","Brazil","Mexico",0.546,0.271,0.183,home,85.7,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.313046,0.605136,0.119802
+hist_1950_55,1950,1950-06-25,"Group 1","Yugoslavia","Switzerland",0.574,0.267,0.159,home,165.1,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.278046,0.555126,0.103379
+hist_1950_56,1950,1950-06-25,"Group 2","England","Chile",0.694,0.219,0.087,home,398.8,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.149166,0.365283,0.050603
+hist_1950_57,1950,1950-06-25,"Group 2","Spain","United States",0.642,0.248,0.11,home,257.5,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.201768,0.443167,0.070132
+hist_1950_58,1950,1950-06-25,"Group 3","Sweden","Italy",0.267,0.282,0.45,home,-101.8,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.819313,1.320507,0.370345
+hist_1950_59,1950,1950-06-28,"Group 1","Brazil","Switzerland",0.667,0.235,0.098,draw,320.1,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,1.039718,1.44817,0.227247
+hist_1950_60,1950,1950-06-28,"Group 1","Yugoslavia","Mexico",0.455,0.29,0.255,home,25.7,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.44615,0.787458,0.181025
+hist_1950_61,1950,1950-06-29,"Group 2","Spain","Chile",0.606,0.259,0.135,home,207.01,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.240542,0.500875,0.086731
+hist_1950_62,1950,1950-06-29,"Group 2","United States","England",0.122,0.214,0.664,home,-479.31,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,1.257576,2.103734,0.60589
+hist_1950_63,1950,1950-06-29,"Group 3","Sweden","Paraguay",0.456,0.29,0.254,draw,27.96,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.776552,1.237874,0.136226
+hist_1950_64,1950,1950-07-01,"Group 1","Brazil","Yugoslavia",0.482,0.286,0.232,home,58.12,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.403944,0.729811,0.161074
+hist_1950_65,1950,1950-07-02,"Group 1","Switzerland","Mexico",0.347,0.274,0.379,home,-117.52,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.645126,1.05843,0.285025
+hist_1950_66,1950,1950-07-02,"Group 2","Spain","England",0.331,0.271,0.398,home,-134.37,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.679406,1.105637,0.302982
+hist_1950_67,1950,1950-07-02,"Group 2","Chile","United States",0.436,0.293,0.271,home,3.81,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.477386,0.830113,0.195769
+hist_1950_68,1950,1950-07-02,"Group 3","Italy","Paraguay",0.483,0.285,0.231,home,58.86,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.401875,0.727739,0.160556
+hist_1950_69,1950,1950-07-02,"Group 4","Uruguay","Bolivia",0.786,0.186,0.028,home,227.6,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.081176,0.240798,0.02329
+hist_1950_70,1950,1950-07-09,"Final Round","Uruguay","Spain",0.346,0.274,0.38,draw,-118.71,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.791192,1.294627,0.132058
+hist_1950_71,1950,1950-07-09,"Final Round","Brazil","Sweden",0.504,0.282,0.214,home,82.41,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.371336,0.685179,0.145906
+hist_1950_72,1950,1950-07-13,"Final Round","Brazil","Spain",0.581,0.296,0.123,home,124.37,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.278306,0.543005,0.095345
+hist_1950_73,1950,1950-07-13,"Final Round","Uruguay","Sweden",0.372,0.28,0.348,home,-91.35,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.593888,0.988861,0.257744
+hist_1950_74,1950,1950-07-16,"Final Round","Sweden","Spain",0.341,0.274,0.385,home,-27.52,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,0.657582,1.075873,0.291253
+hist_1950_75,1950,1950-07-16,"Final Round","Uruguay","Brazil",0.13,0.198,0.672,home,-236.48,false,p0-quarantine-v3-2026-07-10,pre_1950_kickoff,1.247688,2.040221,0.604242
+hist_1954_76,1954,1954-06-16,"Group 1","Brazil","Mexico",0.779,0.192,0.029,home,250.9,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.086546,0.249744,0.024841
+hist_1954_77,1954,1954-06-16,"Group 1","Yugoslavia","France",0.575,0.267,0.158,home,167.2,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.276878,0.553385,0.102795
+hist_1954_78,1954,1954-06-16,"Group 3","Uruguay","Czechoslovakia",0.715,0.213,0.072,home,159.3,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.131778,0.335473,0.043205
+hist_1954_79,1954,1954-06-16,"Group 3","Austria","Scotland",0.421,0.308,0.271,home,0.3,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.503546,0.865122,0.204341
+hist_1954_80,1954,1954-06-17,"Group 2","West Germany","Turkey",0.649,0.246,0.105,home,269.4,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.194742,0.432323,0.067113
+hist_1954_81,1954,1954-06-17,"Group 2","Hungary","South Korea",0.789,0.183,0.028,home,349.5,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.078794,0.236989,0.022652
+hist_1954_82,1954,1954-06-17,"Group 4","England","Belgium",0.583,0.265,0.152,draw,176.8,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.903218,1.328025,0.181496
+hist_1954_83,1954,1954-06-17,"Group 4","Switzerland","Italy",0.235,0.254,0.511,home,-261.5,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.910862,1.44817,0.423173
+hist_1954_84,1954,1954-06-19,"Group 1","Brazil","Yugoslavia",0.508,0.281,0.211,draw,87.34,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.819546,1.269401,0.151292
+hist_1954_85,1954,1954-06-19,"Group 1","France","Mexico",0.435,0.293,0.272,home,3.24,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.479058,0.832409,0.196604
+hist_1954_86,1954,1954-06-19,"Group 3","Austria","Czechoslovakia",0.556,0.271,0.173,home,143.59,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.300506,0.586987,0.113532
+hist_1954_87,1954,1954-06-19,"Group 3","Uruguay","Scotland",0.513,0.28,0.207,home,92.19,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.358418,0.667479,0.140009
+hist_1954_88,1954,1954-06-20,"Group 2","Hungary","West Germany",0.54,0.275,0.185,home,124.5,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.32145,0.616186,0.122912
+hist_1954_89,1954,1954-06-20,"Group 2","Turkey","South Korea",0.403,0.289,0.308,home,-45.8,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.534794,0.908819,0.225637
+hist_1954_90,1954,1954-06-20,"Group 4","England","Switzerland",0.636,0.25,0.114,home,248.51,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.207992,0.452557,0.072746
+hist_1954_91,1954,1954-06-20,"Group 4","Italy","Belgium",0.488,0.285,0.228,home,64.01,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.395353,0.71744,0.156837
+hist_1954_92,1954,1954-06-23,"Group 2 Play-off","West Germany","Turkey",0.607,0.259,0.134,home,208.87,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.239486,0.499226,0.086203
+hist_1954_93,1954,1954-06-23,"Group 4 Play-off","Switzerland","Italy",0.271,0.262,0.467,home,-215.54,false,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.818174,1.305636,0.374765
+hist_1954_94,1954,1954-06-26,"Quarter-finals","Austria","Switzerland",0.545,0.273,0.181,home,130.58,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.314315,0.606969,0.120074
+hist_1954_95,1954,1954-06-26,"Quarter-finals","Uruguay","England",0.425,0.293,0.282,home,-11.33,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.495998,0.855666,0.205074
+hist_1954_96,1954,1954-06-27,"Quarter-finals","Yugoslavia","West Germany",0.442,0.292,0.266,away,11.2,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.819384,1.324259,0.36706
+hist_1954_97,1954,1954-06-27,"Quarter-finals","Brazil","Hungary",0.373,0.28,0.347,away,-89.87,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.643938,1.05843,0.282769
+hist_1954_98,1954,1954-06-30,"Semi-finals","West Germany","Austria",0.598,0.249,0.152,home,113.68,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.246709,0.514165,0.092507
+hist_1954_99,1954,1954-06-30,"Semi-finals","Hungary","Uruguay",0.59,0.263,0.147,home,186.43,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,0.258878,0.527633,0.094855
+hist_1954_100,1954,1954-07-03,"Third place","Uruguay","Austria",0.605,0.255,0.14,away,86.13,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,1.17065,1.966113,0.552812
+hist_1954_101,1954,1954-07-04,"Final","Hungary","West Germany",0.664,0.223,0.113,away,133.62,true,p0-quarantine-v3-2026-07-10,pre_1954_kickoff,1.277394,2.180367,0.613833
+hist_1958_102,1958,1958-06-08,"Group 1","West Germany","Argentina",0.408,0.251,0.341,home,-161.1,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.529746,0.896488,0.233373
+hist_1958_103,1958,1958-06-08,"Group 1","Northern Ireland","Czechoslovakia",0.284,0.265,0.451,home,-199.1,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.786282,1.258781,0.358029
+hist_1958_104,1958,1958-06-08,"Group 2","France","Paraguay",0.504,0.282,0.214,home,82.7,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.371336,0.685179,0.145906
+hist_1958_105,1958,1958-06-08,"Group 2","Yugoslavia","Scotland",0.525,0.278,0.197,draw,107.4,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.835718,1.280134,0.157217
+hist_1958_106,1958,1958-06-08,"Group 3","Sweden","Mexico",0.364,0.269,0.367,home,-49.4,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.611546,1.010601,0.269593
+hist_1958_107,1958,1958-06-08,"Group 3","Hungary","Wales",0.795,0.174,0.031,draw,345.8,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,1.315262,1.7487,0.316493
+hist_1958_108,1958,1958-06-08,"Group 4","Brazil","Austria",0.529,0.274,0.197,home,104.7,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.335726,0.636767,0.130325
+hist_1958_109,1958,1958-06-08,"Group 4","Soviet Union","England",0.352,0.275,0.373,draw,-112.4,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.788658,1.290984,0.131516
+hist_1958_110,1958,1958-06-11,"Group 1","Argentina","Northern Ireland",0.635,0.251,0.114,home,247.24,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.209222,0.45413,0.07311
+hist_1958_111,1958,1958-06-11,"Group 1","West Germany","Czechoslovakia",0.493,0.284,0.223,draw,69.36,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.805434,1.258781,0.146389
+hist_1958_112,1958,1958-06-11,"Group 2","Yugoslavia","France",0.464,0.289,0.248,home,36.22,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.432321,0.767871,0.174153
+hist_1958_113,1958,1958-06-11,"Group 2","Paraguay","Scotland",0.362,0.277,0.361,home,-101.88,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.614094,1.016111,0.268682
+hist_1958_114,1958,1958-06-11,"Group 3","Mexico","Wales",0.49,0.284,0.225,draw,66.57,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.803381,1.258781,0.145588
+hist_1958_115,1958,1958-06-11,"Group 4","Brazil","England",0.456,0.29,0.254,draw,27.78,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.776552,1.237874,0.136226
+hist_1958_116,1958,1958-06-11,"Group 4","Soviet Union","Austria",0.447,0.291,0.262,home,16.08,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.459134,0.805197,0.187226
+hist_1958_117,1958,1958-06-12,"Group 3","Sweden","Hungary",0.28,0.259,0.461,home,-187.37,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.798002,1.272966,0.36546
+hist_1958_118,1958,1958-06-15,"Group 1","West Germany","Northern Ireland",0.592,0.262,0.146,draw,188.97,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.916424,1.339411,0.18589
+hist_1958_119,1958,1958-06-15,"Group 1","Czechoslovakia","Argentina",0.343,0.273,0.384,home,-121.97,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.653634,1.070025,0.289552
+hist_1958_120,1958,1958-06-15,"Group 2","France","Scotland",0.476,0.287,0.237,home,50.43,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.413114,0.742337,0.165373
+hist_1958_121,1958,1958-06-15,"Group 2","Paraguay","Yugoslavia",0.301,0.264,0.435,draw,-165.83,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.821522,1.331806,0.139913
+hist_1958_122,1958,1958-06-15,"Group 3","Sweden","Wales",0.545,0.274,0.181,draw,131.01,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.856862,1.294627,0.164893
+hist_1958_123,1958,1958-06-15,"Group 3","Hungary","Mexico",0.603,0.26,0.137,home,203.77,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.243978,0.505838,0.088189
+hist_1958_124,1958,1958-06-15,"Group 4","England","Austria",0.575,0.267,0.158,draw,167.4,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.892878,1.320507,0.177794
+hist_1958_125,1958,1958-06-15,"Group 4","Brazil","Soviet Union",0.516,0.279,0.204,home,96.98,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.353713,0.661649,0.13814
+hist_1958_126,1958,1958-06-17,"Group 1 Play-off","Northern Ireland","Czechoslovakia",0.291,0.267,0.441,home,-190.1,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.768451,1.234432,0.349023
+hist_1958_127,1958,1958-06-17,"Group 3 Play-off","Wales","Hungary",0.25,0.257,0.493,home,-242.82,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.871598,1.386294,0.402774
+hist_1958_128,1958,1958-06-17,"Group 4 Play-off","Soviet Union","England",0.37,0.279,0.351,home,-92.83,false,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.597942,0.994252,0.260051
+hist_1958_129,1958,1958-06-19,"Quarter-finals","France","Northern Ireland",0.503,0.289,0.208,home,86.85,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.373794,0.687165,0.145137
+hist_1958_130,1958,1958-06-19,"Quarter-finals","Sweden","Soviet Union",0.342,0.317,0.34,home,-65.09,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.649053,1.072945,0.274622
+hist_1958_131,1958,1958-06-19,"Quarter-finals","Brazil","Wales",0.582,0.299,0.119,home,230.94,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.278286,0.541285,0.094443
+hist_1958_132,1958,1958-06-19,"Quarter-finals","West Germany","Yugoslavia",0.416,0.291,0.293,home,-26.82,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.511586,0.87707,0.213453
+hist_1958_133,1958,1958-06-24,"Semi-finals","France","Brazil",0.171,0.271,0.558,away,-137.13,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.298046,0.583396,0.112303
+hist_1958_134,1958,1958-06-24,"Semi-finals","West Germany","Sweden",0.307,0.332,0.36,away,25.45,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.614073,1.021651,0.251285
+hist_1958_135,1958,1958-06-28,"Third place","West Germany","France",0.443,0.266,0.291,away,5.12,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.769686,1.234432,0.349465
+hist_1958_136,1958,1958-06-29,"Final","Sweden","Brazil",0.273,0.356,0.371,away,-130.12,true,p0-quarantine-v3-2026-07-10,pre_1958_kickoff,0.596906,0.991553,0.235085
+hist_1962_137,1962,1962-05-30,"Group 1","Uruguay","Colombia",0.749,0.204,0.048,home,389.5,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.106921,0.289016,0.032605
+hist_1962_138,1962,1962-05-30,"Group 2","Chile","Switzerland",0.466,0.288,0.246,home,37.8,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.428616,0.76357,0.172836
+hist_1962_139,1962,1962-05-30,"Group 3","Brazil","Mexico",0.786,0.191,0.022,home,304.1,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.082761,0.240798,0.023162
+hist_1962_140,1962,1962-05-30,"Group 4","Argentina","Bulgaria",0.625,0.253,0.122,home,233.3,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.219518,0.470004,0.077755
+hist_1962_141,1962,1962-05-31,"Group 1","Soviet Union","Yugoslavia",0.46,0.306,0.233,home,35,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.439525,0.776529,0.173178
+hist_1962_142,1962,1962-05-31,"Group 2","West Germany","Italy",0.439,0.284,0.277,draw,1.6,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.782106,1.258781,0.134725
+hist_1962_143,1962,1962-05-31,"Group 3","Czechoslovakia","Spain",0.537,0.271,0.192,home,5.5,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.324674,0.621757,0.125616
+hist_1962_144,1962,1962-05-31,"Group 4","Hungary","England",0.473,0.323,0.205,home,4.8,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.424083,0.74866,0.159672
+hist_1962_145,1962,1962-06-02,"Group 1","Yugoslavia","Uruguay",0.515,0.28,0.205,home,95.08,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.35565,0.663588,0.138625
+hist_1962_146,1962,1962-06-02,"Group 2","Chile","Italy",0.367,0.279,0.355,home,-97.1,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.604555,1.002393,0.263003
+hist_1962_147,1962,1962-06-02,"Group 3","Brazil","Czechoslovakia",0.561,0.27,0.169,draw,150.05,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.876182,1.309333,0.171641
+hist_1962_148,1962,1962-06-02,"Group 4","England","Argentina",0.4,0.285,0.315,home,-60.6,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.54045,0.916291,0.229612
+hist_1962_149,1962,1962-06-03,"Group 1","Soviet Union","Colombia",0.742,0.193,0.064,draw,583.02,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,1.205909,1.645065,0.277394
+hist_1962_150,1962,1962-06-03,"Group 2","West Germany","Switzerland",0.582,0.265,0.153,home,175.5,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.268358,0.541285,0.099067
+hist_1962_151,1962,1962-06-03,"Group 3","Spain","Mexico",0.538,0.275,0.187,home,122.25,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.324038,0.619897,0.124206
+hist_1962_152,1962,1962-06-03,"Group 4","Hungary","Bulgaria",0.627,0.253,0.12,home,235.3,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.217538,0.466809,0.076764
+hist_1962_153,1962,1962-06-06,"Group 1","Soviet Union","Uruguay",0.585,0.265,0.15,home,180,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.26495,0.536143,0.097363
+hist_1962_154,1962,1962-06-06,"Group 2","West Germany","Chile",0.473,0.287,0.24,home,47.22,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.417698,0.74866,0.167664
+hist_1962_155,1962,1962-06-06,"Group 3","Brazil","Spain",0.574,0.267,0.159,home,166.31,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.278046,0.555126,0.103379
+hist_1962_156,1962,1962-06-06,"Group 4","Hungary","Argentina",0.469,0.288,0.243,draw,41.77,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.785954,1.244795,0.139505
+hist_1962_157,1962,1962-06-07,"Group 1","Yugoslavia","Colombia",0.722,0.202,0.076,home,484.58,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.123864,0.32573,0.04153
+hist_1962_158,1962,1962-06-07,"Group 2","Italy","Switzerland",0.567,0.269,0.165,home,156.54,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.287075,0.567396,0.107193
+hist_1962_159,1962,1962-06-07,"Group 3","Mexico","Czechoslovakia",0.282,0.265,0.453,home,-201.63,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.790958,1.265848,0.360367
+hist_1962_160,1962,1962-06-07,"Group 4","England","Bulgaria",0.632,0.252,0.116,draw,243.19,false,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.972384,1.378326,0.20644
+hist_1962_161,1962,1962-06-10,"Quarter-finals","Chile","Soviet Union",0.241,0.255,0.504,home,-254.22,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.895122,1.422958,0.415049
+hist_1962_162,1962,1962-06-10,"Quarter-finals","Yugoslavia","West Germany",0.524,0.278,0.198,home,106.29,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.343064,0.646264,0.13289
+hist_1962_163,1962,1962-06-10,"Quarter-finals","Brazil","England",0.599,0.261,0.14,home,197.75,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.248522,0.512494,0.090201
+hist_1962_164,1962,1962-06-10,"Quarter-finals","Czechoslovakia","Hungary",0.422,0.292,0.287,home,-17.37,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.501717,0.86275,0.20794
+hist_1962_165,1962,1962-06-13,"Semi-finals","Brazil","Chile",0.717,0.234,0.049,home,290.44,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.137246,0.332679,0.041245
+hist_1962_166,1962,1962-06-13,"Semi-finals","Czechoslovakia","Yugoslavia",0.268,0.307,0.424,home,-60.82,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.809849,1.316768,0.358225
+hist_1962_167,1962,1962-06-16,"Third place","Chile","Yugoslavia",0.285,0.251,0.464,home,-147.67,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.789522,1.255266,0.363261
+hist_1962_168,1962,1962-06-17,"Final","Brazil","Czechoslovakia",0.604,0.279,0.117,home,140.89,true,p0-quarantine-v3-2026-07-10,pre_1962_kickoff,0.248346,0.504181,0.085253
+hist_1966_169,1966,1966-07-11,"Group 1","England","Uruguay",0.559,0.266,0.175,draw,176.8,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.881862,1.324259,0.171553
+hist_1966_170,1966,1966-07-12,"Group 2","West Germany","Switzerland",0.706,0.248,0.046,home,308.6,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.150056,0.34814,0.044276
+hist_1966_171,1966,1966-07-12,"Group 3","Brazil","Bulgaria",0.726,0.214,0.06,home,196,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.124472,0.320205,0.039338
+hist_1966_172,1966,1966-07-12,"Group 4","Soviet Union","North Korea",0.61,0.238,0.152,home,142.9,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.231848,0.494296,0.087602
+hist_1966_173,1966,1966-07-13,"Group 1","France","Mexico",0.414,0.228,0.358,draw,-168.6,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.895544,1.47841,0.14978
+hist_1966_174,1966,1966-07-13,"Group 2","Argentina","Spain",0.521,0.279,0.2,home,103,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.347282,0.652005,0.13472
+hist_1966_175,1966,1966-07-13,"Group 3","Portugal","Hungary",0.251,0.262,0.486,home,-102.2,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.865841,1.382302,0.399085
+hist_1966_176,1966,1966-07-13,"Group 4","Italy","Chile",0.605,0.251,0.144,home,240,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.239762,0.502527,0.088381
+hist_1966_177,1966,1966-07-15,"Group 1","Uruguay","France",0.526,0.278,0.196,home,107.82,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.340376,0.642454,0.131546
+hist_1966_178,1966,1966-07-15,"Group 2","Spain","Switzerland",0.605,0.259,0.135,home,206.9,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.241331,0.502527,0.087261
+hist_1966_179,1966,1966-07-15,"Group 3","Hungary","Brazil",0.333,0.271,0.396,home,-132.44,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.675146,1.099613,0.300852
+hist_1966_180,1966,1966-07-15,"Group 4","Chile","North Korea",0.362,0.277,0.361,draw,-102.44,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.784094,1.283738,0.130682
+hist_1966_181,1966,1966-07-16,"Group 1","England","Mexico",0.509,0.281,0.21,home,87.98,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.364142,0.675307,0.14259
+hist_1966_182,1966,1966-07-16,"Group 2","Argentina","West Germany",0.44,0.292,0.268,draw,8.9,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.766688,1.231001,0.132712
+hist_1966_183,1966,1966-07-16,"Group 3","Portugal","Bulgaria",0.502,0.282,0.216,home,79.64,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.374184,0.689155,0.14733
+hist_1966_184,1966,1966-07-16,"Group 4","Soviet Union","Italy",0.454,0.291,0.256,home,24.66,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.448333,0.789658,0.181571
+hist_1966_185,1966,1966-07-19,"Group 1","Mexico","Uruguay",0.443,0.292,0.265,draw,12.37,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.767738,1.231001,0.133237
+hist_1966_186,1966,1966-07-19,"Group 2","Argentina","Switzerland",0.672,0.232,0.096,home,338.01,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.170624,0.397497,0.0584
+hist_1966_187,1966,1966-07-19,"Group 3","Portugal","Brazil",0.394,0.284,0.322,home,-67.35,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.551576,0.931404,0.23546
+hist_1966_188,1966,1966-07-19,"Group 4","North Korea","Italy",0.325,0.27,0.405,home,-140.37,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.69255,1.12393,0.309825
+hist_1966_189,1966,1966-07-20,"Group 1","England","France",0.652,0.244,0.104,home,281.59,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.191456,0.427711,0.06596
+hist_1966_190,1966,1966-07-20,"Group 2","West Germany","Spain",0.539,0.275,0.186,home,122.91,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.322742,0.61804,0.123558
+hist_1966_191,1966,1966-07-20,"Group 3","Hungary","Bulgaria",0.576,0.267,0.157,home,168.01,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.275714,0.551648,0.102213
+hist_1966_192,1966,1966-07-20,"Group 4","Soviet Union","Chile",0.662,0.238,0.1,home,306.41,false,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.180888,0.41249,0.062122
+hist_1966_193,1966,1966-07-23,"Quarter-finals","England","Argentina",0.475,0.287,0.239,home,48.4,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.415115,0.74444,0.166134
+hist_1966_194,1966,1966-07-23,"Quarter-finals","West Germany","Uruguay",0.53,0.277,0.194,home,112.78,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.335265,0.634878,0.129074
+hist_1966_195,1966,1966-07-23,"Quarter-finals","Soviet Union","Hungary",0.514,0.28,0.206,home,93.89,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.357032,0.665532,0.139316
+hist_1966_196,1966,1966-07-23,"Quarter-finals","Portugal","North Korea",0.496,0.283,0.221,home,73.94,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.382946,0.701179,0.151429
+hist_1966_197,1966,1966-07-25,"Semi-finals","West Germany","Soviet Union",0.45,0.318,0.232,home,-60.84,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.457448,0.798508,0.178162
+hist_1966_198,1966,1966-07-26,"Semi-finals","England","Portugal",0.619,0.286,0.095,home,57.14,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.235982,0.47965,0.077093
+hist_1966_199,1966,1966-07-28,"Third place","Portugal","Soviet Union",0.388,0.265,0.347,home,-83.53,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.565178,0.94675,0.247476
+hist_1966_200,1966,1966-07-30,"Final","England","West Germany",0.39,0.382,0.228,home,15.77,true,p0-quarantine-v3-2026-07-10,pre_1966_kickoff,0.570008,0.941609,0.212042
+hist_1970_201,1970,1970-05-31,"Group 1","Mexico","Soviet Union",0.191,0.247,0.562,draw,-253.7,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.919334,1.398367,0.176163
+hist_1970_202,1970,1970-06-02,"Group 2","Uruguay","Israel",0.465,0.301,0.233,home,157.3,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.431115,0.765718,0.17049
+hist_1970_203,1970,1970-06-02,"Group 3","Romania","England",0.129,0.23,0.641,away,-267.8,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.198422,0.444726,0.072761
+hist_1970_204,1970,1970-06-02,"Group 4","Peru","Bulgaria",0.374,0.28,0.346,home,-89.5,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.589992,0.983499,0.255796
+hist_1970_205,1970,1970-06-03,"Group 1","Belgium","El Salvador",0.539,0.275,0.186,home,123.4,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.322742,0.61804,0.123558
+hist_1970_206,1970,1970-06-03,"Group 2","Italy","Sweden",0.56,0.274,0.166,home,150.9,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.296232,0.579818,0.110578
+hist_1970_207,1970,1970-06-03,"Group 3","Czechoslovakia","Brazil",0.388,0.293,0.319,away,-66,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.700154,1.142564,0.307153
+hist_1970_208,1970,1970-06-03,"Group 4","Morocco","West Germany",0.172,0.225,0.603,away,-236.5,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.237818,0.505838,0.093597
+hist_1970_209,1970,1970-06-06,"Group 1","Soviet Union","Belgium",0.592,0.262,0.146,home,188.79,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.256424,0.524249,0.09389
+hist_1970_210,1970,1970-06-06,"Group 2","Uruguay","Italy",0.306,0.265,0.429,draw,-160.28,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.817902,1.328025,0.138839
+hist_1970_211,1970,1970-06-06,"Group 3","Romania","Czechoslovakia",0.343,0.273,0.384,home,-122.22,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.653634,1.070025,0.289552
+hist_1970_212,1970,1970-06-06,"Group 4","Peru","Morocco",0.464,0.289,0.248,home,36.27,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.432321,0.767871,0.174153
+hist_1970_213,1970,1970-06-07,"Group 1","Mexico","El Salvador",0.543,0.274,0.183,home,128.91,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.317414,0.610646,0.121169
+hist_1970_214,1970,1970-06-07,"Group 2","Sweden","Israel",0.583,0.265,0.152,draw,177.12,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.903218,1.328025,0.181496
+hist_1970_215,1970,1970-06-07,"Group 3","England","Brazil",0.431,0.293,0.276,away,-2.58,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.795786,1.287354,0.354968
+hist_1970_216,1970,1970-06-07,"Group 4","Bulgaria","West Germany",0.278,0.264,0.458,away,-206.47,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.440744,0.780886,0.185524
+hist_1970_217,1970,1970-06-10,"Group 1","Soviet Union","El Salvador",0.693,0.22,0.087,home,398.17,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.150218,0.366725,0.050909
+hist_1970_218,1970,1970-06-10,"Group 2","Uruguay","Sweden",0.466,0.288,0.246,away,38.55,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.868616,1.402424,0.392836
+hist_1970_219,1970,1970-06-10,"Group 3","Romania","Brazil",0.203,0.245,0.552,away,-309.74,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.301938,0.594207,0.120957
+hist_1970_220,1970,1970-06-10,"Group 4","Peru","West Germany",0.25,0.257,0.492,away,-241.79,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.386613,0.709277,0.159775
+hist_1970_221,1970,1970-06-11,"Group 1","Mexico","Belgium",0.433,0.293,0.274,home,0.53,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.482414,0.837018,0.198283
+hist_1970_222,1970,1970-06-11,"Group 2","Israel","Italy",0.193,0.242,0.565,draw,-325.89,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.931038,1.418818,0.178237
+hist_1970_223,1970,1970-06-11,"Group 3","England","Czechoslovakia",0.579,0.266,0.155,home,172.38,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.272022,0.546453,0.100633
+hist_1970_224,1970,1970-06-11,"Group 4","Bulgaria","Morocco",0.488,0.285,0.228,draw,63.59,false,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.801353,1.255266,0.144837
+hist_1970_225,1970,1970-06-14,"Quarter-finals","Soviet Union","Uruguay",0.578,0.266,0.156,away,171.16,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,1.117176,1.857899,0.52321
+hist_1970_226,1970,1970-06-14,"Quarter-finals","Italy","Mexico",0.606,0.259,0.135,home,208.07,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.240542,0.500875,0.086731
+hist_1970_227,1970,1970-06-14,"Quarter-finals","Brazil","Peru",0.685,0.225,0.091,home,373.23,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.158131,0.378336,0.053662
+hist_1970_228,1970,1970-06-14,"Quarter-finals","West Germany","England",0.438,0.292,0.27,home,6.18,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.474008,0.825536,0.194372
+hist_1970_229,1970,1970-06-17,"Semi-finals","Uruguay","Brazil",0.209,0.304,0.486,away,-251.73,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.400293,0.721547,0.153425
+hist_1970_230,1970,1970-06-17,"Semi-finals","Italy","West Germany",0.471,0.3,0.229,home,-51.19,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.422282,0.752897,0.166141
+hist_1970_231,1970,1970-06-20,"Third place","Uruguay","West Germany",0.234,0.263,0.502,away,-191.74,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.371929,0.689155,0.150883
+hist_1970_232,1970,1970-06-21,"Final","Brazil","Italy",0.548,0.27,0.182,home,112.58,true,p0-quarantine-v3-2026-07-10,pre_1970_kickoff,0.310328,0.60148,0.118714
+hist_1974_233,1974,1974-06-13,"Group 2","Brazil","Yugoslavia",0.688,0.221,0.091,draw,178.8,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,1.088466,1.509593,0.240812
+hist_1974_234,1974,1974-06-14,"Group 1","West Germany","Chile",0.732,0.203,0.065,home,272.9,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.117258,0.311975,0.038025
+hist_1974_235,1974,1974-06-14,"Group 1","East Germany","Australia",0.587,0.264,0.149,home,182.9,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.262466,0.53273,0.096385
+hist_1974_236,1974,1974-06-14,"Group 2","Zaire","Scotland",0.536,0.276,0.188,away,120.4,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,1.022816,1.671313,0.47332
+hist_1974_237,1974,1974-06-15,"Group 3","Uruguay","Netherlands",0.318,0.333,0.349,away,-81.4,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.635814,1.052683,0.262463
+hist_1974_238,1974,1974-06-15,"Group 3","Sweden","Bulgaria",0.459,0.29,0.251,draw,31.2,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.777782,1.237874,0.136841
+hist_1974_239,1974,1974-06-15,"Group 4","Italy","Haiti",0.699,0.223,0.078,home,339.4,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.146414,0.358105,0.048343
+hist_1974_240,1974,1974-06-15,"Group 4","Poland","Argentina",0.345,0.338,0.317,home,12,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.643758,1.064211,0.264757
+hist_1974_241,1974,1974-06-18,"Group 1","Chile","East Germany",0.283,0.26,0.457,draw,-183.84,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.836538,1.347074,0.144469
+hist_1974_242,1974,1974-06-18,"Group 1","Australia","West Germany",0.2,0.244,0.555,away,-314.04,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.297561,0.588787,0.118568
+hist_1974_243,1974,1974-06-18,"Group 2","Yugoslavia","Zaire",0.52,0.279,0.201,home,101.41,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.348642,0.653926,0.1354
+hist_1974_244,1974,1974-06-18,"Group 2","Scotland","Brazil",0.267,0.262,0.471,draw,-220.19,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.837774,1.339411,0.146565
+hist_1974_245,1974,1974-06-19,"Group 3","Netherlands","Sweden",0.468,0.288,0.244,draw,40.93,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.785504,1.244795,0.13928
+hist_1974_246,1974,1974-06-19,"Group 3","Uruguay","Bulgaria",0.339,0.272,0.388,draw,-125.73,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.795449,1.301953,0.133121
+hist_1974_247,1974,1974-06-19,"Group 4","Haiti","Poland",0.236,0.254,0.511,away,-260.99,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.359333,0.671386,0.147898
+hist_1974_248,1974,1974-06-19,"Group 4","Argentina","Italy",0.321,0.269,0.411,draw,-144.99,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.806323,1.313044,0.13557
+hist_1974_249,1974,1974-06-22,"Group 1","Australia","Chile",0.401,0.285,0.314,draw,-59.39,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.770622,1.255266,0.129699
+hist_1974_250,1974,1974-06-22,"Group 1","East Germany","West Germany",0.333,0.271,0.396,home,-132.43,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.675146,1.099613,0.300852
+hist_1974_251,1974,1974-06-22,"Group 2","Scotland","Yugoslavia",0.357,0.277,0.366,draw,-107.15,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.784134,1.283738,0.130702
+hist_1974_252,1974,1974-06-22,"Group 2","Zaire","Brazil",0.232,0.253,0.515,away,-266.13,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.353058,0.663588,0.144525
+hist_1974_253,1974,1974-06-23,"Group 3","Netherlands","Bulgaria",0.468,0.288,0.244,home,41.17,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.425504,0.759287,0.17128
+hist_1974_254,1974,1974-06-23,"Group 3","Sweden","Uruguay",0.556,0.271,0.172,home,144.61,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.300161,0.586987,0.113532
+hist_1974_255,1974,1974-06-23,"Group 4","Argentina","Haiti",0.637,0.25,0.113,home,249.83,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.207038,0.450986,0.072269
+hist_1974_256,1974,1974-06-23,"Group 4","Poland","Italy",0.401,0.288,0.311,home,-49.55,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.538466,0.913794,0.227761
+hist_1974_257,1974,1974-06-26,"Group A","Brazil","East Germany",0.495,0.283,0.222,home,71.86,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.384398,0.703198,0.152154
+hist_1974_258,1974,1974-06-26,"Group A","Netherlands","Argentina",0.473,0.287,0.24,home,46.56,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.417698,0.74866,0.167664
+hist_1974_259,1974,1974-06-26,"Group B","Yugoslavia","West Germany",0.347,0.274,0.379,away,-117.84,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.581126,0.970219,0.253025
+hist_1974_260,1974,1974-06-26,"Group B","Sweden","Poland",0.379,0.281,0.34,away,-83.94,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.658202,1.07881,0.289621
+hist_1974_261,1974,1974-06-30,"Group A","East Germany","Netherlands",0.321,0.339,0.34,away,41.71,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.653562,1.07881,0.269321
+hist_1974_262,1974,1974-06-30,"Group A","Argentina","Brazil",0.104,0.207,0.689,away,-260.33,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.150386,0.372514,0.053768
+hist_1974_263,1974,1974-06-30,"Group B","West Germany","Sweden",0.63,0.33,0.04,home,262.22,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.2474,0.462035,0.06925
+hist_1974_264,1974,1974-06-30,"Group B","Poland","Yugoslavia",0.569,0.252,0.178,home,87.72,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.280949,0.563875,0.108901
+hist_1974_265,1974,1974-07-03,"Group A","Argentina","East Germany",0.312,0.291,0.398,draw,-110.61,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.758429,1.234432,0.127477
+hist_1974_266,1974,1974-07-03,"Group A","Netherlands","Brazil",0.33,0.347,0.323,home,-100.75,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.673638,1.108663,0.276614
+hist_1974_267,1974,1974-07-03,"Group B","Poland","West Germany",0.372,0.282,0.347,away,-110.25,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.644317,1.05843,0.28305
+hist_1974_268,1974,1974-07-03,"Group B","Sweden","Yugoslavia",0.298,0.286,0.416,home,-53.75,false,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.747656,1.210662,0.33293
+hist_1974_269,1974,1974-07-06,"Third place","Brazil","Poland",0.49,0.305,0.204,away,79.96,true,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.966741,1.589635,0.436062
+hist_1974_270,1974,1974-07-07,"Final","Netherlands","West Germany",0.415,0.325,0.26,away,-99.08,true,p0-quarantine-v3-2026-07-10,pre_1974_kickoff,0.82545,1.347074,0.359912
+hist_1978_271,1978,1978-06-01,"Group 2","West Germany","Poland",0.56,0.283,0.157,draw,157.1,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.852338,1.262308,0.169125
+hist_1978_272,1978,1978-06-02,"Group 1","Argentina","Hungary",0.383,0.246,0.371,home,6.1,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.578846,0.95972,0.259165
+hist_1978_273,1978,1978-06-02,"Group 1","Italy","France",0.429,0.293,0.278,home,-5.3,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.489174,0.846298,0.201662
+hist_1978_274,1978,1978-06-02,"Group 2","Tunisia","Mexico",0.364,0.301,0.336,home,-16.2,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.607993,1.010601,0.25836
+hist_1978_275,1978,1978-06-03,"Group 3","Austria","Spain",0.365,0.278,0.357,home,-98.6,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.607958,1.007858,0.265337
+hist_1978_276,1978,1978-06-03,"Group 3","Brazil","Sweden",0.66,0.276,0.065,draw,295.6,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.964001,1.287354,0.219848
+hist_1978_277,1978,1978-06-03,"Group 4","Peru","Scotland",0.309,0.243,0.448,home,-174.7,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.737234,1.174414,0.339093
+hist_1978_278,1978,1978-06-03,"Group 4","Netherlands","Iran",0.782,0.193,0.025,home,244.3,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.085398,0.245901,0.024074
+hist_1978_279,1978,1978-06-06,"Group 1","Argentina","France",0.47,0.288,0.242,home,43.83,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.422408,0.755023,0.169732
+hist_1978_280,1978,1978-06-06,"Group 1","Italy","Hungary",0.47,0.288,0.242,home,43.23,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.422408,0.755023,0.169732
+hist_1978_281,1978,1978-06-06,"Group 2","Poland","Tunisia",0.513,0.28,0.207,home,92.32,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.358418,0.667479,0.140009
+hist_1978_282,1978,1978-06-06,"Group 2","West Germany","Mexico",0.646,0.247,0.107,home,264.18,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.197774,0.436956,0.068382
+hist_1978_283,1978,1978-06-07,"Group 3","Austria","Sweden",0.504,0.282,0.215,home,82.06,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.371765,0.685179,0.145906
+hist_1978_284,1978,1978-06-07,"Group 3","Brazil","Spain",0.541,0.275,0.184,draw,125.86,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.852162,1.290984,0.163269
+hist_1978_285,1978,1978-06-07,"Group 4","Scotland","Iran",0.444,0.292,0.264,draw,13.49,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.768096,1.231001,0.133416
+hist_1978_286,1978,1978-06-07,"Group 4","Netherlands","Peru",0.668,0.235,0.098,draw,321.89,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,1.041053,1.44817,0.227817
+hist_1978_287,1978,1978-06-10,"Group 1","Argentina","Italy",0.43,0.293,0.277,away,-4.1,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.793478,1.283738,0.353814
+hist_1978_288,1978,1978-06-10,"Group 1","France","Hungary",0.444,0.292,0.264,home,13.68,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.464096,0.811931,0.189416
+hist_1978_289,1978,1978-06-10,"Group 2","Poland","Mexico",0.58,0.266,0.155,home,173.67,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.271181,0.544727,0.100058
+hist_1978_290,1978,1978-06-10,"Group 2","West Germany","Tunisia",0.63,0.252,0.118,draw,240.53,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.970328,1.378326,0.205412
+hist_1978_291,1978,1978-06-11,"Group 3","Spain","Sweden",0.564,0.269,0.167,home,153.63,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.290346,0.572701,0.108993
+hist_1978_292,1978,1978-06-11,"Group 3","Brazil","Austria",0.547,0.273,0.18,home,131.97,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.312138,0.603306,0.118804
+hist_1978_293,1978,1978-06-11,"Group 4","Peru","Iran",0.409,0.29,0.301,home,-36.48,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.523982,0.89404,0.219941
+hist_1978_294,1978,1978-06-11,"Group 4","Scotland","Netherlands",0.251,0.258,0.491,home,-240.58,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.868646,1.382302,0.401041
+hist_1978_295,1978,1978-06-14,"Group A","Italy","West Germany",0.412,0.29,0.298,draw,-32.66,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.762648,1.237874,0.129274
+hist_1978_296,1978,1978-06-14,"Group A","Austria","Netherlands",0.293,0.262,0.444,away,-173.4,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.463629,0.811931,0.196937
+hist_1978_297,1978,1978-06-14,"Group B","Argentina","Poland",0.412,0.29,0.298,home,-32.53,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.518648,0.886732,0.217274
+hist_1978_298,1978,1978-06-14,"Group B","Peru","Brazil",0.296,0.263,0.441,away,-170.65,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.469266,0.81871,0.200048
+hist_1978_299,1978,1978-06-18,"Group A","Italy","Austria",0.733,0.211,0.056,home,155.27,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.118946,0.31061,0.037213
+hist_1978_300,1978,1978-06-18,"Group A","Netherlands","West Germany",0.301,0.32,0.38,draw,63.07,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.697401,1.139434,0.117121
+hist_1978_301,1978,1978-06-18,"Group B","Argentina","Brazil",0.237,0.33,0.433,draw,-126.36,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.692558,1.108663,0.121829
+hist_1978_302,1978,1978-06-18,"Group B","Peru","Poland",0.37,0.291,0.34,away,-88.02,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.657181,1.07881,0.286911
+hist_1978_303,1978,1978-06-21,"Group A","Italy","Netherlands",0.446,0.281,0.273,away,-82.86,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.806406,1.298283,0.363723
+hist_1978_304,1978,1978-06-21,"Group A","Austria","West Germany",0.13,0.204,0.666,home,-223.76,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,1.242072,2.040221,0.600228
+hist_1978_305,1978,1978-06-21,"Group B","Argentina","Peru",0.624,0.268,0.108,home,161.53,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.224864,0.471605,0.07652
+hist_1978_306,1978,1978-06-21,"Group B","Poland","Brazil",0.223,0.353,0.424,away,-133.27,false,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.506114,0.858022,0.190752
+hist_1978_307,1978,1978-06-24,"Third place","Brazil","Italy",0.574,0.321,0.105,home,146.9,true,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.295542,0.555126,0.096251
+hist_1978_308,1978,1978-06-25,"Final","Netherlands","Argentina",0.461,0.276,0.263,away,138.28,true,p0-quarantine-v3-2026-07-10,pre_1978_kickoff,0.831866,1.335601,0.377845
+hist_1982_309,1982,1982-06-13,"Group 3","Argentina","Belgium",0.677,0.229,0.093,away,95.4,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.333419,2.375156,0.639583
+hist_1982_310,1982,1982-06-14,"Group 1","Italy","Poland",0.403,0.319,0.278,draw,-64.9,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.703454,1.142564,0.119847
+hist_1982_311,1982,1982-06-14,"Group 6","Brazil","Soviet Union",0.437,0.36,0.203,home,48.9,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.487778,0.827822,0.179089
+hist_1982_312,1982,1982-06-15,"Group 1","Peru","Cameroon",0.345,0.276,0.379,draw,-10.9,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.786842,1.287354,0.131333
+hist_1982_313,1982,1982-06-15,"Group 3","Hungary","El Salvador",0.533,0.276,0.191,home,116.8,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.330746,0.629234,0.127285
+hist_1982_314,1982,1982-06-15,"Group 6","Scotland","New Zealand",0.472,0.288,0.241,home,45,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.419809,0.750776,0.168192
+hist_1982_315,1982,1982-06-16,"Group 2","West Germany","Algeria",0.748,0.206,0.045,away,351.3,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.513965,3.101093,0.73481
+hist_1982_316,1982,1982-06-16,"Group 4","England","France",0.49,0.305,0.204,home,82.9,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.394741,0.71335,0.151063
+hist_1982_317,1982,1982-06-16,"Group 5","Spain","Honduras",0.583,0.265,0.152,draw,177.4,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.903218,1.328025,0.181496
+hist_1982_318,1982,1982-06-17,"Group 2","Chile","Austria",0.394,0.268,0.339,away,-130.6,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.663981,1.081755,0.29674
+hist_1982_319,1982,1982-06-17,"Group 4","Czechoslovakia","Kuwait",0.521,0.279,0.201,draw,101.8,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.831683,1.276543,0.155721
+hist_1982_320,1982,1982-06-17,"Group 5","Yugoslavia","Northern Ireland",0.732,0.206,0.062,draw,189.2,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.170104,1.579879,0.269834
+hist_1982_321,1982,1982-06-18,"Group 1","Italy","Peru",0.512,0.28,0.208,draw,91.81,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.823808,1.272966,0.152704
+hist_1982_322,1982,1982-06-18,"Group 3","Argentina","Hungary",0.516,0.279,0.205,home,95.65,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.354122,0.661649,0.13814
+hist_1982_323,1982,1982-06-18,"Group 6","Brazil","Scotland",0.646,0.247,0.107,home,264.1,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.197774,0.436956,0.068382
+hist_1982_324,1982,1982-06-19,"Group 1","Poland","Cameroon",0.55,0.272,0.177,draw,136.79,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.863813,1.301953,0.167092
+hist_1982_325,1982,1982-06-19,"Group 3","Belgium","El Salvador",0.65,0.245,0.105,home,274.55,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.19355,0.430783,0.066762
+hist_1982_326,1982,1982-06-19,"Group 6","Soviet Union","New Zealand",0.655,0.242,0.103,home,288,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.188198,0.42312,0.064817
+hist_1982_327,1982,1982-06-20,"Group 2","West Germany","Chile",0.659,0.24,0.101,home,297.52,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.184082,0.417032,0.063241
+hist_1982_328,1982,1982-06-20,"Group 4","England","Czechoslovakia",0.525,0.278,0.197,home,106.58,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.341718,0.644357,0.132217
+hist_1982_329,1982,1982-06-20,"Group 5","Spain","Yugoslavia",0.403,0.288,0.309,home,-46.24,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.534834,0.908819,0.225945
+hist_1982_330,1982,1982-06-21,"Group 2","Algeria","Austria",0.338,0.272,0.39,away,-127.42,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.560328,0.941609,0.243172
+hist_1982_331,1982,1982-06-21,"Group 4","France","Kuwait",0.473,0.287,0.24,home,47.52,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.417698,0.74866,0.167664
+hist_1982_332,1982,1982-06-21,"Group 5","Honduras","Northern Ireland",0.41,0.29,0.3,draw,-35.56,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.7622,1.237874,0.12905
+hist_1982_333,1982,1982-06-22,"Group 1","Poland","Peru",0.544,0.274,0.182,home,129.91,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.316136,0.608806,0.12053
+hist_1982_334,1982,1982-06-22,"Group 3","Belgium","Hungary",0.538,0.275,0.187,draw,122.77,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.850038,1.290984,0.162207
+hist_1982_335,1982,1982-06-22,"Group 6","Soviet Union","Scotland",0.601,0.26,0.138,draw,201.1,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.927845,1.347074,0.190261
+hist_1982_336,1982,1982-06-23,"Group 1","Italy","Cameroon",0.461,0.289,0.25,draw,33.01,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.780542,1.241329,0.137511
+hist_1982_337,1982,1982-06-23,"Group 3","Argentina","El Salvador",0.663,0.237,0.1,home,311.31,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.179738,0.41098,0.061784
+hist_1982_338,1982,1982-06-23,"Group 6","Brazil","New Zealand",0.692,0.221,0.088,home,394.32,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.151449,0.368169,0.051217
+hist_1982_339,1982,1982-06-24,"Group 2","Algeria","Chile",0.455,0.29,0.255,home,26.11,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.44615,0.787458,0.181025
+hist_1982_340,1982,1982-06-24,"Group 4","France","Czechoslovakia",0.458,0.29,0.252,draw,29.59,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.777368,1.237874,0.136634
+hist_1982_341,1982,1982-06-24,"Group 5","Honduras","Yugoslavia",0.302,0.264,0.433,away,-163.97,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.482389,0.837018,0.20578
+hist_1982_342,1982,1982-06-25,"Group 2","West Germany","Austria",0.502,0.282,0.215,home,80.41,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.373753,0.689155,0.14733
+hist_1982_343,1982,1982-06-25,"Group 4","England","Kuwait",0.622,0.254,0.123,home,229.45,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.222529,0.474815,0.07913
+hist_1982_344,1982,1982-06-25,"Group 5","Spain","Northern Ireland",0.538,0.275,0.187,away,121.95,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.026038,1.676647,0.475207
+hist_1982_345,1982,1982-06-28,"Group A","Poland","Belgium",0.444,0.292,0.264,home,12.94,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.464096,0.811931,0.189416
+hist_1982_346,1982,1982-06-28,"Group D","Austria","France",0.525,0.278,0.197,away,107.05,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.997718,1.624552,0.460217
+hist_1982_347,1982,1982-06-29,"Group B","West Germany","England",0.503,0.282,0.215,draw,81.3,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.814758,1.265848,0.149617
+hist_1982_348,1982,1982-06-29,"Group C","Italy","Argentina",0.327,0.27,0.404,home,-138.86,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.689045,1.117795,0.307669
+hist_1982_349,1982,1982-07-01,"Group A","Belgium","Soviet Union",0.284,0.306,0.41,away,-130.45,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.522392,0.891598,0.214378
+hist_1982_350,1982,1982-07-01,"Group D","Austria","Northern Ireland",0.539,0.322,0.139,draw,123.24,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.769526,1.133204,0.154921
+hist_1982_351,1982,1982-07-02,"Group B","West Germany","Spain",0.699,0.24,0.062,home,238.57,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.152045,0.358105,0.047161
+hist_1982_352,1982,1982-07-02,"Group C","Argentina","Brazil",0.361,0.259,0.38,away,-191.97,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.581802,0.967584,0.25736
+hist_1982_353,1982,1982-07-04,"Group A","Soviet Union","Poland",0.347,0.304,0.349,draw,72.87,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.726626,1.190728,0.121105
+hist_1982_354,1982,1982-07-04,"Group D","Northern Ireland","France",0.354,0.297,0.349,away,-91.23,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.637326,1.052683,0.274559
+hist_1982_355,1982,1982-07-05,"Group B","Spain","England",0.155,0.261,0.584,draw,-193.49,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.911202,1.343235,0.18254
+hist_1982_356,1982,1982-07-05,"Group C","Italy","Brazil",0.116,0.223,0.661,home,-297.51,false,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.268106,2.154165,0.609189
+hist_1982_357,1982,1982-07-08,"Semi-finals","Poland","Italy",0.603,0.289,0.108,away,73.87,true,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,1.242794,2.225624,0.579636
+hist_1982_358,1982,1982-07-08,"Semi-finals","West Germany","France",0.541,0.275,0.185,draw,112.11,true,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.852531,1.290984,0.163269
+hist_1982_359,1982,1982-07-10,"Third place","Poland","France",0.453,0.291,0.256,home,-54.15,true,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.449426,0.791863,0.182372
+hist_1982_360,1982,1982-07-11,"Final","Italy","West Germany",0.394,0.292,0.313,home,-75.85,true,p0-quarantine-v3-2026-07-10,pre_1982_kickoff,0.550469,0.931404,0.232916
+hist_1986_361,1986,1986-05-31,"Group A","Bulgaria","Italy",0.317,0.291,0.393,draw,-32.6,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.757619,1.234432,0.127077
+hist_1986_362,1986,1986-06-01,"Group C","Canada","France",0.199,0.224,0.577,away,-291.9,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.268706,0.549913,0.109265
+hist_1986_363,1986,1986-06-01,"Group D","Spain","Brazil",0.295,0.269,0.436,away,9.2,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.477482,0.830113,0.202561
+hist_1986_364,1986,1986-06-02,"Group A","Argentina","South Korea",0.537,0.269,0.193,home,94.4,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.323979,0.621757,0.126002
+hist_1986_365,1986,1986-06-02,"Group C","Soviet Union","Hungary",0.503,0.297,0.2,home,7.7,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.375218,0.687165,0.143504
+hist_1986_366,1986,1986-06-02,"Group F","Morocco","Poland",0.312,0.3,0.388,draw,-30.2,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.737888,1.203973,0.123944
+hist_1986_367,1986,1986-06-03,"Group B","Belgium","Mexico",0.281,0.313,0.406,away,-105.8,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.529766,0.901402,0.215899
+hist_1986_368,1986,1986-06-03,"Group D","Algeria","Northern Ireland",0.394,0.284,0.322,draw,-109.7,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.771576,1.258781,0.12946
+hist_1986_369,1986,1986-06-03,"Group F","Portugal","England",0.154,0.268,0.578,home,-243,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,1.121624,1.870803,0.5249
+hist_1986_370,1986,1986-06-04,"Group B","Paraguay","Iraq",0.518,0.279,0.203,home,98.5,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.351374,0.65778,0.136766
+hist_1986_371,1986,1986-06-04,"Group E","Uruguay","West Germany",0.389,0.28,0.331,draw,-58.7,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.779282,1.272966,0.130441
+hist_1986_372,1986,1986-06-04,"Group E","Scotland","Denmark",0.438,0.292,0.27,away,6.5,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.810008,1.309333,0.362372
+hist_1986_373,1986,1986-06-05,"Group A","Italy","Argentina",0.432,0.293,0.275,draw,-1.61,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.762098,1.227583,0.131125
+hist_1986_374,1986,1986-06-05,"Group A","South Korea","Bulgaria",0.37,0.279,0.351,draw,-93.01,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.779942,1.276543,0.13005
+hist_1986_375,1986,1986-06-05,"Group C","France","Soviet Union",0.438,0.292,0.27,draw,5.83,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.766008,1.231001,0.132372
+hist_1986_376,1986,1986-06-06,"Group C","Hungary","Canada",0.615,0.256,0.129,home,219.03,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.230402,0.486133,0.082433
+hist_1986_377,1986,1986-06-06,"Group D","Brazil","Algeria",0.596,0.262,0.142,home,194.69,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.252024,0.517515,0.09169
+hist_1986_378,1986,1986-06-06,"Group F","England","Morocco",0.621,0.255,0.124,draw,228.16,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.956042,1.366492,0.200509
+hist_1986_379,1986,1986-06-07,"Group B","Mexico","Paraguay",0.503,0.282,0.215,draw,81.09,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.814758,1.265848,0.149617
+hist_1986_380,1986,1986-06-07,"Group D","Northern Ireland","Spain",0.422,0.292,0.287,away,-17.61,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.771717,1.248273,0.34394
+hist_1986_381,1986,1986-06-07,"Group F","Poland","Portugal",0.416,0.291,0.293,home,-26.44,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.511586,0.87707,0.213453
+hist_1986_382,1986,1986-06-08,"Group B","Iraq","Belgium",0.404,0.289,0.307,away,-43.81,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.726986,1.180908,0.321733
+hist_1986_383,1986,1986-06-08,"Group E","West Germany","Scotland",0.504,0.282,0.214,home,82.57,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.371336,0.685179,0.145906
+hist_1986_384,1986,1986-06-08,"Group E","Denmark","Uruguay",0.48,0.286,0.234,home,54.57,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.406952,0.733969,0.162578
+hist_1986_385,1986,1986-06-09,"Group C","Hungary","France",0.381,0.282,0.338,away,-81.49,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.662929,1.084709,0.292365
+hist_1986_386,1986,1986-06-09,"Group C","Soviet Union","Canada",0.672,0.232,0.096,home,337.17,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.170624,0.397497,0.0584
+hist_1986_387,1986,1986-06-10,"Group A","South Korea","Italy",0.336,0.272,0.393,away,-129.43,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.555329,0.933946,0.24128
+hist_1986_388,1986,1986-06-10,"Group A","Argentina","Bulgaria",0.478,0.286,0.235,home,53.39,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.409505,0.738145,0.16409
+hist_1986_389,1986,1986-06-11,"Group B","Iraq","Mexico",0.26,0.26,0.48,away,-229.06,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.4056,0.733969,0.169
+hist_1986_390,1986,1986-06-11,"Group B","Paraguay","Belgium",0.488,0.285,0.228,draw,63.26,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.801353,1.255266,0.144837
+hist_1986_391,1986,1986-06-11,"Group F","Portugal","Morocco",0.452,0.291,0.257,away,22.68,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.841034,1.358679,0.378177
+hist_1986_392,1986,1986-06-11,"Group F","England","Poland",0.553,0.272,0.175,home,140.2,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.304418,0.592397,0.115217
+hist_1986_393,1986,1986-06-12,"Group D","Northern Ireland","Brazil",0.333,0.271,0.396,away,-132.95,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.549146,0.926341,0.237853
+hist_1986_394,1986,1986-06-12,"Group D","Algeria","Spain",0.295,0.262,0.443,away,-171.91,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.465918,0.814186,0.198637
+hist_1986_395,1986,1986-06-13,"Group E","Denmark","West Germany",0.44,0.292,0.268,home,8.17,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.470688,0.820981,0.192712
+hist_1986_396,1986,1986-06-13,"Group E","Scotland","Uruguay",0.435,0.293,0.272,draw,2.63,false,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.763058,1.227583,0.131605
+hist_1986_397,1986,1986-06-15,"Round of 16","Mexico","Bulgaria",0.547,0.273,0.18,home,132.16,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.312138,0.603306,0.118804
+hist_1986_398,1986,1986-06-15,"Round of 16","Soviet Union","Belgium",0.595,0.262,0.143,away,193.04,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,1.157118,1.944911,0.544237
+hist_1986_399,1986,1986-06-16,"Round of 16","Argentina","Uruguay",0.483,0.286,0.232,home,58.25,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.402909,0.727739,0.160325
+hist_1986_400,1986,1986-06-16,"Round of 16","Brazil","Poland",0.608,0.259,0.134,home,210.04,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.238701,0.49758,0.085677
+hist_1986_401,1986,1986-06-17,"Round of 16","Italy","France",0.315,0.267,0.418,away,-151.02,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.509238,0.872274,0.218975
+hist_1986_402,1986,1986-06-17,"Round of 16","Morocco","West Germany",0.362,0.278,0.36,away,-101.23,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.617928,1.021651,0.270322
+hist_1986_403,1986,1986-06-18,"Round of 16","England","Paraguay",0.536,0.276,0.188,home,120.22,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.326816,0.623621,0.12532
+hist_1986_404,1986,1986-06-18,"Round of 16","Denmark","Spain",0.473,0.287,0.24,away,46.95,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.883698,1.427116,0.400664
+hist_1986_405,1986,1986-06-21,"Quarter-finals","Brazil","France",0.392,0.386,0.222,draw,-67.05,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.579944,0.951918,0.101474
+hist_1986_406,1986,1986-06-21,"Quarter-finals","West Germany","Mexico",0.301,0.317,0.383,draw,3.04,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.703779,1.148854,0.118262
+hist_1986_407,1986,1986-06-22,"Quarter-finals","Spain","Belgium",0.752,0.183,0.066,draw,165.88,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,1.237349,1.698269,0.284865
+hist_1986_408,1986,1986-06-22,"Quarter-finals","Argentina","England",0.296,0.356,0.348,home,-67.33,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.743456,1.217396,0.30836
+hist_1986_409,1986,1986-06-25,"Semi-finals","Argentina","Belgium",0.666,0.216,0.117,home,70.16,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.171901,0.406466,0.06274
+hist_1986_410,1986,1986-06-25,"Semi-finals","France","West Germany",0.635,0.28,0.085,away,136.03,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,1.31885,2.465104,0.620225
+hist_1986_411,1986,1986-06-28,"Third place","France","Belgium",0.676,0.229,0.095,home,153.99,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.166442,0.391562,0.057
+hist_1986_412,1986,1986-06-29,"Final","Argentina","West Germany",0.462,0.317,0.221,home,-41.86,true,p0-quarantine-v3-2026-07-10,pre_1986_kickoff,0.438774,0.77219,0.169143
+hist_1990_413,1990,1990-06-08,"Group B","Argentina","Cameroon",0.631,0.243,0.126,away,62.3,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.221086,2.071473,0.581018
+hist_1990_414,1990,1990-06-09,"Group A","Italy","Austria",0.536,0.285,0.179,home,182.8,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.328562,0.623621,0.123668
+hist_1990_415,1990,1990-06-09,"Group B","Soviet Union","Romania",0.644,0.215,0.141,away,39,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.198842,1.958995,0.576309
+hist_1990_416,1990,1990-06-09,"Group D","United Arab Emirates","Colombia",0.271,0.262,0.467,away,-215.7,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.426174,0.761426,0.178765
+hist_1990_417,1990,1990-06-10,"Group A","United States","Czechoslovakia",0.276,0.263,0.461,away,-209.4,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.435866,0.774357,0.183349
+hist_1990_418,1990,1990-06-10,"Group C","Brazil","Sweden",0.674,0.224,0.102,home,26.1,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.166856,0.394525,0.05834
+hist_1990_419,1990,1990-06-10,"Group D","West Germany","Yugoslavia",0.543,0.285,0.172,home,116.5,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.319658,0.610646,0.119216
+hist_1990_420,1990,1990-06-11,"Group C","Costa Rica","Scotland",0.391,0.284,0.325,home,-70.1,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.557162,0.939048,0.238253
+hist_1990_421,1990,1990-06-11,"Group F","England","Ireland",0.581,0.274,0.144,draw,61,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.885373,1.294627,0.179293
+hist_1990_422,1990,1990-06-12,"Group E","Belgium","South Korea",0.453,0.271,0.276,home,17.7,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.448826,0.791863,0.187692
+hist_1990_423,1990,1990-06-12,"Group F","Netherlands","Egypt",0.711,0.215,0.075,draw,280.6,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.127371,1.537117,0.255499
+hist_1990_424,1990,1990-06-13,"Group B","Argentina","Soviet Union",0.333,0.271,0.396,home,-132.28,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.675146,1.099613,0.300852
+hist_1990_425,1990,1990-06-13,"Group E","Uruguay","Spain",0.204,0.185,0.611,draw,-18.7,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.079162,1.687399,0.207468
+hist_1990_426,1990,1990-06-14,"Group A","Italy","United States",0.682,0.226,0.092,home,365.95,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.160664,0.382726,0.054794
+hist_1990_427,1990,1990-06-14,"Group B","Cameroon","Romania",0.288,0.267,0.445,home,-193.62,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.776258,1.244795,0.352484
+hist_1990_428,1990,1990-06-14,"Group D","Yugoslavia","Colombia",0.447,0.291,0.262,home,17.11,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.459134,0.805197,0.187226
+hist_1990_429,1990,1990-06-15,"Group A","Austria","Czechoslovakia",0.341,0.273,0.386,away,-124.15,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.567806,0.951918,0.246639
+hist_1990_430,1990,1990-06-15,"Group D","West Germany","United Arab Emirates",0.713,0.207,0.08,home,457.29,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.131618,0.338274,0.044385
+hist_1990_431,1990,1990-06-16,"Group C","Brazil","Costa Rica",0.671,0.233,0.096,home,334.55,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.171746,0.398986,0.058728
+hist_1990_432,1990,1990-06-16,"Group C","Sweden","Scotland",0.64,0.249,0.111,away,254.05,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.261922,2.198225,0.599961
+hist_1990_433,1990,1990-06-16,"Group F","England","Netherlands",0.401,0.288,0.311,draw,-49.12,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.764466,1.244795,0.128761
+hist_1990_434,1990,1990-06-17,"Group E","Belgium","Uruguay",0.428,0.293,0.279,home,-7.1,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.490874,0.848632,0.202513
+hist_1990_435,1990,1990-06-17,"Group E","South Korea","Spain",0.347,0.274,0.379,away,-117.9,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.581126,0.970219,0.253025
+hist_1990_436,1990,1990-06-17,"Group F","Ireland","Egypt",0.56,0.27,0.17,draw,148.52,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.8754,1.309333,0.17125
+hist_1990_437,1990,1990-06-18,"Group B","Argentina","Romania",0.335,0.272,0.393,draw,-130.42,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.796658,1.301953,0.133337
+hist_1990_438,1990,1990-06-18,"Group B","Cameroon","Soviet Union",0.419,0.292,0.289,away,-21.36,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.766346,1.241329,0.340541
+hist_1990_439,1990,1990-06-19,"Group A","Italy","Czechoslovakia",0.479,0.286,0.234,home,54.27,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.407993,0.736055,0.163333
+hist_1990_440,1990,1990-06-19,"Group A","Austria","United States",0.552,0.272,0.176,home,139.37,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.305664,0.594207,0.11584
+hist_1990_441,1990,1990-06-19,"Group D","West Germany","Colombia",0.605,0.259,0.136,draw,205.13,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.933602,1.350927,0.192261
+hist_1990_442,1990,1990-06-19,"Group D","Yugoslavia","United Arab Emirates",0.666,0.236,0.099,home,318.51,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.177053,0.406466,0.06058
+hist_1990_443,1990,1990-06-20,"Group C","Brazil","Scotland",0.649,0.245,0.105,home,270.76,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.194251,0.432323,0.067218
+hist_1990_444,1990,1990-06-20,"Group C","Sweden","Costa Rica",0.616,0.256,0.127,away,220.78,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.207121,2.063568,0.56992
+hist_1990_445,1990,1990-06-21,"Group E","Belgium","Spain",0.401,0.288,0.311,away,-49.01,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.718466,1.167962,0.317761
+hist_1990_446,1990,1990-06-21,"Group E","South Korea","Uruguay",0.369,0.279,0.352,away,-94.85,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.633906,1.044124,0.278033
+hist_1990_447,1990,1990-06-21,"Group F","England","Egypt",0.57,0.268,0.162,home,160.76,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.282968,0.562119,0.105572
+hist_1990_448,1990,1990-06-21,"Group F","Ireland","Netherlands",0.357,0.277,0.366,draw,-106.92,false,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.784134,1.283738,0.130702
+hist_1990_449,1990,1990-06-23,"Round of 16","Cameroon","Colombia",0.368,0.279,0.353,home,-95.46,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.601874,0.999672,0.262016
+hist_1990_450,1990,1990-06-23,"Round of 16","Czechoslovakia","Costa Rica",0.574,0.267,0.159,home,166.19,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.278046,0.555126,0.103379
+hist_1990_451,1990,1990-06-24,"Round of 16","Brazil","Argentina",0.622,0.254,0.123,away,229.46,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.220529,2.095571,0.57713
+hist_1990_452,1990,1990-06-24,"Round of 16","West Germany","Netherlands",0.435,0.293,0.272,home,3.16,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.479058,0.832409,0.196604
+hist_1990_453,1990,1990-06-25,"Round of 16","Ireland","Romania",0.411,0.29,0.299,draw,-34.62,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.762422,1.237874,0.129161
+hist_1990_454,1990,1990-06-25,"Round of 16","Italy","Uruguay",0.53,0.277,0.193,home,112.93,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.334878,0.634878,0.129074
+hist_1990_455,1990,1990-06-26,"Round of 16","Spain","Yugoslavia",0.538,0.275,0.187,away,121.88,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,1.026038,1.676647,0.475207
+hist_1990_456,1990,1990-06-26,"Round of 16","England","Belgium",0.488,0.284,0.227,home,64.1,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.394329,0.71744,0.157064
+hist_1990_457,1990,1990-06-30,"Quarter-finals","Yugoslavia","Argentina",0.492,0.287,0.222,draw,76.5,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.799717,1.248273,0.145453
+hist_1990_458,1990,1990-06-30,"Quarter-finals","Italy","Ireland",0.621,0.313,0.066,home,139.66,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.245966,0.476424,0.073998
+hist_1990_459,1990,1990-07-01,"Quarter-finals","West Germany","Czechoslovakia",0.581,0.232,0.187,home,104.67,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.264354,0.543005,0.105265
+hist_1990_460,1990,1990-07-01,"Quarter-finals","England","Cameroon",0.678,0.264,0.057,home,195.98,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.176629,0.388608,0.053524
+hist_1990_461,1990,1990-07-03,"Semi-finals","Italy","Argentina",0.618,0.323,0.059,draw,170.48,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.843734,1.130103,0.192702
+hist_1990_462,1990,1990-07-04,"Semi-finals","West Germany","England",0.554,0.271,0.175,draw,58.89,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.868982,1.305636,0.168771
+hist_1990_463,1990,1990-07-07,"Third place","Italy","England",0.529,0.324,0.147,home,28.28,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.348426,0.636767,0.121725
+hist_1990_464,1990,1990-07-08,"Final","West Germany","Argentina",0.594,0.279,0.126,home,136.29,true,p0-quarantine-v3-2026-07-10,pre_1990_kickoff,0.258553,0.520876,0.090483
+hist_1994_465,1994,1994-06-17,"Group C","Germany","Bolivia",0.667,0.235,0.098,home,320.1,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.175718,0.404965,0.060246
+hist_1994_466,1994,1994-06-17,"Group C","Spain","South Korea",0.6,0.256,0.145,draw,122.6,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.934561,1.362578,0.190368
+hist_1994_467,1994,1994-06-18,"Group A","USA","Switzerland",0.24,0.255,0.505,draw,-255.3,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.86765,1.366492,0.156312
+hist_1994_468,1994,1994-06-18,"Group A","Colombia","Romania",0.502,0.304,0.194,away,82.8,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.994056,1.639897,0.45082
+hist_1994_469,1994,1994-06-18,"Group E","Italy","Ireland",0.632,0.295,0.074,away,139.6,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,1.343925,2.60369,0.629377
+hist_1994_470,1994,1994-06-19,"Group B","Cameroon","Sweden",0.302,0.248,0.45,draw,-154.9,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.859208,1.394327,0.146852
+hist_1994_471,1994,1994-06-19,"Group E","Norway","Mexico",0.322,0.319,0.359,home,23.8,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.690326,1.133204,0.294282
+hist_1994_472,1994,1994-06-19,"Group F","Belgium","Morocco",0.445,0.332,0.223,home,49.3,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.467978,0.809681,0.178877
+hist_1994_473,1994,1994-06-20,"Group B","Brazil","Russia",0.571,0.295,0.135,home,99.8,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.289291,0.560366,0.100999
+hist_1994_474,1994,1994-06-20,"Group F","Netherlands","Saudi Arabia",0.611,0.269,0.12,home,265.3,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.238082,0.492658,0.082861
+hist_1994_475,1994,1994-06-21,"Group C","Germany","Spain",0.567,0.269,0.165,draw,156.47,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.883075,1.313044,0.174193
+hist_1994_476,1994,1994-06-21,"Group D","Argentina","Greece",0.621,0.284,0.095,home,222.9,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.233322,0.476424,0.076333
+hist_1994_477,1994,1994-06-21,"Group D","Nigeria","Bulgaria",0.599,0.267,0.134,home,48.7,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.250046,0.512494,0.089379
+hist_1994_478,1994,1994-06-22,"Group A","Romania","Switzerland",0.482,0.286,0.232,away,57.79,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.903944,1.461018,0.411074
+hist_1994_479,1994,1994-06-22,"Group A","USA","Colombia",0.254,0.258,0.488,home,-237.31,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.861224,1.370421,0.39733
+hist_1994_480,1994,1994-06-23,"Group C","South Korea","Bolivia",0.506,0.282,0.212,draw,84.77,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.816504,1.265848,0.15049
+hist_1994_481,1994,1994-06-23,"Group E","Italy","Norway",0.461,0.289,0.25,home,33.53,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.436542,0.774357,0.17651
+hist_1994_482,1994,1994-06-24,"Group B","Brazil","Cameroon",0.613,0.257,0.13,home,215.34,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.232718,0.48939,0.083335
+hist_1994_483,1994,1994-06-24,"Group B","Sweden","Russia",0.496,0.283,0.221,home,73.24,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.382946,0.701179,0.151429
+hist_1994_484,1994,1994-06-24,"Group E","Mexico","Ireland",0.406,0.286,0.307,home,-53.07,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.528881,0.901402,0.22385
+hist_1994_485,1994,1994-06-25,"Group D","Argentina","Nigeria",0.492,0.284,0.224,home,68.76,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.388896,0.709277,0.15412
+hist_1994_486,1994,1994-06-25,"Group F","Belgium","Netherlands",0.302,0.265,0.433,home,-164.38,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.744918,1.197328,0.337346
+hist_1994_487,1994,1994-06-25,"Group F","Saudi Arabia","Morocco",0.414,0.29,0.295,home,-28.98,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.514521,0.881889,0.215506
+hist_1994_488,1994,1994-06-26,"Group A","USA","Romania",0.295,0.262,0.443,away,-171.82,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.465918,0.814186,0.198637
+hist_1994_489,1994,1994-06-26,"Group A","Switzerland","Colombia",0.527,0.277,0.196,away,108.94,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,1.000874,1.629641,0.462073
+hist_1994_490,1994,1994-06-26,"Group D","Greece","Bulgaria",0.389,0.283,0.328,away,-73.16,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.682994,1.114742,0.301452
+hist_1994_491,1994,1994-06-27,"Group C","Bolivia","Spain",0.289,0.261,0.449,away,-177.69,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.455243,0.800732,0.193011
+hist_1994_492,1994,1994-06-27,"Group C","Germany","South Korea",0.631,0.252,0.117,home,240.91,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.213354,0.460449,0.074925
+hist_1994_493,1994,1994-06-28,"Group B","Russia","Cameroon",0.487,0.285,0.228,home,62.71,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.396378,0.719491,0.157576
+hist_1994_494,1994,1994-06-28,"Group B","Brazil","Sweden",0.485,0.286,0.23,draw,60.29,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.797921,1.251763,0.143833
+hist_1994_495,1994,1994-06-28,"Group E","Ireland","Norway",0.422,0.292,0.286,draw,-17.17,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.761144,1.231001,0.12994
+hist_1994_496,1994,1994-06-28,"Group E","Italy","Mexico",0.51,0.281,0.209,draw,89.85,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.820742,1.269401,0.15189
+hist_1994_497,1994,1994-06-29,"Group F","Morocco","Netherlands",0.253,0.258,0.488,away,-237.83,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.392717,0.71744,0.162565
+hist_1994_498,1994,1994-06-29,"Group F","Belgium","Saudi Arabia",0.541,0.275,0.184,away,125.53,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,1.034162,1.69282,0.479269
+hist_1994_499,1994,1994-06-30,"Group D","Greece","Nigeria",0.261,0.26,0.48,away,-228.59,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.406121,0.733969,0.169781
+hist_1994_500,1994,1994-06-30,"Group D","Argentina","Bulgaria",0.55,0.272,0.178,away,135.97,false,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,1.052168,1.725972,0.489092
+hist_1994_501,1994,1994-07-02,"Round of 16","Germany","Belgium",0.591,0.263,0.146,home,187.84,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.257766,0.525939,0.094299
+hist_1994_502,1994,1994-07-02,"Round of 16","Spain","Switzerland",0.457,0.29,0.253,home,28.74,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.442958,0.783072,0.179429
+hist_1994_503,1994,1994-07-03,"Round of 16","Saudi Arabia","Sweden",0.297,0.263,0.44,away,-169.24,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.470978,0.820981,0.200905
+hist_1994_504,1994,1994-07-03,"Round of 16","Romania","Argentina",0.447,0.291,0.262,home,16.61,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.459134,0.805197,0.187226
+hist_1994_505,1994,1994-07-04,"Round of 16","Netherlands","Ireland",0.535,0.276,0.189,home,118.78,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.328122,0.625489,0.125973
+hist_1994_506,1994,1994-07-04,"Round of 16","Brazil","USA",0.668,0.235,0.098,home,322.73,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.175053,0.403467,0.059816
+hist_1994_507,1994,1994-07-05,"Round of 16","Nigeria","Italy",0.392,0.284,0.324,away,-69.64,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.691296,1.127012,0.30532
+hist_1994_508,1994,1994-07-05,"Round of 16","Mexico","Bulgaria",0.434,0.293,0.273,draw,1.4,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.762734,1.227583,0.131443
+hist_1994_509,1994,1994-07-09,"Quarter-finals","Italy","Spain",0.375,0.314,0.312,home,23.18,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.586565,0.980829,0.243673
+hist_1994_510,1994,1994-07-09,"Quarter-finals","Netherlands","Brazil",0.298,0.35,0.352,away,1.88,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.631208,1.044124,0.254354
+hist_1994_511,1994,1994-07-10,"Quarter-finals","Bulgaria","Germany",0.366,0.265,0.369,home,-129.08,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.608342,1.005122,0.269059
+hist_1994_512,1994,1994-07-10,"Quarter-finals","Romania","Sweden",0.326,0.245,0.429,draw,-84.58,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.860342,1.406497,0.145159
+hist_1994_513,1994,1994-07-13,"Semi-finals","Bulgaria","Italy",0.383,0.311,0.306,away,-72.74,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.725046,1.18417,0.314163
+hist_1994_514,1994,1994-07-13,"Semi-finals","Sweden","Brazil",0.31,0.276,0.414,away,-40.32,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.515672,0.881889,0.219748
+hist_1994_515,1994,1994-07-16,"Third place","Sweden","Bulgaria",0.494,0.274,0.232,home,71.82,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.384936,0.70522,0.15493
+hist_1994_516,1994,1994-07-17,"Final","Brazil","Italy",0.526,0.311,0.163,draw,44.9,true,p0-quarantine-v3-2026-07-10,pre_1994_kickoff,0.777966,1.167962,0.151623
+hist_1998_517,1998,1998-06-10,"Group A","Brazil","Scotland",0.778,0.2,0.022,home,350.1,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.089768,0.251029,0.024884
+hist_1998_518,1998,1998-06-10,"Group A","Morocco","Norway",0.326,0.27,0.405,draw,-140.1,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.803201,1.309333,0.134746
+hist_1998_519,1998,1998-06-11,"Group B","Cameroon","Austria",0.422,0.292,0.286,draw,-16.9,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.761144,1.231001,0.12994
+hist_1998_520,1998,1998-06-11,"Group B","Italy","Chile",0.567,0.291,0.141,draw,112.1,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.844051,1.234432,0.170826
+hist_1998_521,1998,1998-06-12,"Group C","Saudi Arabia","Denmark",0.28,0.239,0.481,away,-106.5,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.404882,0.731888,0.173881
+hist_1998_522,1998,1998-06-12,"Group C","France","South Africa",0.738,0.211,0.051,home,302.9,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.115766,0.303811,0.035623
+hist_1998_523,1998,1998-06-12,"Group D","Paraguay","Bulgaria",0.344,0.28,0.376,draw,-71.8,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.778112,1.272966,0.129856
+hist_1998_524,1998,1998-06-13,"Group D","Spain","Nigeria",0.65,0.239,0.111,away,280.3,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,1.269942,2.198225,0.606411
+hist_1998_525,1998,1998-06-13,"Group E","Netherlands","Belgium",0.577,0.282,0.141,draw,138.7,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.868334,1.265848,0.176405
+hist_1998_526,1998,1998-06-13,"Group E","South Korea","Mexico",0.401,0.304,0.296,away,-45.7,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.748833,1.217396,0.328913
+hist_1998_527,1998,1998-06-14,"Group F","Yugoslavia","Iran",0.631,0.242,0.127,home,171.9,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.210854,0.460449,0.076145
+hist_1998_528,1998,1998-06-14,"Group H","Jamaica","Croatia",0.313,0.267,0.42,away,-153.4,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.505658,0.867501,0.217185
+hist_1998_529,1998,1998-06-14,"Group H","Argentina","Japan",0.604,0.248,0.148,home,141.8,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.240224,0.504181,0.08936
+hist_1998_530,1998,1998-06-15,"Group F","Germany","USA",0.693,0.246,0.061,home,261.7,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.158486,0.366725,0.048985
+hist_1998_531,1998,1998-06-15,"Group G","Romania","Colombia",0.557,0.253,0.19,home,109.5,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.296358,0.58519,0.116174
+hist_1998_532,1998,1998-06-15,"Group G","England","Tunisia",0.673,0.245,0.082,home,260,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.173678,0.39601,0.056826
+hist_1998_533,1998,1998-06-16,"Group A","Scotland","Norway",0.283,0.26,0.457,draw,-184.03,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.836538,1.347074,0.144469
+hist_1998_534,1998,1998-06-16,"Group A","Brazil","Morocco",0.662,0.238,0.1,home,307.63,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.180888,0.41249,0.062122
+hist_1998_535,1998,1998-06-17,"Group B","Chile","Austria",0.539,0.275,0.186,draw,123.69,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.850742,1.290984,0.162558
+hist_1998_536,1998,1998-06-17,"Group B","Italy","Cameroon",0.626,0.254,0.121,home,234.11,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.219033,0.468405,0.077138
+hist_1998_537,1998,1998-06-18,"Group C","France","Saudi Arabia",0.66,0.239,0.101,home,301.44,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.182922,0.415515,0.0629
+hist_1998_538,1998,1998-06-18,"Group C","South Africa","Denmark",0.281,0.259,0.459,draw,-185.64,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.838723,1.350927,0.14528
+hist_1998_539,1998,1998-06-19,"Group D","Nigeria","Bulgaria",0.417,0.291,0.293,home,-25.07,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.510419,0.874669,0.212576
+hist_1998_540,1998,1998-06-19,"Group D","Spain","Paraguay",0.618,0.256,0.126,draw,223.97,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.951336,1.362578,0.1989
+hist_1998_541,1998,1998-06-20,"Group E","Netherlands","South Korea",0.577,0.266,0.157,home,169.3,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.274334,0.549913,0.101789
+hist_1998_542,1998,1998-06-20,"Group E","Belgium","Mexico",0.38,0.281,0.339,draw,-83.3,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.776282,1.269401,0.12966
+hist_1998_543,1998,1998-06-20,"Group H","Japan","Croatia",0.317,0.268,0.414,away,-148.09,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.515709,0.881889,0.221357
+hist_1998_544,1998,1998-06-21,"Group F","Germany","Yugoslavia",0.566,0.269,0.165,draw,155.81,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.881942,1.313044,0.17379
+hist_1998_545,1998,1998-06-21,"Group F","USA","Iran",0.49,0.284,0.225,away,66.79,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.921381,1.491655,0.419588
+hist_1998_546,1998,1998-06-21,"Group H","Argentina","Jamaica",0.635,0.251,0.114,home,247.29,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.209222,0.45413,0.07311
+hist_1998_547,1998,1998-06-22,"Group G","Colombia","Tunisia",0.47,0.288,0.242,home,43.64,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.422408,0.755023,0.169732
+hist_1998_548,1998,1998-06-22,"Group G","Romania","England",0.365,0.278,0.358,home,-99.34,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.608673,1.007858,0.265337
+hist_1998_549,1998,1998-06-23,"Group A","Scotland","Morocco",0.411,0.29,0.299,away,-34.54,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.744422,1.207312,0.330161
+hist_1998_550,1998,1998-06-23,"Group A","Brazil","Norway",0.593,0.262,0.145,away,190.72,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,1.151318,1.931022,0.541337
+hist_1998_551,1998,1998-06-23,"Group B","Italy","Austria",0.6,0.261,0.139,home,199.49,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.247442,0.510826,0.089661
+hist_1998_552,1998,1998-06-23,"Group B","Chile","Cameroon",0.562,0.27,0.168,draw,151.03,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.876968,1.309333,0.172034
+hist_1998_553,1998,1998-06-24,"Group C","France","Denmark",0.564,0.269,0.167,home,153.46,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.290346,0.572701,0.108993
+hist_1998_554,1998,1998-06-24,"Group C","South Africa","Saudi Arabia",0.431,0.293,0.276,draw,-2.86,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.761786,1.227583,0.130968
+hist_1998_555,1998,1998-06-24,"Group D","Spain","Bulgaria",0.56,0.27,0.17,home,148.99,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.2954,0.579818,0.11125
+hist_1998_556,1998,1998-06-24,"Group D","Nigeria","Paraguay",0.478,0.286,0.235,away,53.27,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.895505,1.44817,0.40609
+hist_1998_557,1998,1998-06-25,"Group E","Belgium","South Korea",0.507,0.281,0.211,draw,85.93,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.818531,1.269401,0.150997
+hist_1998_558,1998,1998-06-25,"Group E","Netherlands","Mexico",0.466,0.288,0.245,draw,39.21,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.784125,1.244795,0.138836
+hist_1998_559,1998,1998-06-25,"Group F","Germany","Iran",0.655,0.242,0.103,home,286.25,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.188198,0.42312,0.064817
+hist_1998_560,1998,1998-06-25,"Group F","USA","Yugoslavia",0.279,0.259,0.462,away,-188.05,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.434366,0.77219,0.183643
+hist_1998_561,1998,1998-06-26,"Group G","Romania","Tunisia",0.622,0.254,0.123,draw,228.98,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.958529,1.370421,0.20113
+hist_1998_562,1998,1998-06-26,"Group G","Colombia","England",0.279,0.259,0.462,away,-188.28,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.434366,0.77219,0.183643
+hist_1998_563,1998,1998-06-26,"Group H","Japan","Jamaica",0.493,0.284,0.223,away,70.03,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.927434,1.500584,0.423389
+hist_1998_564,1998,1998-06-26,"Group H","Argentina","Croatia",0.438,0.292,0.27,home,6.05,false,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.474008,0.825536,0.194372
+hist_1998_565,1998,1998-06-27,"Round of 16","Brazil","Chile",0.646,0.247,0.107,home,264.38,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.197774,0.436956,0.068382
+hist_1998_566,1998,1998-06-27,"Round of 16","Italy","Norway",0.409,0.29,0.302,home,-37.21,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.524585,0.89404,0.219941
+hist_1998_567,1998,1998-06-28,"Round of 16","Nigeria","Denmark",0.353,0.275,0.372,away,-111.74,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.594618,0.988861,0.259497
+hist_1998_568,1998,1998-06-28,"Round of 16","France","Paraguay",0.611,0.258,0.131,home,213.79,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.235046,0.492658,0.084241
+hist_1998_569,1998,1998-06-29,"Round of 16","Germany","Mexico",0.527,0.277,0.196,home,109.12,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.338874,0.640555,0.131072
+hist_1998_570,1998,1998-06-29,"Round of 16","Netherlands","Yugoslavia",0.443,0.292,0.266,home,11.67,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.466269,0.814186,0.190237
+hist_1998_571,1998,1998-06-30,"Round of 16","Argentina","England",0.418,0.291,0.291,draw,-24.15,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.762086,1.234432,0.129702
+hist_1998_572,1998,1998-06-30,"Round of 16","Romania","Croatia",0.418,0.291,0.291,away,-22.98,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.762086,1.234432,0.338702
+hist_1998_573,1998,1998-07-03,"Quarter-finals","Italy","France",0.257,0.3,0.442,draw,-62.06,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.751413,1.203973,0.131149
+hist_1998_574,1998,1998-07-03,"Quarter-finals","Brazil","Denmark",0.646,0.239,0.115,home,185.51,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.195662,0.436956,0.06927
+hist_1998_575,1998,1998-07-04,"Quarter-finals","Germany","Croatia",0.509,0.32,0.17,away,111.38,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,1.050381,1.771957,0.473161
+hist_1998_576,1998,1998-07-04,"Quarter-finals","Netherlands","Argentina",0.389,0.309,0.302,home,20.16,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.560006,0.944176,0.232262
+hist_1998_577,1998,1998-07-07,"Semi-finals","Brazil","Netherlands",0.542,0.264,0.195,draw,104.72,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.873485,1.331806,0.1657
+hist_1998_578,1998,1998-07-08,"Semi-finals","France","Croatia",0.437,0.375,0.188,home,11.06,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.492938,0.827822,0.176156
+hist_1998_579,1998,1998-07-11,"Third place","Netherlands","Croatia",0.424,0.318,0.259,away,1.07,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.829981,1.350927,0.36517
+hist_1998_580,1998,1998-07-12,"Final","Brazil","France",0.317,0.292,0.392,away,21.53,true,p0-quarantine-v3-2026-07-10,pre_1998_kickoff,0.555417,0.936493,0.235685
+hist_2002_581,2002,2002-05-31,"Group A","France","Senegal",0.809,0.179,0.012,away,291.3,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.662666,4.422849,0.815313
+hist_2002_582,2002,2002-06-01,"Group A","Uruguay","Denmark",0.265,0.27,0.466,away,-49.4,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.428281,0.76357,0.178225
+hist_2002_583,2002,2002-06-01,"Group E","Ireland","Cameroon",0.336,0.339,0.325,draw,6.5,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.655442,1.081755,0.10926
+hist_2002_584,2002,2002-06-01,"Group E","Germany","Saudi Arabia",0.571,0.266,0.163,home,114.4,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.281366,0.560366,0.105305
+hist_2002_585,2002,2002-06-02,"Group B","Paraguay","South Africa",0.472,0.338,0.19,draw,45.6,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.697128,1.084709,0.129442
+hist_2002_586,2002,2002-06-02,"Group B","Spain","Slovenia",0.593,0.262,0.145,home,189.3,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.255318,0.522561,0.093337
+hist_2002_587,2002,2002-06-02,"Group F","England","Sweden",0.474,0.278,0.248,draw,57.1,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.807464,1.280134,0.14309
+hist_2002_588,2002,2002-06-02,"Group F","Argentina","Nigeria",0.774,0.18,0.045,home,192.4,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.085501,0.256183,0.026596
+hist_2002_589,2002,2002-06-03,"Group C","Brazil","Turkey",0.627,0.242,0.131,home,164.5,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.214854,0.466809,0.078145
+hist_2002_590,2002,2002-06-03,"Group G","Croatia","Mexico",0.532,0.259,0.208,away,-24.1,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.977369,1.570217,0.454353
+hist_2002_591,2002,2002-06-03,"Group G","Italy","Ecuador",0.708,0.236,0.056,home,218.3,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.144096,0.345311,0.0442
+hist_2002_592,2002,2002-06-04,"Group C","China","Costa Rica",0.479,0.276,0.245,away,-34.2,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.875642,1.406497,0.399733
+hist_2002_593,2002,2002-06-04,"Group D","South Korea","Poland",0.668,0.237,0.095,home,63.9,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.175418,0.403467,0.059624
+hist_2002_594,2002,2002-06-04,"Group H","Japan","Belgium",0.428,0.293,0.28,draw,-7.9,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.761433,1.227583,0.130513
+hist_2002_595,2002,2002-06-05,"Group D","USA","Portugal",0.338,0.272,0.39,home,-127.3,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.664328,1.084709,0.295172
+hist_2002_596,2002,2002-06-05,"Group E","Germany","Ireland",0.454,0.29,0.256,draw,25.15,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.775752,1.237874,0.135826
+hist_2002_597,2002,2002-06-05,"Group H","Russia","Tunisia",0.519,0.279,0.202,home,98.9,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.350006,0.655851,0.136082
+hist_2002_598,2002,2002-06-06,"Group A","France","Uruguay",0.614,0.257,0.129,draw,217.85,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.945686,1.358679,0.196819
+hist_2002_599,2002,2002-06-06,"Group A","Denmark","Senegal",0.505,0.282,0.214,draw,82.95,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.816345,1.265848,0.150197
+hist_2002_600,2002,2002-06-06,"Group E","Cameroon","Saudi Arabia",0.573,0.268,0.16,home,164.85,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.279753,0.55687,0.103805
+hist_2002_601,2002,2002-06-07,"Group B","Spain","Paraguay",0.625,0.253,0.122,home,233.39,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.219518,0.470004,0.077755
+hist_2002_602,2002,2002-06-07,"Group F","Sweden","Nigeria",0.474,0.287,0.239,home,48.31,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.416166,0.746548,0.166899
+hist_2002_603,2002,2002-06-07,"Group F","Argentina","England",0.545,0.274,0.181,away,131.21,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.042862,1.709258,0.483893
+hist_2002_604,2002,2002-06-08,"Group B","South Africa","Slovenia",0.409,0.29,0.302,home,-37.31,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.524585,0.89404,0.219941
+hist_2002_605,2002,2002-06-08,"Group C","Brazil","China",0.605,0.259,0.135,home,206.76,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.241331,0.502527,0.087261
+hist_2002_606,2002,2002-06-08,"Group G","Italy","Croatia",0.581,0.266,0.154,away,174.17,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.124033,1.870803,0.527485
+hist_2002_607,2002,2002-06-09,"Group C","Costa Rica","Turkey",0.536,0.276,0.188,draw,120.26,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.846816,1.287354,0.16132
+hist_2002_608,2002,2002-06-09,"Group G","Mexico","Ecuador",0.574,0.267,0.159,home,165.97,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.278046,0.555126,0.103379
+hist_2002_609,2002,2002-06-09,"Group H","Japan","Russia",0.47,0.288,0.242,home,43.6,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.422408,0.755023,0.169732
+hist_2002_610,2002,2002-06-10,"Group D","South Korea","USA",0.408,0.287,0.305,draw,-51.23,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.767858,1.248273,0.129744
+hist_2002_611,2002,2002-06-10,"Group D","Portugal","Poland",0.621,0.255,0.124,home,228.17,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.224042,0.476424,0.079508
+hist_2002_612,2002,2002-06-10,"Group H","Tunisia","Belgium",0.276,0.263,0.461,draw,-209.4,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.831866,1.335601,0.144348
+hist_2002_613,2002,2002-06-11,"Group A","Denmark","France",0.371,0.279,0.35,home,-92.55,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.595982,0.991553,0.25907
+hist_2002_614,2002,2002-06-11,"Group A","Senegal","Uruguay",0.456,0.29,0.254,draw,27.91,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.776552,1.237874,0.136226
+hist_2002_615,2002,2002-06-11,"Group E","Cameroon","Germany",0.439,0.293,0.269,away,7.28,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.812931,1.313044,0.364272
+hist_2002_616,2002,2002-06-11,"Group E","Saudi Arabia","Ireland",0.292,0.262,0.446,away,-174.6,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.460824,0.807436,0.19609
+hist_2002_617,2002,2002-06-12,"Group B","South Africa","Spain",0.25,0.257,0.493,away,-242.11,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.385598,0.707246,0.159775
+hist_2002_618,2002,2002-06-12,"Group B","Slovenia","Paraguay",0.435,0.293,0.272,away,2.35,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.805058,1.301953,0.359604
+hist_2002_619,2002,2002-06-12,"Group F","Sweden","Argentina",0.366,0.279,0.355,draw,-97.51,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.779822,1.276543,0.129991
+hist_2002_620,2002,2002-06-12,"Group F","Nigeria","England",0.32,0.268,0.411,draw,-145.37,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.807145,1.316768,0.136072
+hist_2002_621,2002,2002-06-13,"Group C","Costa Rica","Brazil",0.365,0.278,0.357,away,-98.97,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.623958,1.030019,0.273337
+hist_2002_622,2002,2002-06-13,"Group C","Turkey","China",0.479,0.286,0.234,home,54.03,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.407993,0.736055,0.163333
+hist_2002_623,2002,2002-06-13,"Group G","Mexico","Italy",0.422,0.292,0.286,draw,-16.76,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.761144,1.231001,0.12994
+hist_2002_624,2002,2002-06-13,"Group G","Ecuador","Croatia",0.336,0.272,0.393,home,-129.38,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.669329,1.090644,0.29728
+hist_2002_625,2002,2002-06-14,"Group D","Portugal","South Korea",0.547,0.273,0.18,away,132.79,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.046138,1.714798,0.485805
+hist_2002_626,2002,2002-06-14,"Group D","Poland","USA",0.282,0.26,0.458,home,-184.53,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.792888,1.265848,0.362644
+hist_2002_627,2002,2002-06-14,"Group H","Tunisia","Japan",0.288,0.266,0.447,away,-195.07,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.459509,0.805197,0.19493
+hist_2002_628,2002,2002-06-14,"Group H","Belgium","Russia",0.498,0.283,0.219,home,76.15,false,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.380054,0.697155,0.149983
+hist_2002_629,2002,2002-06-15,"Round of 16","Germany","Paraguay",0.588,0.264,0.148,home,183.45,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.261344,0.531028,0.095824
+hist_2002_630,2002,2002-06-15,"Round of 16","Denmark","England",0.433,0.293,0.274,away,0.95,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.800414,1.294627,0.357283
+hist_2002_631,2002,2002-06-16,"Round of 16","Sweden","Senegal",0.476,0.287,0.238,away,50.11,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.889589,1.435485,0.404372
+hist_2002_632,2002,2002-06-16,"Round of 16","Spain","Ireland",0.48,0.286,0.234,draw,54.96,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.794952,1.251763,0.142578
+hist_2002_633,2002,2002-06-17,"Round of 16","Mexico","USA",0.527,0.277,0.196,away,109.28,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.000874,1.629641,0.462073
+hist_2002_634,2002,2002-06-17,"Round of 16","Brazil","Belgium",0.526,0.277,0.196,home,108.44,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.339821,0.642454,0.131742
+hist_2002_635,2002,2002-06-18,"Round of 16","Japan","Turkey",0.536,0.276,0.188,away,120.15,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,1.022816,1.671313,0.47332
+hist_2002_636,2002,2002-06-18,"Round of 16","South Korea","Italy",0.367,0.279,0.354,home,-96.44,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.603846,1.002393,0.263003
+hist_2002_637,2002,2002-06-21,"Quarter-finals","England","Brazil",0.425,0.346,0.229,away,16.23,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.894782,1.474033,0.387533
+hist_2002_638,2002,2002-06-21,"Quarter-finals","Germany","USA",0.758,0.175,0.067,home,82.53,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.093678,0.277072,0.031526
+hist_2002_639,2002,2002-06-22,"Quarter-finals","Spain","South Korea",0.506,0.286,0.208,draw,89.46,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.809096,1.251763,0.14965
+hist_2002_640,2002,2002-06-22,"Quarter-finals","Senegal","Turkey",0.48,0.29,0.23,away,65.07,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.9074,1.469676,0.41165
+hist_2002_641,2002,2002-06-25,"Semi-finals","Germany","South Korea",0.556,0.325,0.119,home,79.02,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.316922,0.586987,0.105648
+hist_2002_642,2002,2002-06-26,"Semi-finals","Brazil","Turkey",0.63,0.261,0.109,home,178.03,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.216902,0.462035,0.07439
+hist_2002_643,2002,2002-06-29,"Third place","South Korea","Turkey",0.415,0.362,0.223,away,26.27,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.906998,1.500584,0.387977
+hist_2002_644,2002,2002-06-30,"Final","Germany","Brazil",0.486,0.298,0.216,away,-61.32,true,p0-quarantine-v3-2026-07-10,pre_2002_kickoff,0.939656,1.532477,0.425426
+hist_2006_645,2006,2006-06-09,"Group A","Germany","Costa Rica",0.736,0.214,0.05,home,183.9,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.117992,0.306525,0.036098
+hist_2006_646,2006,2006-06-09,"Group A","Poland","Ecuador",0.528,0.277,0.195,away,110.1,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,1.003538,1.634756,0.463405
+hist_2006_647,2006,2006-06-10,"Group B","England","Paraguay",0.674,0.246,0.08,home,180.4,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.173192,0.394525,0.056338
+hist_2006_648,2006,2006-06-10,"Group B","Trinidad and Tobago","Sweden",0.267,0.266,0.466,draw,-216.1,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.827201,1.324259,0.144689
+hist_2006_649,2006,2006-06-10,"Group C","Argentina","Côte d'Ivoire",0.516,0.279,0.204,home,97.4,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.353713,0.661649,0.13814
+hist_2006_650,2006,2006-06-11,"Group C","Serbia and Montenegro","Netherlands",0.232,0.255,0.513,away,-184.3,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.356018,0.667479,0.145497
+hist_2006_651,2006,2006-06-11,"Group D","Mexico","Iran",0.408,0.315,0.277,home,-10,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.526418,0.896488,0.213597
+hist_2006_652,2006,2006-06-11,"Group D","Angola","Portugal",0.232,0.253,0.515,away,-265.9,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.353058,0.663588,0.144525
+hist_2006_653,2006,2006-06-12,"Group E","Italy","Ghana",0.63,0.255,0.115,home,243.6,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.21515,0.462035,0.075062
+hist_2006_654,2006,2006-06-12,"Group E","USA","Czech Republic",0.361,0.274,0.365,away,-104.8,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.608622,1.007858,0.266773
+hist_2006_655,2006,2006-06-12,"Group F","Australia","Japan",0.526,0.289,0.185,home,117.7,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.342422,0.642454,0.12945
+hist_2006_656,2006,2006-06-13,"Group F","Brazil","Croatia",0.777,0.188,0.036,home,210.8,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.086369,0.252315,0.025477
+hist_2006_657,2006,2006-06-13,"Group G","France","Switzerland",0.616,0.251,0.133,draw,149.4,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.958146,1.382302,0.198573
+hist_2006_658,2006,2006-06-13,"Group G","South Korea","Togo",0.627,0.266,0.107,home,205.9,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.221334,0.466809,0.075289
+hist_2006_659,2006,2006-06-14,"Group A","Germany","Poland",0.578,0.266,0.156,home,171.01,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.273176,0.548181,0.10121
+hist_2006_660,2006,2006-06-14,"Group H","Spain","Ukraine",0.68,0.23,0.089,home,178,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.163221,0.385662,0.05525
+hist_2006_661,2006,2006-06-14,"Group H","Tunisia","Saudi Arabia",0.575,0.267,0.158,draw,167.1,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.892878,1.320507,0.177794
+hist_2006_662,2006,2006-06-15,"Group A","Ecuador","Costa Rica",0.494,0.284,0.223,home,70.81,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.386421,0.70522,0.15266
+hist_2006_663,2006,2006-06-15,"Group B","England","Trinidad and Tobago",0.673,0.231,0.095,home,340.49,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.169315,0.39601,0.058072
+hist_2006_664,2006,2006-06-15,"Group B","Sweden","Paraguay",0.482,0.286,0.232,home,56.59,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.403944,0.729811,0.161074
+hist_2006_665,2006,2006-06-16,"Group C","Argentina","Serbia and Montenegro",0.578,0.266,0.156,home,171.34,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.273176,0.548181,0.10121
+hist_2006_666,2006,2006-06-16,"Group C","Netherlands","Côte d'Ivoire",0.59,0.263,0.148,home,185.24,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.259173,0.527633,0.094855
+hist_2006_667,2006,2006-06-16,"Group D","Mexico","Angola",0.648,0.246,0.106,draw,268.87,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.999656,1.402424,0.21557
+hist_2006_668,2006,2006-06-17,"Group D","Portugal","Iran",0.508,0.281,0.211,home,87.57,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.365546,0.677274,0.143292
+hist_2006_669,2006,2006-06-17,"Group E","Italy","USA",0.557,0.271,0.172,draw,145.21,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.871274,1.305636,0.169917
+hist_2006_670,2006,2006-06-17,"Group E","Czech Republic","Ghana",0.669,0.234,0.097,away,328.61,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,1.317726,2.333044,0.631485
+hist_2006_671,2006,2006-06-18,"Group F","Brazil","Australia",0.531,0.277,0.192,home,113.6,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.333554,0.632993,0.128412
+hist_2006_672,2006,2006-06-18,"Group F","Japan","Croatia",0.405,0.289,0.306,draw,-43.3,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.763182,1.241329,0.128831
+hist_2006_673,2006,2006-06-18,"Group G","France","South Korea",0.571,0.268,0.161,draw,162.53,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.887786,1.316768,0.175981
+hist_2006_674,2006,2006-06-19,"Group G","Togo","Switzerland",0.226,0.251,0.523,away,-273.57,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.341606,0.648174,0.139302
+hist_2006_675,2006,2006-06-19,"Group H","Spain","Tunisia",0.637,0.25,0.113,home,250.78,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.207038,0.450986,0.072269
+hist_2006_676,2006,2006-06-19,"Group H","Saudi Arabia","Ukraine",0.303,0.265,0.433,away,-163.32,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.483523,0.837018,0.207217
+hist_2006_677,2006,2006-06-20,"Group A","Ecuador","Germany",0.341,0.273,0.386,away,-124.3,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.567806,0.951918,0.246639
+hist_2006_678,2006,2006-06-20,"Group A","Costa Rica","Poland",0.4,0.285,0.315,away,-60.44,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.71045,1.155183,0.314613
+hist_2006_679,2006,2006-06-20,"Group B","Sweden","England",0.333,0.271,0.396,draw,-133.01,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.799146,1.305636,0.133852
+hist_2006_680,2006,2006-06-20,"Group B","Paraguay","Trinidad and Tobago",0.544,0.274,0.182,home,129.45,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.316136,0.608806,0.12053
+hist_2006_681,2006,2006-06-21,"Group C","Netherlands","Argentina",0.473,0.287,0.24,draw,46.31,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.789698,1.248273,0.140664
+hist_2006_682,2006,2006-06-21,"Group C","Côte d'Ivoire","Serbia and Montenegro",0.482,0.286,0.232,home,57.15,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.403944,0.729811,0.161074
+hist_2006_683,2006,2006-06-21,"Group D","Portugal","Mexico",0.499,0.283,0.218,home,76.78,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.378614,0.695149,0.149262
+hist_2006_684,2006,2006-06-21,"Group D","Iran","Angola",0.574,0.267,0.159,draw,165.26,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.892046,1.320507,0.177378
+hist_2006_685,2006,2006-06-22,"Group E","Czech Republic","Italy",0.432,0.293,0.275,away,-1.59,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.798098,1.290984,0.356125
+hist_2006_686,2006,2006-06-22,"Group E","Ghana","USA",0.404,0.286,0.31,home,-55.55,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.533112,0.90634,0.225658
+hist_2006_687,2006,2006-06-22,"Group F","Japan","Brazil",0.211,0.247,0.542,away,-296.49,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.315294,0.612489,0.127142
+hist_2006_688,2006,2006-06-22,"Group F","Croatia","Australia",0.374,0.28,0.346,draw,-89.17,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.777992,1.272966,0.129796
+hist_2006_689,2006,2006-06-23,"Group G","Togo","France",0.158,0.23,0.612,away,-391.1,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.228408,0.491023,0.087754
+hist_2006_690,2006,2006-06-23,"Group G","Switzerland","South Korea",0.48,0.286,0.234,home,55.14,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.406952,0.733969,0.162578
+hist_2006_691,2006,2006-06-23,"Group H","Saudi Arabia","Spain",0.138,0.222,0.64,away,-435.76,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.197928,0.446287,0.074322
+hist_2006_692,2006,2006-06-23,"Group H","Ukraine","Tunisia",0.512,0.28,0.208,home,91.66,false,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.359808,0.669431,0.140704
+hist_2006_693,2006,2006-06-24,"Round of 16","Germany","Sweden",0.541,0.275,0.184,home,126.34,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.320162,0.614336,0.122268
+hist_2006_694,2006,2006-06-24,"Round of 16","Argentina","Mexico",0.544,0.273,0.182,home,130.04,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.315589,0.608806,0.120712
+hist_2006_695,2006,2006-06-25,"Round of 16","England","Ecuador",0.618,0.256,0.127,home,222.95,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.227589,0.481267,0.0809
+hist_2006_696,2006,2006-06-25,"Round of 16","Portugal","Netherlands",0.404,0.289,0.307,home,-43.83,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.532986,0.90634,0.224732
+hist_2006_697,2006,2006-06-26,"Round of 16","Italy","Australia",0.501,0.282,0.217,home,78.86,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.375614,0.691149,0.148045
+hist_2006_698,2006,2006-06-26,"Round of 16","Switzerland","Ukraine",0.476,0.287,0.237,draw,50.26,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.791114,1.248273,0.141373
+hist_2006_699,2006,2006-06-27,"Round of 16","Brazil","Ghana",0.658,0.24,0.101,home,295.67,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.184765,0.41855,0.063684
+hist_2006_700,2006,2006-06-27,"Round of 16","Spain","France",0.49,0.284,0.226,away,65.46,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.919832,1.48722,0.419588
+hist_2006_701,2006,2006-06-30,"Quarter-finals","Germany","Argentina",0.428,0.308,0.264,draw,2.74,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.731744,1.177655,0.12644
+hist_2006_702,2006,2006-06-30,"Quarter-finals","Italy","Ukraine",0.692,0.247,0.061,home,168.02,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.159594,0.368169,0.049293
+hist_2006_703,2006,2006-07-01,"Quarter-finals","England","Portugal",0.331,0.368,0.301,draw,1.41,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.599586,0.999672,0.100081
+hist_2006_704,2006,2006-07-01,"Quarter-finals","Brazil","France",0.609,0.284,0.107,away,102.02,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,1.248986,2.234926,0.584165
+hist_2006_705,2006,2006-07-04,"Semi-finals","Germany","Italy",0.296,0.332,0.372,away,-38.65,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.592224,0.988861,0.241
+hist_2006_706,2006,2006-07-05,"Semi-finals","Portugal","France",0.363,0.377,0.26,away,-52.39,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.821498,1.347074,0.339685
+hist_2006_707,2006,2006-07-08,"Third place","Germany","Portugal",0.355,0.339,0.306,home,-24.35,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.624582,1.035637,0.254831
+hist_2006_708,2006,2006-07-09,"Final","Italy","France",0.437,0.373,0.19,draw,-0.55,true,p0-quarantine-v3-2026-07-10,pre_2006_kickoff,0.620198,0.986177,0.113534
+hist_2010_709,2010,2010-06-11,"Group A","South Africa","Mexico",0.235,0.251,0.513,draw,-265.7,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.879395,1.382302,0.15971
+hist_2010_710,2010,2010-06-11,"Group A","Uruguay","France",0.322,0.305,0.373,draw,25,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.725838,1.187444,0.121407
+hist_2010_711,2010,2010-06-12,"Group B","South Korea","Greece",0.527,0.277,0.196,home,109.4,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.338874,0.640555,0.131072
+hist_2010_712,2010,2010-06-12,"Group B","Argentina","Nigeria",0.715,0.212,0.073,home,138.3,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.131498,0.335473,0.043277
+hist_2010_713,2010,2010-06-12,"Group C","England","USA",0.7,0.245,0.054,draw,216,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.062941,1.406497,0.246512
+hist_2010_714,2010,2010-06-13,"Group C","Algeria","Slovenia",0.369,0.279,0.352,away,-94.1,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.633906,1.044124,0.278033
+hist_2010_715,2010,2010-06-13,"Group D","Serbia","Ghana",0.614,0.255,0.132,away,142.7,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.195445,2.024953,0.566078
+hist_2010_716,2010,2010-06-13,"Group D","Germany","Australia",0.704,0.206,0.09,home,120.2,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.138152,0.350977,0.047858
+hist_2010_717,2010,2010-06-14,"Group E","Netherlands","Denmark",0.672,0.27,0.058,home,295.6,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.183848,0.397497,0.055474
+hist_2010_718,2010,2010-06-14,"Group E","Japan","Cameroon",0.415,0.29,0.295,home,-28.5,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.51335,0.879477,0.214625
+hist_2010_719,2010,2010-06-14,"Group F","Italy","Paraguay",0.727,0.218,0.056,draw,155.5,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.143189,1.52326,0.265777
+hist_2010_720,2010,2010-06-15,"Group F","New Zealand","Slovakia",0.429,0.293,0.278,draw,-5,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.761174,1.227583,0.130663
+hist_2010_721,2010,2010-06-15,"Group G","Côte d'Ivoire","Portugal",0.329,0.305,0.366,draw,-80.8,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.725222,1.187444,0.121098
+hist_2010_722,2010,2010-06-15,"Group G","Brazil","North Korea",0.9,0.098,0.002,home,550,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.019608,0.105361,0.005002
+hist_2010_723,2010,2010-06-16,"Group A","South Africa","Uruguay",0.295,0.263,0.442,away,-171.54,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.467558,0.816445,0.199195
+hist_2010_724,2010,2010-06-16,"Group H","Honduras","Chile",0.382,0.25,0.368,away,-177.1,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.607848,0.999672,0.272674
+hist_2010_725,2010,2010-06-16,"Group H","Spain","Switzerland",0.808,0.163,0.029,away,412.6,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.622274,3.540459,0.797853
+hist_2010_726,2010,2010-06-17,"Group A","France","Mexico",0.39,0.283,0.327,away,-71.84,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.685118,1.117795,0.302515
+hist_2010_727,2010,2010-06-17,"Group B","Argentina","South Korea",0.509,0.28,0.21,home,88.39,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.363581,0.675307,0.142801
+hist_2010_728,2010,2010-06-17,"Group B","Greece","Nigeria",0.385,0.282,0.332,home,-76.71,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.567973,0.954512,0.244557
+hist_2010_729,2010,2010-06-18,"Group C","Slovenia","USA",0.369,0.279,0.352,draw,-94.12,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.779906,1.276543,0.130032
+hist_2010_730,2010,2010-06-18,"Group C","England","Algeria",0.701,0.214,0.084,draw,421.98,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.116253,1.541779,0.249313
+hist_2010_731,2010,2010-06-18,"Group D","Germany","Serbia",0.563,0.27,0.167,away,152.81,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.083758,1.789761,0.505429
+hist_2010_732,2010,2010-06-19,"Group D","Ghana","Australia",0.414,0.29,0.296,draw,-29.69,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.763112,1.237874,0.129506
+hist_2010_733,2010,2010-06-19,"Group E","Netherlands","Japan",0.665,0.236,0.099,home,317.96,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.177722,0.407968,0.061013
+hist_2010_734,2010,2010-06-19,"Group E","Cameroon","Denmark",0.417,0.291,0.292,away,-24.94,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.759834,1.231001,0.337576
+hist_2010_735,2010,2010-06-20,"Group F","Slovakia","Paraguay",0.355,0.276,0.369,away,-109.19,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.600362,0.996959,0.262093
+hist_2010_736,2010,2010-06-20,"Group F","Italy","New Zealand",0.635,0.251,0.114,draw,248.11,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.977222,1.382302,0.208111
+hist_2010_737,2010,2010-06-20,"Group G","Brazil","Côte d'Ivoire",0.67,0.234,0.097,home,328.85,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.173065,0.400478,0.059058
+hist_2010_738,2010,2010-06-21,"Group G","Portugal","North Korea",0.662,0.238,0.1,home,308.05,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.180888,0.41249,0.062122
+hist_2010_739,2010,2010-06-21,"Group H","Chile","Switzerland",0.556,0.271,0.173,home,143.73,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.300506,0.586987,0.113532
+hist_2010_740,2010,2010-06-21,"Group H","Spain","Honduras",0.687,0.223,0.09,home,378.83,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.155798,0.375421,0.053034
+hist_2010_741,2010,2010-06-22,"Group A","Mexico","Uruguay",0.497,0.283,0.22,away,74.34,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.935498,1.514128,0.427705
+hist_2010_742,2010,2010-06-22,"Group A","France","South Africa",0.569,0.268,0.163,away,160.44,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.096154,1.814005,0.512165
+hist_2010_743,2010,2010-06-22,"Group B","Nigeria","South Korea",0.386,0.283,0.331,draw,-75.65,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.772646,1.262308,0.129278
+hist_2010_744,2010,2010-06-22,"Group B","Greece","Argentina",0.253,0.258,0.488,away,-237.83,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.392717,0.71744,0.162565
+hist_2010_745,2010,2010-06-23,"Group C","USA","Algeria",0.618,0.256,0.127,home,222.58,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.227589,0.481267,0.0809
+hist_2010_746,2010,2010-06-23,"Group C","Slovenia","England",0.252,0.258,0.49,away,-240.2,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.390168,0.71335,0.161802
+hist_2010_747,2010,2010-06-23,"Group D","Australia","Serbia",0.401,0.285,0.314,home,-59.47,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.538622,0.913794,0.228698
+hist_2010_748,2010,2010-06-23,"Group D","Ghana","Germany",0.31,0.266,0.424,away,-156.65,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.498632,0.858022,0.213938
+hist_2010_749,2010,2010-06-24,"Group E","Denmark","Japan",0.473,0.287,0.24,away,46.96,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.883698,1.427116,0.400664
+hist_2010_750,2010,2010-06-24,"Group E","Cameroon","Netherlands",0.164,0.232,0.604,away,-378.62,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.237536,0.504181,0.091856
+hist_2010_751,2010,2010-06-24,"Group F","Slovakia","Italy",0.245,0.256,0.498,home,-248.05,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.883565,1.406497,0.409513
+hist_2010_752,2010,2010-06-24,"Group F","Paraguay","New Zealand",0.562,0.27,0.168,draw,151.13,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.876968,1.309333,0.172034
+hist_2010_753,2010,2010-06-25,"Group G","Portugal","Brazil",0.252,0.258,0.49,draw,-239.99,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.854168,1.354796,0.151802
+hist_2010_754,2010,2010-06-25,"Group G","North Korea","Côte d'Ivoire",0.261,0.26,0.48,away,-228.67,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.406121,0.733969,0.169781
+hist_2010_755,2010,2010-06-25,"Group H","Chile","Spain",0.318,0.268,0.415,away,-148.37,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.515173,0.879477,0.22226
+hist_2010_756,2010,2010-06-25,"Group H","Switzerland","Honduras",0.496,0.283,0.221,draw,73.81,false,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.808946,1.262308,0.147429
+hist_2010_757,2010,2010-06-26,"Round of 16","Uruguay","South Korea",0.541,0.275,0.184,home,126.08,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.320162,0.614336,0.122268
+hist_2010_758,2010,2010-06-26,"Round of 16","USA","Ghana",0.509,0.28,0.21,away,88.58,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.961581,1.560648,0.440801
+hist_2010_759,2010,2010-06-27,"Round of 16","Germany","England",0.409,0.29,0.302,home,-37.1,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.524585,0.89404,0.219941
+hist_2010_760,2010,2010-06-27,"Round of 16","Argentina","Mexico",0.48,0.286,0.234,home,54.78,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.406952,0.733969,0.162578
+hist_2010_761,2010,2010-06-28,"Round of 16","Netherlands","Slovakia",0.69,0.221,0.089,home,389.43,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.152862,0.371064,0.052011
+hist_2010_762,2010,2010-06-28,"Round of 16","Brazil","Chile",0.596,0.262,0.142,home,194.81,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.252024,0.517515,0.09169
+hist_2010_763,2010,2010-06-29,"Round of 16","Paraguay","Japan",0.452,0.291,0.258,draw,21.72,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.773549,1.234432,0.135177
+hist_2010_764,2010,2010-06-29,"Round of 16","Spain","Portugal",0.617,0.256,0.127,home,222.31,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.228354,0.482886,0.081409
+hist_2010_765,2010,2010-07-02,"Quarter-finals","Netherlands","Brazil",0.372,0.301,0.327,home,-63.55,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.591914,0.988861,0.250657
+hist_2010_766,2010,2010-07-02,"Quarter-finals","Uruguay","Ghana",0.681,0.256,0.063,draw,169.33,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,1.021266,1.362578,0.233865
+hist_2010_767,2010,2010-07-03,"Quarter-finals","Argentina","Germany",0.463,0.292,0.245,away,18.77,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.869658,1.406497,0.392197
+hist_2010_768,2010,2010-07-03,"Quarter-finals","Paraguay","Spain",0.131,0.31,0.559,away,-327.38,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.307742,0.581606,0.105821
+hist_2010_769,2010,2010-07-06,"Semi-finals","Uruguay","Netherlands",0.298,0.284,0.418,away,-160.88,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.508184,0.872274,0.213764
+hist_2010_770,2010,2010-07-07,"Semi-finals","Germany","Spain",0.428,0.311,0.261,away,-77.31,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.826026,1.343235,0.364652
+hist_2010_771,2010,2010-07-10,"Third place","Uruguay","Germany",0.245,0.261,0.494,away,-122.97,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.384182,0.70522,0.15803
+hist_2010_772,2010,2010-07-11,"Final","Netherlands","Spain",0.329,0.32,0.35,away,-53.72,true,p0-quarantine-v3-2026-07-10,pre_2010_kickoff,0.633141,1.049822,0.264721
+hist_2014_773,2014,2014-06-12,"Group A","Brazil","Croatia",0.766,0.193,0.041,home,327.9,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.093686,0.266573,0.028218
+hist_2014_774,2014,2014-06-13,"Group A","Mexico","Cameroon",0.536,0.272,0.192,home,158,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.326144,0.623621,0.12608
+hist_2014_775,2014,2014-06-13,"Group B","Spain","Netherlands",0.608,0.289,0.103,away,150.3,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,1.257794,2.273026,0.587136
+hist_2014_776,2014,2014-06-13,"Group B","Chile","Australia",0.625,0.257,0.118,home,223.1,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.220598,0.470004,0.077274
+hist_2014_777,2014,2014-06-14,"Group C","Colombia","Greece",0.548,0.273,0.179,home,134.2,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.310874,0.60148,0.118172
+hist_2014_778,2014,2014-06-14,"Group C","Côte d'Ivoire","Japan",0.333,0.323,0.344,home,-2.4,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.667554,1.099613,0.281612
+hist_2014_779,2014,2014-06-14,"Group D","Uruguay","Costa Rica",0.656,0.237,0.107,away,214.1,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,1.283954,2.234926,0.613893
+hist_2014_780,2014,2014-06-14,"Group D","England","Italy",0.405,0.296,0.299,away,53,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.743042,1.207312,0.327713
+hist_2014_781,2014,2014-06-15,"Group E","Switzerland","Ecuador",0.421,0.298,0.281,home,-9,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.503006,0.865122,0.207101
+hist_2014_782,2014,2014-06-15,"Group E","France","Honduras",0.608,0.259,0.134,home,209.1,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.238701,0.49758,0.085677
+hist_2014_783,2014,2014-06-15,"Group F","Argentina","Bosnia-Herzegovina",0.708,0.214,0.078,home,243.1,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.137144,0.345311,0.045674
+hist_2014_784,2014,2014-06-16,"Group F","Iran","Nigeria",0.417,0.291,0.292,draw,-25,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.761834,1.234432,0.129577
+hist_2014_785,2014,2014-06-16,"Group G","Germany","Portugal",0.441,0.302,0.257,home,116.3,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.469734,0.81871,0.189265
+hist_2014_786,2014,2014-06-16,"Group G","Ghana","USA",0.364,0.279,0.358,away,-131.7,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.622501,1.027222,0.272973
+hist_2014_787,2014,2014-06-17,"Group A","Brazil","Mexico",0.65,0.245,0.105,draw,271.78,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,1.00355,1.406497,0.216763
+hist_2014_788,2014,2014-06-17,"Group H","Belgium","Algeria",0.567,0.255,0.178,home,177.8,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.284198,0.567396,0.109587
+hist_2014_789,2014,2014-06-17,"Group H","Russia","South Korea",0.636,0.229,0.135,draw,164.7,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,1.017162,1.474033,0.211361
+hist_2014_790,2014,2014-06-18,"Group A","Cameroon","Croatia",0.354,0.276,0.37,away,-109.92,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.598392,0.994252,0.261108
+hist_2014_791,2014,2014-06-18,"Group B","Australia","Netherlands",0.183,0.239,0.578,away,-343.49,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.268694,0.548181,0.105786
+hist_2014_792,2014,2014-06-18,"Group B","Spain","Chile",0.488,0.284,0.227,away,64.51,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.916329,1.482805,0.417064
+hist_2014_793,2014,2014-06-19,"Group C","Colombia","Côte d'Ivoire",0.555,0.271,0.174,home,141.96,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.301742,0.588787,0.11415
+hist_2014_794,2014,2014-06-19,"Group C","Japan","Greece",0.429,0.293,0.278,draw,-5.64,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.761174,1.227583,0.130663
+hist_2014_795,2014,2014-06-19,"Group D","Uruguay","England",0.43,0.293,0.277,home,-3.9,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.487478,0.84397,0.200815
+hist_2014_796,2014,2014-06-20,"Group D","Italy","Costa Rica",0.515,0.28,0.205,away,95.2,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.97565,1.584745,0.448625
+hist_2014_797,2014,2014-06-20,"Group E","Switzerland","France",0.408,0.287,0.305,away,-51.64,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.731858,1.187444,0.324744
+hist_2014_798,2014,2014-06-20,"Group E","Honduras","Ecuador",0.314,0.267,0.419,away,-152.14,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.507446,0.869884,0.218078
+hist_2014_799,2014,2014-06-21,"Group F","Argentina","Iran",0.662,0.238,0.1,home,307.39,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.180888,0.41249,0.062122
+hist_2014_800,2014,2014-06-21,"Group F","Nigeria","Bosnia-Herzegovina",0.425,0.292,0.283,home,-11.91,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.495978,0.855666,0.205357
+hist_2014_801,2014,2014-06-21,"Group G","Germany","Ghana",0.678,0.228,0.093,draw,354.42,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,1.064317,1.47841,0.23426
+hist_2014_802,2014,2014-06-22,"Group G","USA","Portugal",0.432,0.293,0.275,draw,-1.58,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.762098,1.227583,0.131125
+hist_2014_803,2014,2014-06-22,"Group H","Belgium","Russia",0.475,0.287,0.239,home,48.46,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.415115,0.74444,0.166134
+hist_2014_804,2014,2014-06-22,"Group H","South Korea","Algeria",0.452,0.291,0.257,away,23.36,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.841034,1.358679,0.378177
+hist_2014_805,2014,2014-06-23,"Group A","Cameroon","Brazil",0.121,0.213,0.666,away,-482.9,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.171566,0.406466,0.063098
+hist_2014_806,2014,2014-06-23,"Group A","Croatia","Mexico",0.407,0.289,0.303,away,-39.28,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.734979,1.194022,0.325032
+hist_2014_807,2014,2014-06-23,"Group B","Australia","Spain",0.237,0.254,0.509,away,-258.85,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.361766,0.675307,0.148625
+hist_2014_808,2014,2014-06-23,"Group B","Netherlands","Chile",0.47,0.288,0.242,home,43.15,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.422408,0.755023,0.169732
+hist_2014_809,2014,2014-06-24,"Group C","Japan","Colombia",0.281,0.265,0.455,away,-203.03,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.446211,0.787458,0.188539
+hist_2014_810,2014,2014-06-24,"Group C","Greece","Côte d'Ivoire",0.423,0.292,0.285,home,-15.65,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.499418,0.860383,0.207077
+hist_2014_811,2014,2014-06-24,"Group D","Italy","Uruguay",0.413,0.29,0.297,away,-31.45,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.748878,1.214023,0.332389
+hist_2014_812,2014,2014-06-24,"Group D","Costa Rica","England",0.436,0.293,0.271,draw,3.83,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.763386,1.227583,0.131769
+hist_2014_813,2014,2014-06-25,"Group E","Honduras","Switzerland",0.313,0.267,0.421,away,-153.55,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.504499,0.865122,0.217185
+hist_2014_814,2014,2014-06-25,"Group E","Ecuador","France",0.343,0.274,0.383,draw,-121.51,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.791414,1.294627,0.132169
+hist_2014_815,2014,2014-06-25,"Group F","Nigeria","Argentina",0.242,0.255,0.502,away,-252.33,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.371593,0.689155,0.152786
+hist_2014_816,2014,2014-06-25,"Group F","Bosnia-Herzegovina","Iran",0.461,0.289,0.25,home,32.37,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.436542,0.774357,0.17651
+hist_2014_817,2014,2014-06-26,"Group G","USA","Germany",0.315,0.267,0.417,away,-150.55,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.510403,0.874669,0.218975
+hist_2014_818,2014,2014-06-26,"Group G","Portugal","Ghana",0.577,0.266,0.157,home,170.19,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.274334,0.549913,0.101789
+hist_2014_819,2014,2014-06-26,"Group H","South Korea","Belgium",0.241,0.255,0.503,away,-252.87,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.370115,0.687165,0.152048
+hist_2014_820,2014,2014-06-26,"Group H","Algeria","Russia",0.39,0.284,0.326,draw,-71.27,false,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.771032,1.258781,0.129188
+hist_2014_821,2014,2014-06-28,"Round of 16","Brazil","Chile",0.548,0.273,0.179,draw,134.78,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.860874,1.298283,0.166173
+hist_2014_822,2014,2014-06-28,"Round of 16","Colombia","Uruguay",0.521,0.279,0.2,home,102.23,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.347282,0.652005,0.13472
+hist_2014_823,2014,2014-06-29,"Round of 16","Netherlands","Mexico",0.557,0.271,0.172,home,145.31,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.299274,0.58519,0.112916
+hist_2014_824,2014,2014-06-29,"Round of 16","Costa Rica","Greece",0.444,0.292,0.264,draw,13.13,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.768096,1.231001,0.133416
+hist_2014_825,2014,2014-06-30,"Round of 16","France","Nigeria",0.6,0.261,0.139,home,199.47,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.247442,0.510826,0.089661
+hist_2014_826,2014,2014-06-30,"Round of 16","Germany","Algeria",0.675,0.23,0.095,home,344.34,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.16755,0.393043,0.057325
+hist_2014_827,2014,2014-07-01,"Round of 16","Argentina","Switzerland",0.61,0.258,0.132,home,212.96,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.236088,0.494296,0.084762
+hist_2014_828,2014,2014-07-01,"Round of 16","Belgium","USA",0.461,0.289,0.25,home,33.17,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.436542,0.774357,0.17651
+hist_2014_829,2014,2014-07-04,"Quarter-finals","France","Germany",0.418,0.295,0.286,away,-87.83,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.771545,1.251763,0.341546
+hist_2014_830,2014,2014-07-04,"Quarter-finals","Brazil","Colombia",0.392,0.304,0.304,home,63.78,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.554496,0.936493,0.23104
+hist_2014_831,2014,2014-07-05,"Quarter-finals","Argentina","Belgium",0.515,0.317,0.168,home,149.17,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.363938,0.663588,0.131724
+hist_2014_832,2014,2014-07-05,"Quarter-finals","Netherlands","Costa Rica",0.659,0.261,0.08,draw,270.16,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.986802,1.343235,0.220341
+hist_2014_833,2014,2014-07-08,"Semi-finals","Brazil","Germany",0.427,0.31,0.263,away,13.1,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.821598,1.335601,0.362749
+hist_2014_834,2014,2014-07-09,"Semi-finals","Netherlands","Argentina",0.425,0.313,0.262,draw,-10.36,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.721238,1.161552,0.124634
+hist_2014_835,2014,2014-07-12,"Third place","Brazil","Netherlands",0.272,0.248,0.48,away,-28.44,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.405888,0.733969,0.172192
+hist_2014_836,2014,2014-07-13,"Final","Germany","Argentina",0.547,0.303,0.15,home,100.56,true,p0-quarantine-v3-2026-07-10,pre_2014_kickoff,0.319518,0.603306,0.113854
+hist_2018_837,2018,2018-06-14,"Group A","Russia","Saudi Arabia",0.486,0.285,0.229,home,61.7,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.397862,0.721547,0.158319
+hist_2018_838,2018,2018-06-15,"Group A","Egypt","Uruguay",0.301,0.267,0.432,away,-223.9,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.484514,0.83933,0.206613
+hist_2018_839,2018,2018-06-15,"Group B","Morocco","Iran",0.407,0.289,0.304,away,-40.8,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.733586,1.190728,0.325032
+hist_2018_840,2018,2018-06-15,"Group B","Portugal","Spain",0.348,0.274,0.378,draw,-116.7,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.791064,1.294627,0.131994
+hist_2018_841,2018,2018-06-16,"Group C","France","Australia",0.733,0.219,0.049,home,212.9,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.121651,0.31061,0.036797
+hist_2018_842,2018,2018-06-16,"Group C","Peru","Denmark",0.54,0.275,0.185,away,125,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.03145,1.687399,0.477913
+hist_2018_843,2018,2018-06-16,"Group D","Argentina","Iceland",0.672,0.262,0.067,draw,229.5,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.000717,1.339411,0.22797
+hist_2018_844,2018,2018-06-16,"Group D","Croatia","Nigeria",0.633,0.269,0.098,home,184.4,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.216654,0.457285,0.072147
+hist_2018_845,2018,2018-06-17,"Group E","Costa Rica","Serbia",0.491,0.328,0.181,away,8.9,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.019426,1.709258,0.455921
+hist_2018_846,2018,2018-06-17,"Group E","Brazil","Switzerland",0.616,0.223,0.16,draw,271.2,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.008785,1.500584,0.202689
+hist_2018_847,2018,2018-06-17,"Group F","Germany","Mexico",0.66,0.257,0.082,away,159.5,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.344373,2.501036,0.638245
+hist_2018_848,2018,2018-06-18,"Group F","Sweden","South Korea",0.493,0.3,0.207,home,74,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.389898,0.707246,0.149949
+hist_2018_849,2018,2018-06-18,"Group G","Belgium","Panama",0.682,0.255,0.063,home,238.4,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.170118,0.382726,0.052546
+hist_2018_850,2018,2018-06-18,"Group G","Tunisia","England",0.256,0.258,0.486,away,-235.1,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.396296,0.721547,0.164866
+hist_2018_851,2018,2018-06-19,"Group A","Russia","Egypt",0.49,0.284,0.226,home,65.96,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.391832,0.71335,0.155588
+hist_2018_852,2018,2018-06-19,"Group H","Colombia","Japan",0.76,0.201,0.039,away,243,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.541522,3.244194,0.750561
+hist_2018_853,2018,2018-06-19,"Group H","Poland","Senegal",0.456,0.291,0.252,away,19.9,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.852121,1.378326,0.382972
+hist_2018_854,2018,2018-06-20,"Group A","Uruguay","Saudi Arabia",0.669,0.234,0.097,home,326.96,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.173726,0.401971,0.059485
+hist_2018_855,2018,2018-06-20,"Group B","Portugal","Morocco",0.595,0.262,0.143,home,192.8,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.253118,0.519194,0.092237
+hist_2018_856,2018,2018-06-20,"Group B","Iran","Spain",0.287,0.266,0.447,away,-195.7,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.458934,0.805197,0.194089
+hist_2018_857,2018,2018-06-21,"Group C","Denmark","Australia",0.55,0.272,0.177,draw,136.7,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.863813,1.301953,0.167092
+hist_2018_858,2018,2018-06-21,"Group C","France","Peru",0.487,0.285,0.228,home,62.4,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.396378,0.719491,0.157576
+hist_2018_859,2018,2018-06-21,"Group D","Argentina","Croatia",0.514,0.28,0.206,away,94.07,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.973032,1.579879,0.447316
+hist_2018_860,2018,2018-06-22,"Group D","Nigeria","Iceland",0.342,0.273,0.385,home,-122.63,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.655718,1.072945,0.290594
+hist_2018_861,2018,2018-06-22,"Group E","Brazil","Costa Rica",0.693,0.22,0.088,home,397.44,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.150393,0.366725,0.050909
+hist_2018_862,2018,2018-06-22,"Group E","Serbia","Switzerland",0.36,0.277,0.363,away,-104.26,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.612098,1.013352,0.267684
+hist_2018_863,2018,2018-06-23,"Group F","South Korea","Mexico",0.257,0.259,0.484,away,-233.42,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.399386,0.72567,0.166152
+hist_2018_864,2018,2018-06-23,"Group F","Germany","Sweden",0.592,0.262,0.146,home,188.68,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.256424,0.524249,0.09389
+hist_2018_865,2018,2018-06-23,"Group G","Belgium","Tunisia",0.642,0.249,0.11,home,257.29,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.202265,0.443167,0.070023
+hist_2018_866,2018,2018-06-24,"Group G","England","Panama",0.652,0.244,0.104,home,280.19,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.191456,0.427711,0.06596
+hist_2018_867,2018,2018-06-24,"Group H","Japan","Senegal",0.375,0.281,0.344,draw,-87.37,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.775922,1.269401,0.12948
+hist_2018_868,2018,2018-06-24,"Group H","Poland","Colombia",0.354,0.276,0.37,away,-110.27,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.598392,0.994252,0.261108
+hist_2018_869,2018,2018-06-25,"Group A","Uruguay","Russia",0.583,0.265,0.152,home,177.13,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.267218,0.539568,0.098497
+hist_2018_870,2018,2018-06-25,"Group A","Saudi Arabia","Egypt",0.405,0.289,0.306,home,-43.33,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.531182,0.903868,0.22383
+hist_2018_871,2018,2018-06-25,"Group B","Iran","Portugal",0.351,0.275,0.374,draw,-113.2,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.788702,1.290984,0.131539
+hist_2018_872,2018,2018-06-25,"Group B","Spain","Morocco",0.672,0.232,0.096,draw,337.94,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.050624,1.461018,0.2304
+hist_2018_873,2018,2018-06-26,"Group C","Denmark","France",0.337,0.272,0.39,draw,-127.89,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.795653,1.301953,0.133225
+hist_2018_874,2018,2018-06-26,"Group C","Australia","Peru",0.333,0.271,0.396,away,-132.81,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.549146,0.926341,0.237853
+hist_2018_875,2018,2018-06-26,"Group D","Nigeria","Argentina",0.286,0.261,0.453,away,-180.75,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.449126,0.791863,0.190502
+hist_2018_876,2018,2018-06-26,"Group D","Iceland","Croatia",0.269,0.262,0.469,away,-218.13,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.422966,0.757153,0.177161
+hist_2018_877,2018,2018-06-27,"Group E","Serbia","Brazil",0.172,0.235,0.592,away,-362.61,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.251273,0.524249,0.097616
+hist_2018_878,2018,2018-06-27,"Group E","Switzerland","Costa Rica",0.606,0.259,0.135,draw,208.07,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.934542,1.350927,0.19273
+hist_2018_879,2018,2018-06-27,"Group F","South Korea","Germany",0.194,0.243,0.563,home,-323.5,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.025654,1.639897,0.483303
+hist_2018_880,2018,2018-06-27,"Group F","Mexico","Sweden",0.566,0.269,0.165,away,155.76,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.089942,1.80181,0.50879
+hist_2018_881,2018,2018-06-28,"Group G","England","Belgium",0.446,0.291,0.262,away,15.78,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.828241,1.339411,0.371042
+hist_2018_882,2018,2018-06-28,"Group G","Panama","Tunisia",0.428,0.293,0.279,away,-7.5,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.788874,1.276543,0.351513
+hist_2018_883,2018,2018-06-28,"Group H","Japan","Poland",0.452,0.291,0.258,away,22.51,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.839549,1.354796,0.378177
+hist_2018_884,2018,2018-06-28,"Group H","Senegal","Colombia",0.364,0.278,0.358,away,-100.11,false,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.621944,1.027222,0.27233
+hist_2018_885,2018,2018-06-30,"Round of 16","France","Argentina",0.514,0.28,0.206,home,94.25,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.357032,0.665532,0.139316
+hist_2018_886,2018,2018-06-30,"Round of 16","Uruguay","Portugal",0.422,0.292,0.286,home,-16.91,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.501144,0.86275,0.20794
+hist_2018_887,2018,2018-07-01,"Round of 16","Spain","Russia",0.67,0.233,0.097,draw,331.44,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.046598,1.456717,0.229155
+hist_2018_888,2018,2018-07-01,"Round of 16","Croatia","Denmark",0.511,0.28,0.209,draw,90.02,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.823202,1.272966,0.152401
+hist_2018_889,2018,2018-07-02,"Round of 16","Brazil","Mexico",0.661,0.239,0.101,home,304.85,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.182243,0.414001,0.06246
+hist_2018_890,2018,2018-07-02,"Round of 16","Belgium","Japan",0.66,0.239,0.101,home,299.2,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.182922,0.415515,0.0629
+hist_2018_891,2018,2018-07-03,"Round of 16","Sweden","Switzerland",0.406,0.286,0.307,home,-53.15,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.528881,0.901402,0.22385
+hist_2018_892,2018,2018-07-03,"Round of 16","Colombia","England",0.453,0.29,0.256,draw,24.11,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.774845,1.237874,0.135629
+hist_2018_893,2018,2018-07-06,"Quarter-finals","Uruguay","France",0.497,0.294,0.209,away,-60.27,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.959126,1.565421,0.436345
+hist_2018_894,2018,2018-07-06,"Quarter-finals","Brazil","Belgium",0.642,0.266,0.092,away,158.11,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,1.307384,2.385967,0.618314
+hist_2018_895,2018,2018-07-07,"Quarter-finals","Sweden","England",0.419,0.304,0.277,away,-54.98,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.790706,1.283738,0.349145
+hist_2018_896,2018,2018-07-07,"Quarter-finals","Russia","Croatia",0.197,0.245,0.558,draw,-207.6,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.920198,1.406497,0.175087
+hist_2018_897,2018,2018-07-10,"Semi-finals","France","Belgium",0.439,0.286,0.275,home,6.37,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.472142,0.823256,0.195173
+hist_2018_898,2018,2018-07-11,"Semi-finals","Croatia","England",0.389,0.287,0.324,home,-58.72,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.560666,0.944176,0.239148
+hist_2018_899,2018,2018-07-14,"Third place","Belgium","England",0.523,0.263,0.214,home,62.19,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.342494,0.648174,0.136662
+hist_2018_900,2018,2018-07-15,"Final","France","Croatia",0.535,0.289,0.177,home,116.56,true,p0-quarantine-v3-2026-07-10,pre_2018_kickoff,0.331075,0.625489,0.1236
+hist_2022_901,2022,2022-11-20,"Group A","Qatar","Ecuador",0.33,0.271,0.4,away,-135.5,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.542341,0.916291,0.23505
+hist_2022_902,2022,2022-11-21,"Group A","Senegal","Netherlands",0.107,0.209,0.684,away,-301.7,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.154986,0.379797,0.055653
+hist_2022_903,2022,2022-11-21,"Group B","England","Iran",0.578,0.262,0.161,home,98.4,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.272649,0.548181,0.101842
+hist_2022_904,2022,2022-11-21,"Group B","USA","Wales",0.453,0.327,0.22,draw,38.2,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.706538,1.117795,0.126804
+hist_2022_905,2022,2022-11-22,"Group C","Argentina","Saudi Arabia",0.664,0.198,0.138,away,474.7,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.223144,1.980502,0.59197
+hist_2022_906,2022,2022-11-22,"Group C","Mexico","Poland",0.342,0.303,0.355,draw,11.2,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.728798,1.194022,0.121495
+hist_2022_907,2022,2022-11-22,"Group D","Denmark","Tunisia",0.596,0.302,0.101,draw,184.5,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.852621,1.197328,0.18281
+hist_2022_908,2022,2022-11-22,"Group D","France","Australia",0.716,0.221,0.063,home,213.6,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.133466,0.334075,0.042313
+hist_2022_909,2022,2022-11-23,"Group E","Germany","Japan",0.583,0.255,0.162,away,137.6,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.107158,1.820159,0.521066
+hist_2022_910,2022,2022-11-23,"Group E","Spain","Costa Rica",0.66,0.234,0.106,home,246,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.181592,0.415515,0.063418
+hist_2022_911,2022,2022-11-23,"Group F","Morocco","Croatia",0.303,0.26,0.436,draw,-118.4,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.829505,1.347074,0.141389
+hist_2022_912,2022,2022-11-23,"Group F","Belgium","Canada",0.708,0.218,0.074,home,169.6,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.138264,0.345311,0.04537
+hist_2022_913,2022,2022-11-24,"Group G","Switzerland","Cameroon",0.638,0.252,0.11,home,254.6,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.206648,0.449417,0.071572
+hist_2022_914,2022,2022-11-24,"Group G","Brazil","Serbia",0.743,0.218,0.038,home,283.2,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.115017,0.297059,0.033785
+hist_2022_915,2022,2022-11-24,"Group H","Uruguay","South Korea",0.629,0.265,0.106,draw,136,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.947102,1.328025,0.203439
+hist_2022_916,2022,2022-11-24,"Group H","Portugal","Ghana",0.689,0.217,0.095,home,383.5,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.152835,0.372514,0.052779
+hist_2022_917,2022,2022-11-25,"Group A","Qatar","Senegal",0.406,0.289,0.305,away,-41.46,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.731382,1.187444,0.323931
+hist_2022_918,2022,2022-11-25,"Group A","Netherlands","Ecuador",0.577,0.266,0.157,draw,169.74,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.896334,1.324259,0.178789
+hist_2022_919,2022,2022-11-25,"Group B","Wales","Iran",0.427,0.293,0.28,away,-8.74,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.786578,1.272966,0.350364
+hist_2022_920,2022,2022-11-25,"Group B","England","USA",0.558,0.271,0.171,draw,146.06,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.872046,1.305636,0.170303
+hist_2022_921,2022,2022-11-26,"Group C","Poland","Saudi Arabia",0.509,0.281,0.21,home,88.01,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.364142,0.675307,0.14259
+hist_2022_922,2022,2022-11-26,"Group C","Argentina","Mexico",0.651,0.244,0.104,home,278.31,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.192153,0.429246,0.066413
+hist_2022_923,2022,2022-11-26,"Group D","Tunisia","Australia",0.47,0.288,0.243,away,42.86,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.876893,1.414694,0.397732
+hist_2022_924,2022,2022-11-26,"Group D","France","Denmark",0.481,0.286,0.233,home,56.36,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.405446,0.731888,0.161825
+hist_2022_925,2022,2022-11-27,"Group E","Japan","Costa Rica",0.511,0.28,0.209,away,90.03,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.965202,1.565421,0.443401
+hist_2022_926,2022,2022-11-27,"Group E","Spain","Germany",0.558,0.271,0.171,draw,146.43,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.872046,1.305636,0.170303
+hist_2022_927,2022,2022-11-27,"Group F","Belgium","Morocco",0.603,0.26,0.137,away,202.8,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.175978,1.987774,0.554189
+hist_2022_928,2022,2022-11-27,"Group F","Croatia","Canada",0.521,0.279,0.2,home,103,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.347282,0.652005,0.13472
+hist_2022_929,2022,2022-11-28,"Group G","Cameroon","Serbia",0.235,0.253,0.512,draw,-261.77,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.875378,1.374366,0.158685
+hist_2022_930,2022,2022-11-28,"Group G","Brazil","Switzerland",0.657,0.241,0.102,home,294.43,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.186134,0.420071,0.064026
+hist_2022_931,2022,2022-11-28,"Group H","South Korea","Ghana",0.617,0.256,0.127,away,222.22,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.208354,2.063568,0.571409
+hist_2022_932,2022,2022-11-28,"Group H","Portugal","Uruguay",0.491,0.284,0.225,home,67.72,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.390362,0.711311,0.154853
+hist_2022_933,2022,2022-11-29,"Group A","Ecuador","Senegal",0.555,0.271,0.174,away,141.89,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.063742,1.7487,0.495151
+hist_2022_934,2022,2022-11-29,"Group A","Netherlands","Qatar",0.701,0.215,0.084,home,419.07,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.142682,0.355247,0.048229
+hist_2022_935,2022,2022-11-29,"Group B","Wales","England",0.283,0.265,0.451,away,-199.85,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.451715,0.796288,0.190197
+hist_2022_936,2022,2022-11-29,"Group B","Iran","USA",0.459,0.29,0.251,away,31.49,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.855782,1.382302,0.385841
+hist_2022_937,2022,2022-11-30,"Group C","Poland","Argentina",0.239,0.255,0.507,away,-257.31,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.365195,0.679244,0.150579
+hist_2022_938,2022,2022-11-30,"Group C","Saudi Arabia","Mexico",0.369,0.279,0.352,away,-94.25,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.633906,1.044124,0.278033
+hist_2022_939,2022,2022-11-30,"Group D","Australia","Denmark",0.337,0.272,0.39,home,-127.88,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.665653,1.087672,0.296225
+hist_2022_940,2022,2022-11-30,"Group D","Tunisia","France",0.236,0.254,0.51,home,-259.42,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.908312,1.443923,0.421898
+hist_2022_941,2022,2022-12-01,"Group E","Japan","Spain",0.272,0.262,0.466,home,-215.03,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.815784,1.301953,0.37357
+hist_2022_942,2022,2022-12-01,"Group E","Costa Rica","Germany",0.359,0.277,0.365,away,-105.35,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.608835,1.007858,0.266688
+hist_2022_943,2022,2022-12-01,"Group F","Croatia","Belgium",0.444,0.292,0.264,draw,13.92,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.768096,1.231001,0.133416
+hist_2022_944,2022,2022-12-01,"Group F","Canada","Morocco",0.374,0.28,0.346,away,-89.28,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.645992,1.061317,0.283796
+hist_2022_945,2022,2022-12-02,"Group G","Serbia","Switzerland",0.423,0.292,0.284,away,-14.05,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.776849,1.258781,0.345077
+hist_2022_946,2022,2022-12-02,"Group G","Cameroon","Brazil",0.099,0.208,0.694,home,-555.41,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.336701,2.312635,0.646025
+hist_2022_947,2022,2022-12-02,"Group H","Ghana","Uruguay",0.247,0.256,0.497,away,-246.06,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.379554,0.699165,0.157009
+hist_2022_948,2022,2022-12-02,"Group H","South Korea","Portugal",0.247,0.257,0.496,home,-244.96,false,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.879074,1.398367,0.406512
+hist_2022_949,2022,2022-12-03,"Round of 16","Netherlands","USA",0.579,0.266,0.155,home,172.97,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.272022,0.546453,0.100633
+hist_2022_950,2022,2022-12-03,"Round of 16","Argentina","Australia",0.659,0.24,0.101,home,297.54,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.184082,0.417032,0.063241
+hist_2022_951,2022,2022-12-04,"Round of 16","France","Poland",0.566,0.269,0.166,home,155.24,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.288273,0.569161,0.107791
+hist_2022_952,2022,2022-12-04,"Round of 16","England","Senegal",0.571,0.268,0.161,home,162.33,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.281786,0.560366,0.104981
+hist_2022_953,2022,2022-12-05,"Round of 16","Japan","Croatia",0.396,0.285,0.319,draw,-64.36,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.769802,1.255266,0.129288
+hist_2022_954,2022,2022-12-05,"Round of 16","Brazil","South Korea",0.667,0.235,0.098,home,319.73,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.175718,0.404965,0.060246
+hist_2022_955,2022,2022-12-06,"Round of 16","Morocco","Spain",0.369,0.279,0.352,draw,-94.6,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.779906,1.276543,0.130032
+hist_2022_956,2022,2022-12-06,"Round of 16","Portugal","Switzerland",0.479,0.286,0.234,home,54.02,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.407993,0.736055,0.163333
+hist_2022_957,2022,2022-12-09,"Quarter-finals","Croatia","Brazil",0.207,0.309,0.484,draw,-213.34,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.754586,1.174414,0.138552
+hist_2022_958,2022,2022-12-09,"Quarter-finals","Netherlands","Argentina",0.423,0.3,0.277,draw,-78.28,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.745658,1.203973,0.127829
+hist_2022_959,2022,2022-12-10,"Quarter-finals","Morocco","Portugal",0.371,0.317,0.312,home,-107.94,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.593474,0.991553,0.246493
+hist_2022_960,2022,2022-12-10,"Quarter-finals","England","France",0.605,0.24,0.156,away,1.31,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,1.135961,1.857899,0.540025
+hist_2022_961,2022,2022-12-13,"Semi-finals","Argentina","Croatia",0.567,0.293,0.14,home,186.76,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.292938,0.567396,0.103545
+hist_2022_962,2022,2022-12-14,"Semi-finals","France","Morocco",0.41,0.35,0.24,home,86.2,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.5282,0.891598,0.20285
+hist_2022_963,2022,2022-12-17,"Third place","Croatia","Morocco",0.354,0.369,0.277,home,11.43,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.630206,1.038458,0.247023
+hist_2022_964,2022,2022-12-18,"Final","Argentina","France",0.509,0.281,0.211,draw,99.91,true,p0-quarantine-v3-2026-07-10,pre_2022_kickoff,0.820563,1.269401,0.15159

@@ -1,0 +1,34 @@
+{
+  "retrospective_historical_replay_964": {
+    "sampleSize": 964,
+    "description": "Out-of-sample historical replay evaluation across 22 FIFA World Cup tournaments (1930-2022)",
+    "modelVersion": "p0-quarantine-v3-2026-07-10",
+    "metrics": {
+      "accuracy": 0.575726,
+      "meanBrier": 0.570182,
+      "meanLogLoss": 0.966225
+    },
+    "note": "Historical 964-match replay benchmark under strict A v4 quarantined core model."
+  },
+  "prospective_2026_online": {
+    "status": "unverified",
+    "sampleSize": null,
+    "description": "Prospective online live service predictions for 2026 matches (awaiting live ledger export)",
+    "auditCounts": {
+      "total": 0,
+      "completed": 0,
+      "eligible": 0,
+      "rejected": 0,
+      "pending": 0
+    },
+    "metrics": {
+      "meanBrier": null,
+      "topLabelECE": null,
+      "directionalAccuracy": null
+    },
+    "inputFile": null,
+    "inputHash": null,
+    "note": "No verified 2026 online ledger export provided; prospective metrics are marked unverified/null."
+  },
+  "governance_separation_rule": "Prospective online metrics must be computed dynamically from verified ledger exports and never hardcoded. Retrospective replay metrics apply strictly to the 964-match historical dataset. The two must never be mixed or conflated."
+}
