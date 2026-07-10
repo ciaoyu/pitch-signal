@@ -1,0 +1,85 @@
+{
+  "owner": "E",
+  "scope": "environment / travel / rest research (data + DAG + coverage + OOS coefficients only; does NOT modify production probability)",
+  "baseline_commit": "78da1b5",
+  "branch": "codex/environment-research",
+  "created": "2026-07-10",
+  "sources": {
+    "in_repo": [
+      {
+        "id": "venues_2026",
+        "path": "data/venues.json",
+        "covers": "WC2026 16 venues",
+        "env_fields": ["altitude", "grass", "timezone", "coordinates", "country", "city"],
+        "license": "project-data",
+        "coverage_pct": 100,
+        "note": "venue-level only; no WBGT/travel/rest/et/player-minute"
+      },
+      {
+        "id": "wc_history",
+        "path": "data/history/worldcup_*.json",
+        "covers": "1930-2022, 22 editions",
+        "env_fields": [],
+        "license": "openfootball/worldcup.json (CC0)",
+        "coverage_pct": 0,
+        "note": "results only (date/home/away/scores/stage/venue); NO env exposure variables"
+      },
+      {
+        "id": "team_meta",
+        "path": "data/team_meta.json",
+        "covers": "national teams",
+        "env_fields": [],
+        "license": "project-data",
+        "coverage_pct": 0,
+        "note": "rankings/marketValue only; no baseCamp altitude/timezone"
+      },
+      {
+        "id": "elo_seed",
+        "path": "data/elo-seed.json",
+        "covers": "per-edition Elo snapshot",
+        "env_fields": [],
+        "license": "martj42/international_results口径 (public)",
+        "coverage_pct": 100,
+        "note": "team strength prior (control variable)"
+      },
+      {
+        "id": "schedule_2026",
+        "path": "data/match_snapshot_schedule.json",
+        "covers": "WC2026 fixtures",
+        "env_fields": [],
+        "license": "project-data",
+        "coverage_pct": 100,
+        "note": "enables Rest/ET derivation from schedule"
+      }
+    ],
+    "external_readonly": [
+      {
+        "id": "international_results_49k",
+        "path_env": "ENV_RESEARCH_POOL_DIR",
+        "covers": "49,487 international matches (larger pool for env estimation)",
+        "license": "martj42/international_results (public dataset)",
+        "usage": "READ-ONLY input; World Cup kept held-out; NOT committed to this branch",
+        "in_repo": false
+      },
+      {
+        "id": "owner_d_artifacts",
+        "path": "codex/research-artifacts-v2 (read-only consume contract)",
+        "covers": "backtest / paired delta",
+        "license": "declared by Owner D",
+        "usage": "READ-ONLY; E must NOT modify D files",
+        "in_repo": false
+      }
+    ]
+  },
+  "variables": {
+    "alt":  { "unit": "m",    "symmetry": "beta_alt*(A_i - A_opp)" },
+    "wbgt": { "unit": "degC", "symmetry": "beta_heat*(H_i - H_opp)" },
+    "turf": { "unit": "0/1",  "symmetry": "beta_turf*(S_i - S_opp)" },
+    "travel":{ "unit": "km",  "symmetry": "beta_travel*(T_i - T_opp)" },
+    "tz":   { "unit": "h",    "symmetry": "beta_tz*(Z_i - Z_opp)" },
+    "rest": { "unit": "d",    "symmetry": "beta_rest*(R_i - R_opp)" },
+    "et":   { "unit": "min",  "symmetry": "beta_et*(ET_i - ET_opp)" }
+  },
+  "missing_mechanism": "structural (historical editions have no env fields); missing != neutral; mark missing_reason; degrade to base model pre-1960s; non-random missingness only as feature after OOS proof",
+  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-*; never lib/prediction.js or public API"
+}

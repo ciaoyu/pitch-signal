@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-07-10T15:00:23.817Z",
+  "owner": "E",
+  "design": {
+    "heldOut": "World Cup (all editions) never in coefficient estimation",
+    "symmetry": "features enter as (A_i - A_opp) team-relative differences",
+    "regularization": "Ridge / Elastic-Net / hierarchical-Bayes candidate",
+    "asOf": "pre-kickoff facts only; WC held-out; 2026 not test",
+    "output": "OOS DISTRIBUTION of candidate coefficients (not a production constant)"
+  },
+  "envVars": [
+    "alt",
+    "wbgt",
+    "turf",
+    "travel",
+    "tz",
+    "rest",
+    "et"
+  ],
+  "status": "BLOCKED",
+  "blocker": "ENV_RESEARCH_POOL_DIR not set or missing. External 49k international-results pool is a READ-ONLY input and is NOT in this repo. Provide a local copy to run OOS.",
+  "conclusion": "Cannot estimate coefficients without the external pool. Per reviewer: data-insufficiency is an acceptable completion state IF the deliverable states the boundary (not eligible to enter production probability)."
+}

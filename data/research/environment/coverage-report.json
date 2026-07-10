@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-07-10T15:00:23.749Z",
+  "owner": "E",
+  "baseline": "78da1b5",
+  "inRepo": {
+    "venues2026": {
+      "count": 16,
+      "coverage": {
+        "altitude": 100,
+        "grass": 100,
+        "timezone": 100,
+        "coordinates": 100
+      },
+      "wbgtCoverage": 0,
+      "note": "venue-level only; no WBGT/travel/rest/et/player-minute"
+    },
+    "wcHistory": {
+      "editions": 22,
+      "years": [
+        1930,
+        1934,
+        1938,
+        1950,
+        1954,
+        1958,
+        1962,
+        1966,
+        1970,
+        1974,
+        1978,
+        1982,
+        1986,
+        1990,
+        1994,
+        1998,
+        2002,
+        2006,
+        2010,
+        2014,
+        2018,
+        2022
+      ],
+      "matches": 964,
+      "envExposureCoverage": 0,
+      "note": "results only; NO env exposure variables -> base model for pre-2026"
+    },
+    "teamMeta": {
+      "teams": 41,
+      "envCoverage": 0,
+      "note": "no baseCamp altitude/timezone"
+    }
+  },
+  "externalReadonly": {
+    "internationalResults49k": {
+      "present": false,
+      "note": "not in repo; documented as READ-ONLY input (ENV_RESEARCH_POOL_DIR)"
+    }
+  },
+  "missingMechanism": "structural: historical editions entirely lack env fields; 2026 has venue-level only. Missing != neutral; degrade to base model pre-1960s; mark missing_reason.",
+  "conclusion": {
+    "canEstimateTeamLevelProxyNow": false,
+    "note": "Team-level exposure proxy (altitude/WBGT/turf from venues) usable for 2026 only. Travel/rest/et require schedule+baseCamp engineering. Stable env coefficients require the external 49k pool (read-only) with WC held-out. Until then: NOT eligible to enter production probability."
+  }
+}
