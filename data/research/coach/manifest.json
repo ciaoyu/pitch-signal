@@ -1,0 +1,58 @@
+{
+  "owner": "H",
+  "task": "coach-history-and-value-added-research",
+  "worktree": "codex/coach-effect-research",
+  "base_commit": "78da1b5",
+  "created": "2026-07-10",
+  "modifies_production_probability": false,
+  "production_coach_signal_status": "removed (display-only); not restored by H",
+  "sources": {
+    "in_repo_display": {
+      "path": "data/coaches.json",
+      "license": "project-internal (display only)",
+      "research_grade": false,
+      "note": "Chinese-keyword model carrier; fields style/adjustment/flexibility/notes are PROHIBITED as features. No start/end dates, no source, no tenure chain, no match linkage, no xG."
+    },
+    "in_repo_alignment": {
+      "team_meta": "data/team_meta.json",
+      "worldcup_history": "data/history/worldcup_*.json (1930-2022, 22 editions, no coach field)",
+      "venues_2026": "data/venues.json (altitude/grass/tz for venue covariate)",
+      "elo": "repo Elo series (strength baseline)"
+    },
+    "external_readonly": {
+      "international_results_pool": {
+        "env": "COACH_RESEARCH_POOL_DIR",
+        "content": "national-team match results (qualifiers/continental/friendlies/WC)",
+        "license": "per upstream repo license; verify before use",
+        "committed": false,
+        "note": "READ-ONLY input; never committed to this branch."
+      },
+      "coach_tenure_history": {
+        "env": "COACH_RESEARCH_TENURE_DIR",
+        "content": "coach tenure start/end dates + source per national team",
+        "license": "per upstream (transfermarkt/wikipedia/federation archives); attribution required",
+        "committed": false,
+        "note": "READ-ONLY input; never committed to this branch."
+      },
+      "player_xg_artifact": {
+        "owner": "F",
+        "content": "shot-xG, lineups, minutes (read-only reference)",
+        "license": "F artifact; reference only, not modified by H"
+      }
+    }
+  },
+  "missing_variables": [
+    {"var": "historical_tenure_start_end_pre2000", "mechanism": "structural (archive gap)", "missing_means": "degrade to no-effect baseline; mark missing_reason"},
+    {"var": "early_match_xg", "mechanism": "no shot-level data", "proxy": "xg_diff proxy (goal diff / expected diff); proxy=true"},
+    {"var": "tactics_observable_press_progress", "mechanism": "needs event data", "status": "pending F/G"},
+    {"var": "weak_team_tenure_dense", "mechanism": "sparse archives", "status": "hierarchical shrinkage protects"}
+  ],
+  "deliverables_status": {
+    "data_source_license": "documented",
+    "coverage": "real report emitted by scripts/research-coach-coverage.js",
+    "asof_leak_proof": "documented in coach-leakage-guard.md",
+    "failure_missing": "documented in coach-data-dictionary.md + coverage report",
+    "oos_results": "skeleton; BLOCKED until external pool+tenure+xG supplied",
+    "enter_model_conclusion": "NOT eligible yet (needs stable OOS-positive coefficients)"
+  }
+}
