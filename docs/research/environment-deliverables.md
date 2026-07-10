@@ -9,17 +9,23 @@
 | 2 | 覆盖率 | ✅ **真实产出（数据采集阶段）** | `research-environment-pool-adapter.js` → `pool-coverage.json`；`research-environment-coverage.js` → `coverage-report.json`。真实 49k 池：非 WC 48,441 场，休息 99.7%/99.6%、neutral 100%、跨洲 97.3%、2026 海拔 100%；历史海拔 0%、天气 0%（诚实缺失）。 |
 | 3 | as-of 防泄漏证明 | ✅ 完成（设计层） | `environment-leakage-guard.md` |
 | 4 | 失败和缺失说明 | ✅ 完成 | `environment-data-dictionary.md` §4/§2b、`coverage-report.json.conclusion`、`pool-coverage.json.missingReasons` |
-| 5 | OOS 结果 | ⏳ **待估算（数据已就绪）** | `scripts/research-environment-oos.js` → `oos-report.json`。WC held-out 1,064 场已生成（`wc-heldout-manifest.json`）；下一步跑 Ridge/层级贝叶斯 + VIF + 后验 + walk-forward 增益；未通过不伪造、不入模。 |
+| 5 | OOS 结果 | ✅ **真实产出（OOS 系数估计阶段）** | `research-environment-oos.js` → `oos-report.json` + `oos-joined-contract.json`。真实 CC0 池 48,441 场非 WC 估计、WC held-out 964 场（1930–2022）评估；Ridge/层级收缩 Poisson + VIF + 系数 bootstrap + walk-forward + cluster bootstrap Δ；**结论：无稳定 OOS 增益，env 系数保持 shadow（未入模）**。 |
 | 6 | 是否允许进入模型的结论 | ✅ 给出边界结论 | 见下 + `coverage-report.json.conclusion` / `oos-report.json.conclusion` |
 
 ## 第 6 项：是否允许进入模型的结论（当前）
 
-**结论：当前阶段环境模块不得进入生产概率。**
+**结论：当前阶段环境模块不得进入生产概率（OOS 未通过稳定增益）。**
 
-依据：
-- 仓库内仅有 2026 场馆级环境（海拔/草坪/时区），历史届赛果**完全没有**环境暴露字段 → 无法稳定估计系数（方法学笔记 §3.3：964 场世界杯不足以稳定估计海拔/热湿/草坪/旅行/休息及交互）。
-- 稳定环境系数需更大的国际比赛池（49k，只读），世界杯保持 held-out；该池当前不在仓库内，OOS 尚未实跑。
-- 即使第一阶段可用球队级代理，也**只经 OOS 证明增益后才允许入模**；否则维持 `usedInModel:false`（展示 + shadow）。
+依据（OOS 真实估计，2026-07-10 实跑，CC0 池 SHA-256 `5ddddc5a…`）：
+- 估计变量（训练期真实覆盖）：`rest_diff`（休息 99.7/99.6%）、`cross` / `cross_unknown`（跨洲旅行代理 97.3%）。
+  - `rest_diff` 系数 ≈ **-3e-5**（CI[-6e-5, 0]），双方在国际比赛窗口休息相近，对手休息差几乎无信号。
+  - `cross` 系数 ≈ **-0.050**（CI[-0.065, -0.032]，符号稳定）：跨洲比赛双方进球强度约低 5%（对称旅行/气候压力），方向合理。
+  - `cross_unknown` ≈ +0.39：是**联盟解析缺失的产物**（从未参加洲际特定赛事的球队的可用性代理），**非真实环境暴露**，不计入生产候选（缺失即特征归 Owner A）。
+- OOS 增益判定：WC held-out（1930–2022，964 场）`ΔLogLoss(env−base) = -0.00089`；**cluster bootstrap 95% CI = [-0.0029, +0.0008] 含 0**；walk-forward 6 折 ΔLogLoss 在 0 附近振荡（-0.0007 ~ +0.0028）。
+- 治理口径（总控）：**符号稳定 ≠ 真实增益**；OOS 无稳定增益前不得进入生产概率 → `enterModel=false`，env 系数保持 shadow / `usedInModel:false`。
+- VIF ≈ 1.00（eloDiff/restDiff），无共线性问题；模型本身健康，只是增量信息不足以超越 Elo+Poisson 基准。
+
+> 边界重申：E 的 `altitude_2026` 历史训练覆盖为 0%（仅 2026 held-out 有），`wbgt/weather` 历史覆盖 0%，`neutral` 100% 无有效变异 → **均不拟合、均 `usedInModel:false`**。绝不因 2026 海拔 100% join 就拟合海拔系数（会泄漏 held-out）。
 
 ## 验收口径提示（master plan §E）
 
@@ -37,9 +43,19 @@
 
 边界遵守：E 未停在"只拿到 49k 赛果"——已做环境字段 join；历史海拔与天气为结构缺失（诚实 0%，不伪造）；单元测试用合成数据且明确"仅测逻辑、不进 artifact"。
 
-## 后续步骤（解锁 OOS 第 5 项）
+## OOS 系数估计阶段（本轮）交付说明
 
-1. ~~取得外部 49k 国际比赛池本地副本~~ → **已完成**（只读，`ENV_RESEARCH_POOL_DIR`）。
-2. 在池上做赛前 env 特征工程（球队近期比赛级暴露代理 → 球员分钟级）。
-3. 跑 `research-environment-oos.js`：WC held-out、Ridge/层级贝叶斯、bootstrap 系数分布、共线性 VIF、walk-forward 增益。
-4. 据 OOS 分布更新第 6 项结论（入模 / 仅展示 / 排除）；未通过 OOS 不进入生产概率。
+按总控"立即进入 OOS 系数估计阶段"要求，E 完成真实 OOS：
+- **真实 joined dataset 输入契约**：`research-environment-oos.js` 实时从只读池重建 joined 行（含 as-of rest / confed / cross），并写出 `oos-joined-contract.json`（schema 文档）。
+- **先评估训练期真实覆盖的变量**：`rest_diff`（休息）、`cross`/`cross_unknown`（跨洲旅行代理）——均按对称 (A−B) 方式进入 Poisson 进球强度。
+- **不估计**：`altitude_2026`（历史训练覆盖 0%）、`wbgt/weather`（0%）、`neutral`（100% 无变异）——均 `usedInModel:false`，不泄漏 held-out。
+- **方法**：Elo 作为 as-of 控制（仅非 WC 比赛更新 → 无 WC 泄漏）；Poisson + Ridge（IRLS + 步长折半保证收敛）；与 Elo+Poisson 基准比 LogLoss/Brier/ECE；WC held-out（1930–2022 已发生评估，2026 已发生作前瞻、未完赛排除）单独打分；系数 bootstrap + VIF + walk-forward + cluster bootstrap Δ。
+- **结论**：无稳定 OOS 增益（ΔLogLoss CI 含 0）→ env 系数保持 shadow，**不进入生产概率**。
+- `lib/` 相对 `78da1b5` 仍零 diff；49k 池仍在仓库外，未提交。
+
+## 后续步骤
+
+1. 当前 OOS 未给出稳定增益 → env 模块维持 `usedInModel:false`（展示 + shadow）。
+2. 若未来取得历史海拔 / WBGT 表（训练覆盖 >0），可重新估计 `altitude`/`wbgt` 系数并重复本 OOS 流程；**只有在那时通过稳定增益才允许入模**。
+3. `cross` 方向性效应（跨洲约 −5% 进球）值得持续监测，但增量增益不足，暂不入模。
+4. 不参与合并/推送/部署；所有产出仅作论文引用的研究 artifact（D 的 `research-input-audit` 可直接消费 `manifest.json`）。

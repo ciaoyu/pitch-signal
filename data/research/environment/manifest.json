@@ -100,6 +100,38 @@
     "rest": { "unit": "d",    "symmetry": "beta_rest*(R_i - R_opp)" },
     "et":   { "unit": "min",  "symmetry": "beta_et*(ET_i - ET_opp)" }
   },
+  "oos": {
+    "status": "OOS_ESTIMATED_REAL",
+    "run_at": "2026-07-10",
+    "pool_sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+    "method": "Elo(as-of, NON-WC only) + Poisson + Ridge(IRLS w/ step-halving); symmetric (A-B) env features; benchmarks vs Elo+Poisson; WC held-out + walk-forward + cluster-bootstrap delta",
+    "estimated": {
+      "rest_diff": { "coef": -0.00003, "bootstrap_ci": [-0.00006, 0], "sign_stable": true, "enter_model": false, "note": "negligible magnitude" },
+      "cross_confederation": { "coef": -0.0501, "bootstrap_ci": [-0.06545, -0.03192], "sign_stable": true, "enter_model": false, "note": "plausible ~-5% goal intensity; OOS gain not stable" },
+      "cross_unknown": { "coef": 0.3876, "bootstrap_ci": [0.3378, 0.4421], "sign_stable": true, "enter_model": false, "note": "confederation-resolution ARTIFACT (missingness proxy), NOT physical env exposure" }
+    },
+    "not_estimated": {
+      "altitude_2026": "historical training coverage 0% (only 2026 held-out) -> usedInModel:false",
+      "wbgt_weather": "historical coverage 0% -> usedInModel:false",
+      "neutral": "100% present, no effective variation -> omitted from fit"
+    },
+    "verdict": {
+      "oos_gain_stable": false,
+      "enter_model": false,
+      "wc1930_2022_delta_logloss": -0.00089,
+      "cluster_bootstrap_ci": [-0.00291, 0.00081],
+      "vif": "~1.00 (eloDiff, restDiff)",
+      "conclusion": "NO stable OOS gain over Elo+Poisson; env coefficients remain shadow (usedInModel:false). Sign stability != production readiness."
+    }
+  },
+  "artifacts": {
+    "pool_coverage": "data/research/environment/pool-coverage.json",
+    "wc_heldout": "data/research/environment/wc-heldout-manifest.json",
+    "oos_report": "data/research/environment/oos-report.json",
+    "oos_joined_contract": "data/research/environment/oos-joined-contract.json",
+    "coverage_report": "data/research/environment/coverage-report.json",
+    "note": "all derivable from scripts + READ-ONLY 49k pool (ENV_RESEARCH_POOL_DIR); reproducible; no fabrication"
+  },
   "missing_mechanism": "structural (historical editions have no env fields); missing != neutral; mark missing_reason; degrade to base model pre-1960s; non-random missingness only as feature after OOS proof",
-  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-* (incl. research-environment-pool-lib.js / -pool-adapter.js / test-research-environment-pool-lib.js); never lib/prediction.js or public API; never commit the 49k pool"
+  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-* (incl. research-environment-pool-lib.js / -pool-adapter.js / -oos.js / test-research-environment-pool-lib.js / test-research-environment-oos-lib.js); never lib/prediction.js or public API; never commit the 49k pool"
 }

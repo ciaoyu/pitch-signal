@@ -1,23 +1,257 @@
 {
-  "generatedAt": "2026-07-10T15:00:23.817Z",
+  "generatedAt": "2026-07-10T15:54:31.947Z",
   "owner": "E",
+  "status": "OOS_ESTIMATED_REAL",
+  "shadow": true,
   "design": {
-    "heldOut": "World Cup (all editions) never in coefficient estimation",
-    "symmetry": "features enter as (A_i - A_opp) team-relative differences",
-    "regularization": "Ridge / Elastic-Net / hierarchical-Bayes candidate",
-    "asOf": "pre-kickoff facts only; WC held-out; 2026 not test",
-    "output": "OOS DISTRIBUTION of candidate coefficients (not a production constant)"
+    "eloControl": "as-of, NON-WC matches only (K=30, start=1500); no WC leakage into env fit",
+    "symmetry": "rest_diff=(rest_home-rest_away); cross/cross_unknown symmetric team-relative",
+    "goalModel": "Poisson + Ridge (IRLS, λ=0.5)",
+    "benchmarks": {
+      "base": "Elo+Poisson (no env coefs)",
+      "env": "Elo+Poisson + rest_diff + cross + cross_unknown"
+    },
+    "worldCup": "held-out; scored with pre-kickoff Elo (non-WC-derived)"
   },
-  "envVars": [
-    "alt",
-    "wbgt",
-    "turf",
-    "travel",
-    "tz",
-    "rest",
-    "et"
+  "dataContract": {
+    "source": "martj42/international_results (CC0)",
+    "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+    "nonWcPoolMatches": 48441,
+    "nonWcPlayed": 48441,
+    "envFitMatches": 48139,
+    "wcHeldOutTotal": 1064,
+    "wcPlayed1930_2022": 964,
+    "wc2026Played": 97,
+    "wc2026UnplayedExcluded": 3
+  },
+  "estimatedFeatures": {
+    "rest_diff": {
+      "fitted": true,
+      "coverage_pct": 99.7,
+      "coefficient": -0.00003,
+      "bootstrap": {
+        "mean": -0.00003,
+        "sd": 0.00001,
+        "ci025": -0.00006,
+        "ci975": -0.00001,
+        "sign_stable": true
+      }
+    },
+    "cross_confederation": {
+      "fitted": true,
+      "coverage_pct": 97.3,
+      "coefficient": -0.0501,
+      "bootstrap": {
+        "mean": -0.04986,
+        "sd": 0.00951,
+        "ci025": -0.06763,
+        "ci975": -0.03067,
+        "sign_stable": true
+      }
+    },
+    "cross_unknown_flag": {
+      "fitted": true,
+      "coefficient": 0.3876,
+      "bootstrap": {
+        "mean": 0.39379,
+        "sd": 0.02576,
+        "ci025": 0.34604,
+        "ci975": 0.44638,
+        "sign_stable": true
+      }
+    }
+  },
+  "notEstimated": {
+    "altitude_2026": "historical training coverage 0% (only 2026 held-out has it) → usedInModel:false",
+    "wbgt_weather": "historical coverage 0% → usedInModel:false",
+    "neutral": "100% present ⇒ no effective variation ⇒ omitted from fit"
+  },
+  "coefficients": {
+    "intercept": 0.12014,
+    "homeAdv": 0.35022,
+    "eloDiff": 0.00209,
+    "restDiff": -0.00003,
+    "cross": -0.0501,
+    "crossUnknown": 0.3876
+  },
+  "vif": {
+    "eloDiff": {
+      "r2": 0.002061978577644674,
+      "vif": 1.0020662391184432
+    },
+    "restDiff": {
+      "r2": 0.0020619785776624378,
+      "vif": 1.002066239118461
+    },
+    "cross": {
+      "r2": -0.1899100257076396,
+      "vif": 0.8403996759379349
+    },
+    "crossUnknown": {
+      "r2": -0.025324813632478183,
+      "vif": 0.9753006917459078
+    }
+  },
+  "walkForward": [
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1940",
+      "nTrain": 2375,
+      "nTest": 45764,
+      "env": {
+        "logLoss": 0.93942,
+        "brier": 0.18434,
+        "ece": 0.51715
+      },
+      "base": {
+        "logLoss": 0.93664,
+        "brier": 0.18393,
+        "ece": 0.51775
+      },
+      "deltaLogLoss": 0.00279
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1955",
+      "nTrain": 3823,
+      "nTest": 44316,
+      "env": {
+        "logLoss": 0.93975,
+        "brier": 0.18438,
+        "ece": 0.51464
+      },
+      "base": {
+        "logLoss": 0.93833,
+        "brier": 0.18418,
+        "ece": 0.51546
+      },
+      "deltaLogLoss": 0.00142
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1970",
+      "nTrain": 7599,
+      "nTest": 40540,
+      "env": {
+        "logLoss": 0.93222,
+        "brier": 0.18313,
+        "ece": 0.51824
+      },
+      "base": {
+        "logLoss": 0.93233,
+        "brier": 0.18324,
+        "ece": 0.5183
+      },
+      "deltaLogLoss": -0.00011
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1985",
+      "nTrain": 13972,
+      "nTest": 34167,
+      "env": {
+        "logLoss": 0.91936,
+        "brier": 0.1808,
+        "ece": 0.52404
+      },
+      "base": {
+        "logLoss": 0.92002,
+        "brier": 0.1811,
+        "ece": 0.52208
+      },
+      "deltaLogLoss": -0.00066
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "2000",
+      "nTrain": 23253,
+      "nTest": 24886,
+      "env": {
+        "logLoss": 0.90748,
+        "brier": 0.17852,
+        "ece": 0.52022
+      },
+      "base": {
+        "logLoss": 0.90776,
+        "brier": 0.17859,
+        "ece": 0.51656
+      },
+      "deltaLogLoss": -0.00028
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "2012",
+      "nTrain": 34538,
+      "nTest": 13601,
+      "env": {
+        "logLoss": 0.89812,
+        "brier": 0.17643,
+        "ece": 0.51757
+      },
+      "base": {
+        "logLoss": 0.89764,
+        "brier": 0.17635,
+        "ece": 0.51554
+      },
+      "deltaLogLoss": 0.00047
+    }
   ],
-  "status": "BLOCKED",
-  "blocker": "ENV_RESEARCH_POOL_DIR not set or missing. External 49k international-results pool is a READ-ONLY input and is NOT in this repo. Provide a local copy to run OOS.",
-  "conclusion": "Cannot estimate coefficients without the external pool. Per reviewer: data-insufficiency is an acceptable completion state IF the deliverable states the boundary (not eligible to enter production probability)."
+  "worldCupHeldOut": {
+    "wc1930_2022": {
+      "n": 964,
+      "env": {
+        "logLoss": 1.0648,
+        "brier": 0.21452,
+        "ece": 0.63924
+      },
+      "base": {
+        "logLoss": 1.06568,
+        "brier": 0.21478,
+        "ece": 0.63726
+      },
+      "deltaLogLoss": -0.00089
+    },
+    "wc2026_prospective": {
+      "n": 97,
+      "env": {
+        "logLoss": 1.05464,
+        "brier": 0.21197,
+        "ece": 0.63575
+      },
+      "base": {
+        "logLoss": 1.05592,
+        "brier": 0.21227,
+        "ece": 0.6335
+      },
+      "deltaLogLoss": -0.00128,
+      "note": "prospective only; 2026 not used to fit or select coefficients"
+    }
+  },
+  "clusterBootstrap": {
+    "replications": 200,
+    "deltaLogLossMean": -0.00097,
+    "deltaLogLossCI": [
+      -0.00294,
+      0.00098
+    ],
+    "interpretation": "Δ = envLogLoss − baseLogLoss; negative ⇒ env model better. CI<0 ⇒ stable gain."
+  },
+  "verdict": {
+    "oosGainStable": false,
+    "coefficientSignStable": true,
+    "enterModel": false,
+    "conclusion": "NO stable OOS gain. Env coefficients remain shadow / usedInModel:false. Do NOT enter production probability."
+  },
+  "caveats": {
+    "sign_stable_not_gain": "Coefficient signs are stable (narrow bootstrap CIs) BUT the OOS ΔLogLoss cluster-bootstrap CI includes 0 => no STABLE predictive gain over Elo+Poisson. Per governance: sign stability != production readiness.",
+    "cross_unknown_artifact": "cross_unknown is strongly positive & sign-stable, but it is a CONFEDERATION-RESOLUTION artifact (teams that never appear in a confederation-specific tournament => a missingness proxy), NOT a physical environment exposure. Excluded from production candidacy; missingness-as-feature belongs to Owner A.",
+    "rest_diff_negligible": "rest_diff coefficient ≈ -3e-5 (CI [-6e-5, 0]); both teams rest similarly within FIFA windows, so the opponent rest-difference carries little signal.",
+    "cross_directional": "cross_confederation is stably negative (~ -0.05, ≈5% lower goal intensity for both sides, symmetric) — a plausible travel/climate effect — but its added OOS gain over Elo+Poisson is not materially stable; monitor, keep shadow.",
+    "altitude_not_fitted": "altitude_2026 was NOT fitted: historical training coverage = 0% (only 2026 held-out carries it). Fitting it would leak held-out info. usedInModel:false."
+  },
+  "governance": {
+    "libTouched": false,
+    "productionProbabilityChanged": false,
+    "poolCommitted": false
+  }
 }

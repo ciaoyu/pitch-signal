@@ -306,6 +306,7 @@ module.exports = {
   buildVenueAltitudeMap,
   normCity,
   daysBetween,
+  sha256File,
   analyzePool,
   resolveCsvPath,
 };

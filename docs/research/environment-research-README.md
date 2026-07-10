@@ -26,11 +26,14 @@ data/research/environment/
   coverage-report.json                 # 覆盖审计产出（脚本生成，含真实 49k 池）
   pool-coverage.json                   # 49k 池特征覆盖（脚本生成）
   wc-heldout-manifest.json             # 世界杯 held-out 数据集（脚本生成）
-  oos-report.json                      # OOS 产出（脚本生成；待估算）
+  oos-report.json                      # OOS 产出（脚本生成；真实估计）
+  oos-joined-contract.json             # 真实 joined dataset 输入契约（schema）
 scripts/research-environment-*.js      # 审计 / OOS 脚本（纯 Node，无依赖）
 scripts/research-environment-pool-lib.js        # 49k 只读适配器核心（解析+join+as-of）
 scripts/research-environment-pool-adapter.js    # 适配器 CLI：生成 pool-coverage + wc-heldout
+scripts/research-environment-oos.js             # OOS 系数估计（Ridge Poisson + VIF + bootstrap + walk-forward）
 scripts/test-research-environment-pool-lib.js   # 单元测试（合成数据，仅验证逻辑）
+scripts/test-research-environment-oos-lib.js    # OOS 助手单元测试（合成数据，仅验证逻辑）
 ```
 
 ## 运行
@@ -50,18 +53,25 @@ node scripts/research-environment-coverage.js
 # 4) 单元测试（合成数据，验证 join 逻辑；不进入 research artifact）
 node scripts/test-research-environment-pool-lib.js
 
-# 5) OOS 系数估计（下一步；WC held-out + Ridge/层级贝叶斯 + VIF + 后验）
-# ENV_RESEARCH_POOL_DIR=/path/to/international-results node scripts/research-environment-oos.js
+# 5) OOS 系数估计（真实跑；WC held-out + Ridge/层级贝叶斯 + VIF + 后验 + walk-forward）
+ENV_RESEARCH_POOL_DIR=/path/to/international-results node scripts/research-environment-oos.js
+
+# 6) OOS 助手单元测试（合成数据，验证 IRLS/概率/对称/VIF；不进入 research artifact）
+node scripts/test-research-environment-oos-lib.js
 ```
 
-## 当前状态（数据采集阶段）
+## 当前状态（数据采集阶段 ✅ + OOS 系数估计阶段 ✅）
 
 - DAG、数据字典、来源/许可、泄漏审计、缺失/失败说明：**已完成**。
 - **真实 49k 池已采集并 join**：48,441 场非 WC 估计池 + 1,064 场 WC held-out（1930–2026）；
   休息 99.7%/99.6%、neutral 100%、跨洲 97.3%、2026 海拔 join 100%；历史海拔 0%、天气/WBGT 0%（诚实缺失）。
   SHA-256 `5ddddc5a…`，见 `pool-coverage.json` / `coverage-report.json`。
-- 单元测试通过；`lib/` 相对 `78da1b5` 零 diff（生产概率未动）。
-- OOS 系数估计（真实 Ridge/层级贝叶斯 + VIF + 后验 + walk-forward 增益）：**下一步**，数据已就绪；未通过 OOS 不进入生产概率。
+- 单元测试通过（`test-research-environment-pool-lib.js` + `test-research-environment-oos-lib.js`，合成数据）；`lib/` 相对 `78da1b5` 零 diff（生产概率未动）。
+- **OOS 系数估计已真实运行**（2026-07-10，CC0 池 SHA-256 `5ddddc5a…`）：
+  - 估计 `rest_diff` ≈ −3e-5（可忽略）、`cross` ≈ −0.050（跨洲约 −5% 进球，方向合理）、`cross_unknown` ≈ +0.39（联盟解析缺失产物，非环境暴露）。
+  - VIF ≈ 1.00（无共线性）；WC held-out 1930–2022 `ΔLogLoss(env−base) = −0.00089`；**cluster bootstrap 95% CI = [−0.0029, +0.0008] 含 0** → 无稳定增益。
+  - **裁决：env 系数保持 shadow / `usedInModel:false`，不进入生产概率**（治理口径：符号稳定 ≠ 真实增益）。
+  - `altitude_2026` / `wbgt` / `neutral` 训练覆盖不足，均不拟合、`usedInModel:false`。
 - 入模结论：**当前不允许进入生产概率**（见 `environment-deliverables.md` 第 6 项）。
 
 ## 不推送 / 不部署

@@ -77,3 +77,31 @@
 > 边界：E **不**只拿到 49k 赛果就结束——已做环境字段 join（休息/旅行/2026 海拔）；历史海拔与天气缺失属结构缺失，缺失≠中性，退化为基础模型。下一步：基于 WC held-out 跑 walk-forward OOS（Ridge / 层级贝叶斯 + VIF + 后验），通过增益才允许入模。
 
 > 数据不足**也算完成**（reviewer 验收口径）：必须给出可展示事实与"不能入模"的边界。
+
+## 6. OOS 系数估计结果（真实，2026-07-10 实跑 · CC0 池 SHA-256 `5ddddc5a…`）
+
+**方法**（详见 `scripts/research-environment-oos.js` → `oos-report.json` / `oos-joined-contract.json`）：
+- **输入契约**：脚本实时从只读池重建 joined dataset（真实、无伪造），列出于 `oos-joined-contract.json`。
+- **Elo 控制（as-of，仅非 WC 比赛更新）**：保证 env 系数估计不泄漏任何世界杯结果；WC 仅以开赛前（非 WC 派生）Elo 快照评分。
+- **对称进入**：`rest_diff = rest_home − rest_away`；`cross` / `cross_unknown` 对双方对称。进球模型 Poisson + Ridge（IRLS + 步长折半，标准化特征后回归、系数反变换）。
+- **基准对比**：`base` = Elo+Poisson（无 env 系数）；`env` = Elo+Poisson + rest_diff + cross + cross_unknown。指标：LogLoss / Brier / ECE（3 类赛果）；WC held-out（1930–2022 已发生评估；2026 已发生作前瞻、未完赛排除）；系数 bootstrap + VIF + walk-forward + cluster bootstrap Δ。
+
+**估计与结果**（非 WC 估计 48,139 场；WC held-out 1,064 场，其中 1930–2022 已发生 964 场）：
+
+| 变量 | 系数 | bootstrap 95% CI | 符号稳定 | 入模候选 |
+|------|------|------------------|----------|----------|
+| `rest_diff` | −3e-5 | [−6e-5, 0] | 是 | 否（量级可忽略） |
+| `cross`（跨洲） | −0.050 | [−0.065, −0.032] | 是 | 否（方向合理但增量增益不足） |
+| `cross_unknown` | +0.39 | [+0.34, +0.44] | 是 | **否（联盟解析缺失产物，非环境暴露）** |
+
+**OOS 增益判定**：
+- WC 1930–2022：`ΔLogLoss(env−base) = −0.00089`（env 略优但极小）。
+- cluster bootstrap ΔLogLoss 95% CI = **[−0.0029, +0.0008] 含 0** → 无稳定增益。
+- walk-forward 6 折 ΔLogLoss 在 0 附近振荡（−0.0007 ~ +0.0028），无一致改善。
+- VIF ≈ 1.00（eloDiff / restDiff），无共线性问题；模型健康，仅增量信息不足以超越基准。
+
+**裁决（治理口径）**：符号稳定 ≠ 真实增益。OOS 无稳定增益前不得进入生产概率 → `enterModel = false`，env 系数保持 shadow / `usedInModel:false`。
+
+**未估计**（按指令，训练期覆盖不足）：`altitude_2026`（历史训练 0%，仅 2026 held-out 有 → 拟合即泄漏 held-out）、`wbgt/weather`（0%）、`neutral`（100% 无有效变异）。均 `usedInModel:false`。
+
+**合成数据纪律**：所有单元测试（`test-research-environment-pool-lib.js`、`test-research-environment-oos-lib.js`）仅用合成数据验证数学/逻辑，**不写入任何 research artifact**。
