@@ -3809,8 +3809,32 @@ var require_match_detail = __commonJS({
           const renderer = typeof renderKnockoutIntel === "function" ? renderKnockoutIntel : window.MatchRenderers && window.MatchRenderers.renderKnockoutIntel;
           if (renderer) html += renderer(pred.knockoutIntel);
         }
+        if (window.WorldCup.TacticalScenarios && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout || pred.stage && !/Group/i.test(pred.stage))) {
+          html += renderKnockoutScenariosBlock(pred);
+        }
         html += "</div>";
         return html;
+      }
+      function renderKnockoutScenariosBlock(pred) {
+        if (!window.WorldCup.TacticalScenarios) return "";
+        const homeTags = pred.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
+        const awayTags = pred.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
+        const penaltySkill = pred.knockoutIntel?.sections?.penalty || {};
+        const scenarios = window.WorldCup.TacticalScenarios.getRelevantScenarios({
+          homeTags,
+          awayTags,
+          penaltySkill,
+          limit: 3
+        });
+        if (!scenarios || !scenarios.length) return "";
+        const L = (obj) => esc(window.WorldCup.I18n.i18nText(obj, ""));
+        const cards = scenarios.map((sc) => `
+            <div class="elo-card mb-2">
+                <div class="text-xs font-bold text-amber-300 mb-1">\u26A1 ${L(sc.title)}</div>
+                <div class="text-[10px] text-gray-400 mb-1">${tx("\u524D\u63D0", "Condition")}: ${L(sc.condition)}</div>
+                <div class="text-[10px] text-gray-300 leading-snug">${tx("\u63A8\u6F14", "Analysis")}: ${L(sc.deduction)}</div>
+            </div>`).join("");
+        return `<div class="pred-section"><div class="pred-section-title text-amber-400"><span class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-xs">\u{1F9E0}</span>${tx("\u6DD8\u6C70\u8D5B\u6218\u672F\u63A8\u6F14 (Top 3)", "Knockout Tactical Scenarios (Top 3)")}</div>${cards}</div>`;
       }
       function renderTacticalScenario(ts) {
         const L = (o) => esc(window.WorldCup.I18n.i18nText(o, "")), focusIds = Object.keys(ts.teams || {});
@@ -5631,6 +5655,207 @@ var require_ui_helpers = __commonJS({
       window.WorldCup.UIHelpers = { setPitchView, showTip, hideTip, showTipFromDataset };
       Object.assign(window, { setPitchView, showTip, hideTip, showTipFromDataset });
     })();
+  }
+});
+
+// static/js/tactical-scenarios.js
+var require_tactical_scenarios = __commonJS({
+  "static/js/tactical-scenarios.js"(exports, module) {
+    (function(root, factory) {
+      if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory();
+      } else {
+        root.WorldCup = root.WorldCup || {};
+        root.WorldCup.TacticalScenarios = factory();
+      }
+    })(typeof self !== "undefined" ? self : exports, function() {
+      "use strict";
+      const KNOCKOUT_SCENARIOS = [
+        {
+          id: "draw_90",
+          phase: "90m_draw",
+          priority: 10,
+          tags: ["possession", "default"],
+          title: {
+            zh: "\u5E38\u89C4\u65F6\u95F4 90 \u5206\u949F\u5E73\u5C40\u5C40\u52BF",
+            en: "90-Minute Regulation Draw Scenario"
+          },
+          condition: {
+            zh: "\u82E5\u53CC\u65B9\u5728 90 \u5206\u949F\u5E38\u89C4\u65F6\u95F4\u5185\u65E0\u6CD5\u5206\u51FA\u80DC\u8D1F\u8FDB\u5165\u52A0\u65F6",
+            en: "If regulation ends in a draw forcing extra time"
+          },
+          deduction: {
+            zh: "\u4F53\u80FD\u50A8\u5907\u66F4\u6709\u4F18\u52BF\u4E14\u677F\u51F3\u6DF1\u5EA6\u5145\u88D5\u7684\u4E00\u65B9\u5C06\u5728\u52A0\u65F6\u8D5B\u638C\u7BA1\u6BD4\u8D5B\u8282\u594F\uFF0C\u63A7\u7403\u65B9\u9700\u8B66\u60D5\u56E0\u524D\u538B\u5BFC\u81F4\u7684\u9632\u7EBF\u6F0F\u6D1E",
+            en: "The team with superior stamina and bench depth will dictate extra time pace; possession side must guard against counter-attacks"
+          }
+        },
+        {
+          id: "et_behind",
+          phase: "et_trailing",
+          priority: 9,
+          tags: ["low_block", "counter_fast", "default"],
+          title: {
+            zh: "\u52A0\u65F6\u8D5B\u5148\u5931\u7403\u5F3A\u653B\u53CD\u6251",
+            en: "Extra Time Trailing & Counter-Push"
+          },
+          condition: {
+            zh: "\u82E5\u4E00\u65B9\u5728\u52A0\u65F6\u8D5B\u4E0A\u534A\u573A\u6BD4\u5206\u843D\u540E",
+            en: "If a team falls behind in the first half of extra time"
+          },
+          deduction: {
+            zh: "\u843D\u540E\u65B9\u88AB\u8FEB\u653E\u5F03\u7A33\u5B88\u7B56\u7565\u5168\u7EBF\u538B\u4E0A\uFF0C\u9632\u53CD\u6781\u901F\u578B\u7403\u961F\u6709\u671B\u5229\u7528\u8EAB\u540E\u5DE8\u5927\u7A7A\u6321\u5B8C\u6210\u81F4\u547D\u9501\u5B9A",
+            en: "Trailing team is forced to abandon low block; counter-attack specialists can exploit exposed spaces to seal the match"
+          }
+        },
+        {
+          id: "penalty_fatigue",
+          phase: "penalty_prep",
+          priority: 8,
+          tags: ["penalty", "default"],
+          title: {
+            zh: "\u70B9\u7403\u5927\u6218\u524D\u4F53\u80FD\u4E0E\u5FC3\u7406\u5FC3\u7406\u535A\u5F08",
+            en: "Penalty Shootout Stamina & Nerves"
+          },
+          condition: {
+            zh: "\u82E5 120 \u5206\u949F\u93D6\u6218\u672A\u51B3\u80DC\u8D1F\u8FDB\u5165\u70B9\u7403\u5927\u6218",
+            en: "If 120 minutes fail to separate sides heading to penalties"
+          },
+          deduction: {
+            zh: "\u95E8\u5C06\u6251\u6551\u6210\u529F\u7387\u53CA\u4E3B\u7F5A\u961F\u5458\u5728\u6781\u5EA6\u75B2\u52B3\u4E0B\u7684\u5C04\u95E8\u7A33\u5B9A\u6027\u6210\u4E3A\u51B3\u5B9A\u664B\u7EA7\u5F52\u5C5E\u7684\u6838\u5FC3\u94A5\u5319",
+            en: "Goalkeeper save percentage and penalty taker poise under extreme fatigue become decisive"
+          }
+        },
+        {
+          id: "et_red_card",
+          phase: "et_disadvantage",
+          priority: 7,
+          tags: ["high_press"],
+          title: {
+            zh: "\u52A0\u65F6\u8D5B\u5C11\u6253\u4E00\u4EBA\u6536\u7F29\u9632\u7EBF",
+            en: "Extra Time 10-Man Low Block Defense"
+          },
+          condition: {
+            zh: "\u82E5\u4E00\u65B9\u5728\u52A0\u65F6\u8D5B\u906D\u9047\u7EA2\u724C\u51CF\u5458",
+            en: "If a team suffers a red card dismissal during extra time"
+          },
+          deduction: {
+            zh: "10 \u4EBA\u88AB\u52A8\u65B9\u5C06\u8F6C\u4E3A\u7981\u533A\u4F4E\u4F4D\u5BC6\u96C6\u9632\u5B88\uFF0C\u591A\u6253\u4E00\u4EBA\u65B9\u9700\u901A\u8FC7\u808B\u90E8\u8FDE\u7EED\u7A7F\u63D2\u548C\u4E8C\u6B21\u8FDB\u653B\u7834\u5C40",
+            en: "10-man side drops into tight penalty-box low block; numerical advantage side must overload half-spaces to break through"
+          }
+        },
+        {
+          id: "low_block_break",
+          phase: "regulation",
+          priority: 6,
+          tags: ["low_block", "possession"],
+          title: {
+            zh: "\u9762\u5BF9\u5BC6\u96C6\u9632\u5B88\u653B\u575A\u63A8\u6F14",
+            en: "Breaking the Low Block Siege"
+          },
+          condition: {
+            zh: "\u63A7\u7403\u65B9\u957F\u65F6\u95F4\u9762\u5BF9 5 \u540E\u536B\u4F4E\u4F4D\u9632\u7EBF\u4E14\u672A\u80FD\u9996\u5F00\u7EAA\u5F55",
+            en: "Possession side facing a deep 5-man defense without early opener"
+          },
+          deduction: {
+            zh: "\u6BD4\u8D5B\u8FDB\u5165\u4E0B\u534A\u573A\u540E\uFF0C\u7981\u533A\u5916\u5B9A\u4F4D\u7403\u53CA\u4E24\u7FFC\u4E0B\u5E95\u5012\u4E09\u89D2\u4F20\u4E2D\u5C06\u662F\u6253\u7834\u6B7B\u5C40\u7684\u6700\u5173\u952E\u9009\u62E9",
+            en: "In the second half, set-pieces outside the box and cutbacks from flanks become vital keys to breaking the deadlock"
+          }
+        },
+        {
+          id: "high_press_fatigue",
+          phase: "late_regulation",
+          priority: 5,
+          tags: ["high_press"],
+          title: {
+            zh: "\u9AD8\u4F4D\u903C\u62A2\u961F 70 \u5206\u949F\u540E\u4F53\u80FD\u62D0\u70B9",
+            en: "High-Press 70th-Minute Fitness Pivot"
+          },
+          condition: {
+            zh: "\u91C7\u7528\u6301\u7EED\u9AD8\u4F4D\u903C\u62A2\u961F\u5728\u6BD4\u8D5B\u6700\u540E 20 \u5206\u949F\u4F53\u80FD\u4E0B\u6ED1",
+            en: "High-pressing unit experiencing stamina drop in final 20 minutes"
+          },
+          deduction: {
+            zh: "\u5BF9\u624B\u53EF\u5229\u7528\u5176\u524D\u4E2D\u540E\u4E09\u6761\u7EBF\u8131\u8282\u9020\u6210\u7684\u8179\u5730\u7A7A\u95F4\uFF0C\u5B9E\u65BD\u6362\u4EBA\u7206\u70B9\u9488\u5BF9\u6027\u51B2\u51FB",
+            en: "Opponent can exploit disconnected midfield-defense gaps with impact sub runners"
+          }
+        },
+        {
+          id: "counter_speed_trap",
+          phase: "transition",
+          priority: 6,
+          tags: ["counter_fast"],
+          title: {
+            zh: "\u53CD\u51FB\u51B3\u80DC\u8FB9\u8DEF\u76F4\u63D2\u5C40\u52BF",
+            en: "Counter-Attack Flank Breakout Scenario"
+          },
+          condition: {
+            zh: "\u538B\u4E0A\u8FDB\u653B\u65B9\u4E22\u7403\u540E\u77AC\u95F4\u8FDB\u5165\u9632\u5B88\u8FC7\u6E21\u9636\u6BB5",
+            en: "Attacking side losing possession during defensive transition"
+          },
+          deduction: {
+            zh: "\u62E5\u6709\u6781\u901F\u8FB9\u8DEF\u5FEB\u9A6C\u7684\u7403\u961F\u5C06\u5728\u653B\u5B88\u8F6C\u6362\u7684 6 \u79D2\u7A97\u5185\u521B\u9020\u7EDD\u4F73\u9762\u5BF9\u95E8\u5C06\u5355\u6311\u673A\u4F1A",
+            en: "Side with elite flank speed will generate 1v1 chances within a 6-second transition window"
+          }
+        },
+        {
+          id: "late_set_piece",
+          phase: "clutch_time",
+          priority: 5,
+          tags: ["crossing"],
+          title: {
+            zh: "\u8865\u65F6\u5B9A\u70B9\u7EDD\u6740\u89D2\u7403/\u4EFB\u610F\u7403",
+            en: "Stoppage Time Set-Piece Decider"
+          },
+          condition: {
+            zh: "\u6BD4\u5206\u54AC\u7D27\u8FDB\u5165\u5168\u573A\u8865\u65F6\u9636\u6BB5\u8D62\u5F97\u7981\u533A\u8FB9\u7F18\u5B9A\u4F4D\u7403\u6216\u89D2\u7403",
+            en: "Close match in stoppage time earning late corner or danger-zone free kick"
+          },
+          deduction: {
+            zh: "\u62E5\u6709\u9AD8\u7A7A\u4E89\u9876\u5236\u7A7A\u6743\u53CA\u7CBE\u6E5B\u4F20\u4E2D\u4E3B\u7F5A\u624B\u7684\u7403\u961F\u4E89\u593A\u6218\u5C40\u7684\u4E3B\u52A8\u7EC8\u7ED3\u6982\u7387\u63D0\u5347",
+            en: "Team with aerial dominance and elite delivery specialist gains elevated match-ending probability"
+          }
+        },
+        {
+          id: "penalty_specialist_edge",
+          phase: "penalty_shootout",
+          priority: 6,
+          tags: ["penalty"],
+          title: {
+            zh: "\u70B9\u7403\u5927\u6218\u5386\u53F2\u5FC3\u7406\u5FC3\u7406\u538B\u5236",
+            en: "Penalty Shootout Historical Pedigree"
+          },
+          condition: {
+            zh: "\u4E24\u961F\u5386\u53F2\u70B9\u7403\u80DC\u7387\u5DEE\u5F02\u663E\u8457\uFF0C\u8FDB\u5165\u70B9\u7403\u5927\u5C40\u540E",
+            en: "Teams with contrasting shootout history enter penalties"
+          },
+          deduction: {
+            zh: "\u70B9\u7403\u7ECF\u9A8C\u4E30\u5BCC\u7684\u5927\u8D5B\u5F3A\u961F\u5C06\u5728\u7F5A\u7403\u5FC3\u7406\u548C\u95E8\u5C06\u9884\u5224\u5E72\u6270\u4E0A\u5360\u636E\u538B\u5012\u6027\u4E0A\u98CE",
+            en: "Experienced tournament side holds strong psychological and goalkeeper gamesmanship advantage"
+          }
+        }
+      ];
+      function getRelevantScenarios({ homeTags = [], awayTags = [], penaltySkill = {}, limit = 3 } = {}) {
+        const allTags = /* @__PURE__ */ new Set([...homeTags, ...awayTags]);
+        if (penaltySkill.home || penaltySkill.away) {
+          allTags.add("penalty");
+        }
+        const scored = KNOCKOUT_SCENARIOS.map((sc) => {
+          let score = sc.priority || 0;
+          for (const tag of sc.tags) {
+            if (allTags.has(tag)) {
+              score += 15;
+            }
+          }
+          return { scenario: sc, score };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        return scored.slice(0, limit).map((item) => item.scenario);
+      }
+      return {
+        KNOCKOUT_SCENARIOS,
+        getRelevantScenarios
+      };
+    });
   }
 });
 
@@ -7833,6 +8058,7 @@ var require_entry = __commonJS({
     var import_pre_match = __toESM(require_pre_match());
     var import_odds_card = __toESM(require_odds_card());
     var import_ui_helpers = __toESM(require_ui_helpers());
+    var import_tactical_scenarios = __toESM(require_tactical_scenarios());
     var import_match_renderers = __toESM(require_match_renderers());
     var import_push_notifications = __toESM(require_push_notifications());
     var import_app = __toESM(require_app());
