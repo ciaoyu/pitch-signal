@@ -44,6 +44,11 @@ function main() {
     OTHER: 0
   };
 
+  const rawResponseHashAudit = {
+    verifiedSnapshots: 0,
+    mismatchedSnapshots: 0
+  };
+
   for (const f of files) {
     const fullPath = path.join(DATA_DIR, f);
     const hash = sha256File(fullPath);
@@ -62,6 +67,15 @@ function main() {
           milestoneCounts[snap.milestone]++;
         } else {
           milestoneCounts.OTHER++;
+        }
+
+        if (snap.rawResponseSha256 && snap.rawResponse) {
+          const recomputed = crypto.createHash('sha256').update(JSON.stringify(snap.rawResponse)).digest('hex');
+          if (recomputed === snap.rawResponseSha256) {
+            rawResponseHashAudit.verifiedSnapshots++;
+          } else {
+            rawResponseHashAudit.mismatchedSnapshots++;
+          }
         }
 
         const asOfValid = Boolean(
@@ -83,6 +97,7 @@ function main() {
 
   const report = MarketShadowLedger.generateShadowBenchmarkReport(records);
   report.milestoneDistribution = milestoneCounts;
+  report.rawResponseHashAudit = rawResponseHashAudit;
   report.fileInventory = fileInventory;
 
   console.log('===============================================================');
