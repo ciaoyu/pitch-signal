@@ -1,0 +1,146 @@
+{
+  "owner": "E",
+  "scope": "environment / travel / rest research (data + DAG + coverage + OOS coefficients only; does NOT modify production probability)",
+  "baseline_commit": "78da1b5",
+  "branch": "codex/environment-research",
+  "created": "2026-07-10",
+  "sources": {
+    "in_repo": [
+      {
+        "id": "venues_2026",
+        "path": "data/venues.json",
+        "covers": "WC2026 16 venues",
+        "env_fields": ["altitude", "grass", "timezone", "coordinates", "country", "city"],
+        "license": "project-data",
+        "coverage_pct": 100,
+        "note": "venue-level only; no WBGT/travel/rest/et/player-minute"
+      },
+      {
+        "id": "wc_history",
+        "path": "data/history/worldcup_*.json",
+        "covers": "1930-2022, 22 editions",
+        "env_fields": [],
+        "license": "openfootball/worldcup.json (CC0)",
+        "coverage_pct": 0,
+        "note": "results only (date/home/away/scores/stage/venue); NO env exposure variables"
+      },
+      {
+        "id": "team_meta",
+        "path": "data/team_meta.json",
+        "covers": "national teams",
+        "env_fields": [],
+        "license": "project-data",
+        "coverage_pct": 0,
+        "note": "rankings/marketValue only; no baseCamp altitude/timezone"
+      },
+      {
+        "id": "elo_seed",
+        "path": "data/elo-seed.json",
+        "covers": "per-edition Elo snapshot",
+        "env_fields": [],
+        "license": "martj42/international_results口径 (public)",
+        "coverage_pct": 100,
+        "note": "team strength prior (control variable)"
+      },
+      {
+        "id": "schedule_2026",
+        "path": "data/match_snapshot_schedule.json",
+        "covers": "WC2026 fixtures",
+        "env_fields": [],
+        "license": "project-data",
+        "coverage_pct": 100,
+        "note": "enables Rest/ET derivation from schedule"
+      }
+    ],
+    "external_readonly": [
+      {
+        "id": "international_results_49k",
+        "path_env": "ENV_RESEARCH_POOL_DIR",
+        "file": "results.csv",
+        "source": "martj42/international_results (GitHub)",
+        "license": "CC0 (public dataset)",
+        "covers": "49,505 international matches (1872-2026)",
+        "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+        "acquired_at": "2026-07-10",
+        "storage": "OUTSIDE repo (e.g. /Users/zbbb/Documents/Data/international-results); never committed",
+        "usage": "READ-ONLY input; World Cup kept held-out; NOT committed to this branch",
+        "derived_features_real_coverage": {
+          "rest_days_home_pct": 99.7,
+          "rest_days_away_pct": 99.6,
+          "neutral_pct": 100,
+          "tournament_type_pct": 100,
+          "confed_home_resolved_pct": 97.9,
+          "confed_away_resolved_pct": 97.8,
+          "cross_confederation_resolved_pct": 97.3,
+          "altitude_2026_joined_pct": 100,
+          "altitude_historical_pct": 0,
+          "weather_wbgt_pct": 0
+        },
+        "pool_non_wc_matches": 48441,
+        "wc_heldout_matches": 1064,
+        "wc_heldout_2026": 100,
+        "in_repo": false
+      },
+      {
+        "id": "owner_d_artifacts",
+        "path": "codex/research-artifacts-v2 (read-only consume contract)",
+        "covers": "backtest / paired delta",
+        "license": "declared by Owner D",
+        "usage": "READ-ONLY; E must NOT modify D files",
+        "in_repo": false
+      }
+    ]
+  },
+  "variables": {
+    "alt":  { "unit": "m",    "symmetry": "beta_alt*(A_i - A_opp)" },
+    "wbgt": { "unit": "degC", "symmetry": "beta_heat*(H_i - H_opp)" },
+    "turf": { "unit": "0/1",  "symmetry": "beta_turf*(S_i - S_opp)" },
+    "travel":{ "unit": "km",  "symmetry": "beta_travel*(T_i - T_opp)" },
+    "tz":   { "unit": "h",    "symmetry": "beta_tz*(Z_i - Z_opp)" },
+    "rest": { "unit": "d",    "symmetry": "beta_rest*(R_i - R_opp)" },
+    "et":   { "unit": "min",  "symmetry": "beta_et*(ET_i - ET_opp)" }
+  },
+  "oos": {
+    "status": "OOS_ESTIMATED_REAL_V2",
+    "run_at": "2026-07-11",
+    "pool_sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+    "method": "Elo(as-of, NON-WC only) + Poisson + Ridge(IRLS w/ step-halving); symmetric (A-B) env features; benchmarks vs RESEARCH Elo+Poisson proxy (NOT production A v4); WC held-out + walk-forward + EDITION-LEVEL cluster-bootstrap delta (with-replacement resample by WC year, seed=20260711, reproducible)",
+    "v2_statistical_fixes": [
+      "cluster bootstrap now resamples World Cup EDITIONS with replacement (seed fixed) — v1 used Math.random() per team, not reproducible",
+      "coefficient bootstrap uses the same seeded RNG",
+      "VIF auxiliary regressions now include an intercept -> VIF>=1 by construction (v1 VIF<1 was a without-intercept bug)",
+      "cross physical travel proxy separated from cross_unknown missingness flag via cross-only sensitivity run",
+      "baseline explicitly flagged as research Elo+Poisson proxy, not production A v4"
+    ],
+    "estimated": {
+      "rest_diff": { "coef": -0.00003, "bootstrap_ci": [-0.00006, 0], "sign_stable": true, "enter_model": false, "note": "negligible magnitude" },
+      "cross_confederation": { "coef": -0.0501, "bootstrap_ci": [-0.06545, -0.03192], "sign_stable": true, "enter_model": false, "note": "plausible ~-5% goal intensity; OOS gain not stable; stable even without cross_unknown flag" },
+      "cross_unknown": { "coef": 0.3876, "bootstrap_ci": [0.3378, 0.4421], "sign_stable": true, "enter_model": false, "note": "confederation-resolution ARTIFACT (missingness proxy), NOT physical env exposure" }
+    },
+    "not_estimated": {
+      "altitude_2026": "historical training coverage 0% (only 2026 held-out) -> usedInModel:false",
+      "wbgt_weather": "historical coverage 0% -> usedInModel:false",
+      "neutral": "100% present, no effective variation -> omitted from fit"
+    },
+    "verdict": {
+      "oos_gain_stable": false,
+      "enter_model": false,
+      "wc1930_2022_delta_logloss": -0.00089,
+      "cluster_bootstrap_ci": [-0.00197, 0.00012],
+      "cluster_bootstrap_seed": 20260711,
+      "cluster_bootstrap_reproducible": true,
+      "vif": "1.00 (eloDiff 1.002, restDiff 1.002, cross 1.005, crossUnknown 1.005; >=1 by construction)",
+      "conclusion": "NO stable OOS gain over research Elo+Poisson baseline; env coefficients remain shadow (usedInModel:false). Sign stability != production readiness. Directionally consistent with v1; now statistically implemented correctly. NOT the paper's final CI until implementation finalized."
+    }
+  },
+  "artifacts": {
+    "pool_coverage": "data/research/environment/pool-coverage.json",
+    "wc_heldout": "data/research/environment/wc-heldout-manifest.json",
+    "oos_report": "data/research/environment/oos-report.json",
+    "oos_joined_contract": "data/research/environment/oos-joined-contract.json",
+    "coverage_report": "data/research/environment/coverage-report.json",
+    "note": "all derivable from scripts + READ-ONLY 49k pool (ENV_RESEARCH_POOL_DIR); reproducible; no fabrication"
+  },
+  "missing_mechanism": "structural (historical editions have no env fields); missing != neutral; mark missing_reason; degrade to base model pre-1960s; non-random missingness only as feature after OOS proof",
+  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-* (incl. research-environment-pool-lib.js / -pool-adapter.js / -oos.js / test-research-environment-pool-lib.js / test-research-environment-oos-lib.js); never lib/prediction.js or public API; never commit the 49k pool"
+}

@@ -1,0 +1,273 @@
+{
+  "generatedAt": "2026-07-10T16:29:13.545Z",
+  "owner": "E",
+  "status": "OOS_ESTIMATED_REAL_V2",
+  "shadow": true,
+  "baselineIsResearchProxy": true,
+  "baselineClarification": "The 'base' benchmark is a RESEARCH Elo+Poisson proxy (same as-of Elo control, env coefficients forced to 0). It is NOT the production Owner A v4 pipeline, which uses a larger feature set and separate calibration. OOS comparisons here measure Δ vs the research baseline only; they do NOT quantify deltas vs the live production model.",
+  "design": {
+    "eloControl": "as-of, NON-WC matches only (K=30, start=1500); no WC leakage into env fit",
+    "symmetry": "rest_diff=(rest_home-rest_away); cross/cross_unknown symmetric team-relative",
+    "goalModel": "Poisson + Ridge (IRLS, λ=0.5)",
+    "benchmarks": {
+      "base": "Elo+Poisson (no env coefs)",
+      "env": "Elo+Poisson + rest_diff + cross + cross_unknown"
+    },
+    "worldCup": "held-out; scored with pre-kickoff Elo (non-WC-derived)"
+  },
+  "dataContract": {
+    "source": "martj42/international_results (CC0)",
+    "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+    "nonWcPoolMatches": 48441,
+    "nonWcPlayed": 48441,
+    "envFitMatches": 48139,
+    "wcHeldOutTotal": 1064,
+    "wcPlayed1930_2022": 964,
+    "wc2026Played": 97,
+    "wc2026UnplayedExcluded": 3
+  },
+  "estimatedFeatures": {
+    "rest_diff": {
+      "fitted": true,
+      "coverage_pct": 99.7,
+      "coefficient": -0.00003,
+      "bootstrap": {
+        "mean": -0.00003,
+        "sd": 0.00001,
+        "ci025": -0.00006,
+        "ci975": 0,
+        "sign_stable": true
+      }
+    },
+    "cross_confederation": {
+      "fitted": true,
+      "coverage_pct": 97.3,
+      "coefficient": -0.0501,
+      "bootstrap": {
+        "mean": -0.05285,
+        "sd": 0.01031,
+        "ci025": -0.07296,
+        "ci975": -0.035,
+        "sign_stable": true
+      }
+    },
+    "cross_unknown_flag": {
+      "fitted": true,
+      "coefficient": 0.3876,
+      "bootstrap": {
+        "mean": 0.3958,
+        "sd": 0.02687,
+        "ci025": 0.3431,
+        "ci975": 0.447,
+        "sign_stable": true
+      }
+    }
+  },
+  "notEstimated": {
+    "altitude_2026": "historical training coverage 0% (only 2026 held-out has it) → usedInModel:false",
+    "wbgt_weather": "historical coverage 0% → usedInModel:false",
+    "neutral": "100% present ⇒ no effective variation ⇒ omitted from fit"
+  },
+  "coefficients": {
+    "intercept": 0.12014,
+    "homeAdv": 0.35022,
+    "eloDiff": 0.00209,
+    "restDiff": -0.00003,
+    "cross": -0.0501,
+    "crossUnknown": 0.3876
+  },
+  "vif": {
+    "eloDiff": {
+      "r2": 0.00206,
+      "vif": 1.00207
+    },
+    "restDiff": {
+      "r2": 0.00206,
+      "vif": 1.00207
+    },
+    "cross": {
+      "r2": 0.00481,
+      "vif": 1.00483
+    },
+    "crossUnknown": {
+      "r2": 0.00481,
+      "vif": 1.00483
+    }
+  },
+  "sensitivity": {
+    "crossOnlyModel": {
+      "description": "cross_confederation coefficient when cross_unknown (missingness flag) is DROPPED. Confirms the travel proxy is not an artifact of confederation-resolution missingness.",
+      "crossCoefFull": -0.0501,
+      "crossCoefWithoutUnknownFlag": -0.06337,
+      "note": "cross coefficient is stable whether or not the missingness flag is in the model."
+    }
+  },
+  "walkForward": [
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1940",
+      "nTrain": 2375,
+      "nTest": 45764,
+      "env": {
+        "logLoss": 0.93942,
+        "brier": 0.18434,
+        "ece": 0.51715
+      },
+      "base": {
+        "logLoss": 0.93664,
+        "brier": 0.18393,
+        "ece": 0.51775
+      },
+      "deltaLogLoss": 0.00279
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1955",
+      "nTrain": 3823,
+      "nTest": 44316,
+      "env": {
+        "logLoss": 0.93975,
+        "brier": 0.18438,
+        "ece": 0.51464
+      },
+      "base": {
+        "logLoss": 0.93833,
+        "brier": 0.18418,
+        "ece": 0.51546
+      },
+      "deltaLogLoss": 0.00142
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1970",
+      "nTrain": 7599,
+      "nTest": 40540,
+      "env": {
+        "logLoss": 0.93222,
+        "brier": 0.18313,
+        "ece": 0.51824
+      },
+      "base": {
+        "logLoss": 0.93233,
+        "brier": 0.18324,
+        "ece": 0.5183
+      },
+      "deltaLogLoss": -0.00011
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "1985",
+      "nTrain": 13972,
+      "nTest": 34167,
+      "env": {
+        "logLoss": 0.91936,
+        "brier": 0.1808,
+        "ece": 0.52404
+      },
+      "base": {
+        "logLoss": 0.92002,
+        "brier": 0.1811,
+        "ece": 0.52208
+      },
+      "deltaLogLoss": -0.00066
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "2000",
+      "nTrain": 23253,
+      "nTest": 24886,
+      "env": {
+        "logLoss": 0.90748,
+        "brier": 0.17852,
+        "ece": 0.52022
+      },
+      "base": {
+        "logLoss": 0.90776,
+        "brier": 0.17859,
+        "ece": 0.51656
+      },
+      "deltaLogLoss": -0.00028
+    },
+    {
+      "trainStartYear": "1873",
+      "testFromYear": "2012",
+      "nTrain": 34538,
+      "nTest": 13601,
+      "env": {
+        "logLoss": 0.89812,
+        "brier": 0.17643,
+        "ece": 0.51757
+      },
+      "base": {
+        "logLoss": 0.89764,
+        "brier": 0.17635,
+        "ece": 0.51554
+      },
+      "deltaLogLoss": 0.00047
+    }
+  ],
+  "worldCupHeldOut": {
+    "wc1930_2022": {
+      "n": 964,
+      "env": {
+        "logLoss": 1.0648,
+        "brier": 0.21452,
+        "ece": 0.63924
+      },
+      "base": {
+        "logLoss": 1.06568,
+        "brier": 0.21478,
+        "ece": 0.63726
+      },
+      "deltaLogLoss": -0.00089
+    },
+    "wc2026_prospective": {
+      "n": 97,
+      "env": {
+        "logLoss": 1.05464,
+        "brier": 0.21197,
+        "ece": 0.63575
+      },
+      "base": {
+        "logLoss": 1.05592,
+        "brier": 0.21227,
+        "ece": 0.6335
+      },
+      "deltaLogLoss": -0.00128,
+      "note": "prospective only; 2026 not used to fit or select coefficients"
+    }
+  },
+  "clusterBootstrap": {
+    "method": "edition-level cluster bootstrap: World Cup editions (year) resampled WITH REPLACEMENT (seed=20260711); ΔLogLoss recomputed per resample on the held-out set.",
+    "seed": 20260711,
+    "reproducible": true,
+    "replications": 200,
+    "editionsClustered": 22,
+    "deltaLogLossMean": -0.00088,
+    "deltaLogLossCI": [
+      -0.00197,
+      0.00012
+    ],
+    "interpretation": "Δ = envLogLoss − baseLogLoss; negative ⇒ env model better. CI entirely <0 ⇒ stable gain."
+  },
+  "verdict": {
+    "oosGainStable": false,
+    "coefficientSignStable": true,
+    "enterModel": false,
+    "conclusion": "NO stable OOS gain. Env coefficients remain shadow / usedInModel:false. Do NOT enter production probability."
+  },
+  "caveats": {
+    "sign_stable_not_gain": "Coefficient signs are stable (narrow bootstrap CIs) BUT the OOS ΔLogLoss cluster-bootstrap CI includes 0 => no STABLE predictive gain over Elo+Poisson. Per governance: sign stability != production readiness.",
+    "cross_unknown_artifact": "cross_unknown is strongly positive & sign-stable, but it is a CONFEDERATION-RESOLUTION artifact (teams that never appear in a confederation-specific tournament => a missingness proxy), NOT a physical environment exposure. Excluded from production candidacy; missingness-as-feature belongs to Owner A.",
+    "rest_diff_negligible": "rest_diff coefficient ≈ -3e-5 (CI [-6e-5, 0]); both teams rest similarly within FIFA windows, so the opponent rest-difference carries little signal.",
+    "cross_directional": "cross_confederation is stably negative (~ -0.05, ≈5% lower goal intensity for both sides, symmetric) — a plausible travel/climate effect — but its added OOS gain over Elo+Poisson is not materially stable; monitor, keep shadow.",
+    "altitude_not_fitted": "altitude_2026 was NOT fitted: historical training coverage = 0% (only 2026 held-out carries it). Fitting it would leak held-out info. usedInModel:false.",
+    "v2_statistical_fixes": "E v2 fixes vs v1: (1) cluster bootstrap now resamples World Cup EDITIONS with replacement under a FIXED seed (reproducible ΔLogLoss CI); v1 sampled teams independently with Math.random() and was NOT reproducible. (2) coefficient bootstrap uses the same seeded RNG. (3) VIF auxiliary regressions now include an INTERCEPT, so VIF≥1 by construction; v1 VIF<1 values (cross=0.840, cross_unknown=0.975) were a without-intercept OLS bug. (4) cross physical travel proxy separated from cross_unknown missingness flag via a cross-only sensitivity run. (5) baseline explicitly flagged as a research Elo+Poisson proxy, NOT production A v4.",
+    "production_baseline_note": "These OOS numbers compare against the RESEARCH baseline only (a research Elo+Poisson proxy, NOT production Owner A v4). The statistical implementation is finalized and reproducible (fixed seed, edition-level cluster bootstrap with replacement). Env signal remains shadow: enterModel:false / usedInModel:false — it must NOT enter the public production probability."
+  },
+  "governance": {
+    "libTouched": false,
+    "productionProbabilityChanged": false,
+    "poolCommitted": false
+  }
+}

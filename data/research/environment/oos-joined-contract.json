@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-07-10T16:29:13.550Z",
+  "owner": "E",
+  "description": "Real joined-dataset input contract consumed by research-environment-oos.js. Rebuilt from the READ-ONLY 49k pool; no fabrication.",
+  "source": {
+    "repo": "martj42/international_results (CC0)",
+    "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+    "reachableVia": "ENV_RESEARCH_POOL_DIR"
+  },
+  "nonWcRowSchema": {
+    "date": "YYYY-MM-DD (kickoff; as-of ordered)",
+    "home": "string",
+    "away": "string",
+    "homeScore": "int|null (null if not played)",
+    "awayScore": "int|null",
+    "played": "bool",
+    "neutral": "bool (from data column)",
+    "confed_home": "UEFA|CONMEBOL|CAF|AFC|CONCACAF|OFC|null (as-of earliest confed tournament)",
+    "confed_away": "same",
+    "cross_confed": "bool|null (true=diff confed; null=unresolved) — travel/climate proxy",
+    "rest_home": "int|null (days since team last match; null = first seen)",
+    "rest_away": "int|null"
+  },
+  "derivedFields": {
+    "eloH": "float — as-of Elo (NON-WC only) at kickoff",
+    "eloA": "float",
+    "rest_diff": "rest_home - rest_away (symmetric)",
+    "elo_diff": "eloH - eloA",
+    "cross": "1 if cross_confed===true else 0",
+    "cross_unknown": "1 if cross_confed===null else 0"
+  },
+  "wcHeldOutRowSchema": {
+    "date": "YYYY-MM-DD",
+    "home": "string",
+    "away": "string",
+    "homeScore": "int|null",
+    "awayScore": "int|null",
+    "played": "bool",
+    "neutral": "bool",
+    "altitude_2026": "int|null (joined from data/venues.json; 2026 only)"
+  },
+  "estimationRules": {
+    "envFitRequires": "both rest_home and rest_away non-null (99.7/99.6% coverage)",
+    "excludedFromFit": "all FIFA World Cup finals (held-out)",
+    "eloUpdateSet": "NON-WC played matches only (leakage guard)"
+  }
+}
