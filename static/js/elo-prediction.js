@@ -101,7 +101,7 @@
             const accPct = Number.isFinite(acc) ? Math.round(acc * 100) : 0;
             const confPct = Number.isFinite(conf) ? Math.round(conf * 100) : 0;
             const label = `${Math.round((b.range?.[0] || 0) * 100)}-${Math.round((b.range?.[1] || 0) * 100)}%`;
-            return `<div style="display:grid;grid-template-columns:46px 1fr 38px;align-items:center;gap:8px;min-height:18px">
+            return `<div style="display:grid;grid-template-columns:46px minmax(70px,110px) 34px;align-items:center;gap:8px;min-height:18px">
                 <div style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.32)">${esc(label)}</div>
                 <div style="height:7px;background:rgba(255,255,255,.06);border-radius:999px;position:relative;overflow:hidden">
                     <div style="position:absolute;left:0;top:0;bottom:0;width:${accPct}%;background:#34d399;border-radius:999px"></div>
@@ -111,7 +111,7 @@
             </div>`;
         }).join('');
 
-        return `<div class="pred-section" style="padding:16px;margin-bottom:12px">
+        return `<div class="pred-section" style="padding:14px;height:100%;display:flex;flex-direction:column">
             <div class="pred-section-title text-cyan-400" style="font-family:'DM Sans',sans-serif">
                 <span class="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center text-xs flex-shrink-0">📈</span>${tx('模型表现', 'Model Performance')}
             </div>
@@ -337,12 +337,15 @@
         const el = document.getElementById('prediction-content');
         el.innerHTML = `<div class="text-center py-10 text-gray-500">🧠 ${esc(tx('loadingPredictions'))}</div>`;
 
-        const [rankings, schedule, qualiData, calibrationReport] = await window.WorldCup.ApiClient.allData([
-            '/api/elo/rankings', '/api/schedule', '/api/qualification-probabilities', '/api/calibration-report',
+        const [rankings, schedule, qualiData, calibrationReport, winnerOddsData] = await window.WorldCup.ApiClient.allData([
+            '/api/elo/rankings', '/api/schedule', '/api/qualification-probabilities', '/api/calibration-report', '/api/world-cup-winner',
         ]);
 
         let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">⚠️ ${tx('本页面为实验性足球概率模型，仅供产品体验参考，不构成任何投注建议。预测基线来自 Elo 与 Poisson；若已配置市场赔率，比赛详情页会展示模型 vs 市场分歧提示。', 'This page provides an experimental football probability model for product evaluation only. It is not betting advice. The baseline forecast uses Elo and Poisson; when market odds are configured, match details show model-vs-market divergence hints.')}</div>`;
-        html += renderCalibrationReport(calibrationReport);
+        html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px;align-items:stretch">
+            <div style="min-width:0">${renderCalibrationReport(calibrationReport)}</div>
+            <div style="min-width:0">${typeof window.renderWorldCupOdds === 'function' ? window.renderWorldCupOdds(winnerOddsData) : ''}</div>
+        </div>`;
 
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some(m => m.stage && m.stage !== 'group');
