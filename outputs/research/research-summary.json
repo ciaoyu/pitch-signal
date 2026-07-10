@@ -14,6 +14,13 @@
     "status": "unverified",
     "sampleSize": null,
     "description": "Prospective online live service predictions for 2026 matches (awaiting live ledger export)",
+    "auditCounts": {
+      "total": 0,
+      "completed": 0,
+      "eligible": 0,
+      "rejected": 0,
+      "pending": 0
+    },
     "metrics": {
       "meanBrier": null,
       "topLabelECE": null,

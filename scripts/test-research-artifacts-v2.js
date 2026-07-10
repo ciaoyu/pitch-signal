@@ -61,8 +61,9 @@ async function testResearchArtifactsV2() {
   assert.ok(pairedData.modelVsUniform.methodologyNote.includes('avoiding the overlapping CI fallacy'));
   assert.ok(Array.isArray(pairedData.modelVsUniform.brier.ci95TwoSided), 'Must report two-sided 95% CI');
   assert.ok(typeof pairedData.modelVsUniform.brier.pValueTwoSided === 'number', 'Must report two-sided empirical p-value');
+  assert.ok(typeof pairedData.modelVsUniform.brier.pValueDisplay === 'string', 'Must report formatted pValueDisplay (<0.001 or decimal)');
   assert.ok(typeof pairedData.modelVsUniform.brier.pValueOneSided === 'number', 'Must report one-sided empirical p-value');
-  console.log('  ✅ D3. Clustered bootstrap paired deltas verified across Uniform & Historical Frequency baselines (aligned two-sided CI/p-value)');
+  console.log('  ✅ D3. Clustered bootstrap paired deltas verified across Uniform & Historical Frequency baselines (aligned two-sided CI/p-value & null-centered formatting)');
 
   // D4. Dynamic Prospective Evaluation & Domain Separation (No Hardcoded Evidence Allowed)
   console.log('⏳ D4. Verifying dynamic prospective metrics calculation & domain separation rules...');
@@ -72,18 +73,30 @@ async function testResearchArtifactsV2() {
   assert.strictEqual(unverifiedProspective.status, 'unverified', 'Missing ledger must return unverified status');
   assert.strictEqual(unverifiedProspective.sampleSize, null, 'Missing ledger must have sampleSize null');
   assert.strictEqual(unverifiedProspective.metrics.meanBrier, null, 'Missing ledger must have meanBrier null');
+  assert.strictEqual(unverifiedProspective.auditCounts.total, 0);
 
   const tmpDir = path.join(__dirname, '..', 'outputs', 'test-research');
   fs.mkdirSync(tmpDir, { recursive: true });
 
-  // (b) Test rejection of fake/incomplete ledger lacking strict verification criteria
+  // (b) Test rejection of fake/incomplete ledger lacking strict verification criteria or bad probabilities
   const fakeLedgerPath = path.join(tmpDir, 'fake_unverified_ledger.json');
   const fakeLedgerRecords = [
-    { pred: { homeWin: 0.6, draw: 0.25, awayWin: 0.15 }, actualOutcome: 'home' } // Lacks verificationStatus, modelVersion, configHash, kickoffTime
+    { pred: { homeWin: 0.6, draw: 0.25, awayWin: 0.15 }, actualOutcome: 'home' }, // Lacks verificationStatus
+    {
+      verificationStatus: 'verified',
+      modelVersion: 'p0-quarantine-v3-2026-07-10',
+      configHash: '2066763607e5',
+      predictedAt: '2026-06-10T10:00:00Z',
+      kickoffTime: '2026-06-10T19:00:00Z',
+      source: 'Track A',
+      pred: { homeWin: 0.6, draw: 0.5, awayWin: 0.5 }, // Sum = 1.6 != 1.0 -> rejected
+      actualOutcome: 'home'
+    }
   ];
   fs.writeFileSync(fakeLedgerPath, JSON.stringify({ records: fakeLedgerRecords }), 'utf8');
   const fakeProspective = ArtifactGenerator.computeProspectiveMetrics({ prospectiveLedgerPath: fakeLedgerPath });
   assert.strictEqual(fakeProspective.status, 'unverified', 'Incomplete/fake ledger must be rejected as unverified');
+  assert.strictEqual(fakeProspective.auditCounts.rejected, 2);
 
   // (c) Test acceptance of strictly verified immutable pre-match ledger records
   const validLedgerPath = path.join(tmpDir, 'strictly_verified_ledger.json');
@@ -114,6 +127,8 @@ async function testResearchArtifactsV2() {
   const verifiedProspective = ArtifactGenerator.computeProspectiveMetrics({ prospectiveLedgerPath: validLedgerPath });
   assert.strictEqual(verifiedProspective.status, 'verified');
   assert.strictEqual(verifiedProspective.sampleSize, 2);
+  assert.strictEqual(verifiedProspective.auditCounts.eligible, 2);
+  assert.strictEqual(verifiedProspective.auditCounts.rejected, 0);
   assert.ok(typeof verifiedProspective.metrics.meanBrier === 'number');
   assert.ok(verifiedProspective.inputHash, 'Must hash the prospective ledger input file');
 

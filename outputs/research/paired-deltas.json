@@ -19,6 +19,7 @@
         -0.074582
       ],
       "pValueTwoSided": 0,
+      "pValueDisplay": "<0.001 (0/1000)",
       "pValueOneSided": 0,
       "significantTwoSidedAtAlpha05": true
     },
@@ -36,7 +37,7 @@
         -0.098569
       ]
     },
-    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and two-sided empirical p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
+    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and null-centered bootstrap p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
   },
   "modelVsHistoricalFrequency": {
     "clusterCount": 22,
@@ -47,7 +48,8 @@
         -0.088569,
         0.005377
       ],
-      "pValueTwoSided": 0.074,
+      "pValueTwoSided": 0.056,
+      "pValueDisplay": "0.056",
       "pValueOneSided": 0.037,
       "significantTwoSidedAtAlpha05": false
     },
@@ -65,6 +67,6 @@
         -0.023707
       ]
     },
-    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and two-sided empirical p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
+    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and null-centered bootstrap p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
   }
 }
