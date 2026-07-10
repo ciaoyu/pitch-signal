@@ -37,6 +37,8 @@ const TEST_FILES = [
   'test-ko2-intel-card.js',
   'test-ko11-star-form.js',
   'test-lessons-section.js',
+  'test-super-subs-section.js',
+  'test-game-state-section.js',
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',
