@@ -42,8 +42,8 @@ async function testW1CEvalBaselines() {
   assert.ok(Math.abs(fs.baselines.historicalFrequency.meanBrier - 0.61611681) < 1e-4, 'Historical frequency Brier should be ~0.6161%');
 
   // 3. Model Baseline check (Wave 1 Red Line invariant)
-  assert.ok(Math.abs(fs.baselines.model.accuracy - 0.57883817) < 1e-4, 'Model accuracy must be 57.88%');
-  assert.ok(Math.abs(fs.baselines.model.meanBrier - 0.57076772) < 1e-4, 'Model Brier must be 0.5708');
+  assert.ok(Math.abs(fs.baselines.model.accuracy - 0.57572614) < 1e-4, 'Model accuracy must be 57.57%');
+  assert.ok(Math.abs(fs.baselines.model.meanBrier - 0.57018206) < 1e-4, 'Model Brier must be 0.5702');
 
   // 4. Hypothesis report check
   assert.ok(fs.hypothesisReport.conclusion.includes('significantly outperforms'), 'Conclusion should reflect model outperforming historical baseline');

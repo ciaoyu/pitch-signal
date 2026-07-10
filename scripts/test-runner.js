@@ -34,6 +34,7 @@ const TEST_FILES = [
   'test-ko14-scenarios.js',
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
+  'test-market-shadow-ledger.js',
   'test-ko2-intel-card.js',
   'test-ko11-star-form.js',
   'test-lessons-section.js',

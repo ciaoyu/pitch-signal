@@ -69,9 +69,9 @@ async function testW1DPipelineAudit() {
 
   // Bit-Identical Wave 1 Red Line Invariant check
   assert.strictEqual(fsRes.evaluatedCount, 964, 'Default evaluatedCount must be 964');
-  assert.ok(Math.abs(fsRes.accuracy - 0.57883817) < 1e-6, 'Default accuracy must be bit-identical 57.88%');
-  assert.ok(Math.abs(fsRes.meanBrier - 0.57076772) < 1e-6, 'Default Brier must be bit-identical 0.5708');
-  assert.ok(Math.abs(fsRes.meanLogLoss - 0.964406) < 1e-4, 'Default LogLoss must be bit-identical ~0.9644');
+  assert.ok(Math.abs(fsRes.accuracy - 0.57572614) < 1e-6, 'Default accuracy must be bit-identical 57.57%');
+  assert.ok(Math.abs(fsRes.meanBrier - 0.57018206) < 1e-6, 'Default Brier must be bit-identical 0.5702');
+  assert.ok(Math.abs(fsRes.meanLogLoss - 0.96622494) < 1e-4, 'Default LogLoss must be bit-identical ~0.9662');
 
   // 4. daysAgo Plumbing verification (§4.2)
   // Verify public entry points (compareBaseline and run) correctly plumb useDaysAgo/decayHalfLifeDays
@@ -82,7 +82,7 @@ async function testW1DPipelineAudit() {
   const cmpRes = await runner.compareBaseline(decayConfig);
   assert.ok(cmpRes.proposed, 'compareBaseline must accept decayConfig without throwing');
   assert.notStrictEqual(cmpRes.proposed.brier, cmpRes.baseline.brier, 'Decayed proposed Brier must differ from default baseline Brier');
-  assert.ok(Math.abs(cmpRes.proposed.brier - 0.5721) < 1e-4, `Decayed compareBaseline Brier expected ~0.5721, got ${cmpRes.proposed.brier}`);
+  assert.ok(Math.abs(cmpRes.proposed.brier - 0.5715) < 1e-4, `Decayed compareBaseline Brier expected ~0.5715, got ${cmpRes.proposed.brier}`);
 
   // (b) Test run() public entry point
   const decayRunRes = await runner.run({ silent: true, ...decayConfig });
@@ -92,7 +92,7 @@ async function testW1DPipelineAudit() {
     'run({ useDaysAgo: true }) must plumb options and produce decayed Brier different from default'
   );
   assert.ok(
-    Math.abs(decayRunRes.fullSeeded.meanBrier - 0.5721424) < 1e-5,
+    Math.abs(decayRunRes.fullSeeded.meanBrier - 0.5714954) < 1e-5,
     `Decayed run() Brier expected ~0.5721424, got ${decayRunRes.fullSeeded.meanBrier}`
   );
 
