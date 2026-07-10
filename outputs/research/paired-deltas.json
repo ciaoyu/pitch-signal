@@ -14,55 +14,57 @@
     "sampleSize": 964,
     "brier": {
       "deltaMean": -0.096485,
-      "ci95": [
+      "ci95TwoSided": [
         -0.123088,
         -0.074582
       ],
-      "pValue": 0,
-      "significant": true
+      "pValueTwoSided": 0,
+      "pValueOneSided": 0,
+      "significantTwoSidedAtAlpha05": true
     },
     "accuracy": {
       "deltaMean": 0.573651,
-      "ci95": [
+      "ci95TwoSided": [
         0.537438,
         0.615139
       ]
     },
     "logLoss": {
       "deltaMean": -0.132387,
-      "ci95": [
+      "ci95TwoSided": [
         -0.17353,
         -0.098569
       ]
     },
-    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), avoiding the overlapping CI fallacy."
+    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and two-sided empirical p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
   },
   "modelVsHistoricalFrequency": {
     "clusterCount": 22,
     "sampleSize": 964,
     "brier": {
       "deltaMean": -0.045902,
-      "ci95": [
+      "ci95TwoSided": [
         -0.088569,
         0.005377
       ],
-      "pValue": 0.037,
-      "significant": false
+      "pValueTwoSided": 0.074,
+      "pValueOneSided": 0.037,
+      "significantTwoSidedAtAlpha05": false
     },
     "accuracy": {
       "deltaMean": 0.053942,
-      "ci95": [
+      "ci95TwoSided": [
         0.010114,
         0.093186
       ]
     },
     "logLoss": {
       "deltaMean": -0.125791,
-      "ci95": [
+      "ci95TwoSided": [
         -0.268532,
         -0.023707
       ]
     },
-    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), avoiding the overlapping CI fallacy."
+    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), reporting aligned two-sided 95% percentile confidence intervals and two-sided empirical p-values (H0: delta = 0), avoiding the overlapping CI fallacy."
   }
 }
