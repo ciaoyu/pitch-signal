@@ -191,6 +191,24 @@ function runTests() {
     assert.strictEqual(snap.candidates, null, 'candidates must stay null');
     assert.strictEqual(snap.dataSources, null, 'dataSources must stay null (no default elo_poisson)');
     assert.strictEqual(snap.requestPath, null, 'requestPath must stay null');
+    assert.strictEqual(snap.venueSemantics, null, 'venueSemantics must stay null (no default isKnockout:false fabrication)');
+  });
+
+  test('B3.4: Record with modelVersion/configHash but verification_status="legacy" stays legacy without verified semantics', () => {
+    const payload = JSON.stringify({ matchId: '10010', modelVersion: 'p0-quarantine-v3-2026-07-10', configHash: '2066763607e5' });
+    db.prepare(`
+      INSERT INTO prediction_snapshots (
+        match_id, home_team_name, away_team_name, home_win_prob, draw_prob, away_win_prob,
+        payload_json, source, created_at, model_version, config_hash, verification_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'legacy')
+    `).run('10010', 'Italy', 'France', 0.40, 0.30, 0.30, payload, 'old-path', '2026-06-03T12:00:00Z', 'p0-quarantine-v3-2026-07-10', '2066763607e5');
+
+    const snap = getPredictionSnapshot('10010');
+    assert.strictEqual(snap.verificationStatus, 'legacy', 'Must stay legacy when database column is legacy');
+    assert.strictEqual(snap.activeSignals, null, 'activeSignals must stay null for legacy status');
+    assert.strictEqual(snap.candidates, null, 'candidates must stay null for legacy status');
+    assert.strictEqual(snap.dataSources, null, 'dataSources must stay null for legacy status');
+    assert.strictEqual(snap.venueSemantics, null, 'venueSemantics must stay null for legacy status');
   });
 
   console.log('\n📊 Section 4: Calibration & Backtest Filtering by Fixed Model Version');
