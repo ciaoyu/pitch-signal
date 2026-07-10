@@ -107,6 +107,7 @@ console.log('\n📋 G3: Permanent Archival & Disk Persistence');
       bookmaker: 'Pinnacle',
       odds: { homeWin: 2.50, draw: 3.10, awayWin: 2.90 },
       milestone: ms,
+      rawResponse: { bookmaker: 'Pinnacle', sample: true, milestone: ms },
       dataDir: tmpDir
     });
   }
@@ -115,6 +116,7 @@ console.log('\n📋 G3: Permanent Archival & Disk Persistence');
   assert(msSaved.snapshots.length === 4, 'Saved all 4 milestone snapshots');
   assert(msSaved.snapshots[0].milestone === 'OPENING_LINE', 'Milestone OPENING_LINE saved correctly');
   assert(msSaved.snapshots[2].milestone === 'LINEUP_ANNOUNCED', 'Milestone LINEUP_ANNOUNCED saved correctly');
+  assert(typeof msSaved.snapshots[0].rawResponseSha256 === 'string' && msSaved.snapshots[0].rawResponseSha256.length === 64, 'Per-snapshot rawResponseSha256 hash computed correctly');
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
