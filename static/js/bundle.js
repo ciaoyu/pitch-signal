@@ -4242,6 +4242,46 @@ var require_world_cup_odds = __commonJS({
     (function() {
       "use strict";
       const { tx, esc } = window.WorldCup.Utils;
+      function renderWorldCupOdds(resData) {
+        const odds = Array.isArray(resData) ? resData : Array.isArray(resData?.odds) ? resData.odds : [];
+        const activeOdds = odds.filter((o) => Number(o.probability) >= 1);
+        if (!activeOdds || activeOdds.length === 0) {
+          return `
+        <div class="pred-section" style="padding:14px;height:100%;display:flex;flex-direction:column">
+          <div class="pred-section-title text-yellow-400" style="font-family:'DM Sans',sans-serif">
+            <span class="w-6 h-6 rounded-lg bg-yellow-500/20 flex items-center justify-center text-xs flex-shrink-0">\u{1F3C6}</span>${tx("\u593A\u51A0\u8D54\u7387", "Title Odds")}
+            <span class="text-[10px] text-gray-500 font-normal ml-auto">Polymarket</span>
+          </div>
+          <div class="glass-light rounded-lg p-3 text-xs text-gray-400 my-auto">${tx("\u593A\u51A0\u8D54\u7387\u6570\u636E\u6682\u65E0", "No active title odds available")}</div>
+        </div>`;
+        }
+        const rows = activeOdds.map((o, i) => {
+          const prob = Number(o.probability) || 0;
+          const barW = Math.max(2, Math.min(100, prob));
+          return `
+        <div class="glass-light rounded-lg p-2 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="text-[10px] text-gray-500 w-4 text-right shrink-0">${i + 1}</span>
+            <span class="text-xs font-medium text-gray-100 truncate">${esc(o.team)}</span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="w-16 h-1.5 rounded bg-white/10 overflow-hidden">
+              <div class="h-full rounded" style="width:${barW}%;background:#34d399"></div>
+            </div>
+            <span class="text-xs font-bold text-green-400 w-11 text-right font-mono">${prob.toFixed(1)}%</span>
+          </div>
+        </div>`;
+        }).join("");
+        return `
+      <div class="pred-section" style="padding:14px;height:100%;display:flex;flex-direction:column">
+        <div class="pred-section-title text-yellow-400" style="font-family:'DM Sans',sans-serif">
+          <span class="w-6 h-6 rounded-lg bg-yellow-500/20 flex items-center justify-center text-xs flex-shrink-0">\u{1F3C6}</span>${tx("\u593A\u51A0\u8D54\u7387", "Title Odds")}
+          <span class="text-[10px] text-gray-500 font-normal ml-auto">Polymarket</span>
+        </div>
+        <div class="space-y-1.5 flex-1">${rows}</div>
+        <div class="text-[10px] text-gray-600 mt-2.5">${tx("\u6570\u636E\u6765\u6E90 Polymarket \u5B9E\u65F6\u5E02\u573A\uFF0C\u4EC5\u5C55\u793A\u5F53\u524D\u5B58\u7EED\u7403\u961F", "Source: Polymarket live markets (remaining teams only)")}</div>
+      </div>`;
+      }
       function loadWorldCupOdds2() {
         const el = document.getElementById("tab-markets");
         if (!el) return;
@@ -4252,36 +4292,12 @@ var require_world_cup_odds = __commonJS({
             el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u6570\u636E\u6682\u65E0", "No title odds available")}</div>`;
             return;
           }
-          const rows = odds.map((o, i) => {
-            const eliminated = o.probability < 1;
-            const barW = Math.max(2, o.probability);
-            return `
-            <div class="glass-light rounded-lg p-2 flex items-center justify-between" style="opacity:${eliminated ? "0.55" : "1"}">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-[11px] text-gray-500 w-5 text-right shrink-0">${i + 1}</span>
-                <span class="text-sm font-medium text-gray-100 truncate">${esc(o.team)}</span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <div class="w-24 h-1.5 rounded bg-white/10 overflow-hidden">
-                  <div class="h-full" style="width:${barW}%;background:#34d399"></div>
-                </div>
-                <span class="text-sm font-bold text-green-400 w-12 text-right">${o.probability.toFixed(1)}%</span>
-              </div>
-            </div>`;
-          }).join("");
-          el.innerHTML = `
-          <div class="glass rounded-xl p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-yellow-400">\u{1F3C6} ${tx("\u593A\u51A0\u8D54\u7387", "Title Odds")}</h3>
-              <span class="text-[11px] text-gray-600">Polymarket</span>
-            </div>
-            <div class="space-y-1.5">${rows}</div>
-            <div class="text-[10px] text-gray-600 mt-3">${tx("\u6570\u636E\u6765\u6E90 Polymarket \u771F\u5B9E\u5E02\u573A\uFF0C\u4EC5\u4F9B\u53C2\u8003", "Source: Polymarket live markets. Informational only.")}</div>
-          </div>`;
+          el.innerHTML = renderWorldCupOdds(res.data);
         }).catch(() => {
           el.innerHTML = `<div class="text-center py-10 text-gray-500">${tx("\u593A\u51A0\u8D54\u7387\u52A0\u8F7D\u5931\u8D25", "Failed to load title odds")}</div>`;
         });
       }
+      window.renderWorldCupOdds = renderWorldCupOdds;
       window.loadWorldCupOdds = loadWorldCupOdds2;
     })();
   }
@@ -4375,7 +4391,7 @@ var require_elo_prediction = __commonJS({
           const accPct = Number.isFinite(acc) ? Math.round(acc * 100) : 0;
           const confPct = Number.isFinite(conf) ? Math.round(conf * 100) : 0;
           const label = `${Math.round((b.range?.[0] || 0) * 100)}-${Math.round((b.range?.[1] || 0) * 100)}%`;
-          return `<div style="display:grid;grid-template-columns:46px 1fr 38px;align-items:center;gap:8px;min-height:18px">
+          return `<div style="display:grid;grid-template-columns:46px minmax(70px,110px) 34px;align-items:center;gap:8px;min-height:18px">
                 <div style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.32)">${esc(label)}</div>
                 <div style="height:7px;background:rgba(255,255,255,.06);border-radius:999px;position:relative;overflow:hidden">
                     <div style="position:absolute;left:0;top:0;bottom:0;width:${accPct}%;background:#34d399;border-radius:999px"></div>
@@ -4384,7 +4400,7 @@ var require_elo_prediction = __commonJS({
                 <div style="font:600 9px/1 'JetBrains Mono',monospace;color:${b.count ? "#cbd5e1" : "rgba(248,250,252,.2)"}">${b.count || 0}</div>
             </div>`;
         }).join("");
-        return `<div class="pred-section" style="padding:16px;margin-bottom:12px">
+        return `<div class="pred-section" style="padding:14px;height:100%;display:flex;flex-direction:column">
             <div class="pred-section-title text-cyan-400" style="font-family:'DM Sans',sans-serif">
                 <span class="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center text-xs flex-shrink-0">\u{1F4C8}</span>${tx("\u6A21\u578B\u8868\u73B0", "Model Performance")}
             </div>
@@ -4583,14 +4599,18 @@ var require_elo_prediction = __commonJS({
       async function loadPrediction2() {
         const el = document.getElementById("prediction-content");
         el.innerHTML = `<div class="text-center py-10 text-gray-500">\u{1F9E0} ${esc(tx("loadingPredictions"))}</div>`;
-        const [rankings, schedule, qualiData, calibrationReport] = await window.WorldCup.ApiClient.allData([
+        const [rankings, schedule, qualiData, calibrationReport, winnerOddsData] = await window.WorldCup.ApiClient.allData([
           "/api/elo/rankings",
           "/api/schedule",
           "/api/qualification-probabilities",
-          "/api/calibration-report"
+          "/api/calibration-report",
+          "/api/world-cup-winner"
         ]);
         let html = `<div class="pred-disclaimer border border-amber-400/30 bg-amber-400/10 rounded-xl px-3 py-2.5 text-xs text-amber-100" style="margin-bottom:16px">\u26A0\uFE0F ${tx("\u672C\u9875\u9762\u4E3A\u5B9E\u9A8C\u6027\u8DB3\u7403\u6982\u7387\u6A21\u578B\uFF0C\u4EC5\u4F9B\u4EA7\u54C1\u4F53\u9A8C\u53C2\u8003\uFF0C\u4E0D\u6784\u6210\u4EFB\u4F55\u6295\u6CE8\u5EFA\u8BAE\u3002\u9884\u6D4B\u57FA\u7EBF\u6765\u81EA Elo \u4E0E Poisson\uFF1B\u82E5\u5DF2\u914D\u7F6E\u5E02\u573A\u8D54\u7387\uFF0C\u6BD4\u8D5B\u8BE6\u60C5\u9875\u4F1A\u5C55\u793A\u6A21\u578B vs \u5E02\u573A\u5206\u6B67\u63D0\u793A\u3002", "This page provides an experimental football probability model for product evaluation only. It is not betting advice. The baseline forecast uses Elo and Poisson; when market odds are configured, match details show model-vs-market divergence hints.")}</div>`;
-        html += renderCalibrationReport(calibrationReport);
+        html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px;align-items:stretch">
+            <div style="min-width:0">${renderCalibrationReport(calibrationReport)}</div>
+            <div style="min-width:0">${typeof window.renderWorldCupOdds === "function" ? window.renderWorldCupOdds(winnerOddsData) : ""}</div>
+        </div>`;
         const allMatches = schedule?.matches || [];
         const isKnockoutStage = allMatches.some((m) => m.stage && m.stage !== "group");
         let upcoming = allMatches.filter((m) => m.state === "pre").slice(0, 6);
@@ -8012,6 +8032,9 @@ var require_app = __commonJS({
           for (const m of liveMatches) {
             if (!existingIds.has(String(m.id))) cache.push(m);
           }
+        }
+        if (typeof loadSchedule === "function" && !window.WorldCup.State.scheduleLoaded) {
+          loadSchedule();
         }
       });
       const autoRefresh = setInterval(() => {

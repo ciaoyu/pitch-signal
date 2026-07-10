@@ -388,6 +388,11 @@
             const existingIds = new Set(cache.map(m => String(m.id)));
             for (const m of liveMatches) { if (!existingIds.has(String(m.id))) cache.push(m); }
         }
+        // Load full tournament schedule so scheduledMatch is always available
+        // for match detail lookups (stage, venue, kickoff) without visiting Schedule tab
+        if (typeof loadSchedule === 'function' && !window.WorldCup.State.scheduleLoaded) {
+            loadSchedule();
+        }
     });
     const autoRefresh = setInterval(() => {
         if (document.hidden) return;
