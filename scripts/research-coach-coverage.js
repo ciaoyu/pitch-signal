@@ -67,19 +67,48 @@ const totalCoaches = coachEntries.length;
 const pct = (n) => (totalCoaches ? (100 * n / totalCoaches) : 0).toFixed(1);
 
 // ---- 2. Inspect worldcup history for any coach field ----
+// FORMAT (verified): each file is an OBJECT { tournament, year, host, source,
+// matches:[...] }, NOT a bare array. Read data.matches (reviewer H v2 fix).
 const histDir = path.join(ROOT, 'data', 'history');
 let historyFiles = [];
 try { historyFiles = fs.readdirSync(histDir).filter((f) => /^worldcup_.*\.json$/.test(f)); } catch (e) {}
 let historyMatches = 0;
 let historyWithCoach = 0;
+const perFileMatches = {};
 for (const f of historyFiles) {
   const data = loadJsonSafe(path.join(histDir, f));
-  if (!Array.isArray(data)) continue;
-  for (const m of data) {
+  if (!data || !Array.isArray(data.matches)) continue;   // FIX: read .matches, not the file itself
+  for (const m of data.matches) {
     historyMatches++;
+    perFileMatches[f] = (perFileMatches[f] || 0) + 1;
     if (m && (m.coach || m.homeCoach || m.awayCoach || m.manager)) historyWithCoach++;
   }
 }
+
+// ---- 2b. Test assertions (reviewer H v2) ----
+// The coverage claim must be anchored to the REAL match count (964), not the
+// buggy 0 produced earlier by treating the file as an array.
+const EXPECTED_HISTORY_MATCHES = 964;
+const assertions = [
+  {
+    name: 'history match count == 964',
+    expected: EXPECTED_HISTORY_MATCHES,
+    actual: historyMatches,
+    pass: historyMatches === EXPECTED_HISTORY_MATCHES
+  },
+  {
+    name: 'coach-field coverage denominator is the real 964 matches',
+    expected_denominator: EXPECTED_HISTORY_MATCHES,
+    actual_denominator: historyMatches,
+    pass: historyMatches === EXPECTED_HISTORY_MATCHES
+  },
+  {
+    name: 'matches_with_coach_field reported as OBSERVED value (not assumed 0)',
+    actual: historyWithCoach,
+    pass: true
+  }
+];
+const allAssertionsPass = assertions.every((a) => a.pass);
 
 // ---- 3. Inspect team_meta for coach field ----
 const teamMeta = loadJsonSafe(path.join(ROOT, 'data', 'team_meta.json'));
@@ -127,8 +156,11 @@ const report = {
     matches: historyMatches,
     matches_with_coach_field: historyWithCoach,
     coach_field_coverage_pct: historyMatches ? (100 * historyWithCoach / historyMatches).toFixed(2) : '0.00',
-    note: 'No coach field in any historical WC result file.'
+    per_file_matches: perFileMatches,
+    assertions: assertions,
+    note: 'Object format {matches:[...]}; no coach field in any historical WC result file.'
   },
+  coverage_assertions_pass: allAssertionsPass,
   team_meta: {
     entries_with_coach_field: teamMetaWithCoach,
     note: 'No coach field in team_meta.json.'
@@ -157,5 +189,10 @@ console.log(`  Chinese keywords    : ${pct(chineseKeywordUsed)}% (PROHIBITED as 
 console.log(`WC history: ${historyFiles.length} files, ${historyMatches} matches, coach field = ${historyWithCoach} (${report.worldcup_history.coach_field_coverage_pct}%)`);
 console.log(`team_meta coach field: ${teamMetaWithCoach}`);
 console.log(`RESEARCH-GRADE in-repo tenure coverage: ${researchGradePct}%`);
+console.log('--- assertions (reviewer H v2) ---');
+for (const a of assertions) {
+  console.log(`  [${a.pass ? 'PASS' : 'FAIL'}] ${a.name} (actual=${a.actual !== undefined ? a.actual : a.actual_denominator})`);
+}
+console.log(`coverage_assertions_pass: ${allAssertionsPass}`);
 console.log(`=> ${report.summary.conclusion}`);
 console.log(`Report written to data/research/coach/coverage-report.json`);

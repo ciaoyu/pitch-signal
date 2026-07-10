@@ -1,7 +1,7 @@
 {
   "owner": "H",
   "task": "coach-history-and-value-added-research",
-  "generated_at": "2026-07-10T15:07:51.638Z",
+  "generated_at": "2026-07-10T15:11:53.325Z",
   "base_commit": "78da1b5",
   "summary": {
     "in_repo_research_grade_tenure_coverage_pct": 0,
@@ -20,11 +20,55 @@
   },
   "worldcup_history": {
     "files": 22,
-    "matches": 0,
+    "matches": 964,
     "matches_with_coach_field": 0,
     "coach_field_coverage_pct": "0.00",
-    "note": "No coach field in any historical WC result file."
+    "per_file_matches": {
+      "worldcup_1930.json": 18,
+      "worldcup_1934.json": 17,
+      "worldcup_1938.json": 18,
+      "worldcup_1950.json": 22,
+      "worldcup_1954.json": 26,
+      "worldcup_1958.json": 35,
+      "worldcup_1962.json": 32,
+      "worldcup_1966.json": 32,
+      "worldcup_1970.json": 32,
+      "worldcup_1974.json": 38,
+      "worldcup_1978.json": 38,
+      "worldcup_1982.json": 52,
+      "worldcup_1986.json": 52,
+      "worldcup_1990.json": 52,
+      "worldcup_1994.json": 52,
+      "worldcup_1998.json": 64,
+      "worldcup_2002.json": 64,
+      "worldcup_2006.json": 64,
+      "worldcup_2010.json": 64,
+      "worldcup_2014.json": 64,
+      "worldcup_2018.json": 64,
+      "worldcup_2022.json": 64
+    },
+    "assertions": [
+      {
+        "name": "history match count == 964",
+        "expected": 964,
+        "actual": 964,
+        "pass": true
+      },
+      {
+        "name": "coach-field coverage denominator is the real 964 matches",
+        "expected_denominator": 964,
+        "actual_denominator": 964,
+        "pass": true
+      },
+      {
+        "name": "matches_with_coach_field reported as OBSERVED value (not assumed 0)",
+        "actual": 0,
+        "pass": true
+      }
+    ],
+    "note": "Object format {matches:[...]}; no coach field in any historical WC result file."
   },
+  "coverage_assertions_pass": true,
   "team_meta": {
     "entries_with_coach_field": 0,
     "note": "No coach field in team_meta.json."
