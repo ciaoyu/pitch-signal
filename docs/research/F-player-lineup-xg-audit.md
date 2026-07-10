@@ -1,8 +1,40 @@
-# F: Player / Lineup / Availability / xG — Data Feasibility Audit
+# F: Player / Lineup / Availability / xG - Data Feasibility Audit
 
-**Date**: 2026-07-10  
-**Baseline**: `78da1b5` (Owner A v4, clean pre-D state)  
-**Scope**: 4 data domains, shadow-only (must not enter public probability)  
+**Date**: 2026-07-10
+**Baseline**: `78da1b5` (Owner A v4, clean pre-D state)
+**Scope**: 4 data domains, shadow-only (must not enter public probability)
+**Status**: ✅ Passed — data research phase complete. Awaiting real data.
+
+## Methodology Notes (保留)
+
+### Note 1: "75-minute lineup release" is a data-source contract assumption
+
+The claim that FIFA publishes confirmed lineups ~75 minutes before kickoff
+(MatchStatus = 12 "lineup_confirmed") is a **data-source contract hypothesis**
+based on FIFA API documentation. When the sync pipeline is live:
+
+- Save and timestamp the **raw API response** for every lineup fetch.
+- Verify the actual release delay against kickoff time retrospectively.
+- If the observed release is closer to kickoff (e.g. 30 min), the
+  pre-match window in `lineups-sync-scheduler.js` must be tightened.
+
+This assumption must not be treated as verified until production data
+confirms it.
+
+### Note 2: "xG useful from MD2" is a minimum-sample threshold, not proven gain
+
+`getTeamXgProfile()` requires ≥2 matches to return non-null. MD2 is the
+earliest point any team reaches that threshold. However:
+
+- **Minimum sample ≠ predictive signal.** Two matches of xG data may be
+  dominated by opponent quality, red cards, or game state.
+- **xG must still pass OOS validation** before entering the model:
+  - LogLoss comparison: Poisson-λ with xG blending vs. pure Elo-λ
+  - Brier score on held-out matches
+  - Calibration curve (reliability diagram) for xG-blended probabilities
+- Until these comparisons are done against real tournament data, xG
+  remains a **shadow-only research signal** regardless of sample size.
+
 **Verdict**: All 4 domains are **shadow-eligible** but **zero have production-ready data today**. None may enter the model until each passes its own gate.
 
 ---
@@ -50,8 +82,8 @@ Can be bootstrapped in hours. Not a data licensing blocker.
 
 ### Data Source
 - **Primary**: FIFA API official match feed (formation + player coordinates)
-- **Static**: `lib/lineup-coords.js` — 5 formation templates (4-3-3, 4-4-2, 3-5-2, 3-4-2-1, 4-1-2-3)
-- **Sync scheduler**: `lib/lineups-sync-scheduler.js` — polls FIFA API 15min pre-kickoff
+- **Static**: `lib/lineup-coords.js` - 5 formation templates (4-3-3, 4-4-2, 3-5-2, 3-4-2-1, 4-1-2-3)
+- **Sync scheduler**: `lib/lineups-sync-scheduler.js` - polls FIFA API 15min pre-kickoff
 
 ### License & Cost
 - FIFA API: free, public, official
@@ -72,7 +104,7 @@ Can be bootstrapped in hours. Not a data licensing blocker.
 
 ### As-Of (Look-Ahead) Proof
 - FIFA publishes lineups **~75 minutes before kickoff** (MatchStatus = 12 "lineup_confirmed")
-- This is the official gate — same data broadcasters and betting markets use
+- This is the official gate - same data broadcasters and betting markets use
 - **No look-ahead leakage**: data becomes available at exactly the same moment for all consumers
 
 ### Failure Modes
@@ -82,14 +114,14 @@ Can be bootstrapped in hours. Not a data licensing blocker.
 
 ### Verdict
 **Shadow only** until `lineups.json` has ≥ 5 matches with confirmed formations.
-This is the **highest-value domain** — pre-match lineups are the single most predictive non-odds signal in football. But it needs live data, not pre-seeded.
+This is the **highest-value domain** - pre-match lineups are the single most predictive non-odds signal in football. But it needs live data, not pre-seeded.
 
 ---
 
 ## 3. Availability (Suspensions, Injuries, Fatigue)
 
 ### Data Source
-- **Suspensions**: `lib/suspension.js` — pure rule engine against `player_match_events` DB
+- **Suspensions**: `lib/suspension.js` - pure rule engine against `player_match_events` DB
 - **Injuries**: ❌ No dedicated source. FIFA API may include availability flags (TBD)
 - **Fatigue**: ❌ No source. Would need minutes-played tracking
 
@@ -112,9 +144,9 @@ This is the **highest-value domain** — pre-match lineups are the single most p
 
 ### Failure Modes
 - Yellow card accumulation depends on correct event parsing from ESPN/FIFA
-- FIFA double-reset rule (after group stage AND after QF) is 2026-specific — rules must match actual tournament
+- FIFA double-reset rule (after group stage AND after QF) is 2026-specific - rules must match actual tournament
 - Injury data may lag by 24-48h if FIFA doesn't surface it in the match feed
-- "Questionable" / "doubtful" injury tags are subjective — no deterministic threshold
+- "Questionable" / "doubtful" injury tags are subjective - no deterministic threshold
 
 ### Verdict
 - **Suspensions**: shadow-ready today (pure rule engine). Can surface in display/bot only.
@@ -126,9 +158,9 @@ This is the **highest-value domain** — pre-match lineups are the single most p
 ## 4. xG (Expected Goals)
 
 ### Data Source
-- **Primary**: API-Football (`v3.football.api-sports.io`) — 100 req/day free tier
+- **Primary**: API-Football (`v3.football.api-sports.io`) - 100 req/day free tier
 - **Key**: `API_FOOTBALL_KEY` env var required (status: **unknown** in production)
-- **Collector**: `lib/jobs/xg-collector.js` — daily cron, disabled if no key
+- **Collector**: `lib/jobs/xg-collector.js` - daily cron, disabled if no key
 
 ### License & Cost
 - API-Football free tier: 100 requests/day
@@ -154,12 +186,12 @@ This is the **highest-value domain** — pre-match lineups are the single most p
 ### Model Entry Path
 - Currently: `getTeamXgProfile()` is defined but **never called** by `prediction.js`, `poisson.js`, or `elo.js`
 - Designed to feed into Poisson λ blending (pre-match expected goals)
-- Integration not yet built — this is purely data plumbing
+- Integration not yet built - this is purely data plumbing
 
 ### Failure Modes
 - API-Football rate limit: 100 req/day. Each fixture stat call = 1 request. 48 matches/gameweek means key may expire
-- WC_LEAGUE_ID and WC_SEASON env vars hardcoded to defaults (league=1, season=2026) — may not match API-Football's data
-- API-Football team IDs ≠ ESPN team IDs — requires `id_map_center.json` crosswalk (exists ✅)
+- WC_LEAGUE_ID and WC_SEASON env vars hardcoded to defaults (league=1, season=2026) - may not match API-Football's data
+- API-Football team IDs ≠ ESPN team IDs - requires `id_map_center.json` crosswalk (exists ✅)
 - 100 req/day free tier may be insufficient for 48-team tournament (104 matches total)
 - Historical xG not available via free tier (only current season)
 
@@ -193,7 +225,7 @@ xG data will only become statistically meaningful from MD2 onward (July 2026).
 
 ## 6. OOS Validation
 
-None possible today — all data sources are empty.
+None possible today - all data sources are empty.
 
 | Domain | OOS Status | Earliest Possible |
 |---|---|---|
