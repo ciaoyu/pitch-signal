@@ -41,6 +41,7 @@ const TEST_FILES = [
   'test-game-state-section.js',
   'test-penalty-section.js',
   'test-penalty-shootout.js',
+  'test-experience-section.js',
   'test-matchup-spatial.js',
   'test-output-rules.js',
   'test-parse-event-stage.js',
