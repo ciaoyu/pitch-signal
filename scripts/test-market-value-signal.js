@@ -63,8 +63,16 @@ const baseParams = {
 const baseline = engine.predict(baseParams);
 const withSignal = engine.predict({ ...baseParams, marketValueSignal: built });
 assert(!baseline.components.marketValue, 'baseline has no market-value component without injected signal');
-assert(withSignal.components.marketValue && withSignal.marketValueSignalUsed !== true, 'engine exposes market-value component when injected');
-assert(withSignal.homeWin > baseline.homeWin, 'market-value signal shifts probabilities only when injected');
+assert(withSignal.components.marketValue, 'engine exposes market-value component when injected');
+// P0 quarantine v3 (Owner A blocker B1): the market-value signal is candidate-only
+// and MUST NOT change the public probability — even when injected / env-gated.
+assert(withSignal.homeWin === baseline.homeWin &&
+       withSignal.draw === baseline.draw &&
+       withSignal.awayWin === baseline.awayWin,
+  'P0 quarantine: market-value signal does NOT shift the public probability (candidate-only)');
+assert(withSignal.candidates && withSignal.candidates.marketValue &&
+       withSignal.candidates.marketValue.usedInModel === false,
+  'market-value signal is exposed as a candidate (usedInModel:false)');
 
 const serviceSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'services', 'PredictionService.js'), 'utf8');
 assert(serviceSrc.includes("MARKET_VALUE_SIGNAL_ENABLED === 'true'"), 'PredictionService keeps market-value signal behind explicit env gate');

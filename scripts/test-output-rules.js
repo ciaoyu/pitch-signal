@@ -2,10 +2,10 @@
 'use strict';
 /**
   * lib/output-rules.js tests
-  * Covers: fuseProbabilities, scoreConfidence, gatherExternalSignals, applyOutputRules
+  * Covers: fuseProbabilities, scoreHeuristicConfidence, gatherExternalSignals, applyOutputRules
  */
 const assert = require('assert');
-const { fuseProbabilities, scoreConfidence, gatherExternalSignals, applyOutputRules } = require('../lib/output-rules');
+const { fuseProbabilities, scoreHeuristicConfidence, gatherExternalSignals, applyOutputRules } = require('../lib/output-rules');
 
 let passed = 0, failed = 0;
 function check(cond, label) {
@@ -34,16 +34,16 @@ check(Math.abs(r2.homeWin + r2.draw + r2.awayWin - 1) < 0.01, 'Blended probabili
 const r3 = fuseProbabilities({ homeWinProb: 0.55, drawProb: 0.25, awayWinProb: 0.20 }, null);
 check(r3.homeWin === 0.55 && r3.fusionStrategy === 'single_source', 'Accepts homeWinProb/drawProb/awayWinProb aliases');
 
-// ── scoreConfidence ──
-console.log('\n📊 scoreConfidence:');
+// ── scoreHeuristicConfidence ──
+console.log('\n📊 scoreHeuristicConfidence:');
 
-const c1 = scoreConfidence({ homeWin: 0.5, draw: 0.3, awayWin: 0.2, components: {} });
+const c1 = scoreHeuristicConfidence({ homeWin: 0.5, draw: 0.3, awayWin: 0.2, components: {} });
 check(c1.score >= 40 && c1.score <= 55, 'Baseline score ~45-50 with no components');
 check(['high', 'medium', 'low'].includes(c1.band), 'Band is valid string');
 check(Array.isArray(c1.factors), 'factors is array');
 check(c1.factors.includes('no_market_signal'), 'no_market_signal factor present (POLYMARKET off)');
 
-const c2 = scoreConfidence({
+const c2 = scoreHeuristicConfidence({
   homeWin: 0.65, draw: 0.25, awayWin: 0.10,
   components: { elo: { homeWin: 0.65, awayWin: 0.10 }, poisson: {}, odds: {} }
 });
@@ -52,7 +52,7 @@ check(c2.factors.includes('multi_signal'), 'multi_signal factor present');
 check(c2.factors.includes('elo_clear_edge'), 'elo_clear_edge factor present');
 check(c2.factors.includes('concentrated_prob'), 'concentrated_prob factor present (max > 0.55)');
 
-const c3 = scoreConfidence({
+const c3 = scoreHeuristicConfidence({
   homeWin: 0.35, draw: 0.35, awayWin: 0.30,
   components: { elo: { homeWin: 0.5, awayWin: 0.5 } }
 });
@@ -60,7 +60,7 @@ check(c3.score <= 50, 'Flat probabilities + no edge → score <= 50');
 check(c3.factors.includes('flat_prob'), 'flat_prob factor present (max < 0.40)');
 check(c3.band === 'low' || c3.band === 'medium', 'Flat → low or medium band');
 
-const c4 = scoreConfidence({
+const c4 = scoreHeuristicConfidence({
   homeWin: 0.8, draw: 0.15, awayWin: 0.05,
   components: { elo: { homeWin: 0.8, awayWin: 0.05 }, poisson: {}, odds: {}, venue: {} }
 });
@@ -86,7 +86,9 @@ const mockResult = {
 const meta = applyOutputRules(mockResult, 'test-match');
 check(meta.outputMeta != null, 'Returns outputMeta');
 check(meta.outputMeta.fusion != null, 'Has fusion');
-check(meta.outputMeta.confidence != null, 'Has confidence');
+check(meta.outputMeta.heuristicConfidence != null, 'Has heuristicConfidence');
+check(meta.outputMeta.heuristicConfidence.status === 'unvalidated', 'heuristicConfidence is marked unvalidated (not a statistical CI)');
+check(meta.outputMeta.confidence === undefined, 'outputMeta.confidence removed (renamed to heuristicConfidence)');
 check(meta.outputMeta.externalSignals != null, 'Has externalSignals');
 check(typeof meta.outputMeta.accuracyDisclaimer === 'string', 'Has accuracy disclaimer text');
 check(meta.outputMeta._gate.polymarket === false, 'Gate: polymarket=false');

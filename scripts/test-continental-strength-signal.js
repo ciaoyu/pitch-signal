@@ -44,7 +44,15 @@ const baseline = engine.predict(baseParams);
 const withSignal = engine.predict({ ...baseParams, continentalStrengthSignal: uefaVsCaf });
 assert(!baseline.components.continentalStrength, 'baseline has no continental component without injected signal');
 assert(withSignal.components.continentalStrength, 'engine exposes continental component when injected');
-assert(withSignal.homeWin > baseline.homeWin, 'continental signal shifts probabilities only when injected');
+// P0 quarantine v3 (Owner A blocker B1): the continental signal is candidate-only
+// and MUST NOT change the public probability — even when injected.
+assert(withSignal.homeWin === baseline.homeWin &&
+       withSignal.draw === baseline.draw &&
+       withSignal.awayWin === baseline.awayWin,
+  'P0 quarantine: continental signal does NOT shift the public probability (candidate-only)');
+assert(withSignal.candidates && withSignal.candidates.continentalStrength &&
+       withSignal.candidates.continentalStrength.usedInModel === false,
+  'continental signal is exposed as a candidate (usedInModel:false)');
 
 const serviceSrc = fs.readFileSync(path.join(__dirname, '..', 'lib', 'services', 'PredictionService.js'), 'utf8');
 assert(serviceSrc.includes("CONTINENTAL_STRENGTH_SIGNAL_ENABLED === 'true'"), 'PredictionService keeps continental signal behind explicit env gate');

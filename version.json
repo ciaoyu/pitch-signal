@@ -1,5 +1,5 @@
 {
-  "version": "20260626",
-  "description": "PitchSignal version",
-  "updated": "2026-06-26T00:00:00.000Z"
+  "version": "20260710",
+  "description": "PitchSignal version — P0 quarantine v3 (Owner A: Coach/capacity-Venue/Fatigue/KO-λ-shrink removed; P0 public probability = Elo+Poisson ONLY, odds/MarketValue/Continental are candidate-only and cannot change it; World Cup neutral venue FAIL-CLOSED by schedule membership (venue-parse failure stays neutral); env β shadow-only; regulation/advance split with advance unavailable=null; confidence renamed to heuristicUncertainty/heuristicConfidence and marked unvalidated; full modelContract+configHash)",
+  "updated": "2026-07-10T11:00:00.000Z"
 }
