@@ -302,7 +302,6 @@
             }
 
             const isKo = matchData.isKnockout
-                || (pred && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout))
                 || (matchData.stage && !/group/i.test(matchData.stage));
 
             // Extract added minutes from displayClock (e.g. "90'+4" → 4)
