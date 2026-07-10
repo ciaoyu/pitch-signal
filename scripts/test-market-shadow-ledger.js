@@ -85,6 +85,18 @@ console.log('\n📋 G3: Permanent Archival & Disk Persistence');
   assert(saved.snapshots[0].devig.shin && saved.snapshots[0].devig.proportional, 'Saved snapshot includes dual devigging');
   assert(saved.snapshots[0].asOfAntiLeakageVerified === true, 'Saved snapshot has As-Of verification metadata');
 
+  // Test fail-closed when kickoffTime is missing
+  const missingKickoffKey = 'Arg_vs_Ned';
+  MarketShadowLedger.recordSnapshot({
+    matchKey: missingKickoffKey,
+    bookmaker: 'Pinnacle',
+    odds: { homeWin: 2.10, draw: 3.30, awayWin: 3.60 },
+    dataDir: tmpDir
+  });
+  const missingKickoffFile = path.join(tmpDir, 'odds_arg_vs_ned.json');
+  const missingSaved = JSON.parse(fs.readFileSync(missingKickoffFile, 'utf8'));
+  assert(missingSaved.snapshots[0].asOfAntiLeakageVerified === false, 'recordSnapshot without kickoffTime fail-closed (false)');
+
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
