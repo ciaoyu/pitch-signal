@@ -42,8 +42,13 @@ async function testW1CEvalBaselines() {
   assert.ok(Math.abs(fs.baselines.historicalFrequency.meanBrier - 0.61611681) < 1e-4, 'Historical frequency Brier should be ~0.6161%');
 
   // 3. Model Baseline check (Wave 1 Red Line invariant)
-  assert.ok(Math.abs(fs.baselines.model.accuracy - 0.57883817) < 1e-4, 'Model accuracy must be 57.88%');
-  assert.ok(Math.abs(fs.baselines.model.meanBrier - 0.57076772) < 1e-4, 'Model Brier must be 0.5708');
+  // NOTE (Owner A P0 quarantine v2): the model baseline moved because the
+  // quarantine legitimately removed the un-estimated nominal home advantage
+  // (all WC matches are neutral) plus the coach / capacity-venue / fatigue
+  // signals. 57.88% -> 55.50% is the HONEST accuracy of the quarantined model,
+  // not a spurious regression. See docs/acceptance/prediction-p0-quarantine-v2.md.
+  assert.ok(Math.abs(fs.baselines.model.accuracy - 0.55497925) < 1e-4, 'Model accuracy must be 55.50% (P0 quarantine v2)');
+  assert.ok(Math.abs(fs.baselines.model.meanBrier - 0.58623131) < 1e-4, 'Model Brier must be 0.5862 (P0 quarantine v2)');
 
   // 4. Hypothesis report check
   assert.ok(fs.hypothesisReport.conclusion.includes('significantly outperforms'), 'Conclusion should reflect model outperforming historical baseline');

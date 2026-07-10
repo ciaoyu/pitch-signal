@@ -68,10 +68,14 @@ async function testW1DPipelineAudit() {
   assert.ok(Math.abs(fsRes.venueAudit.neutralRatio - 0.874481) < 1e-4, 'Neutral ratio must be ~87.45%');
 
   // Bit-Identical Wave 1 Red Line Invariant check
+  // NOTE (Owner A P0 quarantine v2): the invariant numbers moved because the
+  // quarantine legitimately removed the un-estimated nominal home advantage
+  // (all WC matches neutral) plus coach / capacity-venue / fatigue. The new
+  // values are the HONEST accuracy of the quarantined model.
   assert.strictEqual(fsRes.evaluatedCount, 964, 'Default evaluatedCount must be 964');
-  assert.ok(Math.abs(fsRes.accuracy - 0.57883817) < 1e-6, 'Default accuracy must be bit-identical 57.88%');
-  assert.ok(Math.abs(fsRes.meanBrier - 0.57076772) < 1e-6, 'Default Brier must be bit-identical 0.5708');
-  assert.ok(Math.abs(fsRes.meanLogLoss - 0.964406) < 1e-4, 'Default LogLoss must be bit-identical ~0.9644');
+  assert.ok(Math.abs(fsRes.accuracy - 0.55497925) < 1e-6, 'Default accuracy must be bit-identical 55.50% (P0 quarantine v2)');
+  assert.ok(Math.abs(fsRes.meanBrier - 0.58623131) < 1e-6, 'Default Brier must be bit-identical 0.5862 (P0 quarantine v2)');
+  assert.ok(Math.abs(fsRes.meanLogLoss - 0.98875067) < 1e-4, 'Default LogLoss must be bit-identical ~0.9888 (P0 quarantine v2)');
 
   // 4. daysAgo Plumbing verification (§4.2)
   // Verify public entry points (compareBaseline and run) correctly plumb useDaysAgo/decayHalfLifeDays
@@ -82,7 +86,7 @@ async function testW1DPipelineAudit() {
   const cmpRes = await runner.compareBaseline(decayConfig);
   assert.ok(cmpRes.proposed, 'compareBaseline must accept decayConfig without throwing');
   assert.notStrictEqual(cmpRes.proposed.brier, cmpRes.baseline.brier, 'Decayed proposed Brier must differ from default baseline Brier');
-  assert.ok(Math.abs(cmpRes.proposed.brier - 0.5721) < 1e-4, `Decayed compareBaseline Brier expected ~0.5721, got ${cmpRes.proposed.brier}`);
+  assert.ok(Math.abs(cmpRes.proposed.brier - 0.5888) < 1e-4, `Decayed compareBaseline Brier expected ~0.5888 (P0 quarantine v2), got ${cmpRes.proposed.brier}`);
 
   // (b) Test run() public entry point
   const decayRunRes = await runner.run({ silent: true, ...decayConfig });
@@ -91,9 +95,14 @@ async function testW1DPipelineAudit() {
     fsRes.meanBrier,
     'run({ useDaysAgo: true }) must plumb options and produce decayed Brier different from default'
   );
+  // NOTE (Owner A P0 quarantine v2): the decayed run() Brier moved from the
+  // old 0.5721424 to ~0.5888 because the quarantine removed the un-estimated
+  // nominal home advantage (all WC matches neutral) plus coach / capacity-venue
+  // / fatigue. This is the HONEST decayed accuracy of the quarantined model and
+  // must equal the compareBaseline decayed value above.
   assert.ok(
-    Math.abs(decayRunRes.fullSeeded.meanBrier - 0.5721424) < 1e-5,
-    `Decayed run() Brier expected ~0.5721424, got ${decayRunRes.fullSeeded.meanBrier}`
+    Math.abs(decayRunRes.fullSeeded.meanBrier - 0.5888) < 1e-4,
+    `Decayed run() Brier expected ~0.5888 (P0 quarantine v2), got ${decayRunRes.fullSeeded.meanBrier}`
   );
 
   console.log('24 passed');

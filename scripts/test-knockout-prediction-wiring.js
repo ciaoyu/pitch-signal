@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 /**
- * KO-3: knockout prediction parameter wiring test
+ * KO-3: knockout prediction parameter wiring test (P0 quarantine v2 — Owner A)
  *
- * Verifies that the knockout calibration (previously dead code in
- * lib/prediction.js / lib/poisson.js) is actually driven once
- * detectKnockout(stage) feeds isKnockout / knockoutRound into the engine.
+ * Verifies that the knockout context (detectKnockout(stage) -> isKnockout /
+ * knockoutRound) is still plumbed into the engine, but that the HAND-TUNED λ
+ * shrinkage (R16/QF/SF/F = 0.90/0.87/0.83/0.80) is QUARANTINED and no longer
+ * alters the 90-minute (regulation) probability. The shrinkage was merged but
+ * never OOS-estimated; Owner A removed it from the probability path.
  *
- * Acceptance focus (per knockout-intel-plan-2026-07.md KO-3):
- *   - λ shrinkage takes effect for knockout fixtures
- *   - draw probability rises (tighter matches)
- *   - confidence interval widens (+2%)
- *   - group-stage output is byte-identical to the pre-KO-3 (unfed) path
+ * Acceptance focus (per remediation master plan §2.2.1 + rejection notes):
+ *   - isKnockout / knockoutRound are still wired through (recorded in result)
+ *   - λ is NOT shrunk under knockout (quarantine flag set)
+ *   - regulation (90-min) probabilities are IDENTICAL for KO vs group
+ *   - confidence interval still widens (+2%) for knockout (display metadata)
+ *   - group-stage output is byte-identical to the unfed path
  */
 
 const assert = require('assert');
@@ -29,7 +32,7 @@ function approxEqual(a, b, eps) {
   return Math.abs(a - b) <= eps;
 }
 
-console.log('=== KO-3 knockout prediction wiring test ===\n');
+console.log('=== KO-3 knockout prediction wiring test (P0 quarantine v2) ===\n');
 
 // ========== 1. detectKnockout vocabulary (incl. live schedule "knockout") ==========
 console.log('📊 Test 1: detectKnockout stage mapping');
@@ -59,23 +62,30 @@ console.log('📊 Test 1: detectKnockout stage mapping');
   }
 }
 
-// ========== 2. Poisson λ shrinkage fires on isKnockout ==========
-console.log('\n📊 Test 2: Poisson λ shrinkage (knockout vs group)');
+// ========== 2. Poisson λ shrinkage is QUARANTINED (no λ change) ==========
+console.log('\n📊 Test 2: Poisson λ shrinkage QUARANTINED (knockout vs group)');
 const engine = new PredictionEngine();
 const ATT = 1.15, DEF = 0.95; // representative attack/defense strengths
 const lambdaGroupHome = engine.poisson.calculateLambda(ATT, DEF, true, {});
 const lambdaKODefault = engine.poisson.calculateLambda(ATT, DEF, true, { isKnockout: true });
-check(lambdaKODefault < lambdaGroupHome,
-  `home λ shrinks under knockout (group=${lambdaGroupHome.toFixed(4)} -> ko=${lambdaKODefault.toFixed(4)})`);
+check(approxEqual(lambdaKODefault, lambdaGroupHome, 1e-9),
+  `home λ is UNCHANGED under knockout (group=${lambdaGroupHome.toFixed(4)} == ko=${lambdaKODefault.toFixed(4)})`);
 
-// Round granularity: deeper rounds shrink more (F=0.80 < R16=0.90)
+// Round granularity must also produce identical λ (no 0.90/0.87/0.83/0.80 shrink)
 const lambdaR16 = engine.poisson.calculateLambda(ATT, DEF, true, { isKnockout: true, knockoutRound: 'R16' });
 const lambdaF = engine.poisson.calculateLambda(ATT, DEF, true, { isKnockout: true, knockoutRound: 'F' });
-check(lambdaF < lambdaR16 && lambdaR16 < lambdaGroupHome,
-  `round granularity: F(${lambdaF.toFixed(4)}) < R16(${lambdaR16.toFixed(4)}) < group(${lambdaGroupHome.toFixed(4)})`);
+check(approxEqual(lambdaF, lambdaR16, 1e-9) && approxEqual(lambdaR16, lambdaGroupHome, 1e-9),
+  `round granularity has NO effect (F == R16 == group)`);
+
+// Quarantine audit flag must be set on the options object
+check(lambdaKODefault === lambdaGroupHome && (function () {
+  const opts = { isKnockout: true };
+  engine.poisson.calculateLambda(ATT, DEF, true, opts);
+  return opts._knockoutShrinkageQuarantined === true;
+})(), 'options._knockoutShrinkageQuarantined === true (audit trail)');
 
 // ========== 3. Engine-level wiring: same fixture, knockout vs group ==========
-console.log('\n📊 Test 3: engine.predict knockout vs group (same fixture)');
+console.log('\n📊 Test 3: engine.predict knockout vs group (regulation identical)');
 const ratings = require('../data/ratings.json').teams;
 const home = ratings['Germany'];
 const away = ratings['France'];
@@ -85,16 +95,32 @@ const baseParams = { homeId: 'Germany', awayId: 'France', homeRating: home, away
 const predGroup = engine.predict(baseParams);
 const predKO = engine.predict({ ...baseParams, isKnockout: true, knockoutRound: null });
 
-check(predKO.goals.homeExpected < predGroup.goals.homeExpected,
-  `homeExpected goals lower in knockout (${predGroup.goals.homeExpected} -> ${predKO.goals.homeExpected})`);
-check(predKO.goals.awayExpected < predGroup.goals.awayExpected,
-  `awayExpected goals lower in knockout (${predGroup.goals.awayExpected} -> ${predKO.goals.awayExpected})`);
-check(predKO.draw > predGroup.draw,
-  `draw probability rises in knockout (${predGroup.draw} -> ${predKO.draw})`);
+check(approxEqual(predKO.goals.homeExpected, predGroup.goals.homeExpected, 1e-9),
+  `homeExpected goals identical in knockout (${predGroup.goals.homeExpected} == ${predKO.goals.homeExpected})`);
+check(approxEqual(predKO.goals.awayExpected, predGroup.goals.awayExpected, 1e-9),
+  `awayExpected goals identical in knockout (${predGroup.goals.awayExpected} == ${predKO.goals.awayExpected})`);
+check(approxEqual(predKO.draw, predGroup.draw, 1e-9),
+  `draw probability UNCHANGED in knockout (${predGroup.draw} == ${predKO.draw})`);
+check(approxEqual(predKO.homeWin, predGroup.homeWin, 1e-9) &&
+      approxEqual(predKO.awayWin, predGroup.awayWin, 1e-9),
+  'regulation (90-min) probabilities identical for KO vs group');
+
+// Knockout context must still be recorded in the result
+check(predKO.knockout && predKO.knockout.isKnockout === true,
+  'result.knockout.isKnockout === true (wiring preserved)');
+check(predKO.knockout && predKO.knockout.lambdaShrinkageQuarantined === true,
+  'result.knockout.lambdaShrinkageQuarantined === true');
+
+// advance must be present (KO) but UNAVAILABLE (nulls, not 50/50)
+check(predKO.advance && predKO.advance.available === false &&
+      predKO.advance.home === null && predKO.advance.away === null,
+  'advance is unavailable with home:null/away:null (no pseudo 50/50)');
+
+// Confidence interval STILL widens for knockout (display metadata, not probability)
 check(predKO.confidence.halfWidth > predGroup.confidence.halfWidth,
   `confidence interval widens in knockout (${predGroup.confidence.halfWidth} -> ${predKO.confidence.halfWidth})`);
 
-// ========== 4. Group output byte-identical to pre-KO-3 (unfed) path ==========
+// ========== 4. Group output byte-identical to pre-fed (unfed) path ==========
 console.log('\n📊 Test 4: group-stage output unchanged (KO-3 must not alter group predictions)');
 const predFed = engine.predict({ ...baseParams, isKnockout: false, knockoutRound: null });
 const fields = ['homeWin', 'draw', 'awayWin',
