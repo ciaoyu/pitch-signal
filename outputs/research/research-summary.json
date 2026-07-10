@@ -11,14 +11,17 @@
     "note": "Historical 964-match replay benchmark under strict A v4 quarantined core model."
   },
   "prospective_2026_online": {
-    "sampleSize": 43,
-    "description": "Prospective online live service predictions for 2026 matches",
+    "status": "unverified",
+    "sampleSize": null,
+    "description": "Prospective online live service predictions for 2026 matches (awaiting live ledger export)",
     "metrics": {
-      "meanBrier": 0.5059,
-      "topLabelECE": 0.1563,
-      "directionalAccuracy": 0.6279
+      "meanBrier": null,
+      "topLabelECE": null,
+      "directionalAccuracy": null
     },
-    "note": "These metrics represent online service performance up to the current cutoff and must not be mixed with historical replay benchmarks."
+    "inputFile": null,
+    "inputHash": null,
+    "note": "No verified 2026 online ledger export provided; prospective metrics are marked unverified/null."
   },
-  "governance_separation_rule": "Brier 0.5059 and ECE 0.1563 belong strictly to the 43 prospective 2026 online sample; Brier 0.5702 belongs strictly to the 964-match historical replay. The two must never be mixed or conflated."
+  "governance_separation_rule": "Prospective online metrics must be computed dynamically from verified ledger exports and never hardcoded. Retrospective replay metrics apply strictly to the 964-match historical dataset. The two must never be mixed or conflated."
 }

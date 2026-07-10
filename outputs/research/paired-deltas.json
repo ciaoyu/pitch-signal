@@ -3,7 +3,11 @@
     "clusteringUnit": "tournament_year",
     "resamples": 1000,
     "seed": 42,
-    "evalMethod": "Clustered Bootstrap Paired Difference"
+    "evalMethod": "Clustered Bootstrap Paired Difference",
+    "coveredBaselines": [
+      "Uniform Baseline (1/3, 1/3, 1/3)",
+      "Walk-Forward Historical Frequency Baseline"
+    ]
   },
   "modelVsUniform": {
     "clusterCount": 22,
@@ -29,6 +33,34 @@
       "ci95": [
         -0.17353,
         -0.098569
+      ]
+    },
+    "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), avoiding the overlapping CI fallacy."
+  },
+  "modelVsHistoricalFrequency": {
+    "clusterCount": 22,
+    "sampleSize": 964,
+    "brier": {
+      "deltaMean": -0.045902,
+      "ci95": [
+        -0.088569,
+        0.005377
+      ],
+      "pValue": 0.037,
+      "significant": false
+    },
+    "accuracy": {
+      "deltaMean": 0.053942,
+      "ci95": [
+        0.010114,
+        0.093186
+      ]
+    },
+    "logLoss": {
+      "deltaMean": -0.125791,
+      "ci95": [
+        -0.268532,
+        -0.023707
       ]
     },
     "methodologyNote": "Paired significance evaluated via clustered bootstrap on match-level paired differences clustered by tournament edition (§2.2), avoiding the overlapping CI fallacy."

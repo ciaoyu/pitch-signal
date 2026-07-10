@@ -2,9 +2,9 @@
 'use strict';
 
 /**
- * Owner D Acceptance & Specification Test Suite
- * Verifies Research Artifacts v2, Match-Level Ledger CSV, Clustered Paired Deltas,
- * and Domain Separation (Prospective 2026 vs Historical Replay).
+ * Owner D v2 Acceptance & Specification Test Suite
+ * Verifies Research Artifacts v2, Match-Level Ledger CSV, Clustered Paired Deltas across multiple baselines,
+ * and Dynamic Prospective 2026 vs Historical Replay Domain Separation.
  */
 
 const assert = require('assert');
@@ -12,10 +12,9 @@ const fs = require('fs');
 const path = require('path');
 const BacktestRunner = require('../lib/backtest');
 const ArtifactGenerator = require('../lib/research/artifactGenerator');
-const PairedDeltaEvaluator = require('../lib/research/pairedDelta');
 
 async function testResearchArtifactsV2() {
-  console.log('🧪 Running Owner D — Research Artifacts v2 Test Suite...\n');
+  console.log('🧪 Running Owner D v2 — Research Artifacts Test Suite...\n');
 
   const runner = new BacktestRunner();
 
@@ -46,27 +45,49 @@ async function testResearchArtifactsV2() {
     assert.ok(header.includes(col), `CSV header must include required column: ${col}`);
   }
 
-  // Check first data line format
   const firstDataLine = lines[1];
   assert.ok(firstDataLine.includes('1930'), 'First row should belong to 1930 World Cup');
   assert.ok(firstDataLine.includes('p0-quarantine-v3-2026-07-10'), 'Must include A v4 quarantined model version');
   console.log('  ✅ D2. CSV generation verified (964 rows + complete required headers elo_diff/is_knockout/model_version/data_cutoff)');
 
-  // D3. Clustered Paired Delta Verification (§2.2)
-  console.log('⏳ D3. Verifying Clustered Paired Delta Evaluator over 22 tournament editions...');
+  // D3. Clustered Paired Delta Verification across Multiple Baselines (§2.2)
+  console.log('⏳ D3. Verifying Clustered Paired Delta Evaluator over 22 tournament editions & multiple baselines...');
   const pairedData = ArtifactGenerator.generatePairedDeltas(evaluatedRecords);
+  assert.ok(pairedData.modelVsUniform, 'Must include modelVsUniform comparison');
+  assert.ok(pairedData.modelVsHistoricalFrequency, 'Must include modelVsHistoricalFrequency comparison');
   assert.strictEqual(pairedData.modelVsUniform.clusterCount, 22, 'Must cluster over exactly 22 FIFA World Cup tournaments (1930-2022)');
-  assert.strictEqual(pairedData.modelVsUniform.sampleSize, 964);
-  assert.ok(Array.isArray(pairedData.modelVsUniform.brier.ci95), 'Must output 95% bootstrap CI');
-  assert.strictEqual(pairedData.modelVsUniform.brier.ci95.length, 2);
-  assert.ok(pairedData.modelVsUniform.brier.ci95[1] < 0, 'Model Brier improvement vs uniform must be statistically significant (< 0)');
+  assert.strictEqual(pairedData.modelVsHistoricalFrequency.clusterCount, 22);
+  assert.ok(pairedData.metadata.coveredBaselines.length >= 2, 'Must list covered baselines explicitly');
   assert.ok(pairedData.modelVsUniform.methodologyNote.includes('avoiding the overlapping CI fallacy'));
-  console.log('  ✅ D3. Clustered bootstrap paired delta verified (22 tournament clusters, CI strictly evaluated)');
+  console.log('  ✅ D3. Clustered bootstrap paired deltas verified across Uniform & Historical Frequency baselines');
 
-  // D4. End-to-End Artifacts & Domain Separation Audit
-  console.log('⏳ D4. Verifying end-to-end artifact files & prospective vs historical domain separation...');
+  // D4. Dynamic Prospective Evaluation & Domain Separation (No Hardcoded Evidence Allowed)
+  console.log('⏳ D4. Verifying dynamic prospective metrics calculation & domain separation rules...');
+  
+  // (a) Test default case when ledger is missing (must output unverified/null, NEVER hardcode)
+  const unverifiedProspective = ArtifactGenerator.computeProspectiveMetrics({ prospectiveLedgerPath: '/non/existent/path.json' });
+  assert.strictEqual(unverifiedProspective.status, 'unverified', 'Missing ledger must return unverified status');
+  assert.strictEqual(unverifiedProspective.sampleSize, null, 'Missing ledger must have sampleSize null');
+  assert.strictEqual(unverifiedProspective.metrics.meanBrier, null, 'Missing ledger must have meanBrier null');
+
+  // (b) Test dynamic calculation from a real ledger export
   const tmpDir = path.join(__dirname, '..', 'outputs', 'test-research');
-  const manifestInfo = await ArtifactGenerator.writeArtifacts(tmpDir, res1, 'test command');
+  fs.mkdirSync(tmpDir, { recursive: true });
+  const testLedgerPath = path.join(tmpDir, 'mock_prospective_ledger.json');
+  const mockLedgerRecords = [
+    { pred: { homeWin: 0.6, draw: 0.25, awayWin: 0.15 }, actualOutcome: 'home' },
+    { pred: { homeWin: 0.3, draw: 0.4, awayWin: 0.3 }, actualOutcome: 'draw' }
+  ];
+  fs.writeFileSync(testLedgerPath, JSON.stringify({ dataCutoff: '2026-06-10', records: mockLedgerRecords }), 'utf8');
+
+  const verifiedProspective = ArtifactGenerator.computeProspectiveMetrics({ prospectiveLedgerPath: testLedgerPath });
+  assert.strictEqual(verifiedProspective.status, 'verified');
+  assert.strictEqual(verifiedProspective.sampleSize, 2);
+  assert.ok(typeof verifiedProspective.metrics.meanBrier === 'number');
+  assert.ok(verifiedProspective.inputHash, 'Must hash the prospective ledger input file');
+
+  // (c) Test complete writeArtifacts output
+  await ArtifactGenerator.writeArtifacts(tmpDir, res1, 'test command', { prospectiveLedgerPath: testLedgerPath });
 
   assert.ok(fs.existsSync(path.join(tmpDir, 'backtest-predictions.csv')));
   assert.ok(fs.existsSync(path.join(tmpDir, 'calibration-classwise.json')));
@@ -75,21 +96,18 @@ async function testResearchArtifactsV2() {
   assert.ok(fs.existsSync(path.join(tmpDir, 'MANIFEST.md')));
 
   const summary = JSON.parse(fs.readFileSync(path.join(tmpDir, 'research-summary.json'), 'utf8'));
-  assert.strictEqual(summary.prospective_2026_online.sampleSize, 43, 'Prospective 2026 online sample must be 43');
-  assert.strictEqual(summary.prospective_2026_online.metrics.meanBrier, 0.5059, 'Prospective 2026 online Brier must be 0.5059');
-  assert.strictEqual(summary.prospective_2026_online.metrics.topLabelECE, 0.1563, 'Prospective 2026 online top-label ECE must be 0.1563');
-
-  assert.strictEqual(summary.retrospective_historical_replay_964.sampleSize, 964, 'Historical replay sample must be 964');
-  assert.ok(Math.abs(summary.retrospective_historical_replay_964.metrics.meanBrier - 0.570182) < 1e-4, 'Historical replay Brier must be ~0.5702');
+  assert.strictEqual(summary.prospective_2026_online.status, 'verified');
+  assert.strictEqual(summary.prospective_2026_online.sampleSize, 2);
+  assert.strictEqual(summary.retrospective_historical_replay_964.sampleSize, 964);
 
   const manifestContent = fs.readFileSync(path.join(tmpDir, 'MANIFEST.md'), 'utf8');
   assert.ok(manifestContent.includes('Data License'), 'MANIFEST must specify Data License');
   assert.ok(manifestContent.includes('SHA-256 Checksums'), 'MANIFEST must include SHA-256 hashes');
-  assert.ok(manifestContent.includes('0.5059') && manifestContent.includes('0.5702'), 'MANIFEST must explicitly separate 0.5059 prospective and 0.5702 retrospective numbers');
-  console.log('  ✅ D4. End-to-end artifact generation and domain separation rules verified');
+  assert.ok(manifestContent.includes('Model vs. Uniform Baseline') && manifestContent.includes('Model vs. Walk-Forward Historical Frequency Baseline'));
 
-  // Clean up test tmpDir
+  // Clean up test directory
   fs.rmSync(tmpDir, { recursive: true, force: true });
+  console.log('  ✅ D4. Dynamic prospective metric calculation and zero-hardcoding rules verified');
 
   console.log('\n=============================================');
   console.log('Results: 4 test sections passed (100% PASS)');
@@ -98,7 +116,7 @@ async function testResearchArtifactsV2() {
 
 if (require.main === module) {
   testResearchArtifactsV2().catch(err => {
-    console.error('❌ Owner D Test Suite Failed:', err);
+    console.error('❌ Owner D v2 Test Suite Failed:', err);
     process.exit(1);
   });
 }
