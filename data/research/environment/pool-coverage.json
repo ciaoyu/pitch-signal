@@ -1,0 +1,37 @@
+{
+  "source": "martj42/international_results (CC0)",
+  "csvPath": "/Users/zbbb/Documents/Data/international-results/results.csv",
+  "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+  "generatedAt": "2026-07-10T15:25:10.612Z",
+  "years": {
+    "min": 1872,
+    "max": 2026
+  },
+  "pool": {
+    "total_non_wc": 48441,
+    "played_non_wc": 48441
+  },
+  "heldOut": {
+    "world_cup_total": 1064,
+    "world_cup_2026": 100,
+    "world_cup_2026_altitude_joined": 100,
+    "world_cup_2026_altitude_joined_pct": 100
+  },
+  "featureCoverage": {
+    "rest_days_home_pct": 99.7,
+    "rest_days_away_pct": 99.6,
+    "neutral_pct": 100,
+    "tournament_type_pct": 100,
+    "confed_home_resolved_pct": 97.9,
+    "confed_away_resolved_pct": 97.8,
+    "cross_confederation_resolved_pct": 97.3,
+    "altitude_historical_pct": 0,
+    "weather_wbgt_pct": 0
+  },
+  "missingReasons": {
+    "altitude_historical": "No city→altitude table for historical (pre-2026) matches in this pool; venues.json covers 2026 WC only. Missing != neutral; degrade to base model.",
+    "weather_wbgt": "WBGT/weather never recorded historically for this pool; cannot fabricate. Mark missing_reason.",
+    "confed_unresolved": "Teams that appear ONLY in Friendlies / generic \"FIFA World Cup qualification\" (no confederation word) and never in a confederation-specific tournament cannot have a confederation inferred; cross_confederation is null for their matches (documented, not imputed)."
+  },
+  "note": "World Cup finals held out; venue altitude joined for 2026 only; weather/WBGT unavailable; travel via cross_confederation proxy; rest via date-ordered gap. No fabrication."
+}

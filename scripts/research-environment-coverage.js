@@ -1,32 +1,35 @@
 #!/usr/bin/env node
 /**
- * Owner E — environment-research coverage audit.
+ * Owner E — environment-research coverage audit (data-collection phase).
  *
  * Audits AVAILABILITY / COVERAGE / MISSING MECHANISM for environment, travel,
- * rest variables across the data we can see:
+ * rest variables. Combines:
  *   - in-repo: data/venues.json (2026 venues), data/history/worldcup_*.json
- *     (1930-2022 results), data/team_meta.json, data/elo-seed.json, schedule.
- *   - external READ-ONLY input: the 49k international-results pool pointed to by
- *     ENV_RESEARCH_POOL_DIR (NOT in this repo; never committed).
+ *     (1930-2022 results, parsed as {matches:[...]} OBJECTS), data/team_meta.json
+ *   - external READ-ONLY input: the 49k international-results pool
+ *     (martj42/international_results CC0) pointed to by ENV_RESEARCH_POOL_DIR.
+ *     When present, the pool adapter computes REAL feature coverage
+ *     (venue/weather/travel/rest) and a World Cup held-out manifest.
  *
- * It does NOT modify any production file. Output: a JSON report +
- * data/research/environment/coverage-report.json + human summary.
+ * It does NOT modify any production file. Output: data/research/environment/
+ * coverage-report.json + human summary.
  *
  * Run: node scripts/research-environment-coverage.js
+ *      (set ENV_RESEARCH_POOL_DIR for real 49k pool coverage)
  */
+'use strict';
 const fs = require('fs');
 const path = require('path');
+const lib = require('./research-environment-pool-lib');
 
 const ROOT = path.join(__dirname, '..');
 const DATA = path.join(ROOT, 'data');
 const OUT_DIR = path.join(DATA, 'research', 'environment');
 
-function readJson(p) {
-  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return null; }
-}
+function readJson(p) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return null; } }
 function pct(n, d) { return d === 0 ? 0 : Math.round((n / d) * 1000) / 10; }
 
-// ---- 1. WC2026 venue-level env coverage ----
+// ---- 1. WC2026 venue-level env coverage (in-repo) ----
 const venues = readJson(path.join(DATA, 'venues.json')) || [];
 const venueFields = ['altitude', 'grass', 'timezone', 'coordinates'];
 const venueCoverage = {};
@@ -35,7 +38,7 @@ for (const f of venueFields) {
 }
 const venueWbgt = 0; // no WBGT in venues.json
 
-// ---- 2. WC history (1930-2022) env coverage ----
+// ---- 2. WC history (1930-2022) — OBJECT format {matches:[...]} ----
 const histDir = path.join(DATA, 'history');
 const histFiles = fs.existsSync(histDir)
   ? fs.readdirSync(histDir).filter(f => /^worldcup_\d{4}\.json$/.test(f))
@@ -44,36 +47,64 @@ let histMatches = 0;
 const histYears = [];
 for (const f of histFiles) {
   const j = readJson(path.join(histDir, f));
-  if (!j) continue;
+  if (!j || !Array.isArray(j.matches)) continue;
   histYears.push(j.year);
-  histMatches += (j.matches || []).length;
+  histMatches += j.matches.length;
 }
-const histEnvCoverage = 0; // no env exposure fields in any historical file
 
 // ---- 3. team_meta env coverage ----
 const teamMeta = readJson(path.join(DATA, 'team_meta.json')) || {};
 const teamCount = Object.keys(teamMeta).length;
-const teamEnvCoverage = 0; // no baseCamp altitude/timezone
+const teamEnvCoverage = 0; // no baseCamp altitude/timezone in team_meta.json
 
-// ---- 4. external 49k pool (read-only) ----
+// ---- 4. external 49k pool (read-only) — REAL coverage when present ----
 const poolDir = process.env.ENV_RESEARCH_POOL_DIR || '';
-let pool = { present: false, note: 'not in repo; documented as READ-ONLY input (ENV_RESEARCH_POOL_DIR)' };
-if (poolDir && fs.existsSync(poolDir)) {
-  try {
-    const files = fs.readdirSync(poolDir).filter(f => /\.json$/i.test(f));
-    let poolMatches = 0; const poolYears = new Set();
-    for (const f of files) {
-      const j = readJson(path.join(poolDir, f));
-      if (!j) continue;
-      const arr = Array.isArray(j) ? j : (j.matches || j.data || []);
-      poolMatches += arr.length;
-      for (const m of arr) if (m && m.date) poolYears.add(String(m.date).slice(0, 4));
-    }
-    pool = { present: true, files: files.length, matches: poolMatches, years: [...poolYears].sort(), note: 'READ-ONLY; World Cup kept held-out in OOS' };
-  } catch (e) {
-    pool = { present: false, note: 'pointed at but unreadable: ' + e.message };
+let pool = { present: false, note: 'not in repo; provide ENV_RESEARCH_POOL_DIR (read-only CC0 copy)' };
+let poolResult = null;
+if (poolDir && lib.resolveCsvPath(poolDir)) {
+  poolResult = lib.analyzePool(poolDir, { venues });
+  if (poolResult.present) {
+    pool = {
+      present: true,
+      source: poolResult.source,
+      sha256: poolResult.sha256,
+      years: poolResult.years,
+      pool_non_wc: poolResult.pool.total_non_wc,
+      pool_played: poolResult.pool.played_non_wc,
+      heldOut_wc_total: poolResult.heldOut.world_cup_total,
+      heldOut_wc_2026_altitude_joined_pct: poolResult.heldOut.world_cup_2026_altitude_joined_pct,
+      featureCoverage: poolResult.coverage,
+      missingReasons: poolResult.missingReasons,
+    };
   }
 }
+
+// ---- 5. Unified feature coverage (venue / weather / travel / rest) ----
+// venue: 2026 altitude real (venues.json); historical altitude 0% (no table)
+// weather: 0% (never recorded)
+// travel: neutral (data) + cross_confederation proxy (pool-derived)
+// rest: date-ordered gap (pool-derived)
+const featureCoverage = {
+  venue: {
+    altitude_2026_pct: venueCoverage.altitude,                 // real, 2026 venues
+    altitude_historical_pct: pool.present ? pool.featureCoverage.altitude_historical_pct : 0,
+    note: '2026 venue altitude from in-repo venues.json. Historical (pre-2026) pool matches have NO altitude table -> 0%.',
+  },
+  weather: {
+    wbgt_pct: 0,
+    note: 'WBGT/weather never historically recorded for this pool; cannot fabricate.',
+  },
+  travel: {
+    neutral_pct: pool.present ? pool.featureCoverage.neutral_pct : 0,
+    cross_confederation_resolved_pct: pool.present ? pool.featureCoverage.cross_confederation_resolved_pct : 0,
+    note: 'Travel/climate-stress proxied by neutral flag (data) + cross_confederation (pool-derived, as-of). Symmetric for both sides.',
+  },
+  rest: {
+    rest_days_home_pct: pool.present ? pool.featureCoverage.rest_days_home_pct : 0,
+    rest_days_away_pct: pool.present ? pool.featureCoverage.rest_days_away_pct : 0,
+    note: 'Rest = days since each team previous match (date-ordered, as-of).',
+  },
+};
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -90,8 +121,7 @@ const report = {
       editions: histFiles.length,
       years: histYears.sort(),
       matches: histMatches,
-      envExposureCoverage: histEnvCoverage,
-      note: 'results only; NO env exposure variables -> base model for pre-2026',
+      note: 'results only (parsed as {matches:[...]} objects); NO env exposure fields',
     },
     teamMeta: {
       teams: teamCount,
@@ -100,10 +130,18 @@ const report = {
     },
   },
   externalReadonly: { internationalResults49k: pool },
-  missingMechanism: 'structural: historical editions entirely lack env fields; 2026 has venue-level only. Missing != neutral; degrade to base model pre-1960s; mark missing_reason.',
+  featureCoverage,
+  wcHeldOut: {
+    historyDirEditions_matches: histMatches,          // 1930-2022 (data/history)
+    poolWorldCup_matches: pool.present ? pool.heldOut_wc_total : 'pool absent',
+    note: 'World Cup finals held out from estimation pool. Reconcile: history dir = 1930-2022; pool adds 2026 (scheduled).',
+  },
+  missingMechanism: 'structural: historical editions lack env fields; 2026 has venue-level only; weather/WBGT never recorded. Missing != neutral; degrade to base model; mark missing_reason.',
   conclusion: {
-    canEstimateTeamLevelProxyNow: false,
-    note: 'Team-level exposure proxy (altitude/WBGT/turf from venues) usable for 2026 only. Travel/rest/et require schedule+baseCamp engineering. Stable env coefficients require the external 49k pool (read-only) with WC held-out. Until then: NOT eligible to enter production probability.',
+    canEstimateTeamLevelProxyNow: pool.present,
+    note: pool.present
+      ? 'Real 49k pool joined: rest + travel(cross_confed) + 2026 altitude available. Stable env coefficients still need walk-forward OOS (WC held-out) with ridge/hierarchical shrinkage + VIF. NOT eligible to enter production probability until OOS shows gain.'
+      : 'Pool absent. Team-level proxy for 2026 only; travel/rest/et need the external pool. NOT eligible to enter production probability yet.',
   },
 };
 
@@ -112,8 +150,16 @@ fs.writeFileSync(path.join(OUT_DIR, 'coverage-report.json'), JSON.stringify(repo
 
 console.log('=== Owner E coverage audit ===');
 console.log(`WC2026 venues: ${venues.length} | altitude ${venueCoverage.altitude}% grass ${venueCoverage.grass}% tz ${venueCoverage.timezone}% coords ${venueCoverage.coordinates}% | WBGT ${venueWbgt}%`);
-console.log(`WC history: ${histFiles.length} editions (${histYears[0]}-${histYears[histYears.length-1]}) ${histMatches} matches | env exposure coverage ${histEnvCoverage}%`);
+console.log(`WC history: ${histFiles.length} editions ${histMatches} matches | no env exposure fields`);
 console.log(`team_meta: ${teamCount} teams | env coverage ${teamEnvCoverage}%`);
-console.log(`external 49k pool: ${pool.present ? `present (${pool.matches} matches, ${pool.years.length} yrs)` : 'absent (read-only input, not in repo)'}`);
-console.log(`\nConclusion: team-level proxy for 2026 only; travel/rest/et need engineering; stable OOS coefficients need external pool. NOT eligible to enter production probability yet.`);
+if (pool.present) {
+  const fc = pool.featureCoverage;
+  console.log(`49k pool: ${pool.pool_non_wc} non-WC matches (${pool.pool_played} played) | WC held-out ${pool.heldOut_wc_total} | sha256 ${pool.sha256.slice(0, 12)}…`);
+  console.log(`  rest_days_home ${fc.rest_days_home_pct}% | rest_days_away ${fc.rest_days_away_pct}%`);
+  console.log(`  travel: neutral ${fc.neutral_pct}% | cross_confed resol ${fc.cross_confederation_resolved_pct}%`);
+  console.log(`  altitude historical ${fc.altitude_historical_pct}% | weather/WBGT ${fc.weather_wbgt_pct}%`);
+} else {
+  console.log(`49k pool: ABSENT (set ENV_RESEARCH_POOL_DIR for real coverage)`);
+}
+console.log(`\nConclusion: ${report.conclusion.note}`);
 console.log(`Report -> data/research/environment/coverage-report.json`);

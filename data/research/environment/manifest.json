@@ -56,9 +56,29 @@
       {
         "id": "international_results_49k",
         "path_env": "ENV_RESEARCH_POOL_DIR",
-        "covers": "49,487 international matches (larger pool for env estimation)",
-        "license": "martj42/international_results (public dataset)",
+        "file": "results.csv",
+        "source": "martj42/international_results (GitHub)",
+        "license": "CC0 (public dataset)",
+        "covers": "49,505 international matches (1872-2026)",
+        "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+        "acquired_at": "2026-07-10",
+        "storage": "OUTSIDE repo (e.g. /Users/zbbb/Documents/Data/international-results); never committed",
         "usage": "READ-ONLY input; World Cup kept held-out; NOT committed to this branch",
+        "derived_features_real_coverage": {
+          "rest_days_home_pct": 99.7,
+          "rest_days_away_pct": 99.6,
+          "neutral_pct": 100,
+          "tournament_type_pct": 100,
+          "confed_home_resolved_pct": 97.9,
+          "confed_away_resolved_pct": 97.8,
+          "cross_confederation_resolved_pct": 97.3,
+          "altitude_2026_joined_pct": 100,
+          "altitude_historical_pct": 0,
+          "weather_wbgt_pct": 0
+        },
+        "pool_non_wc_matches": 48441,
+        "wc_heldout_matches": 1064,
+        "wc_heldout_2026": 100,
         "in_repo": false
       },
       {
@@ -81,5 +101,5 @@
     "et":   { "unit": "min",  "symmetry": "beta_et*(ET_i - ET_opp)" }
   },
   "missing_mechanism": "structural (historical editions have no env fields); missing != neutral; mark missing_reason; degrade to base model pre-1960s; non-random missingness only as feature after OOS proof",
-  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-*; never lib/prediction.js or public API"
+  "file_boundary": "only docs/research/environment-*, data/research/environment-*, scripts/research-environment-* (incl. research-environment-pool-lib.js / -pool-adapter.js / test-research-environment-pool-lib.js); never lib/prediction.js or public API; never commit the 49k pool"
 }

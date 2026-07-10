@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T15:00:23.749Z",
+  "generatedAt": "2026-07-10T15:25:10.786Z",
   "owner": "E",
   "baseline": "78da1b5",
   "inRepo": {
@@ -41,8 +41,7 @@
         2022
       ],
       "matches": 964,
-      "envExposureCoverage": 0,
-      "note": "results only; NO env exposure variables -> base model for pre-2026"
+      "note": "results only (parsed as {matches:[...]} objects); NO env exposure fields"
     },
     "teamMeta": {
       "teams": 41,
@@ -52,13 +51,64 @@
   },
   "externalReadonly": {
     "internationalResults49k": {
-      "present": false,
-      "note": "not in repo; documented as READ-ONLY input (ENV_RESEARCH_POOL_DIR)"
+      "present": true,
+      "source": "martj42/international_results (CC0)",
+      "sha256": "5ddddc5ab73edb08bf65829d48f2a13b54b873b6abd29eea879086c12f977687",
+      "years": {
+        "min": 1872,
+        "max": 2026
+      },
+      "pool_non_wc": 48441,
+      "pool_played": 48441,
+      "heldOut_wc_total": 1064,
+      "heldOut_wc_2026_altitude_joined_pct": 100,
+      "featureCoverage": {
+        "rest_days_home_pct": 99.7,
+        "rest_days_away_pct": 99.6,
+        "neutral_pct": 100,
+        "tournament_type_pct": 100,
+        "confed_home_resolved_pct": 97.9,
+        "confed_away_resolved_pct": 97.8,
+        "cross_confederation_resolved_pct": 97.3,
+        "altitude_historical_pct": 0,
+        "weather_wbgt_pct": 0
+      },
+      "missingReasons": {
+        "altitude_historical": "No city→altitude table for historical (pre-2026) matches in this pool; venues.json covers 2026 WC only. Missing != neutral; degrade to base model.",
+        "weather_wbgt": "WBGT/weather never recorded historically for this pool; cannot fabricate. Mark missing_reason.",
+        "confed_unresolved": "Teams that appear ONLY in Friendlies / generic \"FIFA World Cup qualification\" (no confederation word) and never in a confederation-specific tournament cannot have a confederation inferred; cross_confederation is null for their matches (documented, not imputed)."
+      }
     }
   },
-  "missingMechanism": "structural: historical editions entirely lack env fields; 2026 has venue-level only. Missing != neutral; degrade to base model pre-1960s; mark missing_reason.",
+  "featureCoverage": {
+    "venue": {
+      "altitude_2026_pct": 100,
+      "altitude_historical_pct": 0,
+      "note": "2026 venue altitude from in-repo venues.json. Historical (pre-2026) pool matches have NO altitude table -> 0%."
+    },
+    "weather": {
+      "wbgt_pct": 0,
+      "note": "WBGT/weather never historically recorded for this pool; cannot fabricate."
+    },
+    "travel": {
+      "neutral_pct": 100,
+      "cross_confederation_resolved_pct": 97.3,
+      "note": "Travel/climate-stress proxied by neutral flag (data) + cross_confederation (pool-derived, as-of). Symmetric for both sides."
+    },
+    "rest": {
+      "rest_days_home_pct": 99.7,
+      "rest_days_away_pct": 99.6,
+      "note": "Rest = days since each team previous match (date-ordered, as-of)."
+    }
+  },
+  "wcHeldOut": {
+    "historyDirEditions_matches": 964,
+    "poolWorldCup_matches": 1064,
+    "note": "World Cup finals held out from estimation pool. Reconcile: history dir = 1930-2022; pool adds 2026 (scheduled)."
+  },
+  "missingMechanism": "structural: historical editions lack env fields; 2026 has venue-level only; weather/WBGT never recorded. Missing != neutral; degrade to base model; mark missing_reason.",
   "conclusion": {
-    "canEstimateTeamLevelProxyNow": false,
-    "note": "Team-level exposure proxy (altitude/WBGT/turf from venues) usable for 2026 only. Travel/rest/et require schedule+baseCamp engineering. Stable env coefficients require the external 49k pool (read-only) with WC held-out. Until then: NOT eligible to enter production probability."
+    "canEstimateTeamLevelProxyNow": true,
+    "note": "Real 49k pool joined: rest + travel(cross_confed) + 2026 altitude available. Stable env coefficients still need walk-forward OOS (WC held-out) with ridge/hierarchical shrinkage + VIF. NOT eligible to enter production probability until OOS shows gain."
   }
 }
