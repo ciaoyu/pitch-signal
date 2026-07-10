@@ -59,7 +59,8 @@ console.log('📊 knockout-intel aggregator');
   check(intel && intel.meta && intel.meta.isKnockout === true, 'knockout fixture meta.isKnockout=true');
   check(intel && intel.meta.round === 'QF', 'Quarter-finals round maps to QF');
   check(intel && intel.meta.stage === 'Quarter-finals', 'meta.stage preserved');
-  check(intel && intel.sections && Object.keys(intel.sections).length === 0, 'knockout with no DB cards => empty sections');
+  check(intel && intel.sections && intel.sections.penalty && intel.sections.penalty.usedInModel === false,
+    'knockout fixture includes display-only penalty section');
 }
 
 // ---- 2. Aggregator: suspensions section populated for knockout ----
