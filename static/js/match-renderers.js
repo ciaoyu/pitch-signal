@@ -1687,6 +1687,29 @@ window.WorldCup.MatchRenderers = (() => {
             <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
         </div>`;
 
+        // ── Knockout advance probability (C refactor: regulation vs advance) ──
+        if (data.isKnockout && data.advance) {
+            const adv = data.advance;
+            const aH = pct(adv.homeWin), aA = pct(adv.awayWin);
+            html += `<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.13)">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                    <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.5)">🏆 ${tx('晋级', 'ADVANCE')}</span>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.85)">${aH}%</span>
+                        <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.6)">${aA}%</span>
+                    </div>
+                </div>
+                ${adv.homeWinAfterET > 0 || adv.awayWinAfterET > 0 ? `
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;padding-top:3px;border-top:1px solid rgba(168,85,247,.08)">
+                    <span style="font:300 6px/1 'Inter';color:rgba(248,250,252,.12)">${tx('加时', 'ET')} · ${tx('点球', 'PEN')}</span>
+                    <div style="display:flex;gap:6px">
+                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.4)">${pct(adv.penaltyHomeWin)}%</span>
+                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.3)">${pct(adv.penaltyAwayWin)}%</span>
+                    </div>
+                </div>` : ''}
+            </div>`;
+        }
+
         return html;
     }
 

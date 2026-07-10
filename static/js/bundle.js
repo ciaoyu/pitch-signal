@@ -3374,11 +3374,11 @@ var require_match_detail = __commonJS({
         content.innerHTML = html;
         api("/api/predict/" + id).then((predRes) => {
           if (myReqId !== _openMatchReqId) return;
-          const pred = predRes?.data || predRes;
+          const pred2 = predRes?.data || predRes;
           const el = document.getElementById("hud-winprob");
-          if (el) el.innerHTML = MR().renderHudWinProbPanel(pred, homeName, awayName);
+          if (el) el.innerHTML = MR().renderHudWinProbPanel(pred2, homeName, awayName);
           const pmEl = document.getElementById("detail-content-pre-match");
-          if (pmEl && pred && !pred.error && (pred.homeWin !== void 0 || pred.homeWinProb !== void 0 || pred.knockoutIntel)) pmEl.innerHTML = renderPreMatchPrediction(pred);
+          if (pmEl && pred2 && !pred2.error && (pred2.homeWin !== void 0 || pred2.homeWinProb !== void 0 || pred2.knockoutIntel)) pmEl.innerHTML = renderPreMatchPrediction(pred2);
           else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction unavailable")}</div>`;
           api("/api/odds-divergence/" + id).then(function(divRes) {
             if (myReqId !== _openMatchReqId) return;
@@ -3421,6 +3421,23 @@ var require_match_detail = __commonJS({
         if (isLive || isFinishedMatch) {
           let liveProbUrl = "/api/match/" + id + "/live-probability";
           const minute = matchData2.clock?.value != null ? Math.round(matchData2.clock.value / 60) : matchData2.status?.displayClock ? parseInt(matchData2.status.displayClock) : matchData2.liveState?.clock ? parseInt(matchData2.liveState.clock) : 0;
+          const details = Array.isArray(matchData2.details) ? matchData2.details : [];
+          let homeRedCards = 0, awayRedCards = 0;
+          for (const d of details) {
+            const type = String(d.type || "").toLowerCase();
+            const isHome = d.team === homeName || d.teamId && d.teamId === matchData2.homeTeamId;
+            const isAway = d.team === awayName || d.teamId && d.teamId === matchData2.awayTeamId;
+            if (!isHome && !isAway) continue;
+            if (type.includes("red")) {
+              if (isHome) homeRedCards++;
+              else awayRedCards++;
+            }
+          }
+          const isKo = matchData2.isKnockout || pred && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout) || matchData2.stage && !/group/i.test(matchData2.stage);
+          let addedTime = 0;
+          const dc = matchData2.displayClock || matchData2.liveState?.clock || "";
+          const plusMatch = String(dc).match(/\+(\d+)/);
+          if (plusMatch) addedTime = parseInt(plusMatch[1]) || 0;
           const params = new URLSearchParams({
             homeScore: String(homeScore !== "-" ? homeScore : 0),
             awayScore: String(awayScore !== "-" ? awayScore : 0),
@@ -3428,7 +3445,11 @@ var require_match_detail = __commonJS({
             state: matchData2.liveState?.state || (isLive ? "in" : "post"),
             statusName: matchData2.statusName || "",
             displayClock: matchData2.displayClock || "",
-            hasPenalties: String(!!matchData2.hasPenalties)
+            hasPenalties: String(!!matchData2.hasPenalties),
+            homeRed: String(homeRedCards),
+            awayRed: String(awayRedCards),
+            isKnockout: String(isKo),
+            addedTime: String(addedTime)
           });
           liveProbUrl += "?" + params.toString();
           api(liveProbUrl).then((lpRes) => {
@@ -3554,9 +3575,9 @@ var require_match_detail = __commonJS({
             if (myReqId !== _openMatchReqId) return;
             if (review && !review.error) {
               if (!review.aiPrediction) {
-                const pred = await api("/api/predict/" + id);
-                if (pred && !pred.error && pred.homeWin !== void 0) {
-                  review.aiPrediction = { homeWin: Math.round((pred.homeWin || 0) * 1e3) / 10, draw: Math.round((pred.draw || 0) * 1e3) / 10, awayWin: Math.round((pred.awayWin || 0) * 1e3) / 10, predictedScore: pred.likelyScore || "", source: "current_model" };
+                const pred2 = await api("/api/predict/" + id);
+                if (pred2 && !pred2.error && pred2.homeWin !== void 0) {
+                  review.aiPrediction = { homeWin: Math.round((pred2.homeWin || 0) * 1e3) / 10, draw: Math.round((pred2.draw || 0) * 1e3) / 10, awayWin: Math.round((pred2.awayWin || 0) * 1e3) / 10, predictedScore: pred2.likelyScore || "", source: "current_model" };
                 }
               }
               const el = document.getElementById("detail-content-review");
@@ -3781,45 +3802,45 @@ var require_match_detail = __commonJS({
         venueBlock += `<div class="grid grid-cols-2 gap-2 text-[11px]"><div><span class="text-gray-500">${tx("\u6D77\u62D4", "Altitude")}</span><span class="font-bold ml-1">${v.altitude || 0}m</span></div><div><span class="text-gray-500">${tx("\u8349\u76AE", "Surface")}</span><span class="ml-1">${grassIcon} ${esc(grassDisplay)}</span></div><div><span class="text-gray-500">${tx("\u5C4B\u9876", "Roof")}</span><span class="ml-1">${v.roof === "closed" ? tx("\u5C01\u95ED", "Closed") : v.roof === "retractable" ? tx("\u53EF\u4F38\u7F29", "Retractable") : tx("\u5F00\u653E", "Open")}</span></div></div>`;
         return `<div class="space-y-3"><div class="glass-light rounded-lg p-3">${venueBlock}</div>${w ? `<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">${weatherIcon} ${tx("\u5929\u6C14\u72B6\u51B5", "Weather")}</span><span class="text-[11px] text-gray-500">${esc(w.description) || ""}</span></div><div class="grid grid-cols-3 gap-3 text-center"><div><div class="text-xl font-bold">${esc(w.temp) || "-"}\xB0C</div><div class="text-[11px] text-gray-500">${tx("\u6E29\u5EA6", "Temp")}</div><div class="text-[11px] text-gray-600">${tx("\u4F53\u611F", "Feels")} ${esc(w.feelsLike) || "-"}\xB0C</div></div><div><div class="text-xl font-bold">${esc(w.humidity) || "-"}%</div><div class="text-[11px] text-gray-500">${tx("\u6E7F\u5EA6", "Humidity")}</div></div><div><div class="text-xl font-bold">${w.windSpeed ? esc(Math.round(w.windSpeed)) : "-"}</div><div class="text-[11px] text-gray-500">${tx("\u98CE\u901F", "Wind")} km/h</div></div></div></div>` : `<div class="glass-light rounded-lg p-3"><div class="text-center text-gray-500 text-xs"><div class="mb-1">\u{1F324}\uFE0F ${tx("\u5929\u6C14\u6570\u636E", "Weather")}</div><div>${tx("\u6682\u65E0\u5B9E\u65F6\u5929\u6C14", "No weather data")}</div></div></div>`}${impact ? `<div class="glass-light rounded-lg p-3"><div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-gray-400">\u{1F4CA} ${tx("\u573A\u5730\u5F71\u54CD\u5206\u6790", "Venue Impact")}</span><span class="text-xs ${impactColor} font-bold">${impactEmoji} ${impact.overall > 0 ? "+" : ""}${esc(impact.overall)}</span></div><div class="grid grid-cols-2 gap-2 text-[11px] mb-2"><div><span class="text-gray-500">${tx("\u8FDB\u653B", "Attack")}</span><span class="font-bold ml-1 ${impact.attack > 0 ? "text-green-400" : impact.attack < 0 ? "text-red-400" : ""}">${impact.attack > 0 ? "+" : ""}${esc(impact.attack)}%</span></div><div><span class="text-gray-500">${tx("\u9632\u5B88", "Defense")}</span><span class="font-bold ml-1 ${impact.defense > 0 ? "text-green-400" : impact.defense < 0 ? "text-red-400" : ""}">${impact.defense > 0 ? "+" : ""}${esc(impact.defense)}%</span></div><div><span class="text-gray-500">${tx("\u63A7\u7403", "Poss")}</span><span class="font-bold ml-1 ${impact.possession > 0 ? "text-green-400" : impact.possession < 0 ? "text-red-400" : ""}">${impact.possession > 0 ? "+" : ""}${esc(impact.possession)}%</span></div><div><span class="text-gray-500">${tx("\u4F53\u80FD", "Stamina")}</span><span class="font-bold ml-1 ${impact.physical > 0 ? "text-green-400" : impact.physical < 0 ? "text-red-400" : ""}">${impact.physical > 0 ? "+" : ""}${esc(impact.physical)}%</span></div></div>${impact.details?.length ? `<div class="border-t border-white/5 pt-2">${impact.details.map((d) => `<div class="text-[11px] text-gray-400 mb-1">\u2022 ${esc(d)}</div>`).join("")}</div>` : ""}</div>` : ""}</div>`;
       }
-      function renderUserVotePanel(pred) {
-        const matchId = pred?.match?.id || window._currentMatchId || "";
+      function renderUserVotePanel(pred2) {
+        const matchId = pred2?.match?.id || window._currentMatchId || "";
         if (!matchId) return "";
-        const homeName = displayMaybeTeamName(pred?.match?.homeNameI18n || pred?.match?.homeName || "Home");
-        const awayName = displayMaybeTeamName(pred?.match?.awayNameI18n || pred?.match?.awayName || "Away");
+        const homeName = displayMaybeTeamName(pred2?.match?.homeNameI18n || pred2?.match?.homeName || "Home");
+        const awayName = displayMaybeTeamName(pred2?.match?.awayNameI18n || pred2?.match?.awayName || "Away");
         var html = '<div class="pred-section" id="user-vote-panel">\n  <div class="pred-section-title text-indigo-400"><span class="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-xs">\u{1F3C6}</span>' + tx("\u7403\u8FF7\u9884\u6D4B", "Fan Predictions") + '</div>\n  <div class="flex items-center gap-2 mb-2">\n    <button data-choice="home" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-green-500/10 text-green-300 border border-green-500/20 hover:bg-green-500/20 transition">' + esc(homeName) + ' \u{1F3C6}</button>\n    <button data-choice="draw" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 hover:bg-yellow-500/20 transition">' + tx("\u5E73\u5C40", "Draw") + '</button>\n    <button data-choice="away" class="vote-btn flex-1 py-2 rounded-lg text-xs font-bold bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20 transition">' + esc(awayName) + ' \u{1F3C6}</button>\n  </div>\n  <div id="user-vote-result" class="text-xs text-gray-400 leading-snug">' + tx("\u70B9\u51FB\u6295\u7968\u67E5\u770B\u7403\u8FF7\u9884\u6D4B", "Vote to see fan predictions") + "</div>\n</div>";
         setTimeout(function() {
           loadUserVoteAggregate(matchId);
         }, 200);
         return html;
       }
-      function renderPreMatchPrediction(pred) {
-        if (!pred || pred.error) return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction data unavailable")}</div>`;
-        const homeName = displayMaybeTeamName(pred.match?.homeNameI18n || pred.match?.homeName || "\u4E3B\u961F"), awayName = displayMaybeTeamName(pred.match?.awayNameI18n || pred.match?.awayName || "\u5BA2\u961F");
-        const eloHome = Fmt.safeNum(pred.components?.elo?.home, 0), eloAway = Fmt.safeNum(pred.components?.elo?.away, 0), eloTotal = eloHome + eloAway || 1;
+      function renderPreMatchPrediction(pred2) {
+        if (!pred2 || pred2.error) return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction data unavailable")}</div>`;
+        const homeName = displayMaybeTeamName(pred2.match?.homeNameI18n || pred2.match?.homeName || "\u4E3B\u961F"), awayName = displayMaybeTeamName(pred2.match?.awayNameI18n || pred2.match?.awayName || "\u5BA2\u961F");
+        const eloHome = Fmt.safeNum(pred2.components?.elo?.home, 0), eloAway = Fmt.safeNum(pred2.components?.elo?.away, 0), eloTotal = eloHome + eloAway || 1;
         const eloHomePct = Math.round(eloHome / eloTotal * 100), eloAwayPct = 100 - eloHomePct, eloDiff = Math.abs(eloHome - eloAway).toFixed(3);
-        const hw = Fmt.pctBar(pred.homeWin), dr = Fmt.pctBar(pred.draw), aw = Fmt.pctBar(pred.awayWin);
-        const homeLambda = Fmt.safeNum(pred.goals?.homeExpected || pred.components?.poisson?.homeLambda, 0).toFixed(2);
-        const awayLambda = Fmt.safeNum(pred.goals?.awayExpected || pred.components?.poisson?.awayLambda, 0).toFixed(2);
+        const hw = Fmt.pctBar(pred2.homeWin), dr = Fmt.pctBar(pred2.draw), aw = Fmt.pctBar(pred2.awayWin);
+        const homeLambda = Fmt.safeNum(pred2.goals?.homeExpected || pred2.components?.poisson?.homeLambda, 0).toFixed(2);
+        const awayLambda = Fmt.safeNum(pred2.goals?.awayExpected || pred2.components?.poisson?.awayLambda, 0).toFixed(2);
         let html = `<div class="space-y-3"><div class="pred-section"><div class="pred-section-title text-purple-400"><span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">\u26A1</span>${tx("Elo \u5B9E\u529B\u5BF9\u6BD4", "Elo Comparison")}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(homeName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloHomePct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloHomePct}%</span></div><div class="flex items-center gap-2"><span class="text-xs font-bold w-20 truncate">${esc(awayName)}</span><div class="elo-bar flex-1"><div class="elo-bar-fill" style="width:${eloAwayPct}%"></div></div><span class="text-xs font-mono font-bold text-purple-400 w-12 text-right">${eloAwayPct}%</span></div><div class="text-[10px] text-gray-500 text-center mt-1.5">${tx("Elo \u5DEE\u503C", "Elo Diff")}: ${eloDiff}</div></div></div>`;
         html += `<div class="pred-section"><div class="pred-section-title text-blue-400"><span class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center text-xs">\u{1F3AF}</span>${tx("\u80DC\u5E73\u8D1F\u6982\u7387", "W/D/L Probability")}</div><div class="prob-bar mb-2" role="img" aria-label="${tx("\u80DC\u5E73\u8D1F\u6982\u7387", "Win draw loss probability")}: ${tx("\u4E3B\u80DC", "Home")} ${hw}%, ${tx("\u5E73\u5C40", "Draw")} ${dr}%, ${tx("\u5BA2\u80DC", "Away")} ${aw}%"><div class="prob-bar-home" style="width:${hw}%">${hw > 12 ? hw + "%" : ""}</div><div class="prob-bar-draw" style="width:${dr}%">${dr > 10 ? dr + "%" : ""}</div><div class="prob-bar-away" style="width:${aw}%">${aw > 12 ? aw + "%" : ""}</div></div><div class="flex justify-between text-[11px]"><span class="text-green-400 font-bold">${tx("\u4E3B\u80DC", "Home")} ${hw}%</span><span class="text-yellow-400 font-bold">${tx("\u5E73\u5C40", "Draw")} ${dr}%</span><span class="text-red-400 font-bold">${tx("\u5BA2\u80DC", "Away")} ${aw}%</span></div></div>`;
         html += `<div class="pred-section"><div class="pred-section-title text-emerald-400"><span class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-xs">\u{1F4CA}</span>${tx("\u8FDB\u7403\u671F\u671B\u503C (\u03BB)", "Expected Goals (\u03BB)")}</div><div class="grid grid-cols-2 gap-2"><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-emerald-300">${esc(homeName)}</div><div class="text-sm font-mono font-bold text-emerald-400">${homeLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div><div class="elo-card"><div class="text-xs font-bold mb-1.5 text-red-300">${esc(awayName)}</div><div class="text-sm font-mono font-bold text-red-400">${awayLambda}</div><div class="text-[10px] text-gray-500 mt-0.5">${tx("\u573A\u5747\u8FDB\u7403", "Avg Goals")}</div></div></div></div>`;
-        html += renderUserVotePanel(pred);
-        if (pred.tacticalScenario?.applicable) html += renderTacticalScenario(pred.tacticalScenario);
-        if (pred.knockoutIntel) {
+        html += renderUserVotePanel(pred2);
+        if (pred2.tacticalScenario?.applicable) html += renderTacticalScenario(pred2.tacticalScenario);
+        if (pred2.knockoutIntel) {
           const renderer = typeof renderKnockoutIntel === "function" ? renderKnockoutIntel : window.MatchRenderers && window.MatchRenderers.renderKnockoutIntel;
-          if (renderer) html += renderer(pred.knockoutIntel);
+          if (renderer) html += renderer(pred2.knockoutIntel);
         }
-        if (window.WorldCup.TacticalScenarios && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout || pred.stage && !/Group/i.test(pred.stage))) {
-          html += renderKnockoutScenariosBlock(pred);
+        if (window.WorldCup.TacticalScenarios && (pred2.knockoutIntel?.meta?.isKnockout || pred2.isKnockout || pred2.stage && !/Group/i.test(pred2.stage))) {
+          html += renderKnockoutScenariosBlock(pred2);
         }
         html += "</div>";
         return html;
       }
-      function renderKnockoutScenariosBlock(pred) {
+      function renderKnockoutScenariosBlock(pred2) {
         if (!window.WorldCup.TacticalScenarios) return "";
-        const homeTags = pred.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
-        const awayTags = pred.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
-        const penaltySkill = pred.knockoutIntel?.sections?.penalty || {};
+        const homeTags = pred2.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
+        const awayTags = pred2.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
+        const penaltySkill = pred2.knockoutIntel?.sections?.penalty || {};
         const scenarios = window.WorldCup.TacticalScenarios.getRelevantScenarios({
           homeTags,
           awayTags,
@@ -4488,10 +4509,10 @@ var require_elo_prediction = __commonJS({
         for (let i = 0; i < rows.length; i++) {
           const row = rows[i];
           const m = row.match;
-          const pred = row.prediction;
+          const pred2 = row.prediction;
           const idx = startIdx + row.originalIndex;
-          if (pred && !pred.error && pred.homeWin !== void 0) {
-            const p = pred;
+          if (pred2 && !pred2.error && pred2.homeWin !== void 0) {
+            const p = pred2;
             const hw = Fmt2().pctBar(p.homeWin);
             const dr = Fmt2().pctBar(p.draw);
             const aw = Fmt2().pctBar(p.awayWin);
@@ -4503,19 +4524,19 @@ var require_elo_prediction = __commonJS({
             const comps = p.components || {};
             const compConfs = [comps.elo, comps.poisson, comps.coach, comps.venue, comps.odds].filter(Boolean).map((c) => Fmt2().safeNum(c.confidence, 0));
             const conf = compConfs.length ? Math.round(compConfs.reduce((a, b) => a + b, 0) / compConfs.length * 100) : 65;
-            const homeName = displayMaybeTeamName(pred.match?.homeNameI18n || pred.match?.homeName || m.home);
-            const awayName = displayMaybeTeamName(pred.match?.awayNameI18n || pred.match?.awayName || m.away);
-            const homeFlag = m.home.flag || pred.match?.homeFlag || "\u{1F3F3}\uFE0F";
-            const awayFlag = m.away.flag || pred.match?.awayFlag || "\u{1F3F3}\uFE0F";
+            const homeName = displayMaybeTeamName(pred2.match?.homeNameI18n || pred2.match?.homeName || m.home);
+            const awayName = displayMaybeTeamName(pred2.match?.awayNameI18n || pred2.match?.awayName || m.away);
+            const homeFlag = m.home.flag || pred2.match?.homeFlag || "\u{1F3F3}\uFE0F";
+            const awayFlag = m.away.flag || pred2.match?.awayFlag || "\u{1F3F3}\uFE0F";
             const expectedHome = Number(p.goals?.homeExpected);
             const expectedAway = Number(p.goals?.awayExpected);
             const fallbackScore = Number.isFinite(expectedHome) && Number.isFinite(expectedAway) ? `${Math.max(0, Math.round(expectedHome))}-${Math.max(0, Math.round(expectedAway))}` : `${hw > aw ? 1 : 0}-${aw > hw ? 1 : 0}`;
-            const score = pred.likelyScore != null && pred.likelyScore !== "" ? pred.likelyScore : fallbackScore;
+            const score = pred2.likelyScore != null && pred2.likelyScore !== "" ? pred2.likelyScore : fallbackScore;
             const confCls = conf > 70 ? "bg-green-500/20 text-green-400" : conf > 50 ? "bg-yellow-500/20 text-yellow-400" : "bg-gray-500/20 text-gray-400";
             const eloPred = p.components?.elo || { home: 0, draw: 0, away: 0 };
             const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
             const coachPred = p.components?.coach || {};
-            const weights = pred.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.1, odds: 0.2 };
+            const weights = pred2.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.1, odds: 0.2 };
             const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0 ? p.topScores.slice(0, 4).map((s) => `${s.score} (${Fmt2().pct(s.prob)})`).join(" \xB7 ") : `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
             const confLabel = conf > 70 ? tx("\u9AD8", "High") : conf > 50 ? tx("\u4E2D", "Medium") : tx("\u4F4E", "Low");
             let headerText = "";
@@ -6379,13 +6400,13 @@ var require_match_renderers = __commonJS({
         svg += `</svg>`;
         return svg;
       }
-      function renderPredictionLayers(pred) {
-        if (!pred || pred.homeWin === void 0 && pred.draw === void 0 && pred.awayWin === void 0) {
+      function renderPredictionLayers(pred2) {
+        if (!pred2 || pred2.homeWin === void 0 && pred2.draw === void 0 && pred2.awayWin === void 0) {
           return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction data unavailable")}</div>`;
         }
-        const hw = ((pred.homeWin ?? 0) * 100).toFixed(1);
-        const dw = ((pred.draw ?? 0) * 100).toFixed(1);
-        const aw = ((pred.awayWin ?? 0) * 100).toFixed(1);
+        const hw = ((pred2.homeWin ?? 0) * 100).toFixed(1);
+        const dw = ((pred2.draw ?? 0) * 100).toFixed(1);
+        const aw = ((pred2.awayWin ?? 0) * 100).toFixed(1);
         const hwNum = parseFloat(hw);
         const dwNum = parseFloat(dw);
         const awNum = parseFloat(aw);
@@ -6397,12 +6418,12 @@ var require_match_renderers = __commonJS({
           }
           return { home: null, away: null };
         };
-        const expStr = parseScore(pred.expectedScore);
-        const lamHome = pred.goals?.homeExpected ?? expStr.home;
-        const lamAway = pred.goals?.awayExpected ?? expStr.away;
+        const expStr = parseScore(pred2.expectedScore);
+        const lamHome = pred2.goals?.homeExpected ?? expStr.home;
+        const lamAway = pred2.goals?.awayExpected ?? expStr.away;
         const escHome = lamHome != null && lamHome !== "" ? Number(lamHome).toFixed(1) : "-";
         const escAway = lamAway != null && lamAway !== "" ? Number(lamAway).toFixed(1) : "-";
-        const pm = parseScore(pred.poissonModeScore);
+        const pm = parseScore(pred2.poissonModeScore);
         const pmHome = pm.home ?? "-";
         const pmAway = pm.away ?? "-";
         return `
@@ -6467,7 +6488,7 @@ var require_match_renderers = __commonJS({
                 </div>
             </div>
             ${(() => {
-          const vf = pred.venueFactor;
+          const vf = pred2.venueFactor;
           if (!vf || !vf.applied) return "";
           const fmtBeta = (b) => b != null ? Number(b).toFixed(2) : "-";
           const row = (side, label) => {
@@ -6969,7 +6990,7 @@ var require_match_renderers = __commonJS({
         }
         return html;
       }
-      function renderHudStatsPanel(matchData2, pred) {
+      function renderHudStatsPanel(matchData2, pred2) {
         const stats = matchData2?.teamStats;
         if (!stats || stats.length === 0) {
           return `<div class="text-gray-500 text-xs text-center py-6">${tx("\u6682\u65E0\u7EDF\u8BA1\u6570\u636E", "No stats available")}</div>`;
@@ -7030,9 +7051,9 @@ var require_match_renderers = __commonJS({
             </div>`;
         }
         html += `</div>`;
-        if (pred && pred.goals) {
-          const hxG = pred.goals.homeExpected != null ? Number(pred.goals.homeExpected).toFixed(1) : "-";
-          const axG = pred.goals.awayExpected != null ? Number(pred.goals.awayExpected).toFixed(1) : "-";
+        if (pred2 && pred2.goals) {
+          const hxG = pred2.goals.homeExpected != null ? Number(pred2.goals.homeExpected).toFixed(1) : "-";
+          const axG = pred2.goals.awayExpected != null ? Number(pred2.goals.awayExpected).toFixed(1) : "-";
           html += `<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.04)">
                 <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">${tx("\u6CCA\u677E\u671F\u671B\u8FDB\u7403", "POISSON EXPECTED SCORE")}</div>
                 <div style="display:flex;align-items:center;justify-content:center;gap:16px">
@@ -7045,17 +7066,17 @@ var require_match_renderers = __commonJS({
         html += `</div>`;
         return html;
       }
-      function renderHudWinProbPanel(pred, homeName, awayName) {
-        if (!pred || pred.homeWin == null) {
+      function renderHudWinProbPanel(pred2, homeName, awayName) {
+        if (!pred2 || pred2.homeWin == null) {
           return `<div class="text-gray-500 text-xs text-center py-6">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction unavailable")}</div>`;
         }
-        const hw = Math.round((pred.homeWin || 0) * 100);
-        const dr = Math.round((pred.draw || 0) * 100);
+        const hw = Math.round((pred2.homeWin || 0) * 100);
+        const dr = Math.round((pred2.draw || 0) * 100);
         const aw = 100 - hw - dr;
-        const expectedHome = Number(pred.goals?.homeExpected);
-        const expectedAway = Number(pred.goals?.awayExpected);
+        const expectedHome = Number(pred2.goals?.homeExpected);
+        const expectedAway = Number(pred2.goals?.awayExpected);
         const fallbackScore = Number.isFinite(expectedHome) && Number.isFinite(expectedAway) ? `${Math.max(0, Math.round(expectedHome))}-${Math.max(0, Math.round(expectedAway))}` : `${hw > aw ? 1 : 0}-${aw > hw ? 1 : 0}`;
-        const score = String(pred.likelyScore || fallbackScore);
+        const score = String(pred2.likelyScore || fallbackScore);
         const scoreParts = score.split(/[-:]/).map((s) => s.trim());
         const [sH, sA] = scoreParts.length >= 2 ? scoreParts : ["?", "?"];
         const cx = 90, cy = 76, r = 66, SW = 10;
@@ -7098,11 +7119,11 @@ var require_match_renderers = __commonJS({
                 <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || "AWAY")}</div>
             </div>
         </div>`;
-        if (Array.isArray(pred.topScores) && pred.topScores.length > 0) {
+        if (Array.isArray(pred2.topScores) && pred2.topScores.length > 0) {
           html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
                 <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u53EF\u80FD\u6BD4\u5206\u77E9\u9635", "TOP PREDICTED SCORES")}</div>
                 <div style="display:flex;flex-direction:column;gap:5px">`;
-          pred.topScores.slice(0, 4).forEach((item, idx) => {
+          pred2.topScores.slice(0, 4).forEach((item, idx) => {
             const probPct = item.prob != null ? `${Math.round(item.prob * 1e3) / 10}%` : "";
             html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
                     <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? "rgba(52,211,153,.85)" : "rgba(248,250,252,.65)"}">${esc(item.score)}</span>
@@ -7257,6 +7278,27 @@ var require_match_renderers = __commonJS({
             <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(248,113,113,.5)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
             <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
         </div>`;
+        if (data.isKnockout && data.advance) {
+          const adv = data.advance;
+          const aH = pct(adv.homeWin), aA = pct(adv.awayWin);
+          html += `<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.13)">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                    <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.5)">\u{1F3C6} ${tx("\u664B\u7EA7", "ADVANCE")}</span>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.85)">${aH}%</span>
+                        <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.6)">${aA}%</span>
+                    </div>
+                </div>
+                ${adv.homeWinAfterET > 0 || adv.awayWinAfterET > 0 ? `
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;padding-top:3px;border-top:1px solid rgba(168,85,247,.08)">
+                    <span style="font:300 6px/1 'Inter';color:rgba(248,250,252,.12)">${tx("\u52A0\u65F6", "ET")} \xB7 ${tx("\u70B9\u7403", "PEN")}</span>
+                    <div style="display:flex;gap:6px">
+                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.4)">${pct(adv.penaltyHomeWin)}%</span>
+                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.3)">${pct(adv.penaltyAwayWin)}%</span>
+                    </div>
+                </div>` : ""}
+            </div>`;
+        }
         return html;
       }
       function renderHudVenuePanel(venueData) {

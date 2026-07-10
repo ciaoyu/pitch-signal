@@ -285,6 +285,32 @@
             const minute = matchData.clock?.value != null
                 ? Math.round(matchData.clock.value / 60)
                 : (matchData.status?.displayClock ? parseInt(matchData.status.displayClock) : (matchData.liveState?.clock ? parseInt(matchData.liveState.clock) : 0));
+
+            // C refactor: pass red cards, isKnockout, and addedTime to the live-probability endpoint.
+            // Red cards are counted from match details; isKnockout from knockout intel or stage;
+            // addedTime from the status detail (e.g. "90'+4").
+            const details = Array.isArray(matchData.details) ? matchData.details : [];
+            let homeRedCards = 0, awayRedCards = 0;
+            for (const d of details) {
+                const type = String(d.type || '').toLowerCase();
+                const isHome = d.team === homeName || (d.teamId && d.teamId === matchData.homeTeamId);
+                const isAway = d.team === awayName || (d.teamId && d.teamId === matchData.awayTeamId);
+                if (!isHome && !isAway) continue;
+                if (type.includes('red')) {
+                    if (isHome) homeRedCards++; else awayRedCards++;
+                }
+            }
+
+            const isKo = matchData.isKnockout
+                || (pred && (pred.knockoutIntel?.meta?.isKnockout || pred.isKnockout))
+                || (matchData.stage && !/group/i.test(matchData.stage));
+
+            // Extract added minutes from displayClock (e.g. "90'+4" → 4)
+            let addedTime = 0;
+            const dc = matchData.displayClock || matchData.liveState?.clock || '';
+            const plusMatch = String(dc).match(/\+(\d+)/);
+            if (plusMatch) addedTime = parseInt(plusMatch[1]) || 0;
+
             const params = new URLSearchParams({
                 homeScore: String(homeScore !== '-' ? homeScore : 0),
                 awayScore: String(awayScore !== '-' ? awayScore : 0),
@@ -293,6 +319,10 @@
                 statusName: matchData.statusName || '',
                 displayClock: matchData.displayClock || '',
                 hasPenalties: String(!!matchData.hasPenalties),
+                homeRed: String(homeRedCards),
+                awayRed: String(awayRedCards),
+                isKnockout: String(isKo),
+                addedTime: String(addedTime),
             });
             liveProbUrl += '?' + params.toString();
             api(liveProbUrl).then(lpRes => {

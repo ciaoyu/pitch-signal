@@ -82,20 +82,40 @@ const matchState = {};  // matchId → { score, minute, lastTrigger, lastGoalMin
 const liveTimelineState = {}; // matchId → array of snapshot summaries
 
 // ============================================================
-// buildLiveAnalysis (extracted from prediction.js, self-contained)
+// Track-A reprice() — canonical live probability engine
+// C refactor: local buildLiveAnalysis deleted; odds fetch retained for snapshots
 // ============================================================
 
-function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-function toNumber(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
-function normalizeThreeWay(h, d, a) {
-  const t = h + d + a;
-  return t > 0
-    ? { homeWin: h / t, draw: d / t, awayWin: a / t }
-    : { homeWin: 0.333, draw: 0.334, awayWin: 0.333 };
-}
+const { reprice } = require('../lib/live-reprice');
 
 function safeTeamName(name) {
   return String(name || '').trim().toLowerCase();
+}
+
+function countRedCardsFromDetails(details, teamId) {
+  if (!teamId || !Array.isArray(details) || !details.length) return 0;
+  const tid = String(teamId);
+  let reds = 0;
+  const yellowsByPlayer = new Map();
+
+  for (const d of details) {
+    const dTeamName = String(d.team || '').trim().toLowerCase();
+    const type = String(d.type || '').trim().toLowerCase();
+    const player = String(d.player || '').trim();
+
+    const isOurTeam = dTeamName === safeTeamName(tid) || dTeamName.includes(safeTeamName(tid));
+    if (!isOurTeam) continue;
+
+    if (type.includes('red')) {
+      reds++;
+    } else if (type.includes('yellow') && player) {
+      const prev = yellowsByPlayer.get(player) || 0;
+      yellowsByPlayer.set(player, prev + 1);
+      if (prev + 1 >= 2) reds++;
+    }
+  }
+
+  return reds;
 }
 
 async function fetchMatchOdds(match) {
@@ -166,50 +186,71 @@ async function fetchMatchOdds(match) {
   };
 }
 
+// C refactor: local buildLiveAnalysis replaced. All live probability now routes
+// through lib/live-reprice.reprice() — the single canonical Poisson engine.
+// Soft signals (shots/possession/yellows) and external odds no longer change
+// probability. They are still logged in snapshot.signalContext for audit.
+
 function buildLiveAnalysis(basePrediction, matchMeta, liveStats = {}) {
-  const minute = clamp(toNumber(liveStats.minute) ?? 0, 0, 120);
-  const homeScore = toNumber(liveStats.homeScore) ?? 0;
-  const awayScore = toNumber(liveStats.awayScore) ?? 0;
-  const homeShots = toNumber(liveStats.homeShots) ?? 0;
-  const awayShots = toNumber(liveStats.awayShots) ?? 0;
-  const homeSot = toNumber(liveStats.homeShotsOnTarget) ?? 0;
-  const awaySot = toNumber(liveStats.awayShotsOnTarget) ?? 0;
-  const homePoss = toNumber(liveStats.homePossession);
-  const awayPoss = toNumber(liveStats.awayPossession);
-  const homeReds = toNumber(liveStats.homeRedCards) ?? 0;
-  const awayReds = toNumber(liveStats.awayRedCards) ?? 0;
-  const homeYellows = toNumber(liveStats.homeYellowCards) ?? 0;
-  const awayYellows = toNumber(liveStats.awayYellowCards) ?? 0;
+  const toNum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
 
-  const baseH = Number(basePrediction.homeWin || 0.333);
-  const baseD = Number(basePrediction.draw || 0.334);
-  const baseA = Number(basePrediction.awayWin || 0.333);
+  const minute   = Math.min(Math.max(toNum(liveStats.minute), 0), 120);
+  const homeScore = toNum(liveStats.homeScore);
+  const awayScore = toNum(liveStats.awayScore);
+  const homeReds  = countRedCardsFromDetails(liveStats.details || [], matchMeta.homeId || matchMeta.homeName);
+  const awayReds  = countRedCardsFromDetails(liveStats.details || [], matchMeta.awayId || matchMeta.awayName);
+
+  // isKnockout: server-authoritative from stage, fallback to explicit boolean
+  const stage = liveStats.stage ?? matchMeta?.stage ?? '';
+  const isKnockout = stage ? !/group/i.test(stage) : Boolean(liveStats.isKnockout ?? false);
+
+  const preLambdaHome = basePrediction.goals?.homeExpected
+    ?? basePrediction.components?.poisson?.homeLambda
+    ?? 1.2;
+  const preLambdaAway = basePrediction.goals?.awayExpected
+    ?? basePrediction.components?.poisson?.awayLambda
+    ?? 1.0;
+
+  const liveProb = reprice({
+    preLambdaHome,
+    preLambdaAway,
+    homeScore,
+    awayScore,
+    minuteElapsed: minute,
+    addedTime: toNum(liveStats.addedTime),
+    homeRedCards: homeReds,
+    awayRedCards: awayReds,
+    isKnockout,
+  });
+
   const scoreDiff = homeScore - awayScore;
-  const timeFactor = minute / 90;
 
-  let edge = 0;
-  edge += scoreDiff * (0.16 + 0.20 * timeFactor);
-  edge += clamp(homeShots - awayShots, -8, 8) * 0.008;
-  edge += clamp(homeSot - awaySot, -5, 5) * 0.03;
-  edge += (homePoss != null && awayPoss != null) ? clamp((homePoss - awayPoss) / 100, -0.7, 0.7) * 0.10 : 0;
-  edge += clamp(awayYellows - homeYellows, -3, 3) * 0.01;
-  edge += clamp(awayReds - homeReds, -1, 1) * 0.18;
-
-  let aH = baseH + edge, aA = baseA - edge * 0.82, aD = baseD - Math.abs(edge) * 0.45;
-  if (scoreDiff >= 2 && minute >= 15) aD -= 0.04;
-  if (scoreDiff <= -2 && minute >= 15) aD -= 0.04;
-  if (scoreDiff === 0 && minute < 25) aD += 0.02;
-  aH = clamp(aH, 0.01, 0.985); aA = clamp(aA, 0.01, 0.985); aD = clamp(aD, 0.01, 0.60);
-  const n = normalizeThreeWay(aH, aD, aA);
+  // Log soft signals for audit (not used in probability calculation)
+  const signalContext = {
+    shots: { home: toNum(liveStats.homeShots), away: toNum(liveStats.awayShots) },
+    shotsOnTarget: { home: toNum(liveStats.homeShotsOnTarget), away: toNum(liveStats.awayShotsOnTarget) },
+    possession: { home: liveStats.homePossession != null ? Number(liveStats.homePossession) : null, away: liveStats.awayPossession != null ? Number(liveStats.awayPossession) : null },
+    redCards: { home: homeReds, away: awayReds },
+    isKnockout,
+    note: 'C refactor: soft-signal log only; probability from Track-A reprice()',
+  };
 
   return {
-    minute, score: { home: homeScore, away: awayScore },
-    probabilities: n,
-    expectedGoals: {
-      home: Math.round(Math.max(homeScore, Number(basePrediction.goals?.homeExpected || 0) + Math.max(0, homeShots - awayShots) * 0.08) * 10) / 10,
-      away: Math.round(Math.max(awayScore, Number(basePrediction.goals?.awayExpected || 0) + Math.max(0, awayShots - homeShots) * 0.06) * 10) / 10,
+    minute,
+    score: { home: homeScore, away: awayScore },
+    probabilities: {
+      homeWin: liveProb.regulation.homeWin,
+      draw:    liveProb.regulation.draw,
+      awayWin: liveProb.regulation.awayWin,
     },
-    signals: { scoreDiff, shotDiff: homeShots - awayShots },
+    regulation: liveProb.regulation,
+    advance: liveProb.advance,
+    expectedGoals: {
+      home: Math.round(liveProb.lambdaHomeRemaining * 10) / 10,
+      away: Math.round(liveProb.lambdaAwayRemaining * 10) / 10,
+    },
+    signals: signalContext,
+    source: 'live_reprice',
     stateShift: scoreDiff >= 2 ? 'reinforced' : (scoreDiff !== 0 ? 'lean_reinforced' : 'still_live'),
   };
 }
@@ -476,6 +517,9 @@ async function pollOnce() {
     const liveAnalysis = buildLiveAnalysis(basePrediction, {
       homeName: m.home.name,
       awayName: m.away.name,
+      homeId: m.home.id,
+      awayId: m.away.id,
+      stage: m.group || '',
     }, {
       minute: m.minute,
       homeScore: m.home.score,
@@ -486,6 +530,7 @@ async function pollOnce() {
       awayShotsOnTarget: Number(m.away.stats.shotsOnTarget || 0),
       homePossession: Number(m.home.stats.possessionPct || null),
       awayPossession: Number(m.away.stats.possessionPct || null),
+      details: m.details || [],
     });
 
     // Qualification scenario (only valid for final round)
