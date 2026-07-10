@@ -4535,8 +4535,15 @@ var require_elo_prediction = __commonJS({
             const confCls = conf > 70 ? "bg-green-500/20 text-green-400" : conf > 50 ? "bg-yellow-500/20 text-yellow-400" : "bg-gray-500/20 text-gray-400";
             const eloPred = p.components?.elo || { home: 0, draw: 0, away: 0 };
             const poissonPred = p.components?.poisson || { home: 0, draw: 0, away: 0 };
-            const coachPred = p.components?.coach || {};
-            const weights = pred2.weights || { elo: 0.3, poisson: 0.25, coach: 0.15, venue: 0.1, odds: 0.2 };
+            const weights = pred2.weights || {};
+            const weightLabels = {
+              elo: "Elo",
+              poisson: "Poisson",
+              odds: tx("\u8D54\u7387", "Odds"),
+              coach: tx("\u6559\u7EC3", "Coach"),
+              venue: tx("\u573A\u9986", "Venue")
+            };
+            const renderedWeights = Object.entries(weights).filter(([, value]) => Number.isFinite(value)).map(([signal, value]) => `${weightLabels[signal] || signal} ${(value * 100).toFixed(0)}%`).join(" \xB7 ");
             const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0 ? p.topScores.slice(0, 4).map((s) => `${s.score} (${Fmt2().pct(s.prob)})`).join(" \xB7 ") : `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
             const confLabel = conf > 70 ? tx("\u9AD8", "High") : conf > 50 ? tx("\u4E2D", "Medium") : tx("\u4F4E", "Low");
             let headerText = "";
@@ -4586,14 +4593,14 @@ var require_elo_prediction = __commonJS({
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#34d399;font-weight:600;margin-bottom:3px">\u{1F454} ${tx("\u6559\u7EC3\u56E0\u7D20", "Coach Factor")}</div>
-                            <div style="color:rgba(248,250,252,.35)">${tx("\u4E3B\u80DC", "Home")} ${(coachPred.home * 100).toFixed(0)}%  ${tx("\u5E73", "Draw")} ${(coachPred.draw * 100).toFixed(0)}%  ${tx("\u5BA2", "Away")} ${(coachPred.away * 100).toFixed(0)}%</div>
+                            <div style="color:rgba(248,250,252,.35)">${tx("\u5DF2\u9694\u79BB\uFF0C\u4E0D\u53C2\u4E0E\u6A21\u578B", "Isolated; not used in model")}</div>
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">\u{1F3AF} ${tx("\u53EF\u80FD\u6BD4\u5206", "Top Scores")}</div>
                             <div style="color:rgba(248,250,252,.35)">${topScoresList}</div>
                         </div>
                     </div>
-                    <div style="font-size:9px;color:rgba(248,250,252,.12);margin-top:8px">${tx("\u6743\u91CD", "Weights")}: Elo ${(weights.elo * 100).toFixed(0)}% \xB7 Poisson ${(weights.poisson * 100).toFixed(0)}% \xB7 ${tx("\u8D54\u7387", "Odds")} ${(weights.odds * 100).toFixed(0)}% \xB7 ${tx("\u6559\u7EC3", "Coach")} ${(weights.coach * 100).toFixed(0)}% \xB7 ${tx("\u573A\u9986", "Venue")} ${(weights.venue * 100).toFixed(0)}%</div>
+                    <div style="font-size:9px;color:rgba(248,250,252,.12);margin-top:8px">${tx("\u6743\u91CD", "Weights")}: ${renderedWeights || tx("\u672A\u63D0\u4F9B", "Not provided")}</div>
                 </div></div>`;
           } else {
             let headerText = "";
