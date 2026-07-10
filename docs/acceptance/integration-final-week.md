@@ -46,4 +46,16 @@
 - 已运行 `npm run build:js`；`static/js/bundle.js` 已重建，`templates/index.html` 更新为 `bundle.js?v=1504f802`。
 - 前端修复提交：`b658408`；测试隔离修复提交：`ea673b1`。
 
-补充：JSDOM UI 冒烟成功加载 bundle 并收到预测 API 的 200 响应，但在异步预测请求完成前即以“Prediction tab empty or malformed”退出；同时外网 Google Fonts 加载发生 TLS reset。此项未计为通过，且没有修改其测试时序。
+补充：JSDOM UI 冒烟成功加载 bundle 并收到预测 API 的 200 响应，但在异步预测请求完成前即以“Prediction tab empty or malformed”退出；同时外网 Google Fonts 加载发生 TLS reset。此项未计为通过，且没有修改其测试时序。T0 用真实浏览器打开预测页独立复核：数据正常渲染、教练卡显示“已隔离，不参与模型”、权重行仅显示 `Elo 44% · Poisson 56%`，确认 JSDOM 失败是收尾时机问题，不是真实回归。
+
+## T0 用户验收发现的三个问题（07-11，push 前修复）
+
+用户直接在本 worktree 的预览环境里试用，发现三处问题，T0 逐一排查：
+
+1. **教练因素卡多余**：既然 Coach 已不入模，详情展开区仍保留一张只显示"已隔离，不参与模型"占位文案的卡片，没有信息量。**修复**：删除该卡片，Elo 预测 / Poisson 预测 / 可能比分 改为 3 列一行（原 2×2 网格，第四格常年空着）。提交 `8970d9d`，含 `elo-prediction.js` 源码、`npm run build:js` 重建的 `bundle.js`、`index.html` 版本号更新（`v=c6e1abdc`）。真实浏览器验证：三卡并排，无教练卡。
+
+2. **淘汰赛对阵图部分队名中英混杂**：用户截图显示 R32 阶段"Sweden"、"South ..."、"Canada"、"Bosnia..."显示英文，其余队伍（德国、法国等）显示中文。**根因排查**：`lib/bracket-updater.js` 的 `teamFromScheduleOrCode()` 从原始 ESPN 赛程解析队伍 `name`/`id`（该数据源本身不带 `nameI18n` 字段），因此硬编码 `nameI18n: null`；随后的 `Object.assign` 会用这个 `null` 覆盖掉 `resolveSlot()` 已经从 `posMapI18n` 正确解析出的中文名。实际表现为：晋级的队伍会在下一轮被"胜者传递"逻辑重新赋值（带正确 `nameI18n`），而被淘汰的队伍永久停留在这个 `null` 状态——这不是"数据缺失"，是查找键丢失。**修复**：在 `buildResolvedBracket` 循环里，若 `nameI18n` 仍缺失但 `id`（数字 ESPN ID）存在，用已注入的 `getTeamNameI18n(id)` 回填。提交 `87601df`。已用 `/api/bracket` 直接验证 Sweden/South Africa/Canada/Bosnia-Herzegovina 均返回正确 `{zh, en}`，并在真实浏览器的淘汰赛对阵图（R32 列）确认瑞典、南非、加拿大、波黑均已正确显示中文。
+
+3. **点开比赛显示"加载失败"**：T0 用 `window.openMatch()` 直接测试了多场真实比赛（已完赛小组赛、点球大战淘汰赛、今日 QF），均正常加载，未能复现。用户后续确认该问题不再出现。判定为一次性/环境性问题，不追加代码改动；如后续复现需报具体 matchId。
+
+以上两处代码修复后已重跑全量 `npm test`：**81 suites / 1071 asserts 全绿**，与合并后的基线一致，未引入回归。
