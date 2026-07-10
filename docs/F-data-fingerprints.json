@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-07-10T15:36:29.424Z",
+  "seedFiles": {
+    "lineups.json": "c938169e0bd3442f18b6ceef501e6806a5035e3a748571d3e50284219d3947be",
+    "player_id_bridge.json": "b912d101220dbba34ee3224590e3077056712106f891a9209a8b5c92de215ded",
+    "player-ratings.json": "6c7bcbc0237812ed06a26c33f6f9c774556ad5379c213f42b06fe78916f0282e",
+    "matches.json": "c050b986c4a9c582eb06feda0305f4354f943d06e2111243cb4e33e509207a50",
+    "match_id_bridge.json": "1b87a4d2f1b85af4589b6923e425b390e25444bf6fc88972d683c82a2adfecfe"
+  },
+  "dbHash": "6bb8858b97ba478df86c2bbe8d51a28a952bfa496110f1ec62c74f97c3c533d9",
+  "dbStats": {
+    "player_match_events": 457,
+    "match_officials": 83,
+    "team_xg_stats": 0
+  }
+}
