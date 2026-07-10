@@ -21,6 +21,9 @@ const testDbPath = path.join(tmpDir, 'test_prediction_model_ledger.db');
 if (fs.existsSync(testDbPath)) fs.unlinkSync(testDbPath);
 
 process.env.NODE_ENV = 'test';
+// This suite owns an isolated on-disk database so the migration can reopen it.
+// The unified runner otherwise forces TEST_MODE=1, which selects :memory:.
+delete process.env.TEST_MODE;
 process.env.TEST_DB_PATH = testDbPath;
 delete require.cache[require.resolve('../lib/db')];
 delete require.cache[require.resolve('../lib/postMatchReview')];
