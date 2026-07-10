@@ -30,11 +30,8 @@ const TEST_FILES = [
   'test-fuzzy-match.js',
   'test-health-enhance.js',
   'test-import-market-values.js',
-<<<<<<< HEAD
   'test-ko12-matchup-styles.js',
-=======
   'test-ko14-scenarios.js',
->>>>>>> backup/feat/ko14-scenarios
   'test-live-state-machine.js',
   'test-logger-trycatch.js',
   'test-ko2-intel-card.js',
@@ -51,6 +48,7 @@ const TEST_FILES = [
   'test-post-match-review.js',
   'test-pre-match-snapshot-guard.js',
   'test-prediction.js',
+  'test-referee-stats.js',
   'test-roster-cache.js',
   'test-same-day-leakage.js',
   'test-score-writeback.js',
