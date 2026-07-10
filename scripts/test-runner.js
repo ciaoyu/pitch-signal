@@ -94,6 +94,8 @@ const TEST_FILES = [
   'test-fatigue-signal.js',
     // KO-7 penalty shootout readiness section
   'test-penalty-section.js',
+    // KO-8a live penalty shootout round-by-round spike analysis
+  'test-penalty-shootout.js',
 ];
 
 const filter = process.argv.includes('--match')
