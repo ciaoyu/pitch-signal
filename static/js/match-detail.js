@@ -209,7 +209,7 @@
             <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
 
         const showPreMatch = (!isFinishedMatch && (scheduledMatch.state === 'pre' || (matchData.status?.type?.name || '').includes('SCHEDULED')))
-            || (isFinishedMatch && (scheduledMatch.stage === 'knockout' || matchData.hasPenalties));
+            || (isFinishedMatch && (scheduledMatch.stage === 'knockout' || matchData.hasPenalties !== undefined || matchData.hasPenalties || matchData.stage === 'knockout'));
         if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" role="tab" aria-selected="true" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap" style="min-width:44px;min-height:44px">🧠 ${tx('赛前预测', 'Pre-Match')}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="review" role="tab" aria-selected="${showPreMatch ? 'false' : 'true'}" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? 'bg-white/5 text-gray-400' : 'bg-white/10 text-white'} transition whitespace-nowrap" style="min-width:44px;min-height:44px">📋 ${tx('回顾', 'Review')}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="bench" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">🔄 ${tx('替补', 'Bench')}</button>`;
@@ -238,7 +238,7 @@
             if (el) el.innerHTML = MR().renderHudWinProbPanel(pred, homeName, awayName);
             // Also fill pre-match tab if present
             const pmEl = document.getElementById('detail-content-pre-match');
-            if (pmEl && pred && !pred.error && pred.homeWin !== undefined) pmEl.innerHTML = renderPreMatchPrediction(pred);
+            if (pmEl && pred && !pred.error && (pred.homeWin !== undefined || pred.homeWinProb !== undefined || pred.knockoutIntel)) pmEl.innerHTML = renderPreMatchPrediction(pred);
             else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx('预测数据加载失败', 'Prediction unavailable')}</div>`;
             // P2-3: fetch model vs market divergence
             api('/api/odds-divergence/' + id).then(function(divRes) {

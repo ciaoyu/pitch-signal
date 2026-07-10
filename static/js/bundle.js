@@ -3356,7 +3356,7 @@ var require_match_detail = __commonJS({
         html += `</div>`;
         html += `<div id="hud-bottom" style="margin-top:8px;background:rgba(15,23,42,.5);backdrop-filter:blur(var(--glass-blur-md));-webkit-backdrop-filter:blur(var(--glass-blur-md));border-top:1px solid rgba(255,255,255,.06);border-radius:24px 24px 0 0;padding:14px 32px 18px">
             <div style="display:flex;gap:1.5rem;overflow-x:auto;margin-bottom:10px" id="hud-bottom-tabs">`;
-        const showPreMatch = !isFinishedMatch && (scheduledMatch.state === "pre" || (matchData2.status?.type?.name || "").includes("SCHEDULED")) || isFinishedMatch && (scheduledMatch.stage === "knockout" || matchData2.hasPenalties);
+        const showPreMatch = !isFinishedMatch && (scheduledMatch.state === "pre" || (matchData2.status?.type?.name || "").includes("SCHEDULED")) || isFinishedMatch && (scheduledMatch.stage === "knockout" || matchData2.hasPenalties !== void 0 || matchData2.hasPenalties || matchData2.stage === "knockout");
         if (showPreMatch) html += `<button data-action="switch-detail-tab" data-detail-tab="pre-match" role="tab" aria-selected="true" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 text-white transition whitespace-nowrap" style="min-width:44px;min-height:44px">\u{1F9E0} ${tx("\u8D5B\u524D\u9884\u6D4B", "Pre-Match")}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="review" role="tab" aria-selected="${showPreMatch ? "false" : "true"}" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold ${showPreMatch ? "bg-white/5 text-gray-400" : "bg-white/10 text-white"} transition whitespace-nowrap" style="min-width:44px;min-height:44px">\u{1F4CB} ${tx("\u56DE\u987E", "Review")}</button>`;
         html += `<button data-action="switch-detail-tab" data-detail-tab="bench" role="tab" aria-selected="false" class="detail-tab px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/5 text-gray-400 transition whitespace-nowrap" style="min-width:44px;min-height:44px">\u{1F504} ${tx("\u66FF\u8865", "Bench")}</button>`;
@@ -3378,7 +3378,7 @@ var require_match_detail = __commonJS({
           const el = document.getElementById("hud-winprob");
           if (el) el.innerHTML = MR().renderHudWinProbPanel(pred, homeName, awayName);
           const pmEl = document.getElementById("detail-content-pre-match");
-          if (pmEl && pred && !pred.error && pred.homeWin !== void 0) pmEl.innerHTML = renderPreMatchPrediction(pred);
+          if (pmEl && pred && !pred.error && (pred.homeWin !== void 0 || pred.homeWinProb !== void 0 || pred.knockoutIntel)) pmEl.innerHTML = renderPreMatchPrediction(pred);
           else if (pmEl) pmEl.innerHTML = `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction unavailable")}</div>`;
           api("/api/odds-divergence/" + id).then(function(divRes) {
             if (myReqId !== _openMatchReqId) return;
@@ -7421,8 +7421,12 @@ var require_match_renderers = __commonJS({
                 </div>`;
             cardContent += renderNote(sec);
           } else if (key === "superSubs") {
-            const renderSubs = (sideLabel, list) => {
-              const rows = (list || []).map((s) => `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${L(s.playerZh) || esc(s.player)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`).join("");
+            const renderSubs = (sideLabel, data) => {
+              const list = Array.isArray(data) ? data : Array.isArray(data?.superSubs) ? data.superSubs : Array.isArray(data?.list) ? data.list : [];
+              const rows = list.map((s) => {
+                const name = L(s.playerZh) || s.playerName || s.player || s.name || "";
+                return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`;
+              }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
                         <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
                         ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6570\u636E", "None")}</div>`}
@@ -7430,8 +7434,8 @@ var require_match_renderers = __commonJS({
             };
             cardContent += renderSectionHeader(tx("\u8D85\u7EA7\u66FF\u8865\u5A01\u80C1", "Super Sub Impact"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSubs(tx("\u4E3B\u961F", "Home"), Array.isArray(sec.home) ? sec.home : sec.home?.superSubs || [])}
-                    ${renderSubs(tx("\u5BA2\u961F", "Away"), Array.isArray(sec.away) ? sec.away : sec.away?.superSubs || [])}
+                    ${renderSubs(tx("\u4E3B\u961F", "Home"), sec.home)}
+                    ${renderSubs(tx("\u5BA2\u961F", "Away"), sec.away)}
                 </div>`;
             cardContent += renderNote(sec);
           } else if (key === "starForm") {
