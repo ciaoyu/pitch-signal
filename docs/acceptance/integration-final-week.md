@@ -45,3 +45,5 @@
 - 权重行仅渲染 API 实际给出的有限数值键，避免不存在的 odds/coach/venue 显示 NaN。
 - 已运行 `npm run build:js`；`static/js/bundle.js` 已重建，`templates/index.html` 更新为 `bundle.js?v=1504f802`。
 - 前端修复提交：`b658408`；测试隔离修复提交：`ea673b1`。
+
+补充：JSDOM UI 冒烟成功加载 bundle 并收到预测 API 的 200 响应，但在异步预测请求完成前即以“Prediction tab empty or malformed”退出；同时外网 Google Fonts 加载发生 TLS reset。此项未计为通过，且没有修改其测试时序。
