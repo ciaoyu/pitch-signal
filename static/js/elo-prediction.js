@@ -299,7 +299,7 @@
 
                 // Detail expand
                 h += `<div id="pred-detail-${idx}" class="hidden" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#a78bfa;font-weight:600;margin-bottom:3px">⚡ ${tx('Elo 预测','Elo Forecast')}</div>
                             <div style="color:rgba(248,250,252,.35)">${tx('主胜','Home')} ${(eloPred.home*100).toFixed(0)}%  ${tx('平','Draw')} ${(eloPred.draw*100).toFixed(0)}%  ${tx('客','Away')} ${(eloPred.away*100).toFixed(0)}%</div>
@@ -307,10 +307,6 @@
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#60a5fa;font-weight:600;margin-bottom:3px">📐 ${tx('Poisson 预测','Poisson Forecast')}</div>
                             <div style="color:rgba(248,250,252,.35)">${tx('主胜','Home')} ${(poissonPred.home*100).toFixed(0)}%  ${tx('平','Draw')} ${(poissonPred.draw*100).toFixed(0)}%  ${tx('客','Away')} ${(poissonPred.away*100).toFixed(0)}%</div>
-                        </div>
-                        <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
-                            <div style="color:#34d399;font-weight:600;margin-bottom:3px">👔 ${tx('教练因素','Coach Factor')}</div>
-                            <div style="color:rgba(248,250,252,.35)">${tx('已隔离，不参与模型','Isolated; not used in model')}</div>
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">🎯 ${tx('可能比分','Top Scores')}</div>

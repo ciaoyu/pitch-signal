@@ -4582,7 +4582,7 @@ var require_elo_prediction = __commonJS({
                     <span class="confidence-pill ${confCls}">\u{1F4CA} ${tx("\u7F6E\u4FE1\u5EA6", "Confidence")}: ${confLabel} ${conf}%</span>
                 </div>`;
             h += `<div id="pred-detail-${idx}" class="hidden" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04)">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:10px">
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#a78bfa;font-weight:600;margin-bottom:3px">\u26A1 ${tx("Elo \u9884\u6D4B", "Elo Forecast")}</div>
                             <div style="color:rgba(248,250,252,.35)">${tx("\u4E3B\u80DC", "Home")} ${(eloPred.home * 100).toFixed(0)}%  ${tx("\u5E73", "Draw")} ${(eloPred.draw * 100).toFixed(0)}%  ${tx("\u5BA2", "Away")} ${(eloPred.away * 100).toFixed(0)}%</div>
@@ -4590,10 +4590,6 @@ var require_elo_prediction = __commonJS({
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#60a5fa;font-weight:600;margin-bottom:3px">\u{1F4D0} ${tx("Poisson \u9884\u6D4B", "Poisson Forecast")}</div>
                             <div style="color:rgba(248,250,252,.35)">${tx("\u4E3B\u80DC", "Home")} ${(poissonPred.home * 100).toFixed(0)}%  ${tx("\u5E73", "Draw")} ${(poissonPred.draw * 100).toFixed(0)}%  ${tx("\u5BA2", "Away")} ${(poissonPred.away * 100).toFixed(0)}%</div>
-                        </div>
-                        <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
-                            <div style="color:#34d399;font-weight:600;margin-bottom:3px">\u{1F454} ${tx("\u6559\u7EC3\u56E0\u7D20", "Coach Factor")}</div>
-                            <div style="color:rgba(248,250,252,.35)">${tx("\u5DF2\u9694\u79BB\uFF0C\u4E0D\u53C2\u4E0E\u6A21\u578B", "Isolated; not used in model")}</div>
                         </div>
                         <div style="background:rgba(255,255,255,.02);border-radius:8px;padding:8px">
                             <div style="color:#fbbf24;font-weight:600;margin-bottom:3px">\u{1F3AF} ${tx("\u53EF\u80FD\u6BD4\u5206", "Top Scores")}</div>
