@@ -96,6 +96,8 @@ const TEST_FILES = [
   'test-penalty-section.js',
     // KO-8a live penalty shootout round-by-round spike analysis
   'test-penalty-shootout.js',
+    // KO-9 super-subs section
+  'test-super-subs-section.js',
 ];
 
 const filter = process.argv.includes('--match')
