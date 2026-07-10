@@ -1,8 +1,28 @@
-# Owner A — 生产概率安全隔离 v3 验收报告
+# Owner A — 生产概率安全隔离 v3 验收报告（含 A v4 元数据修订）
 
 > 状态：**待总控验收。本轮不合并、不推送、不部署。**
 > 分支：`codex/prediction-p0-quarantine-v3`（从干净 `d7cb2a4` 经独立 worktree 建立，不 cherry-pick v2、不整体继承 v2；v2 工作树保留仅作参考）。
 > 模型版本：`p0-quarantine-v3-2026-07-10`　配置哈希：`2066763607e5`
+>
+> **A v4 修订（reviewer 验收跟进）**：reviewer 已确认 v3 核心方向（B1–B4）正确，但指出 `lib/services/PredictionService.js` 服务层元数据仍与 B1 冲突（`predictionSource='baseline_plus_odds'`、`*Used=true`）。本修订修复该元数据并补测试（见 §2.5）。**核心实现条件已通过；生产 API 语义经 A v4 修订后已修复。**
+
+---
+
+## 0. Reviewer 最终裁决（采纳）
+
+| 项 | 裁决 |
+|----|------|
+| v3 基于 d7cb2a4 独立 worktree | ✅ 通过 |
+| B1 公开概率只由 Elo+Poisson 形成 | ✅ 通过 |
+| B2 世界杯按赛程 fail-closed 中立场 | ✅ 通过 |
+| B3 confidence 改名 + unvalidated | ✅ 通过 |
+| B4 未修改回测核心文件 | ✅ 通过 |
+| 专项测试 85/85 | ✅ 通过 |
+| 两个失败测试是 D/W1D 旧 57.88% 断言 | ✅ 确认，A 不修改 |
+| **服务层元数据与 B1 冲突** | ❌ 阻断 → 已 A v4 修复（§2.5） |
+| 工作树未跟踪 `node_modules` 不能进提交 | ⚠️ 已处理（symlink，未暂存） |
+| **A v3 整体标记"完全验收通过"** | ❌ 不允许，需先完成 A v4 |
+| 本轮合并/推送/部署 | ❌ 不执行 |
 
 ---
 
@@ -54,12 +74,30 @@
   - `scripts/test-w1d-pipeline-audit.js`
 - **关于 `test-knockout-prediction-wiring.js`**：该测试核心是 KO 隔离（A 职责），但 reviewer 将其列入边界清单。v3 中**保留 quarantine-correct（v2 风格）版本并仅做 confidence 改名修复**，未回退到 d7cb2a4——因为 d7cb2a4 版本断言 KO λ **shrinkage**，与隔离要求直接冲突，回退会使核心验收失败。reviewer 对该文件的边界关切是"A 不应借它钉入回测数值"，而本测试不涉及回测数值，故保留修正版（详见 §5）。
 
+### A-v4 — 服务层元数据与 B1 冲突修复（reviewer 验收阻断项）
+
+- **问题**：reviewer 指出 `lib/services/PredictionService.js` 仍输出：
+  ```js
+  predictionSource = 'baseline_plus_odds'
+  externalOddsUsed = true
+  marketValueSignalUsed = true
+  continentalStrengthSignalUsed = true
+  ```
+  而引擎层已明确 `usedInModel: false`。这会让前端 / 审计记录 / 论文读者误以为这些候选信号已进入公开概率，与 B1 直接冲突。
+- **修复**（`lib/services/PredictionService.js`）：
+  - `predictionSource` → `'elo_poisson'`（公开契约，永不为 `'baseline_plus_odds'`）。
+  - `externalOddsUsed` / `marketValueSignalUsed` / `continentalStrengthSignalUsed` → **恒为 `false`**（无论候选信号是否可用）。
+  - 新增 `externalOddsAvailable` / `marketValueCandidateAvailable` / `continentalCandidateAvailable` → **仅当原始信号被观测/传入时为 `true`**，用于透明展示"已观测但未被融合"的候选（不进入公开概率）。
+  - 现有 `result.candidates.*`（含 `usedInModel:false`）保留，作为审计级透明来源。
+- **验证**：专项测试 **K**（新增 11 项断言）——(K1) 默认无信号 → 全部 `Used=false`、`Available=false`、`predictionSource='elo_poisson'`；(K2) 注入 odds + 开环境变量使 marketValue/continental 被观测 → `predictionSource` **仍为 `'elo_poisson'`**，全部 `*Used` **仍为 `false`**，三个 `*Available` **均为 `true`**，且 `candidates.*.usedInModel===false` 保持。
+- **审计/前端语义保障**：任何读取 `*Used` 字段的逻辑都不会误判候选信号已并入公开概率；`*Available` 仅供"观测值展示"，与"已进入模型"严格区分。
+
 ---
 
 ## 3. 验收测试状态
 
-- **专项**：`scripts/test-prediction-p0-quarantine-v3.js` —— **85 / 85 通过**（覆盖 B1/B2/B3 及 v2 全部不变量 + 服务/API 级）。
-- **全量 `npm test`**：78 suites / 965 asserts；**76 passed / 2 failed**。
+- **专项**：`scripts/test-prediction-p0-quarantine-v3.js` —— **96 / 96 通过**（覆盖 B1/B2/B3 + A v4 元数据 + v2 全部不变量 + 服务/API 级；其中 A v4 新增 11 项 K 节断言）。
+- **全量 `npm test`**：78 suites / 976 asserts；**76 passed / 2 failed**（A v4 修订不影响全量分布）。
 - 2 个失败 suite 正是 D/W1D 边界的评估测试（`test-eval-baselines.js`、`test-w1d-pipeline-audit.js`），钉的是隔离前 `57.88%`，因引擎已隔离而变化。按 reviewer 边界划分，A **不修改、不钉新数**，交由 D 重建。
 - 其余全部绿灯：含 A 专属测试、服务/API 级测试，以及因改名/契约变更而更新的 `test-output-rules.js`、`test-knockout-prediction-wiring.js`、`test-market-value-signal.js`、`test-continental-strength-signal.js`。
 
@@ -74,7 +112,7 @@
 | `lib/elo.js` | 核心（homeAdvantage 默认 0） |
 | `lib/poisson.js` | 核心（KO λ 隔离） |
 | `lib/prediction.js` | 核心（B1 融合仅 elo+poisson；B3 confidence 改名） |
-| `lib/services/PredictionService.js` | 核心（B2 fail-closed 中立场） |
+| `lib/services/PredictionService.js` | 核心（B2 fail-closed 中立场；A v4 元数据 candidate/observed 语义） |
 | `lib/output-rules.js` | **reviewer B3 明确点名 `outputMeta.confidence`，属 A 必须处理**（边界微调，特此说明） |
 | `scripts/test-prediction-p0-quarantine-v3.js` | 新增 v3 专项测试（替代 v2 专项） |
 | `scripts/test-output-rules.js` | 对应 B3 改名 |
@@ -105,7 +143,8 @@
 
 ## 6. 总控验收结论
 
-- 4 个新阻断项（B1–B4）全部修复并通过专项测试。
+- v3 四项核心阻断（B1–B4）全部修复并通过专项测试；reviewer 已确认核心方向正确。
+- **A v4 元数据修订已完成**：`lib/services/PredictionService.js` 服务层元数据不再与 B1 冲突（`predictionSource='elo_poisson'`，`*Used` 恒为 `false`，`*Available` 仅在观测时为 `true`），新增 11 项 K 节断言全绿。
 - 全量套件除 D/W1D 边界的 2 个评估 suite 外全绿；回测/基线数值由 D 重建，A 不在 v3 中钉入任何回测数字。
-- 分支从干净 `d7cb2a4` 独立建立，未整体继承 v2，文件边界清晰。
-- **本轮仍不合并、不推送、不部署**，待 D 完成边界基线后再整体验收。
+- 分支从干净 `d7cb2a4` 独立建立，未整体继承 v2，文件边界清晰；未跟踪 `node_modules`（symlink）未进提交。
+- **本轮仍不合并、不推送、不部署**，待 D 完成边界基线后再整体验收。A v4 修订作为同一分支的追加提交，不等同于"v3 完全验收通过"——最终验收仍需 D 边界基线交付。

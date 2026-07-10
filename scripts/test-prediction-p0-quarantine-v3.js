@@ -22,6 +22,15 @@
  *  B3. The two hand-tuned "confidence" outputs are renamed to
  *      heuristicUncertainty / heuristicConfidence and marked status:'unvalidated'
  *      — no statistical-CI / "95% CI" semantics.
+ *
+ *  A v4 (reviewer acceptance follow-up): the SERVICE-LAYER result metadata must
+ *  not contradict B1. predictionSource = 'elo_poisson' (never 'baseline_plus_odds');
+ *  externalOddsUsed / marketValueSignalUsed / continentalStrengthSignalUsed are
+ *  ALWAYS false; externalOddsAvailable / marketValueCandidateAvailable /
+ *  continentalCandidateAvailable are true ONLY when the raw signal was observed
+ *  (so it can still be shown as a transparent, non-fused candidate). Frontend,
+ *  audit records and paper readers must never infer a candidate signal entered
+ *  the public probability.
  */
 
 const assert = require('assert');
@@ -388,6 +397,92 @@ async function main() {
     // detectKnockout still maps schedule "knockout" correctly (wiring sanity).
     const ko = detectKnockout('knockout');
     check(ko.isKnockout === true && ko.knockoutRound === null, 'detectKnockout("knockout") wired');
+  }
+
+  // =====================================================================
+  // K. [A v4] service-layer metadata must NOT claim candidate signals are used
+  //    predictionSource = 'elo_poisson'
+  //    externalOddsUsed / marketValueSignalUsed / continentalStrengthSignalUsed = false
+  //    externalOddsAvailable / marketValueCandidateAvailable / continentalCandidateAvailable = true (only when observed)
+  // =====================================================================
+  console.log('\n📊 K. [A v4] service metadata: candidate-only (used=false, available=observed)');
+  {
+    // --- K1: DEFAULT (no env gate, no odds) -> everything false/zero ---
+    const cacheDef = {};
+    const svcDef = new PredictionService(depsFor2({ fullName: 'MetLife Stadium' }, cacheDef));
+    const defRes = await svcDef.predictMatch('760415', { persist: false });
+    check(defRes.predictionSource === 'elo_poisson',
+      '[A v4] default predictionSource === "elo_poisson" (public contract)');
+    check(defRes.externalOddsUsed === false && defRes.marketValueSignalUsed === false &&
+          defRes.continentalStrengthSignalUsed === false,
+      '[A v4] default *_Used === false (candidates never enter the public probability)');
+    check(defRes.externalOddsAvailable === false && defRes.marketValueCandidateAvailable === false &&
+          defRes.continentalCandidateAvailable === false,
+      '[A v4] default *_Available === false (nothing observed)');
+
+    // --- K2: AVAILABLE (env gates open + odds injected) -> Used stays false, Available true ---
+    // Patch the two signal modules in require.cache so buildSignal returns a
+    // non-null observation deterministically, then re-require a fresh
+    // PredictionService whose internal bindings pick up the mocks.
+    const mvPath = require.resolve('../lib/services/market-value-signal');
+    const csPath = require.resolve('../lib/services/continental-strength-signal');
+    const origMv = require.cache[mvPath];
+    const origCs = require.cache[csPath];
+    const psPath = require.resolve('../lib/services/PredictionService');
+    const origPs = require.cache[psPath];
+    require.cache[mvPath] = {
+      id: mvPath, filename: mvPath, loaded: true,
+      exports: { buildSignal: () => ({ home: 0.4, draw: 0.3, away: 0.3, confidence: 0.7, source: 'mock' }) },
+    };
+    require.cache[csPath] = {
+      id: csPath, filename: csPath, loaded: true,
+      exports: { buildSignal: () => ({ home: 0.3, draw: 0.3, away: 0.4, confidence: 0.7, source: 'mock' }) },
+    };
+    const prevMv = process.env.MARKET_VALUE_SIGNAL_ENABLED;
+    const prevCs = process.env.CONTINENTAL_STRENGTH_SIGNAL_ENABLED;
+    process.env.MARKET_VALUE_SIGNAL_ENABLED = 'true';
+    process.env.CONTINENTAL_STRENGTH_SIGNAL_ENABLED = 'true';
+    delete require.cache[psPath];
+    const MockedService = require('../lib/services/PredictionService');
+
+    const cacheAvail = {};
+    const svcAvail = new MockedService(depsFor2({ fullName: 'MetLife Stadium' }, cacheAvail));
+    // Force a non-null external odds so the "available" flag flips on.
+    svcAvail.fetchExternalOdds = async () => ({ homeWin: 1.50, draw: 3.50, awayWin: 9.00, source: 'api' });
+
+    const availRes = await svcAvail.predictMatch('760415', { persist: false, includeExternalOdds: true });
+
+    check(availRes.predictionSource === 'elo_poisson',
+      '[A v4] available: predictionSource STILL "elo_poisson" (not "baseline_plus_odds")');
+    check(availRes.externalOddsUsed === false &&
+          availRes.marketValueSignalUsed === false &&
+          availRes.continentalStrengthSignalUsed === false,
+      '[A v4] available: ALL *_Used === false even when odds/MarketValue/Continental are observed');
+    check(availRes.externalOddsAvailable === true,
+      '[A v4] available: externalOddsAvailable === true (odds observed)');
+    check(availRes.marketValueCandidateAvailable === true,
+      '[A v4] available: marketValueCandidateAvailable === true (signal observed)');
+    check(availRes.continentalCandidateAvailable === true,
+      '[A v4] available: continentalCandidateAvailable === true (signal observed)');
+    // The observed-but-unused signals are still exposed transparently (not fused).
+    check(availRes.candidates && availRes.candidates.odds && availRes.candidates.odds.usedInModel === false,
+      '[A v4] available: observed odds exposed as candidate (usedInModel:false)');
+    check(availRes.candidates && availRes.candidates.marketValue &&
+          availRes.candidates.marketValue.usedInModel === false,
+      '[A v4] available: observed marketValue exposed as candidate (usedInModel:false)');
+    check(availRes.candidates && availRes.candidates.continentalStrength &&
+          availRes.candidates.continentalStrength.usedInModel === false,
+      '[A v4] available: observed continentalStrength exposed as candidate (usedInModel:false)');
+
+    // restore cache + env so the rest of the process is unaffected
+    require.cache[mvPath] = origMv;
+    require.cache[csPath] = origCs;
+    delete require.cache[psPath];
+    require.cache[psPath] = origPs;
+    if (prevMv === undefined) delete process.env.MARKET_VALUE_SIGNAL_ENABLED;
+    else process.env.MARKET_VALUE_SIGNAL_ENABLED = prevMv;
+    if (prevCs === undefined) delete process.env.CONTINENTAL_STRENGTH_SIGNAL_ENABLED;
+    else process.env.CONTINENTAL_STRENGTH_SIGNAL_ENABLED = prevCs;
   }
 
   console.log(`\n============================`);
