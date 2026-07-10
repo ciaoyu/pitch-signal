@@ -110,6 +110,9 @@ const TEST_FILES = [
   'test-knockout-intel.js',
     // KO-5 fatigue index signal
   'test-fatigue-signal.js',
+  // KO-15 pre-match leakage firewall for all knockout-intel sections
+  'test-ko15-leakage-guard.js',
+  'test-live-goal-moment-timing.js',
 ];
 
 const filter = process.argv.includes('--match')
