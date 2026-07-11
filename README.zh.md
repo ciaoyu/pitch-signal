@@ -1,18 +1,47 @@
 <!-- 提示：更新本文件时请同步更新 README.md -->
 # ⚽ PitchSignal
 
-**PitchSignal** 是一个面向 2026 年 FIFA 世界杯的综合数据分析看板，提供实时积分榜、基于 Poisson 与 Elo 模型的比赛预测、空间对位分析，以及交互式淘汰赛对阵图。
+**PitchSignal** 是一个面向世界杯的赛事智能系统，覆盖赛程、积分、球队上下文、赔率对照、赛中解释、赛后复盘，以及可复现的足球预测研究。
+
+它不只是一个预测小组件。系统的研究原则是：公开概率必须可审计、可版本化、可回放；赔率、首发、阵型、新闻、压力指数、教练、场馆和 AI 复盘等产品层信号可以公开展示，但在获得样本外证据前，不应静默污染主概率模型。
 
 👉 [立即体验公开测试版](https://pitch-signal-production.up.railway.app)（部分功能在 Beta 阶段处于关闭状态）
 
 README in [English](README.md)
 
-## 🌟 核心功能
-- **实时赛事集成**：从 ESPN API 获取实时赛程、比分和积分榜。
-- **高级预测分析**：使用定制的 Dixon-Coles 修正 Poisson 模型 + Elo 评分，计算即将进行的比赛的胜/平/负概率。
-- **交互式淘汰赛对阵图**：基于官方 2026 赛制规则可视化 32 强淘汰赛阶段。
-- **空间对位分析**：模拟球队阵型及攻防位置的正面交锋。
-- **实时球队数据**：提取球队名单数据，实时展示平均年龄、教练信息与状态。
+## 🌟 核心能力
+- **赛程、比分与积分**：实时比赛列表、按日期赛程、单场详情、小组积分榜、本地计算积分榜和出线语境。
+- **预测核心**：基于 Elo + Poisson/Dixon-Coles 的赛前概率，输出胜/平/负、期望进球、可能比分、`modelVersion`、`configHash`、校准报告和回测工具。
+- **公开市场对照**：赔率是公开展示的市场 benchmark 和 divergence 层，用于把模型概率放到外部共识旁边接受比较，而不是让模型自我确认。
+- **赛中解释**：基于比分、时间、补时、红牌和淘汰赛状态进行 hard-facts 实时重估；射门、控球、角球等 soft pressure 信号单独展示。
+- **赛事结构**：支持 2026 小组逻辑、出线场景、最佳第三名解析和交互式淘汰赛对阵图。
+- **球队与球员情报**：球队详情、球员/名单增强、教练事实、近期状态、首发、换人、停赛和球员中文名增强。
+- **阵型与空间对位**：解析阵型、生成站位图、匹配攻防区域，展示边路、中路和关键位置的错位关系。
+- **关键事件与赛后复盘**：记录进球、红牌、点球、换人等 swing moments，绑定赛前快照、赛后证据和预测误差归因。
+- **AI 与知识库层**：AI 问答和赛后分析基于项目知识库与证据记录，用于解释和检索，不作为未经验证的概率覆盖层。
+- **生产数据管线**：后台任务覆盖首发同步、赔率采集、比赛节点、预测快照、比分回写、xG 采集和 AI 赛后处理。
+
+## 📊 当前公开看板指标
+
+Railway 公开看板当前展示：
+
+| 指标 | 数值 |
+|------|------|
+| Brier | `0.5132` |
+| 方向准确率 | `61.4%` |
+| ECE | `16.3%` |
+
+这组数字可作为线上看板表现摘要。若写入正式论文，需要绑定逐场预测 artifact：`modelVersion`、`configHash`、`predictedAt < kickoff`、数据来源、赛果来源和可复现导出。
+
+## 🔬 研究纪律
+
+PitchSignal 区分“功能可见性”和“模型权力”：
+
+- **影响概率的信号**必须可复现并经过评估。
+- **候选信号**可以采集、展示和比较，但在证明稳定样本外增益前保持 evidence gate。
+- **市场赔率**是公开 comparator / benchmark；若要直接融合进主概率，需要单独报告 paired test 和校准证据。
+- **AI 复盘**可以解释、总结和生成研究假设，但不能静默改写公开概率。
+- **负结果会被保留**：如果某个看似合理的信号不能改善 Brier、LogLoss、准确率或校准，它本身就是有价值的研究结果。
 
 ## 🚀 快速开始
 
@@ -105,7 +134,7 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 
 ## 📖 API 参考
 
-完整端点文档：**[docs/API.md](docs/API.md)**
+完整端点文档：**[docs/knowledge/API.md](docs/knowledge/API.md)**
 
 快速概览：
 
@@ -127,10 +156,13 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - 系统架构概览
 - **[ENVIRONMENT.md](ENVIRONMENT.md)** - 环境变量与密钥管理规范
 - **[CHANGELOG.md](CHANGELOG.md)** - 版本历史
-- **[docs/API.md](docs/API.md)** - 完整 API 参考
+- **[docs/knowledge/API.md](docs/knowledge/API.md)** - 完整 API 参考
 - **[docs/VERSIONING.md](docs/VERSIONING.md)** - 静态资源/缓存版本策略
-- **[docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)** - 预测模型工作原理
+- **[docs/knowledge/prediction_model_explanation.md](docs/knowledge/prediction_model_explanation.md)** - 预测模型工作原理
 - **[docs/prediction-model-methodology.md](docs/prediction-model-methodology.md)**（[中文](docs/prediction-model-methodology.zh.md)）- 完整方法论论文：架构、评估协议、964 场回测结果及诚实的局限性说明
+- **[docs/research-publication-roadmap.md](docs/research-publication-roadmap.md)** - 方法论论文的学术发表路线、目标渠道要求与投稿清单
+- **[docs/research-pre-submission-review.md](docs/research-pre-submission-review.md)** - 方法论论文投稿前 readiness 缺口的模拟审查
+- **[docs/research-publication-execution-plan.md](docs/research-publication-execution-plan.md)** - 摘要、artifact、校准、paired test、引用和正文 worktree 的派工计划
 - **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway 部署指南
 - **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - 公开 Beta 安全策略与闸门
 
