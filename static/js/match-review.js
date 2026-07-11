@@ -9,6 +9,46 @@
     const i18nText = (...a) => (window.WorldCup.I18n?.i18nText || ((o, f) => f))(...a);
     const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
 
+    function renderFrozenKnockoutComparison(review) {
+        const snapshot = review.predictionSnapshot;
+        const intel = snapshot?.payload?.knockoutIntel;
+        const sections = intel?.sections;
+        const actualEvents = [
+            ...(Array.isArray(review.keyEvents) ? review.keyEvents : []),
+            ...(Array.isArray(review.evidence?.events) ? review.evidence.events : []),
+        ];
+        const eventText = event => typeof event === 'string' ? event : (event?.text || event?.summary || event?.description || '');
+        const factRows = actualEvents
+            .filter(event => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventText(event)) || /goal|card|substitution/i.test(String(event?.type || '')))
+            .slice(0, 12)
+            .map(event => `${event?.minute || ''} ${eventText(event)}`.trim());
+        const actual = review.match || {};
+        const lineups = review.postMatchFacts || {};
+        const style = sections?.styleMatchup;
+        const sourceNote = style && (style.usedInModel === false || style.source === 'tactical-style-matrix')
+            ? tx('事实观测仅供参考，info only，不进入胜率模型；未完成 OOS 校验前不触发对位规则。', 'Observed facts are info only and stay out of win probabilities; no matchup rule runs before OOS validation.')
+            : '';
+
+        let left = '';
+        if (!sections) {
+            left = `<div class="text-[11px] text-gray-500">${tx('缺少赛前快照，不能在赛后补算成赛前情报。仅接受发布时间早于开球且带原始链接的外部存档补充。', 'No pre-match snapshot: do not reconstruct pre-match intelligence after the result. Only externally archived, linked material published before kickoff may be added.')}</div>`;
+        } else {
+            const tags = value => (value || []).map(tag => ({ possession:'控球主导', counter_fast:'快速反击', high_press:'高位逼抢', low_block:'低位防守', crossing:'传中/定位球', observed_possession_high:'观测到的高控球', observed_possession_low:'观测到的低控球' }[tag] || tag)).join(' · ') || tx('覆盖不足', 'Insufficient coverage');
+            left += `<div class="space-y-2 text-[11px]">`;
+            if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('风格对垒', 'Style matchup')} <span class="text-[9px] text-gray-600">${esc(style.confidence || 'low')}</span></div><div class="text-gray-400 mt-1">${tx('主队', 'Home')}: ${esc(tags(style.homeTags))}<br>${tx('客队', 'Away')}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
+            if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('替补影响预览', 'Bench preview')}</div><div class="text-gray-500 mt-1">${esc(sections.superSubs.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
+            if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('点球情报', 'Penalty context')}</div><div class="text-gray-500 mt-1">${esc(sections.penalty.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
+            if (sections.experience) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('淘汰赛经历', 'Knockout experience')}</div><div class="text-gray-500 mt-1">${esc(i18nText(sections.experience.note, ''))}</div></div>`;
+            left += `<div class="text-[9px] text-gray-600">${tx('以上内容读取的是开球前冻结快照，赛后不重算。', 'This column reads the kickoff-frozen snapshot and is never recomputed after the match.')}</div></div>`;
+        }
+
+        const score = `${actual.homeScore ?? actual.home?.score ?? '—'} : ${actual.awayScore ?? actual.away?.score ?? '—'}`;
+        const xi = team => (team || []).map(player => player.nameZh || player.name).join('、');
+        const subs = (lineups.substitutions || []).map(sub => `${sub.minute || '?'} ${sub.offNameZh || sub.offName} → ${sub.onNameZh || sub.onName}`).join('<br>');
+        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('最终比分', 'Final score')}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际首发', 'Starting XI')}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx('本接口未返回可验证首发：本场无法验证。', 'No verified starting XI returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际换人', 'Substitutions')}</div><div class="text-gray-500 mt-1">${subs || tx('本接口未返回可验证换人：本场无法验证。', 'No verified substitutions returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('红黄牌、加时与点球', 'Cards, extra time & penalties')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('关键事件', 'Key events')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /goal|进球/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div></div>`;
+        return `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-300 mb-2">🧊 ${tx('赛前淘汰赛情报与赛后事实对照', 'Frozen pre-match intelligence vs post-match facts')}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><div class="text-[10px] font-bold text-cyan-300 mb-1.5">${tx('赛前淘汰赛情报（冻结快照）', 'Pre-match knockout intelligence (frozen snapshot)')}</div>${left}</div><div><div class="text-[10px] font-bold text-amber-300 mb-1.5">${tx('赛后事实与验证', 'Post-match facts & verification')}</div>${right}</div></div></div>`;
+    }
+
     function renderMatchReview(review) {
         if (!review || review.error) return `<div class="text-gray-500 text-xs py-4 text-center">${tx('比赛回顾加载失败', 'Match review failed to load')}</div>`;
         const match = review.match || {}, ai = review.aiPrediction || {}, bias = review.biasAnalysis || {};
@@ -53,6 +93,8 @@
         if (isRetrospective && predictionSnapshotNote) {
             html += `<div class="glass rounded-xl p-3 mb-2.5 border border-yellow-500/20 bg-yellow-500/5"><div class="flex items-start gap-2"><span class="text-sm mt-0.5">⚠️</span><div class="text-[11px] text-yellow-300 leading-relaxed">${esc(i18nText(predictionSnapshotNote, predictionSnapshotNote.en||''))}</div></div></div>`;
         }
+
+        html += renderFrozenKnockoutComparison(review);
 
         html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">🤖 ${tx('AI 预测 vs 真实结果','AI Forecast vs Actual Result')}${isRetrospective?` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx('赛后参考','retro')}</span>`:''}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('AI 预测','AI Forecast')}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore||tx('缺快照','No snapshot')}</div><div class="text-[11px] text-gray-500 mt-1">${tx('主','Home')} ${displayPct(ai.homeWin)} · ${tx('平','Draw')} ${displayPct(ai.draw)} · ${tx('客','Away')} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals,'-')} - ${displayValue(ai.awayExpectedGoals,'-')}</div>${review.predictionSourceNote?`<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>`:''}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('真实结果','Actual Result')}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div><div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n||match.home||'')} vs ${displayMaybeTeamName(match.awayNameI18n||match.away||'')}</div><div class="text-[11px] text-gray-600">${match.date||''}</div></div></div>`;
         const accCls = bias.accuracy==='highly_accurate'||bias.accuracy==='exact_score'?'text-green-400 bg-green-500/10':bias.accuracy==='result_correct_score_wrong'?'text-yellow-400 bg-yellow-500/10':'text-red-400 bg-red-500/10';

@@ -1218,8 +1218,9 @@ window.WorldCup.MatchRenderers = (() => {
             }
             const name = coach.name || '?';
             const style = coach.style || tx('未知', 'Unknown');
-            const winRate = coach.winRate || '?';
             const tenure = coach.tenure || '?';
+            const formations = Array.isArray(coach.formation) ? coach.formation.join(' / ') : (coach.formation || '');
+            const tournament = coach.bigTournament || '';
             const nationality = coach.nationality || '';
             const flag = coach.flag || '';
             const sideColor = side === 'home' ? 'border-l-blue-500' : 'border-l-red-500';
@@ -1236,10 +1237,11 @@ window.WorldCup.MatchRenderers = (() => {
                         ${nationality ? `<span class="text-[10px] text-gray-500 truncate" title="${esc(nationality)}">${esc(nationality)}</span>` : ''}
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
+                <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
                     <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx('风格', 'Style')}</span><span class="text-gray-300 font-semibold truncate" title="${esc(style)}">${esc(style)}</span></div>
-                    <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx('胜率', 'Win %')}</span><span class="text-gray-300 font-mono font-semibold">${esc(winRate)}</span></div>
                     <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx('执教', 'Tenure')}</span><span class="text-gray-300 font-mono font-semibold truncate" title="${esc(tenure)}">${esc(tenure)}</span></div>
+                    ${formations ? `<div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx('阵型', 'Formation')}</span><span class="text-gray-300 font-semibold truncate" title="${esc(formations)}">${esc(formations)}</span></div>` : ''}
+                    ${tournament ? `<div class="flex flex-col col-span-2"><span class="text-gray-500 mb-0.5">${tx('赛会履历', 'Tournament record')}</span><span class="text-gray-300 leading-tight">${esc(tournament)}</span></div>` : ''}
                 </div>
             </div>`;
         };
@@ -1249,69 +1251,15 @@ window.WorldCup.MatchRenderers = (() => {
         html += renderCoachCard(coachB, 'away');
         html += '</div>';
 
-        // Style comparison analysis
-        if (comp) {
+        // These are recorded facts, not a model score or a claimed tactical edge.
+        if (comp?.observations?.length) {
             html += `<div class="glass-light rounded-lg p-4 mt-3">
                 <div class="text-xs font-bold text-gray-400 mb-3 flex items-center gap-2">
-                    <span>⚔️</span> ${tx('战术与执教对位', 'Tactical & Coaching Matchup')}
+                    <span>📚</span> ${tx('战术观察与资料对照', 'Tactical observations & records')}
                 </div>
-                <div class="space-y-2">`;
-
-            // Function to generate the visual metric card
-            const renderMatchupItem = (icon, titleZh, titleEn, valueI18n, valueFallback) => {
-                const text = valueI18n ? i18nText(valueI18n) : (valueFallback || '—');
-                if (text === '—') return '';
-                return `
-                <div class="flex items-start gap-3 bg-white/5 rounded-lg p-2.5">
-                    <div class="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center shrink-0 text-lg">${icon}</div>
-                    <div class="flex flex-col justify-center">
-                        <span class="text-[10px] text-gray-500 font-bold mb-0.5">${tx(titleZh, titleEn)}</span>
-                        <span class="text-[11px] text-gray-300 leading-tight">${esc(text)}</span>
-                    </div>
-                </div>`;
-            };
-
-            html += renderMatchupItem('📋', '风格对垒', 'Style Matchup', comp.styleMatchupI18n, comp.styleMatchup);
-            html += renderMatchupItem('⏳', '经验差距', 'Experience Gap', comp.experienceGapI18n, comp.experienceGap);
-            html += renderMatchupItem('🎯', '临场调整', 'Adjustment Edge', comp.adjustmentEdgeI18n, comp.adjustmentEdge);
-
-            // Overall scores comparison bar
-            if (comp.overallScore) {
-                const names = Object.keys(comp.overallScore);
-                if (names.length >= 2) {
-                    const scoreA = Number(comp.overallScore[names[0]]) || 0;
-                    const scoreB = Number(comp.overallScore[names[1]]) || 0;
-                    const totalScore = scoreA + scoreB || 1; // avoid div by 0
-                    const pctA = (scoreA / totalScore) * 100;
-                    const pctB = (scoreB / totalScore) * 100;
-
-                    html += `
-                    <div class="mt-4 pt-3 border-t border-white/10">
-                        <div class="text-[10px] text-gray-500 mb-2 flex justify-between">
-                            <span>${esc(names[0])}</span>
-                            <span>${tx('综合评分对比', 'Overall Rating Comparison')}</span>
-                            <span>${esc(names[1])}</span>
-                        </div>
-                        <div class="flex h-3 rounded-full overflow-hidden mb-1 bg-white/5 shadow-inner">
-                            <div class="bg-blue-500/80 transition-all duration-700" style="width: ${pctA}%"></div>
-                            <div class="bg-red-500/80 transition-all duration-700" style="width: ${pctB}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[11px] font-mono font-bold">
-                            <span class="text-blue-300">${scoreA}</span>
-                            <span class="text-red-300">${scoreB}</span>
-                        </div>
-                    </div>`;
-                } else {
-                    html += `<div class="flex items-center gap-3 mt-3 pt-3 border-t border-white/5">
-                        <span class="text-gray-500 text-[11px]">${tx('综合评分', 'Overall')}</span>`;
-                    for (const [name, score] of Object.entries(comp.overallScore)) {
-                        html += `<span class="text-[11px] font-mono font-bold text-gray-200">${esc(name)}: ${esc(String(score))}</span>`;
-                    }
-                    html += `</div>`;
-                }
-            }
-
-            html += `</div></div>`;
+                <div class="space-y-2">${comp.observations.map(item => `<div class="bg-white/5 rounded-lg p-2.5"><div class="text-[10px] text-gray-500 font-bold mb-1">${esc(i18nText(item.label, ''))}</div><div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300"><span>${esc(item.home || '—')}</span><span class="text-right">${esc(item.away || '—')}</span></div></div>`).join('')}</div>
+                <div class="text-[9px] text-gray-600 mt-3">${tx('仅展示已记录资料；不提供总体评分或“临场调整优势”结论。', 'Recorded information only; no overall score or in-game-adjustment edge is asserted.')}</div>
+            </div>`;
         } else if (coachA && coachB && !coachData._fallback) {
             html += `<div class="glass-light rounded-lg p-4 text-center mt-3">
                 <div class="text-xs text-gray-500">${tx('教练对阵分析暂未生成', 'Coach matchup analysis not yet generated')}</div>
@@ -1844,7 +1792,7 @@ window.WorldCup.MatchRenderers = (() => {
             return `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">• ${L(sec.note)}</div>`;
         };
 
-        const SECTION_ORDER = ['suspensions', 'fatigue', 'penalty', 'referee', 'superSubs', 'starForm', 'familiarity', 'gameState', 'experience', 'lessons'];
+        const SECTION_ORDER = ['suspensions', 'fatigue', 'styleMatchup', 'penalty', 'referee', 'superSubs', 'starForm', 'familiarity', 'gameState', 'experience', 'lessons'];
         const orderedKeys = [...SECTION_ORDER.filter(k => intel.sections[k]), ...sectionKeys.filter(k => !SECTION_ORDER.includes(k))];
 
         let cardsHtml = '';
@@ -1958,6 +1906,37 @@ window.WorldCup.MatchRenderers = (() => {
                     ${renderForm(tx('客队', 'Away'), sec.away)}
                 </div>`;
                 cardContent += renderNote(sec);
+            } else if (key === 'styleMatchup') {
+                const tagLabel = tag => ({
+                    observed_possession_high: tx('观测到的高控球', 'Observed high possession'),
+                    observed_possession_low: tx('观测到的低控球', 'Observed low possession'),
+                }[tag] || tag);
+                const renderFacts = (sideLabel, data) => {
+                    if (!data) return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] text-gray-500">${sideLabel}: ${tx('未找到可追溯事实', 'No traceable facts found')}</div>`;
+                    const facts = data.facts || {};
+                    const formations = Object.entries(facts.formations || {}).map(([name, count]) => `${name} ×${count}`).join(' · ') || tx('未覆盖', 'Not covered');
+                    const possession = facts.possession?.status === 'covered' ? `${facts.possession.average}% (${facts.possession.sampleMatches} ${tx('场', 'matches')})` : tx('未覆盖', 'Not covered');
+                    const corners = facts.setPieces?.status === 'covered' ? `${facts.setPieces.cornersFor ?? '—'} / ${facts.setPieces.cornersAgainst ?? '—'}` : tx('未覆盖', 'Not covered');
+                    const subs = facts.substitutions?.total != null ? `${facts.substitutions.total} (${(facts.substitutions.minutes || []).join(', ') || '—'}')` : tx('未覆盖', 'Not covered');
+                    const discipline = facts.discipline ? `${facts.discipline.yellow || 0} ${tx('黄', 'Y')} · ${facts.discipline.red || 0} ${tx('红', 'R')}` : tx('未覆盖', 'Not covered');
+                    const tags = (data.derivedTags || []).map(tagLabel).join(' · ') || tx('无最终标签', 'No final tag');
+                    const unsupported = Object.entries(facts.unsupported || {}).map(([key, value]) => `${key}: ${value.status === 'not_covered' ? tx('未覆盖', 'Not covered') : value.status}`).join(' · ');
+                    return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('阵型/场次', 'Formations / matches')}</span><span class="text-gray-300 text-right">${esc(formations)} · ${data.sampleMatches || 0}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('首发变化', 'XI changes')}</span><span class="font-mono text-gray-300">${data.facts.startingXIChanges ?? '—'}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('换人分钟', 'Substitution minutes')}</span><span class="text-gray-300 text-right">${esc(subs)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('平均控球', 'Avg possession')}</span><span class="font-mono text-gray-300">${esc(possession)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('角球 (得/失)', 'Corners (for/against)')}</span><span class="font-mono text-gray-300">${esc(corners)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx('纪律', 'Discipline')}</span><span class="font-mono text-gray-300">${esc(discipline)}</span></div>
+                        <div><span class="text-gray-500">${tx('最终标签', 'Final tags')}:</span> <span class="text-cyan-300">${esc(tags)}</span></div>
+                        <div class="text-gray-600">${tx('压迫/反击/推进', 'Pressing/counterplay/progression')}: ${esc(unsupported || tx('未覆盖', 'Not covered'))}</div>
+                    </div>`;
+                };
+                cardContent += renderSectionHeader(tx('战术观察与资料对照', 'Tactical observation & evidence'), sec);
+                cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">${renderFacts(tx('主队', 'Home'), sec.homeFacts)}${renderFacts(tx('客队', 'Away'), sec.awayFacts)}</div>`;
+                cardContent += `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">${tx('仅展示可追溯事实；规则资格 = 否，OOS 校验 = 未运行，永远 info only。', 'Traceable facts only; rule eligibility = no, OOS validation = not run, always info only.')}</div>`;
+                cardContent += renderNote(sec);
             } else if (key === 'familiarity') {
                 cardContent += renderSectionHeader(tx('俱乐部联系与熟人', 'Club Familiarity'), sec);
                 cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
@@ -2052,6 +2031,4 @@ window.WorldCup.MatchRenderers = (() => {
 if (typeof window !== 'undefined' && window.WorldCup && window.WorldCup.MatchRenderers) {
     window.renderKnockoutIntel = window.WorldCup.MatchRenderers.renderKnockoutIntel;
 }
-
-
 

@@ -114,6 +114,11 @@ const TEST_FILES = [
   // KO-15 pre-match leakage firewall for all knockout-intel sections
   'test-ko15-leakage-guard.js',
   'test-live-goal-moment-timing.js',
+  'test-scores-upcoming.js',
+  'test-player-stat-integrity.js',
+  'test-post-match-frozen-intel-ui.js',
+  'test-worldcup-data-wiring.js',
+  'test-team-style-facts.js',
 ];
 
 const filter = process.argv.includes('--match')
