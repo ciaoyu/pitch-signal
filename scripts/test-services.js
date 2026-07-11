@@ -9,6 +9,7 @@ const path = require('path');
 const { db } = require('../lib/db');
 const PredictionService = require('../lib/services/PredictionService');
 const ReviewService = require('../lib/services/ReviewService');
+const theOddsApiClient = require('../lib/services/the-odds-api');
 
 let passed = 0;
 let failed = 0;
@@ -139,8 +140,15 @@ async function run() {
   }
 
   // Test 3: PredictionService cache key separation (includeExternalOdds true vs false)
+  // Stubs theOddsApiClient.fetchMatchOdds so this never makes a real the-odds-api
+  // call (would silently burn real quota if THE_ODDS_API_KEY is set in the shell —
+  // see fetchExternalOdds()'s key check in PredictionService.js).
+  const originalFetchMatchOdds = theOddsApiClient.fetchMatchOdds;
   try {
     console.log('\n📋 Test 3: Prediction cache separation by includeExternalOdds');
+    process.env.THE_ODDS_API_KEY = 'test-key';
+    theOddsApiClient.fetchMatchOdds = async () => ({ homeWin: 2.0, draw: 3.4, awayWin: 3.8, vendor: 'test-book' });
+
     cache['pred_test_cache_sep'] = null;
     cache['pred_odds_test_cache_sep'] = null;
 
@@ -153,6 +161,9 @@ async function run() {
   } catch (e) {
     console.error('  ❌ Cache separation test failed:', e);
     failed++;
+  } finally {
+    theOddsApiClient.fetchMatchOdds = originalFetchMatchOdds;
+    delete process.env.THE_ODDS_API_KEY;
   }
 
   // Test 4: Public prediction route GET /api/predict/:matchId uses persist: false
