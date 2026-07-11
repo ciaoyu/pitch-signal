@@ -7474,10 +7474,11 @@ var require_match_renderers = __commonJS({
           } else if (key === "penalty") {
             const renderSide = (sideLabel, data) => {
               if (!data) return "";
-              const skillPct = Math.round(Fmt.safeNum(data.skill, 0.5) * 100);
+              const skillPct = Math.round(Fmt.safeNum(data.winRate, 0) * 100);
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
                         <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
-                        <div class="flex justify-between text-gray-500"><span>${tx("\u5386\u53F2\u80DC\u7387", "Record")}:</span> <span>${Fmt.safeNum(data.wins, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx("\u4E16\u754C\u676F\u7D2F\u8BA1", "World Cup total")}:</span> <span>${Fmt.safeNum(data.shootoutsWon, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx("\u672C\u5C4A", "Current")}:</span> <span>${Fmt.safeNum(data.currentTournament?.shootoutsWon, 0)}/${Fmt.safeNum(data.currentTournament?.shootouts, 0)}</span></div>
                     </div>`;
             };
             cardContent += renderSectionHeader(tx("\u70B9\u7403\u5927\u6218\u80FD\u529B", "Penalty Shootout Skill"), sec);
@@ -7502,7 +7503,8 @@ var require_match_renderers = __commonJS({
               const list = Array.isArray(data) ? data : Array.isArray(data?.superSubs) ? data.superSubs : Array.isArray(data?.list) ? data.list : [];
               const rows = list.map((s) => {
                 const name = L(s.playerZh) || s.playerName || s.player || s.name || "";
-                return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`;
+                const balance = s.goalsFor == null || s.goalsAgainst == null ? tx("\u5F85\u8865\u4E8B\u4EF6", "no timeline") : `${Fmt.safeNum(s.goalsFor, 0)}-${Fmt.safeNum(s.goalsAgainst, 0)}`;
+                return `<div class="text-[10px]"><div class="flex justify-between"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">${balance}</span></div><div class="text-[9px] text-gray-500">${Fmt.safeNum(s.appearances, 0)} ${tx("\u6B21\u767B\u573A", "apps")} \xB7 ${Fmt.safeNum(s.goalsAfterSub, 0)}G ${Fmt.safeNum(s.assistsAfterSub, 0)}A</div></div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
                         <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
@@ -7587,10 +7589,12 @@ var require_match_renderers = __commonJS({
           } else if (key === "experience") {
             const renderExp = (sideLabel, data) => {
               if (!data) return "";
+              const all = data.allTime || null;
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
                         <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u6DD8\u6C70\u8D5B\u7ECF\u9A8C", "KO Minutes")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.koMinutesTotal, 0)} min</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u4E3B\u5E05\u6DD8\u6C70\u8D5B", "Coach Record")}:</span> <span class="font-mono text-gray-200">${esc(data.coachKoRecord || "-")}</span></div>
+                        <div class="text-gray-500">${tx("\u672C\u5C4A", "Current")}: <span class="font-mono text-gray-200">${Fmt.safeNum(data.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(data.goals, 0)}G \xB7 ${Fmt.safeNum(data.assists, 0)}A</span></div>
+                        ${all ? `<div class="text-gray-500">${tx("\u4E16\u754C\u676F\u5386\u53F2\u7D2F\u8BA1", "World Cup all-time")}: <span class="font-mono text-gray-200">${Fmt.safeNum(all.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(all.goals, 0)}G</span></div>
+                        <div class="text-gray-500">${tx("\u52A0\u65F6/\u70B9\u7403\uFF08\u4E0B\u9650\uFF09", "ET/pens (lower bound)")}: <span class="font-mono text-gray-200">${all.wentToEt ? tx("\u662F", "yes") : tx("\u672A\u786E\u8BA4", "unconfirmed")} / ${all.decidedByPens ? tx("\u662F", "yes") : tx("\u5426", "no")}</span></div>` : ""}
                     </div>`;
             };
             cardContent += renderSectionHeader(tx("\u5927\u8D5B\u6DD8\u6C70\u8D5B\u5E95\u8574", "Tournament Experience"), sec);

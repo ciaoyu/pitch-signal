@@ -1848,10 +1848,11 @@ window.WorldCup.MatchRenderers = (() => {
             } else if (key === 'penalty') {
                 const renderSide = (sideLabel, data) => {
                     if (!data) return '';
-                    const skillPct = Math.round(Fmt.safeNum(data.skill, 0.5) * 100);
+                    const skillPct = Math.round(Fmt.safeNum(data.winRate, 0) * 100);
                     return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
                         <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
-                        <div class="flex justify-between text-gray-500"><span>${tx('历史胜率', 'Record')}:</span> <span>${Fmt.safeNum(data.wins, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx('世界杯累计', 'World Cup total')}:</span> <span>${Fmt.safeNum(data.shootoutsWon, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                        <div class="flex justify-between text-gray-500"><span>${tx('本届', 'Current')}:</span> <span>${Fmt.safeNum(data.currentTournament?.shootoutsWon, 0)}/${Fmt.safeNum(data.currentTournament?.shootouts, 0)}</span></div>
                     </div>`;
                 };
                 cardContent += renderSectionHeader(tx('点球大战能力', 'Penalty Shootout Skill'), sec);
@@ -1876,7 +1877,8 @@ window.WorldCup.MatchRenderers = (() => {
                     const list = Array.isArray(data) ? data : (Array.isArray(data?.superSubs) ? data.superSubs : (Array.isArray(data?.list) ? data.list : []));
                     const rows = list.map(s => {
                         const name = L(s.playerZh) || s.playerName || s.player || s.name || '';
-                        return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">+${Fmt.safeNum(s.avgImpact, 0).toFixed(2)}</span></div>`;
+                        const balance = s.goalsFor == null || s.goalsAgainst == null ? tx('待补事件', 'no timeline') : `${Fmt.safeNum(s.goalsFor, 0)}-${Fmt.safeNum(s.goalsAgainst, 0)}`;
+                        return `<div class="text-[10px]"><div class="flex justify-between"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">${balance}</span></div><div class="text-[9px] text-gray-500">${Fmt.safeNum(s.appearances, 0)} ${tx('次登场', 'apps')} · ${Fmt.safeNum(s.goalsAfterSub, 0)}G ${Fmt.safeNum(s.assistsAfterSub, 0)}A</div></div>`;
                     }).join('');
                     return `<div class="p-1.5 rounded bg-white/[0.02]">
                         <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
@@ -1961,10 +1963,12 @@ window.WorldCup.MatchRenderers = (() => {
             } else if (key === 'experience') {
                 const renderExp = (sideLabel, data) => {
                     if (!data) return '';
+                    const all = data.allTime || null;
                     return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
                         <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx('淘汰赛经验', 'KO Minutes')}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.koMinutesTotal, 0)} min</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx('主帅淘汰赛', 'Coach Record')}:</span> <span class="font-mono text-gray-200">${esc(data.coachKoRecord || '-')}</span></div>
+                        <div class="text-gray-500">${tx('本届', 'Current')}: <span class="font-mono text-gray-200">${Fmt.safeNum(data.matchesPlayed, 0)}M · ${Fmt.safeNum(data.goals, 0)}G · ${Fmt.safeNum(data.assists, 0)}A</span></div>
+                        ${all ? `<div class="text-gray-500">${tx('世界杯历史累计', 'World Cup all-time')}: <span class="font-mono text-gray-200">${Fmt.safeNum(all.matchesPlayed, 0)}M · ${Fmt.safeNum(all.goals, 0)}G</span></div>
+                        <div class="text-gray-500">${tx('加时/点球（下限）', 'ET/pens (lower bound)')}: <span class="font-mono text-gray-200">${all.wentToEt ? tx('是', 'yes') : tx('未确认', 'unconfirmed')} / ${all.decidedByPens ? tx('是', 'yes') : tx('否', 'no')}</span></div>` : ''}
                     </div>`;
                 };
                 cardContent += renderSectionHeader(tx('大赛淘汰赛底蕴', 'Tournament Experience'), sec);
@@ -2031,4 +2035,3 @@ window.WorldCup.MatchRenderers = (() => {
 if (typeof window !== 'undefined' && window.WorldCup && window.WorldCup.MatchRenderers) {
     window.renderKnockoutIntel = window.WorldCup.MatchRenderers.renderKnockoutIntel;
 }
-

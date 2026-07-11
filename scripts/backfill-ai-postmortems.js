@@ -50,6 +50,7 @@ const ONLY_MATCH = matchArg ? matchArg.split('=')[1] : null;
 const { db } = require('../lib/db');
 const {
   AI_POSTMORTEM_INSTRUCTION,
+  normalizeLessonsLearned,
   AI_POSTMORTEM_OUTPUT_FORMAT,
   getSavedPostMatchReview,
   savePostMatchReview,
@@ -143,7 +144,7 @@ async function main() {
         ...prev,
         status: 'completed',
         failureCategory: result.failureCategory ?? null,
-        lessonsLearned: result.lessonsLearned || prev.lessonsLearned || { teamSpecific: {}, globalModel: null },
+        lessonsLearned: normalizeLessonsLearned(result.lessonsLearned, prev.lessonsLearned),
         headlineI18n: result.headlineI18n || { zh: '', en: result.headline || '' },
         whyRightI18n: result.whyRightI18n || { zh: [], en: Array.isArray(result.whyRight) ? result.whyRight : [] },
         whyWrongI18n: result.whyWrongI18n || { zh: [], en: Array.isArray(result.whyWrong) ? result.whyWrong : [] },

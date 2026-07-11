@@ -22,6 +22,7 @@ const { db } = require('../lib/db');
 const claudeClient = require('../lib/claudeClient');
 const {
   AI_POSTMORTEM_INSTRUCTION,
+  normalizeLessonsLearned,
   AI_POSTMORTEM_OUTPUT_FORMAT,
   getSavedPostMatchReview,
   savePostMatchReview,
@@ -91,7 +92,7 @@ function applyResult(review, result) {
     ...prev,
     status: 'completed',
     failureCategory: result.failureCategory ?? null,
-    lessonsLearned: result.lessonsLearned || prev.lessonsLearned || { teamSpecific: {}, globalModel: null },
+    lessonsLearned: normalizeLessonsLearned(result.lessonsLearned, prev.lessonsLearned),
     headline: result.headline || '',
     whyRight: Array.isArray(result.whyRight) ? result.whyRight : [],
     whyWrong: Array.isArray(result.whyWrong) ? result.whyWrong : [],

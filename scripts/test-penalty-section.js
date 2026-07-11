@@ -82,7 +82,7 @@ console.log('\n📊 section contract for knockout fixture');
   });
   check(section !== null, 'section returned for knockout fixture');
   check(section && section.usedInModel === false, 'usedInModel false');
-  check(section && section.source === 'ratings+schedule+player-events', 'source field');
+  check(section && section.source === 'world-cup-history+ratings+schedule+player-events', 'source field');
   check(section && ['low', 'medium', 'high'].includes(section.confidence), 'confidence label');
   check(section && ['low', 'medium', 'high'].includes(section.likelihood), 'likelihood label');
   check(section && section.home && section.away, 'home/away sub-sections');
@@ -119,10 +119,10 @@ console.log('\n📊 penalty shootout experience counted');
     awayTeamId: '467',
     db,
   });
-  check(section && section.home.shootoutExperience === 'once', 'home shootout experience = once');
-  check(section && section.home.shootouts === 1, 'home shootouts = 1');
-  check(section && section.home.shootoutsWon === 1, 'home shootouts won = 1');
-  check(section && section.home.notes.some((n) => n.includes('1/1')), 'note mentions 1/1 shootout wins');
+  check(section && section.home.currentTournament.shootouts === 1, 'current-tournament shootouts = 1');
+  check(section && section.home.shootouts > section.home.currentTournament.shootouts, 'all-time includes historical shootouts');
+  check(section && section.home.currentTournament.shootoutsWon === 1, 'current-tournament wins = 1');
+  check(section && section.home.notes.some((n) => n.includes('World Cup')), 'note labels World Cup scope');
   check(section && section.away.shootoutExperience === 'none', 'away has no shootout experience');
 }
 
@@ -158,8 +158,8 @@ console.log('\n📊 multiple shootout experience');
     db,
   });
   check(section && section.home.shootoutExperience === 'multiple', 'home shootout experience = multiple');
-  check(section && section.home.shootouts === 2, 'home shootouts = 2');
-  check(section && section.home.shootoutsWon === 2, 'home shootouts won = 2');
+  check(section && section.home.currentTournament.shootouts === 2, 'current-tournament shootouts = 2');
+  check(section && section.home.currentTournament.shootoutsWon === 2, 'current-tournament wins = 2');
 }
 
 console.log(`\n============================`);

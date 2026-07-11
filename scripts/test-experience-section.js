@@ -72,11 +72,12 @@ console.log('\n📊 Test 4: buildExperienceSection returns valid section');
     check(r !== null, 'returns non-null section');
     check(r.confidence === 'medium', `confidence is medium (got ${r.confidence})`);
     check(r.usedInModel === false, 'usedInModel is false');
-    check(r.source === 'schedule+player-events', `source correct (got ${r.source})`);
+    check(r.source === 'world-cup-history+schedule+player-events', `source correct (got ${r.source})`);
     check(typeof r.home.matchesPlayed === 'number', 'home.matchesPlayed is number');
     check(typeof r.away.matchesPlayed === 'number', 'away.matchesPlayed is number');
     check(r.home.name !== null, 'home.name populated');
     check(r.note && r.note.zh && r.note.en, 'bilingual note present');
+    check(r.home.allTime.matchesPlayed >= r.home.matchesPlayed, 'all-time matches are a superset');
   } else {
     for (let i = 0; i < 8; i++) check(true, 'skipped - no completed KO matches');
   }
@@ -98,6 +99,26 @@ console.log('\n📊 Test 5: usedInModel always false');
   } else {
     check(true, 'skipped');
   }
+}
+
+console.log('\n📊 Test 6: ESPN id resolves to ratings_id for ET/pens lookup');
+{
+  const teamResolver = require('../lib/team_resolver');
+  const sched = require('../data/match_snapshot_schedule.json');
+  const match = (sched.matches || []).find(m => m.stage === 'knockout' && m.status?.completed);
+  if (match) {
+    const teamId = String(match.teams.home.id);
+    const ratingsId = teamResolver.getRatingsIdByEspnId(teamId);
+    const opponent = teamResolver.getRatingsIdByEspnId(match.teams.away.id);
+    const info = db.prepare(`INSERT INTO matches (home_team_id, away_team_id, played, went_to_et, decided_by_pens, home_score, away_score, stage)
+      VALUES (?, ?, 1, 1, 1, 4, 3, 'knockout')`).run(ratingsId, opponent);
+    try {
+      const result = computeTeamExperience(db, teamId, null);
+      check(result.wentToEt === true && result.decidedByPens === true, 'ratings_id match row found from ESPN id');
+    } finally {
+      db.prepare('DELETE FROM matches WHERE id = ?').run(info.lastInsertRowid);
+    }
+  } else check(true, 'skipped');
 }
 
 console.log(`\n============================`);

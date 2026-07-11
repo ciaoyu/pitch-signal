@@ -94,4 +94,20 @@ test('3. buildKnockoutIntel includes lessons section in sections map', async () 
   }
 });
 
+test('4. true bilingual lesson pair is preserved', () => {
+  const now = new Date().toISOString();
+  db.prepare('INSERT INTO post_match_reviews (match_id, review_json, created_at, updated_at) VALUES (?, ?, ?, ?)').run(
+    '888020', JSON.stringify({ aiPostmortem: { lessonsLearned: { teamSpecific: {
+      Spain: { zh: '保持中场紧凑。', en: 'Keep the midfield compact.' },
+    } } } }), now, now);
+  try {
+    const result = buildLessonsSection({ matchId: '888021', homeName: 'Spain', awayName: 'England' });
+    assert.equal(result.home[0].zh, '保持中场紧凑。');
+    assert.equal(result.home[0].en, 'Keep the midfield compact.');
+    assert.notEqual(result.home[0].zh, result.home[0].en);
+  } finally {
+    db.prepare('DELETE FROM post_match_reviews WHERE match_id = ?').run('888020');
+  }
+});
+
 console.log('All KO-6 tests passed!');
