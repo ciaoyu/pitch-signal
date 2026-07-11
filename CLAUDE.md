@@ -7,7 +7,7 @@
 ```bash
 npm install              # install deps (better-sqlite3 needs native rebuild)
 npm start                # dev server on http://localhost:5099
-npm test                 # run all test suites (19 files, ~400 assertions)
+npm test                 # run all test suites (测试用例数与断言数以 npm test 输出为准)
 npm rebuild better-sqlite3   # fix native binding after device switch
 ```
 
@@ -40,6 +40,7 @@ Integration tests (`test-post-match-review.js`) start a temporary server — the
 - **DB** — SQLite via `better-sqlite3` (synchronous). WAL mode. Single-instance only. `lib/db.js` exports a singleton connection.
 - **No secrets in code** — all API keys and tokens come from env vars. `.env.example` is the source of truth for what's needed.
 - **Repository layout** — follow [docs/repository-layout.md](docs/repository-layout.md) before adding or moving files.
+- **Worktree discipline** — All active worktrees must be placed in a single parent directory (`../pitch-signal-worktrees/active/`). When a branch is merged or abandoned, delete its worktree within 48 hours.
 
 ## Data Flow
 

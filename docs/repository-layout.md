@@ -17,7 +17,7 @@ Only keep these categories at the repository root:
 
 - runtime entrypoints and build config: `server.js`, `package.json`, `Dockerfile`, `railway.toml`, `render.yaml`
 - top-level product docs that explain the app as a whole: `README.md`, `ARCHITECTURE.md`, `ENVIRONMENT.md`, `CHANGELOG.md`, `CLAUDE.md`
-- primary source directories: `lib/`, `middleware/`, `services/`, `static/`, `templates/`, `scripts/`, `data/`, `docs/`
+- primary source directories: `lib/`, `middleware/`, `services/`, `static/`, `templates/`, `scripts/`, `data/`, `docs/`, `outputs/`, `resources/`
 
 Do not add one-off reports, preview HTML, local logs, or ad hoc exports at the root.
 
@@ -32,6 +32,8 @@ Do not add one-off reports, preview HTML, local logs, or ad hoc exports at the r
 - `data/sources/world-cup-history/`: local historical CSV inputs used to build H2H context
 - `docs/`: versioned project documentation that should remain shareable
 - `docs/archive/`: local reports, handoff copies, marketing drafts, and other non-runtime artifacts
+- `outputs/`: generated research outputs, backtest predictions, and calibration artifacts
+- `resources/`: seed JSON datasets, ID mapping bridges, and static reference tables
 - `design_handoff_pitchsignal/`: canonical design handoff package and UI audit material
 - `logs/`: local runtime logs only
 
