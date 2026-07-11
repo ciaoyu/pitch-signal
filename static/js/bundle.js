@@ -5292,6 +5292,7 @@ var require_player_detail = __commonJS({
         };
         if (inlineData) showInline();
         if (!id && !teamId) return;
+        const normalizePlayerName = (name) => String(name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const fallbackRosterSearch = () => {
           if (!teamId || !inlineData || !inlineData.name) {
             api("/api/player/" + id).then((basic) => {
@@ -5307,7 +5308,11 @@ var require_player_detail = __commonJS({
           }
           api("/api/team/" + teamId).then((t) => {
             if (!t || !t.roster) throw new Error("no roster");
-            const p = t.roster.find((x) => x.name.toLowerCase() === inlineData.name.toLowerCase() || x.name.toLowerCase().includes(inlineData.name.toLowerCase()) || inlineData.name.toLowerCase().includes(x.name.toLowerCase()));
+            const targetName = normalizePlayerName(inlineData.name);
+            const p = t.roster.find((x) => {
+              const rosterName = normalizePlayerName(x.name);
+              return rosterName === targetName || rosterName.includes(targetName) || targetName.includes(rosterName);
+            });
             if (p && p.id && String(p.id) !== String(id)) {
               api("/api/player/" + p.id + "/enhanced").then((d2) => {
                 if (d2 && !d2.error) content.innerHTML = renderPlayerEnhanced(d2);
@@ -5336,8 +5341,8 @@ var require_player_detail = __commonJS({
             return;
           }
           if (inlineData?.name && d.name) {
-            const normA = inlineData.name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-            const normB = d.name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+            const normA = normalizePlayerName(inlineData.name);
+            const normB = normalizePlayerName(d.name);
             if (!normB.includes(normA.split(" ")[0]) && !normA.includes(normB.split(" ")[0])) {
               fallbackRosterSearch();
               return;

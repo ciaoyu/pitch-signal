@@ -52,6 +52,7 @@ const TEST_FILES = [
   'test-pf9-worldcup-odds-ui.js',
   'test-pf10-official-bracket-graph.js',
   'test-pf11-corner-analysis-won-corners.js',
+  'test-player-detail-accent-fallback.js',
   'test-pf8-top-scores.js',
   'test-poisson.js',
   'test-post-match-review.js',
