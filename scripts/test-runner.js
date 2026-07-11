@@ -120,6 +120,7 @@ const TEST_FILES = [
   'test-worldcup-data-wiring.js',
   'test-team-style-facts.js',
   'test-teams-elimination-status.js',
+  'test-dockerignore-data-safety.js',
 ];
 
 const filter = process.argv.includes('--match')

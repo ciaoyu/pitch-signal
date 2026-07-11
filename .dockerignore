@@ -21,7 +21,17 @@ DREAMS.md
 # Additional exclusions
 scratch/
 data/sources/world-cup-history/
-data/wc2026/
+# NOTE: do not exclude the whole data/wc2026/ dir — Docker's .dockerignore
+# cannot selectively re-include a file whose parent directory is excluded
+# (negation patterns don't work across an excluded ancestor), so a blanket
+# "data/wc2026/" here silently drops EVERY file added under it, including
+# static data (fifa_player_statistics.json, team_style_facts.json) that
+# nothing regenerates at runtime. Only exclude the large files that the
+# live-fifa-sync job actually regenerates on every boot.
+data/wc2026/lineups.json
+data/wc2026/matches.json
+data/wc2026/squads.json
+data/wc2026/sync-log.json
 .codebuddy/
 .workbuddy/
 *.bak
