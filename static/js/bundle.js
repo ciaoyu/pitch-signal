@@ -4387,7 +4387,7 @@ var require_elo_prediction = __commonJS({
             <div style="border:1px solid rgba(16,185,129,.14);background:rgba(16,185,129,.045);border-radius:10px;padding:8px">
                 <div style="font:700 10px/1 'Inter';color:#6ee7b7;margin-bottom:7px">\u2461 ${tx("\u5E02\u573A\u53C2\u8003", "Market")}</div>
                 ${renderProbabilityMiniRow(hasMarket ? divergence.marketProbs : null, { home: tx("\u4E3B", "H"), draw: tx("\u5E73", "D"), away: tx("\u5BA2", "A") })}
-                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? divergence.source || "market" : tx("\u672A\u914D\u7F6E\u8D54\u7387 Key \u6216\u65E0\u76D8\u53E3", "No odds key / market"))}</div>
+                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? divergence.source || "market" : divergence?.note === "market_data_pending" ? tx("\u5E02\u573A\u6570\u636E\u91C7\u96C6\u4E2D", "Market data pending") : tx("\u6682\u65E0\u5E02\u573A\u6570\u636E", "No market data yet"))}</div>
             </div>
             <div style="border:1px solid;border-radius:10px;padding:8px;${flagCls}">
                 <div style="font:700 10px/1 'Inter';margin-bottom:7px">\u2462 ${tx("\u5206\u6B67\u6307\u6570", "Divergence")}</div>

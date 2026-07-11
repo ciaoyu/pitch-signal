@@ -74,7 +74,7 @@
             <div style="border:1px solid rgba(16,185,129,.14);background:rgba(16,185,129,.045);border-radius:10px;padding:8px">
                 <div style="font:700 10px/1 'Inter';color:#6ee7b7;margin-bottom:7px">② ${tx('市场参考', 'Market')}</div>
                 ${renderProbabilityMiniRow(hasMarket ? divergence.marketProbs : null, { home: tx('主', 'H'), draw: tx('平', 'D'), away: tx('客', 'A') })}
-                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? (divergence.source || 'market') : tx('未配置赔率 Key 或无盘口', 'No odds key / market'))}</div>
+                <div style="font-size:8px;color:rgba(248,250,252,.22);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(hasMarket ? (divergence.source || 'market') : (divergence?.note === 'market_data_pending' ? tx('市场数据采集中', 'Market data pending') : tx('暂无市场数据', 'No market data yet')))}</div>
             </div>
             <div style="border:1px solid;border-radius:10px;padding:8px;${flagCls}">
                 <div style="font:700 10px/1 'Inter';margin-bottom:7px">③ ${tx('分歧指数', 'Divergence')}</div>

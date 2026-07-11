@@ -12,6 +12,7 @@ node_modules/
 data/*.db
 data/*.db-*
 data/match_snapshot_runs.json
+data/odds_milestone_runs.json
 
 .DS_Store
 *.log

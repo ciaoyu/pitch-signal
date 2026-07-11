@@ -76,6 +76,7 @@ const TEST_FILES = [
   'test-bot-kb.js',
   'test-calibration-report.js',
   'test-odds-divergence.js',
+  'test-odds-milestone.js',
   'test-pwa-push.js',
   'test-user-predictions.js',
   'test-teamcontext-news.js',

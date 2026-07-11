@@ -57,23 +57,23 @@ assert(div.DIVERGENCE_THRESHOLD === 0.08, 'threshold = 0.08');
 
 // 9. P4-1: route uses PURE model probs (includeExternalOdds:false), not the
 // odds-blended prediction — otherwise "divergence" is model+20%market vs
-// 100%market, which understates the real gap. Mock PredictionService so the
-// two calls (pure vs with-odds) return deliberately different homeWin, and
-// assert the route's modelProbs matches the PURE one.
+// 100%market, which understates the real gap. Mock PredictionService and
+// assert the route's modelProbs matches the pure call.
+//
+// 10. The route must NEVER fetch odds live on a cache miss (that used to chain
+// up to two real the-odds-api requests on every unauthenticated page view —
+// the actual cause of the account's quota exhaustion). On a miss it should
+// return a clean "market_data_pending" note with no marketProbs, computed
+// from a single free (no-odds) predictMatch call — assert predictMatch is
+// called with includeExternalOdds:false and never with true.
 (async () => {
   process.env.TEST_MODE = '1';
   const PredictionService = require('../lib/services/PredictionService');
   const original = PredictionService.prototype.predictMatch;
+  const calls = [];
 
   PredictionService.prototype.predictMatch = async function (matchId, opts = {}) {
-    if (opts.includeExternalOdds) {
-      // Simulate what the real blended prediction would look like: pulled
-      // toward the market (60/25/15 → 51/28/21), plus the raw market odds.
-      return {
-        homeWin: 0.51, draw: 0.28, awayWin: 0.21,
-        externalOdds: { homeWin: 2.50, draw: 3.60, awayWin: 6.00, source: 'test_mock' },
-      };
-    }
+    calls.push(opts.includeExternalOdds === true);
     return { homeWin: 0.60, draw: 0.25, awayWin: 0.15 };
   };
 
@@ -85,8 +85,10 @@ assert(div.DIVERGENCE_THRESHOLD === 0.08, 'threshold = 0.08');
 
   assert(!result.error, `route did not error: ${result.error || ''}`);
   near(result.modelProbs?.home ?? -1, 0.60, 0.001, 'modelProbs.home uses PURE prediction (0.60)');
-  assert(Math.abs((result.modelProbs?.home ?? 0) - 0.51) > 0.01, 'modelProbs.home is NOT the odds-blended value (0.51)');
-  assert(result.marketProbs != null, 'marketProbs still populated from externalOdds on the with-odds call');
+  assert(result.marketProbs == null, 'marketProbs is absent when no benchmark row exists (no live odds fetch)');
+  assert(result.note === 'market_data_pending', 'note explains market data is pending, not "no odds"');
+  assert(calls.length === 1, 'predictMatch called exactly once on a cache miss (no live odds fetch)');
+  assert(calls[0] === false, 'the single predictMatch call never requests externalOdds');
 
   console.log(`\n✅ ${passed} passed  ❌ ${failed} failed`);
   process.exit(failed > 0 ? 1 : 0);

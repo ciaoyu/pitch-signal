@@ -37,7 +37,8 @@ assert(source.includes("② ${tx('市场参考'") || source.includes('② ${tx("
 assert(source.includes("③ ${tx('分歧指数'") || source.includes('③ ${tx("分歧指数"'), 'panel has divergence-index column');
 assert(source.includes('/api/odds-divergence/${m.id}'), 'prediction cards fetch odds-divergence per upcoming match');
 assert(source.includes('b.divergenceScore - a.divergenceScore'), 'prediction cards sort by divergence score descending');
-assert(source.includes('No odds key / market') && source.includes('未配置赔率 Key 或无盘口'), 'no-key/no-market fallback is visible');
+assert(source.includes('Market data pending') && source.includes('市场数据采集中'), 'pending-market fallback is visible');
+assert(source.includes('No market data yet') && source.includes('暂无市场数据'), 'no-market fallback is visible');
 assert(bundle.includes('market-divergence-grid'), 'rebuilt bundle contains market-divergence grid');
 
 const versionMatch = html.match(/bundle\.js\?v=([a-f0-9]{8})/);
