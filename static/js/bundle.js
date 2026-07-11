@@ -4007,15 +4007,19 @@ var require_team_detail = __commonJS({
       let allTeams = [];
       async function refreshTeamsFromStandings() {
         const [d, b] = await Promise.all([api("/api/standings"), api("/api/bracket")]);
+        const eliminatedIds = /* @__PURE__ */ new Set();
         const eliminatedNames = /* @__PURE__ */ new Set();
+        const qualifiedIds = /* @__PURE__ */ new Set();
         if (b?.matches) {
           for (const [slotId, m] of Object.entries(b.matches)) {
-            if (m.status === "final" && m.winner) {
+            if (m.teamA?.id) qualifiedIds.add(String(m.teamA.id));
+            if (m.teamB?.id) qualifiedIds.add(String(m.teamB.id));
+            if (m.status === "final" && m.winner && !slotId.startsWith("SF-")) {
               const loser = m.winner === "A" ? m.teamB : m.teamA;
-              if (loser?.name && !slotId.startsWith("SF-")) {
-                eliminatedNames.add(loser.name);
-                if (loser.nameI18n) eliminatedNames.add(loser.nameI18n);
-              }
+              if (loser?.id) eliminatedIds.add(String(loser.id));
+              if (loser?.name) eliminatedNames.add(loser.name);
+              if (loser?.nameI18n?.en) eliminatedNames.add(loser.nameI18n.en);
+              if (loser?.nameI18n?.zh) eliminatedNames.add(loser.nameI18n.zh);
             }
           }
         }
@@ -4023,7 +4027,8 @@ var require_team_detail = __commonJS({
           allTeams = [];
           for (const g of d.groups) {
             for (const t of g.standings) {
-              const isEliminated = t.status === "eliminated" || t.eliminated === true || eliminatedNames.has(t.name) || t.nameI18n && eliminatedNames.has(t.nameI18n);
+              const failedToQualify = qualifiedIds.size > 0 && Number(t.played) >= 3 && !qualifiedIds.has(String(t.id));
+              const isEliminated = t.status === "eliminated" || t.eliminated === true || eliminatedIds.has(String(t.id)) || eliminatedNames.has(t.name) || failedToQualify || t.nameI18n?.en && eliminatedNames.has(t.nameI18n.en) || t.nameI18n?.zh && eliminatedNames.has(t.nameI18n.zh);
               allTeams.push({ ...t, group: g.name, eliminated: !!isEliminated });
             }
           }

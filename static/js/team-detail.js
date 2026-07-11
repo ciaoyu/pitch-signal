@@ -18,15 +18,30 @@
 
     async function refreshTeamsFromStandings() {
         const [d, b] = await Promise.all([api('/api/standings'), api('/api/bracket')]);
+        const eliminatedIds = new Set();
         const eliminatedNames = new Set();
+        // Any team id that appears anywhere in the bracket (winner or loser, any
+        // round) qualified for the knockout stage. /api/standings never sets a
+        // status/eliminated field of its own, so a team whose group stage is
+        // finished (played >= 3) but who never shows up in the bracket at all
+        // simply finished outside the top two and was eliminated in the groups —
+        // that must be inferred here, not assumed already-flagged upstream.
+        const qualifiedIds = new Set();
         if (b?.matches) {
             for (const [slotId, m] of Object.entries(b.matches)) {
-                if (m.status === 'final' && m.winner) {
+                if (m.teamA?.id) qualifiedIds.add(String(m.teamA.id));
+                if (m.teamB?.id) qualifiedIds.add(String(m.teamB.id));
+                if (m.status === 'final' && m.winner && !slotId.startsWith('SF-')) {
                     const loser = m.winner === 'A' ? m.teamB : m.teamA;
-                    if (loser?.name && !slotId.startsWith('SF-')) {
-                        eliminatedNames.add(loser.name);
-                        if (loser.nameI18n) eliminatedNames.add(loser.nameI18n);
-                    }
+                    // Primary match key is id: /api/standings' team.name is a combined
+                    // "中文 English" string (e.g. "南非 South Africa") while bracket
+                    // loser.name is English-only ("South Africa") — those never match
+                    // by string equality, which silently kept every knockout-stage
+                    // loser marked "Active" forever. id is format-independent.
+                    if (loser?.id) eliminatedIds.add(String(loser.id));
+                    if (loser?.name) eliminatedNames.add(loser.name);
+                    if (loser?.nameI18n?.en) eliminatedNames.add(loser.nameI18n.en);
+                    if (loser?.nameI18n?.zh) eliminatedNames.add(loser.nameI18n.zh);
                 }
             }
         }
@@ -34,7 +49,13 @@
             allTeams = [];
             for (const g of d.groups) {
                 for (const t of g.standings) {
-                    const isEliminated = t.status === 'eliminated' || t.eliminated === true || eliminatedNames.has(t.name) || (t.nameI18n && eliminatedNames.has(t.nameI18n));
+                    const failedToQualify = qualifiedIds.size > 0 && Number(t.played) >= 3 && !qualifiedIds.has(String(t.id));
+                    const isEliminated = t.status === 'eliminated' || t.eliminated === true
+                        || eliminatedIds.has(String(t.id))
+                        || eliminatedNames.has(t.name)
+                        || failedToQualify
+                        || (t.nameI18n?.en && eliminatedNames.has(t.nameI18n.en))
+                        || (t.nameI18n?.zh && eliminatedNames.has(t.nameI18n.zh));
                     allTeams.push({ ...t, group: g.name, eliminated: !!isEliminated });
                 }
             }

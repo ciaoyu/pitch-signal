@@ -119,6 +119,7 @@ const TEST_FILES = [
   'test-post-match-frozen-intel-ui.js',
   'test-worldcup-data-wiring.js',
   'test-team-style-facts.js',
+  'test-teams-elimination-status.js',
 ];
 
 const filter = process.argv.includes('--match')
