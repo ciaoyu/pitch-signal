@@ -138,6 +138,42 @@ async function run() {
     failed++;
   }
 
+  // Test 3: PredictionService cache key separation (includeExternalOdds true vs false)
+  try {
+    console.log('\n📋 Test 3: Prediction cache separation by includeExternalOdds');
+    cache['pred_test_cache_sep'] = null;
+    cache['pred_odds_test_cache_sep'] = null;
+
+    await predictionService.predictMatch('test_cache_sep', { includeExternalOdds: false });
+    testAssert(cache['pred_test_cache_sep'] !== null && cache['pred_test_cache_sep'] !== undefined, 'Cached pure prediction under pred_test_cache_sep');
+    testAssert(cache['pred_odds_test_cache_sep'] == null, 'Did not populate pred_odds_test_cache_sep when includeExternalOdds is false');
+
+    await predictionService.predictMatch('test_cache_sep', { includeExternalOdds: true });
+    testAssert(cache['pred_odds_test_cache_sep'] !== null && cache['pred_odds_test_cache_sep'] !== undefined, 'Cached odds-blended prediction under pred_odds_test_cache_sep');
+  } catch (e) {
+    console.error('  ❌ Cache separation test failed:', e);
+    failed++;
+  }
+
+  // Test 4: Public prediction route GET /api/predict/:matchId uses persist: false
+  try {
+    console.log('\n📋 Test 4: Public prediction API GET /api/predict/:matchId does not persist to DB');
+    const createPredictionRoutes = require('../lib/routes/prediction');
+    let capturedOpts = null;
+    const mockService = {
+      predictMatch: async (matchId, opts) => {
+        capturedOpts = opts;
+        return { matchId };
+      }
+    };
+    const routes = createPredictionRoutes({ predictionService: mockService });
+    await routes['GET /api/predict/:matchId']({ matchId: 'test_public_route' });
+    testAssert(capturedOpts !== null && capturedOpts.persist === false, 'GET /api/predict/:matchId calls predictMatch with persist: false');
+  } catch (e) {
+    console.error('  ❌ Public prediction route test failed:', e);
+    failed++;
+  }
+
   // Close database to allow unlinking
   try { db.close(); } catch (e) {}
 
