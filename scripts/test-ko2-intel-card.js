@@ -92,9 +92,45 @@ test('3. renders confidence and usedInModel badges properly', () => {
     }
   };
   const html = window.renderKnockoutIntel(fixture);
-  assert.ok(html.includes('HIGH'), 'Should render HIGH badge');
+  assert.ok(html.includes('高'), 'Should render localized confidence badge');
   assert.ok(html.includes('已入量化模型'), 'Should render MODEL SIGNAL badge');
-  assert.ok(html.includes('schedule+venues'), 'Should render source badge');
+  assert.ok(html.includes('赛程与场地'), 'Should render localized source badge');
+});
+
+test('4. every real section builder\'s source string has a sourceLabel translation', () => {
+  // Regression guard: match-renderers.js's sourceLabel map is a hand-maintained
+  // lookup, hardcoded against each lib/services/*-section.js's `source:` string
+  // literal at review time. A section added or edited later (e.g. experience-section.js
+  // gaining a "world-cup-history+..." source when its historical scope was added)
+  // silently falls back to rendering the raw internal string if nobody remembers
+  // to update this list by hand — this test catches that automatically instead of
+  // relying on someone noticing an untranslated badge in the UI.
+  const rendererSrc = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'match-renderers.js'), 'utf8');
+  const mapMatch = rendererSrc.match(/const sourceLabel = \(\{([\s\S]*?)\}\[sec\.source\]/);
+  assert.ok(mapMatch, 'sourceLabel map block found in match-renderers.js');
+  const mapBlock = mapMatch[1];
+
+  // Scoped to exactly the files registered in knockout-intel.js's SECTION_BUILDERS
+  // (not every file under lib/services/ — most of those are candidate signals,
+  // player-rating lookups, etc. whose `source` field never flows through this
+  // card's sec.source at all).
+  const sectionBuilderFiles = [
+    'suspension.js', 'services/fatigue-signal.js', 'services/penalty-section.js',
+    'services/referee-stats.js', 'services/super-subs-section.js', 'services/star-form.js',
+    'services/matchup-styles.js', 'services/game-state-section.js',
+    'services/experience-section.js', 'services/lessons-section.js',
+  ].map((f) => path.join(__dirname, '..', 'lib', f));
+
+  const missing = [];
+  for (const file of sectionBuilderFiles) {
+    const src = fs.readFileSync(file, 'utf8');
+    for (const m of src.matchAll(/source:\s*'([^']+)'/g)) {
+      const value = m[1];
+      const key = `'${value}':`;
+      if (!mapBlock.includes(key) && !missing.includes(value)) missing.push(value);
+    }
+  }
+  assert.deepStrictEqual(missing, [], `sourceLabel map is missing translations for: ${missing.join(', ')}`);
 });
 
 console.log('All KO-2 tests passed!');

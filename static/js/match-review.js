@@ -10,6 +10,7 @@
     const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
 
     function renderFrozenKnockoutComparison(review) {
+        const uiLang = window.WorldCup.State?.uiLang || 'zh';
         const snapshot = review.predictionSnapshot;
         const intel = snapshot?.payload?.knockoutIntel;
         const sections = intel?.sections;
@@ -33,9 +34,18 @@
         if (!sections) {
             left = `<div class="text-[11px] text-gray-500">${tx('缺少赛前快照，不能在赛后补算成赛前情报。仅接受发布时间早于开球且带原始链接的外部存档补充。', 'No pre-match snapshot: do not reconstruct pre-match intelligence after the result. Only externally archived, linked material published before kickoff may be added.')}</div>`;
         } else {
-            const tags = value => (value || []).map(tag => ({ possession:'控球主导', counter_fast:'快速反击', high_press:'高位逼抢', low_block:'低位防守', crossing:'传中/定位球', observed_possession_high:'观测到的高控球', observed_possession_low:'观测到的低控球' }[tag] || tag)).join(' · ') || tx('覆盖不足', 'Insufficient coverage');
+            const tags = value => (value || []).map(tag => ({
+                possession: { zh: '控球主导', en: 'Possession-led' },
+                counter_fast: { zh: '快速反击', en: 'Fast counter-attacks' },
+                high_press: { zh: '高位逼抢', en: 'High press' },
+                low_block: { zh: '低位防守', en: 'Low block' },
+                crossing: { zh: '传中/定位球', en: 'Crosses/set pieces' },
+                observed_possession_high: { zh: '观测到的高控球', en: 'Observed high possession' },
+                observed_possession_low: { zh: '观测到的低控球', en: 'Observed low possession' },
+            }[tag] || { zh: tag, en: tag })).map(tag => i18nText(tag, '')).join(' · ') || tx('覆盖不足', 'Insufficient coverage');
+            const confidence = value => ({ low: tx('低', 'Low'), medium: tx('中', 'Medium'), high: tx('高', 'High') }[value] || value || tx('低', 'Low'));
             left += `<div class="space-y-2 text-[11px]">`;
-            if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('风格对垒', 'Style matchup')} <span class="text-[9px] text-gray-600">${esc(style.confidence || 'low')}</span></div><div class="text-gray-400 mt-1">${tx('主队', 'Home')}: ${esc(tags(style.homeTags))}<br>${tx('客队', 'Away')}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
+            if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('风格对垒', 'Style matchup')} <span class="text-[9px] text-gray-600">${esc(confidence(style.confidence))}</span></div><div class="text-gray-400 mt-1">${tx('主队', 'Home')}: ${esc(tags(style.homeTags))}<br>${tx('客队', 'Away')}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
             if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('替补影响预览', 'Bench preview')}</div><div class="text-gray-500 mt-1">${esc(sections.superSubs.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
             if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('点球情报', 'Penalty context')}</div><div class="text-gray-500 mt-1">${esc(sections.penalty.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
             if (sections.experience) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('淘汰赛经历', 'Knockout experience')}</div><div class="text-gray-500 mt-1">${esc(i18nText(sections.experience.note, ''))}</div></div>`;
@@ -43,8 +53,9 @@
         }
 
         const score = `${actual.homeScore ?? actual.home?.score ?? '—'} : ${actual.awayScore ?? actual.away?.score ?? '—'}`;
-        const xi = team => (team || []).map(player => player.nameZh || player.name).join('、');
-        const subs = (lineups.substitutions || []).map(sub => `${sub.minute || '?'} ${sub.offNameZh || sub.offName} → ${sub.onNameZh || sub.onName}`).join('<br>');
+        const playerName = player => uiLang === 'en' ? (player.name || player.nameZh || '') : (player.nameZh || player.name || '');
+        const xi = team => (team || []).map(playerName).join(uiLang === 'en' ? ', ' : '、');
+        const subs = (lineups.substitutions || []).map(sub => `${sub.minute || '?'} ${uiLang === 'en' ? (sub.offName || sub.offNameZh) : (sub.offNameZh || sub.offName)} → ${uiLang === 'en' ? (sub.onName || sub.onNameZh) : (sub.onNameZh || sub.onName)}`).join('<br>');
         const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('最终比分', 'Final score')}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际首发', 'Starting XI')}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx('本接口未返回可验证首发：本场无法验证。', 'No verified starting XI returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际换人', 'Substitutions')}</div><div class="text-gray-500 mt-1">${subs || tx('本接口未返回可验证换人：本场无法验证。', 'No verified substitutions returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('红黄牌、加时与点球', 'Cards, extra time & penalties')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('关键事件', 'Key events')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /goal|进球/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div></div>`;
         return `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-300 mb-2">🧊 ${tx('赛前淘汰赛情报与赛后事实对照', 'Frozen pre-match intelligence vs post-match facts')}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><div class="text-[10px] font-bold text-cyan-300 mb-1.5">${tx('赛前淘汰赛情报（冻结快照）', 'Pre-match knockout intelligence (frozen snapshot)')}</div>${left}</div><div><div class="text-[10px] font-bold text-amber-300 mb-1.5">${tx('赛后事实与验证', 'Post-match facts & verification')}</div>${right}</div></div></div>`;
     }
@@ -62,7 +73,9 @@
         const pmHeadline = i18nText(aiPostmortem.headlineI18n, aiPostmortem.headline || '');
         const postmortemRaw = [pmHeadline, ...postmortemItems].join(' ');
         const aiGenerated = aiPostmortem.status === 'completed' && (pmHeadline || postmortemItems.length > 0);
-        const hasChinesePostmortem = uiLang !== 'zh' || Boolean(aiPostmortem.headlineI18n?.zh) || /[\u4e00-\u9fff]/.test(postmortemRaw) || aiGenerated;
+        const hasLocalizedPostmortem = uiLang === 'zh'
+            ? Boolean(aiPostmortem.headlineI18n?.zh || postmortemItems.length)
+            : Boolean(aiPostmortem.headlineI18n?.en || postmortemItems.length);
         const evidence = review.evidence || {};
         const predictionSource = review.predictionSource || 'pre_match';
         const predictionSnapshotNote = review.predictionSnapshotNote || null;
@@ -162,7 +175,7 @@
             html += '</div></div>';
         }
 
-        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="flex items-center justify-between mb-2"><div class="text-xs font-bold text-purple-400">🧠 ${tx('AI 赛后复盘（实验性）','AI Post-match Review (Experimental)')}</div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${aiPostmortem.status||'pending_provider'}</span></div>${(aiPostmortem.headline||aiPostmortem.headlineI18n)?`<div class="text-xs font-bold text-white mb-1">${i18nText(aiPostmortem.headlineI18n,aiPostmortem.headline||'')} ${!hasChinesePostmortem?`<span class="text-[9px] text-yellow-500 font-normal ml-1">(${tx('未返回中文','English Only')})</span>`:''}</div>`:`<div class="text-[11px] text-gray-500 mb-1">${tx('AI 赛后复盘正在生成中...','Waiting for expert commentary/news evidence before AI attribution')}</div>`}<div class="grid grid-cols-3 gap-1.5 text-[10px] text-gray-500 mb-2"><div class="bg-white/5 rounded p-1.5 text-center">${tx('事件','Events')} ${evidence.events?.length||0}</div><div class="bg-white/5 rounded p-1.5 text-center">${tx('新闻','News')} ${evidence.news?.length||0}</div><div class="bg-white/5 rounded p-1.5 text-center">${tx('评论','Commentary')} ${evidence.commentary?.length||0}</div></div>${postmortemItems.length>0?postmortemItems.map(n=>`<div class="text-[11px] text-gray-300 border-l border-purple-400/30 pl-2 mb-1">${i18nText(n)}</div>`).join(''):''}</div>`;
+        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="flex items-center justify-between mb-2"><div class="text-xs font-bold text-purple-400">🧠 ${tx('AI 赛后复盘（实验性）','AI Post-match Review (Experimental)')}</div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${aiPostmortem.status||'pending_provider'}</span></div>${(aiPostmortem.headline||aiPostmortem.headlineI18n)?`<div class="text-xs font-bold text-white mb-1">${i18nText(aiPostmortem.headlineI18n,aiPostmortem.headline||'')} ${!hasLocalizedPostmortem?`<span class="text-[9px] text-yellow-500 font-normal ml-1">(${tx('未返回中文','English version unavailable')})</span>`:''}</div>`:`<div class="text-[11px] text-gray-500 mb-1">${tx('AI 赛后复盘正在生成中...','Waiting for expert commentary/news evidence before AI attribution')}</div>`}<div class="grid grid-cols-3 gap-1.5 text-[10px] text-gray-500 mb-2"><div class="bg-white/5 rounded p-1.5 text-center">${tx('事件','Events')} ${evidence.events?.length||0}</div><div class="bg-white/5 rounded p-1.5 text-center">${tx('新闻','News')} ${evidence.news?.length||0}</div><div class="bg-white/5 rounded p-1.5 text-center">${tx('评论','Commentary')} ${evidence.commentary?.length||0}</div></div>${postmortemItems.length>0?postmortemItems.map(n=>`<div class="text-[11px] text-gray-300 border-l border-purple-400/30 pl-2 mb-1">${i18nText(n)}</div>`).join(''):''}</div>`;
         html += `<div class="text-center text-[9px] text-gray-700 mt-2">${tx('实验性赛后复盘：AI 自动生成内容可能不完整或存在误差，仅供参考。','Experimental post-match review: AI-generated content may be incomplete or inaccurate and is for reference only.')}</div>`;
         return html;
     }

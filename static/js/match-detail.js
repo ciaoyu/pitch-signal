@@ -539,14 +539,13 @@
 
     function renderHeadToHead(data) {
         if (!data || data.dataQuality === "unavailable") return `<div class="text-gray-500 text-xs py-4 text-center">${tx('ESPN 暂无历史交锋样本','No historical H2H data from ESPN')}</div>`;
-        const homeTeam=data.homeTeam||tx("主队","Home"),awayTeam=data.awayTeam||tx("客队","Away"),grouped=data.grouped||{},summary=data.summary||{},homeSummary=summary.home||{},awaySummary=summary.away||{},recentMatches=data.recentMatches||[];
+        const homeTeam=displayMaybeTeamName(data.homeTeamI18n||data.homeTeam||tx("主队","Home")),awayTeam=displayMaybeTeamName(data.awayTeamI18n||data.awayTeam||tx("客队","Away")),grouped=data.grouped||{},summary=data.summary||{},homeSummary=summary.home||{},awaySummary=summary.away||{},recentMatches=data.recentMatches||[];
         let html='<div class="space-y-3">';
         const recentHome=data.recent?.home||homeSummary.recent10||[];const recentAway=data.recent?.away||awaySummary.recent10||[];
         const groupForm=data.groupForm||{};
         const wdl=r10=>{if(!r10.length)return'';let w=0,d=0,l=0;r10.forEach(m=>{if(m.result==='W')w++;else if(m.result==='D')d++;else l++;});return ` <span class=\"font-mono text-[11px] text-white/40\">${w}-${d}-${l}</span>`;};
         const groupWdl=form=>form&&form.played?` <span class="font-mono text-[11px] text-white/60">${form.wins}-${form.draws}-${form.losses}</span>`:'';
         const lang=window.WorldCup?.State?.uiLang||'zh';
-        const localSummary=s=>s?.summaryTextI18n?.(s.summaryTextI18n[lang]||s.summaryTextI18n.zh)||s?.summaryText||'';
         const homeSummaryText=homeSummary.summaryTextI18n?homeSummary.summaryTextI18n[lang]||homeSummary.summaryTextI18n.zh:homeSummary.summaryText||homeTeam+tx(' 数据不足',' Insufficient data');
         const awaySummaryText=awaySummary.summaryTextI18n?awaySummary.summaryTextI18n[lang]||awaySummary.summaryTextI18n.zh:awaySummary.summaryText||awayTeam+tx(' 数据不足',' Insufficient data');
         html+=`<div class="glass-light rounded-lg p-3"><div class="text-xs font-bold text-gray-400 mb-2">${tx('本届小组赛战绩','Current Group Record')}</div><div class="space-y-2"><div class="flex items-center gap-2"><span class="text-blue-400">●</span><span class="text-sm">${esc(homeTeam)}${groupWdl(groupForm.home)}</span></div><div class="flex items-center gap-2"><span class="text-red-400">●</span><span class="text-sm">${esc(awayTeam)}${groupWdl(groupForm.away)}</span></div></div></div>`;
@@ -565,7 +564,7 @@
 
     function renderH2HMatchList(matches) {
         if (!matches?.length) return `<div class="text-gray-600 text-xs">${tx('暂无比赛','No matches')}</div>`;
-        return '<div class="space-y-1">'+matches.map(m=>{const score=m.score||(m.homeScore!==undefined?m.homeScore+"-"+m.awayScore:"0-0");const[hs,as]=score.split("-").map(Number);let cls="text-yellow-400";if(hs>as)cls="text-blue-400";else if(hs<as)cls="text-red-400";const teams=[m.homeTeamName,m.awayTeamName].filter(Boolean).join(' vs ');return `<div class="flex items-center justify-between text-[11px] py-1 border-b border-white/5"><span class="text-gray-600">${esc((m.date||"").substring(0,10))}</span><span class="text-gray-500 truncate px-2">${esc(teams||m.competition||"")}</span><span class="font-bold ${cls}">${esc(score)}</span></div>`;}).join("")+'</div>';
+        return '<div class="space-y-1">'+matches.map(m=>{const score=m.score||(m.homeScore!==undefined?m.homeScore+"-"+m.awayScore:"0-0");const[hs,as]=score.split("-").map(Number);let cls="text-yellow-400";if(hs>as)cls="text-blue-400";else if(hs<as)cls="text-red-400";const teams=[displayMaybeTeamName(m.homeTeamNameI18n||m.homeTeamName),displayMaybeTeamName(m.awayTeamNameI18n||m.awayTeamName)].filter(Boolean).join(' vs ');return `<div class="flex items-center justify-between text-[11px] py-1 border-b border-white/5"><span class="text-gray-600">${esc((m.date||"").substring(0,10))}</span><span class="text-gray-500 truncate px-2">${esc(teams||m.competition||"")}</span><span class="font-bold ${cls}">${esc(score)}</span></div>`;}).join("")+'</div>';
     }
 
     function renderMatchWeatherBlock(w) {

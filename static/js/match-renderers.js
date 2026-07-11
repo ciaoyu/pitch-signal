@@ -1772,8 +1772,21 @@ window.WorldCup.MatchRenderers = (() => {
             const confColor = sec.confidence === 'high' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' :
                               sec.confidence === 'medium' ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' :
                               'bg-gray-500/15 text-gray-400 border border-gray-500/30';
-            const confLabel = esc((sec.confidence || 'low').toUpperCase());
-            const sourceBadge = sec.source ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400 font-mono">${esc(sec.source)}</span>` : '';
+            const confLabel = esc(({ low: tx('低', 'Low'), medium: tx('中', 'Medium'), high: tx('高', 'High') }[sec.confidence] || sec.confidence || tx('低', 'Low')));
+            const sourceLabel = ({
+                'ai-postmortem': tx('AI 赛后复盘', 'AI post-match review'),
+                'fifa-lineups+player-events': tx('FIFA 阵容与球员事件', 'FIFA lineups + player events'),
+                'world-cup-history+ratings+schedule+player-events': tx('世界杯历史与赛事数据', 'World Cup history + match data'),
+                'schedule+venues': tx('赛程与场地', 'Schedule + venues'),
+                'wc2026/team_style_facts.json': tx('赛事风格事实', 'Tournament style facts'),
+                'player-match-events': tx('球员比赛事件', 'Player match events'),
+                'player_match_events': tx('球员比赛事件', 'Player match events'),
+                'match_officials+player_match_events': tx('裁判与球员事件', 'Officials + player events'),
+                'continental-strength/reference-elo-head': tx('洲际实力参考', 'Continental strength reference'),
+                'espn-events+fifa-rules': tx('ESPN 赛事与 FIFA 纪律规则', 'ESPN events + FIFA disciplinary rules'),
+                'world-cup-history+schedule+player-events': tx('世界杯历史与赛事数据', 'World Cup history + match data'),
+            }[sec.source] || sec.source);
+            const sourceBadge = sourceLabel ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400 font-mono">${esc(sourceLabel)}</span>` : '';
             const modelBadge = sec.usedInModel ?
                 `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">${tx('已入量化模型', 'MODEL SIGNAL')}</span>` :
                 `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${tx('仅战术参考', 'INFO ONLY')}</span>`;
@@ -1979,7 +1992,11 @@ window.WorldCup.MatchRenderers = (() => {
                 cardContent += renderNote(sec);
             } else if (key === 'lessons') {
                 const renderLessons = (sideLabel, list) => {
-                    const rows = (list || []).map(item => `<div class="text-[10px] text-gray-300 leading-snug">• ${L(item)}</div>`).join('');
+                    const rows = (list || []).map(item => {
+                        const legacyUnavailable = getLang() === 'en' && item?.legacySingleLanguage === 'zh';
+                        const text = legacyUnavailable ? tx('历史复盘仅提供中文', 'English version unavailable for this historical review') : L(item);
+                        return `<div class="text-[10px] text-gray-300 leading-snug">• ${text}</div>`;
+                    }).join('');
                     return `<div class="p-1.5 rounded bg-white/[0.02]">
                         <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
                         ${rows || `<div class="text-[10px] text-gray-500">${tx('无历史教训记录', 'No records')}</div>`}

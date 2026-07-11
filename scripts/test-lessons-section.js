@@ -60,7 +60,9 @@ test('2. extracts teamSpecific lessons with source matchId and caps at <= 3 item
 
     // Check entry shape
     const firstHome = res.home[0];
-    assert.ok(firstHome.zh && firstHome.en);
+    assert.ok(firstHome.zh);
+    assert.strictEqual(firstHome.en, null, 'legacy single-language lessons do not masquerade as English');
+    assert.strictEqual(firstHome.legacySingleLanguage, 'zh');
     assert.ok(firstHome.fromMatchId);
   } finally {
     const delStmt = db.prepare('DELETE FROM post_match_reviews WHERE match_id IN (?, ?, ?, ?)');
