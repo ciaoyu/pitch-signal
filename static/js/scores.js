@@ -11,7 +11,11 @@
             el.innerHTML = `<div style="text-align:center;padding:60px 0"><div style="font-size:40px;margin-bottom:10px">&#9888;&#65039;</div><p style="color:rgba(248,250,252,.3)">${res.isFailure ? tx('加载失败，请稍后重试', 'Failed to load, please retry') : esc(res.error || '')}</p></div>`;
             return;
         }
-        const visibleMatches = d.matches || [];
+        let visibleMatches = d.matches || [];
+        // ESPN's default scoreboard only contains the current day.  When that
+        // day has finished, keep the Scores tab useful by adding the next
+        // scheduled matchday from the already-supported full schedule.
+        visibleMatches = await appendNextScheduledMatches(visibleMatches);
         state._lastScoresMatches = visibleMatches;
 
         if (!visibleMatches.length) {
@@ -74,6 +78,7 @@
         // Load tournament stats banner + enrich match cards (async, non-blocking)
         loadTournamentStats();
         enrichMatchStats(visibleMatches);
+        enrichPreMatchStats(visibleMatches);
 
         document.getElementById('update-time').textContent = t('updatePrefix') + new Date().toLocaleTimeString(state.uiLang === 'zh' ? 'zh-CN' : 'en-US', { timeZone: 'Asia/Shanghai', hour12: false, hour: '2-digit', minute: '2-digit' });
     }
@@ -87,6 +92,37 @@
         };
         const isLive = type === 'in';
         return `<div class="section-label${isLive ? ' section-label-live' : ''}">${isLive ? '<span class="dot"></span>' : ''}${labels[type]}</div>`;
+    }
+
+    // The score endpoint deliberately stays a lightweight "today" request.
+    // Schedule is loaded only when no current-day fixture is still upcoming;
+    // then we show all fixtures on the nearest future matchday, not an
+    // unbounded tournament list.
+    async function appendNextScheduledMatches(currentMatches) {
+        const state = window.WorldCup.State;
+        if (currentMatches.some(m => m.state === 'pre')) return currentMatches;
+
+        if (!state.scheduleLoaded && typeof window.loadSchedule === 'function') {
+            try { await window.loadSchedule(); } catch (_) {}
+        }
+
+        const now = Date.now();
+        const upcoming = (state.scheduleCache || [])
+            .filter(m => {
+                if (m.state !== 'pre') return false;
+                const kickoff = Date.parse(m.date || '');
+                return !Number.isFinite(kickoff) || kickoff >= now;
+            })
+            .sort((a, b) => Date.parse(a.date || '') - Date.parse(b.date || ''));
+
+        if (!upcoming.length) return currentMatches;
+
+        const nextDate = String(upcoming[0].dateBJT || '').split(' ')[0];
+        const nextMatchday = upcoming.filter(m =>
+            String(m.dateBJT || '').split(' ')[0] === nextDate
+        );
+        const seen = new Set(currentMatches.map(m => String(m.id)));
+        return currentMatches.concat(nextMatchday.filter(m => !seen.has(String(m.id))));
     }
 
     // ── Live card (state === 'in') ──

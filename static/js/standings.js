@@ -60,7 +60,7 @@
                 scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx('加载射手榜...', 'Loading scorers...')}</div>`;
                 window.WorldCup.ApiClient.get('/api/tournament-stats').then(res => {
                     if (res.ok && res.data?.topScorers) {
-                        scorersContent.innerHTML = renderTopScorers(res.data.topScorers);
+                        scorersContent.innerHTML = renderTopScorers(res.data.topScorers, res.data.topScorersSource);
                     } else {
                         scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx('射手榜数据暂无', 'No scorer data available')}</div>`;
                     }
@@ -71,14 +71,14 @@
         }
     }
 
-    function renderTopScorers(scorers) {
+    function renderTopScorers(scorers, sourceMeta) {
         const { esc, tx, attr } = window.WorldCup.Utils;
         const playerZh = (name) => (window.WorldCup.I18n?.translatePlayerName || ((n) => n))(name);
         if (!scorers.length) return `<div class="text-center py-10 text-gray-500">${tx('暂无射手数据', 'No scorer data')}</div>`;
 
         let html = '';
-        scorers.slice(0, 20).forEach((p, i) => {
-            const rank = i + 1;
+        scorers.slice(0, 50).forEach((p, i) => {
+            const rank = p.rank || i + 1;
             const nameZh = playerZh(p.name);
             const rankColor = rank <= 3 ? '#34d399' : 'rgba(248,250,252,.3)';
             const clickable = (p.athleteId || p.teamEspnId) ? ` data-action="open-player-detail" data-player-id="${attr(p.athleteId || '')}" data-team-id="${attr(p.teamEspnId || '')}" data-player-name="${attr(p.name)}" style="cursor:pointer"` : '';
@@ -92,11 +92,12 @@
                 <div style="text-align:right;flex-shrink:0">
                     <div style="font:700 18px/1 'JetBrains Mono', monospace;color:#34d399">${p.goals}</div>
                     <div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px">${tx('球',' goals')}</div>
+                    ${(p.assists != null || p.minutes != null) ? `<div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.35);margin-top:3px">${tx('助','A')} ${p.assists ?? '—'} · ${p.minutes ?? '—'} ${tx('分钟','min')}</div>` : ''}
                 </div>
             </div>`;
         });
-
-        return html;
+        const sourceLine = sourceMeta?.source ? `<div class="text-center text-[9px] text-gray-600 mt-3">${tx('来源','Source')}: ${esc(sourceMeta.source)}${sourceMeta.retrievedAt ? ` · ${esc(new Date(sourceMeta.retrievedAt).toLocaleString())}` : ''}</div>` : '';
+        return html + sourceLine;
     }
 
     async function loadStandings() {

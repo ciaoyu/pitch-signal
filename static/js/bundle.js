@@ -2477,7 +2477,8 @@ var require_scores = __commonJS({
           el.innerHTML = `<div style="text-align:center;padding:60px 0"><div style="font-size:40px;margin-bottom:10px">&#9888;&#65039;</div><p style="color:rgba(248,250,252,.3)">${res.isFailure ? tx("\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5", "Failed to load, please retry") : esc(res.error || "")}</p></div>`;
           return;
         }
-        const visibleMatches = d.matches || [];
+        let visibleMatches = d.matches || [];
+        visibleMatches = await appendNextScheduledMatches(visibleMatches);
         state._lastScoresMatches = visibleMatches;
         if (!visibleMatches.length) {
           el.innerHTML = `<div style="text-align:center;padding:60px 0"><div style="font-size:40px;margin-bottom:10px">&#128564;</div><p style="color:rgba(248,250,252,.3)">${esc(t("noMatchesToday"))}</p></div>`;
@@ -2530,6 +2531,7 @@ var require_scores = __commonJS({
         }
         loadTournamentStats();
         enrichMatchStats(visibleMatches);
+        enrichPreMatchStats(visibleMatches);
         document.getElementById("update-time").textContent = t("updatePrefix") + (/* @__PURE__ */ new Date()).toLocaleTimeString(state.uiLang === "zh" ? "zh-CN" : "en-US", { timeZone: "Asia/Shanghai", hour12: false, hour: "2-digit", minute: "2-digit" });
       }
       function sectionHeader(type, count) {
@@ -2541,6 +2543,29 @@ var require_scores = __commonJS({
         };
         const isLive = type === "in";
         return `<div class="section-label${isLive ? " section-label-live" : ""}">${isLive ? '<span class="dot"></span>' : ""}${labels[type]}</div>`;
+      }
+      async function appendNextScheduledMatches(currentMatches) {
+        const state = window.WorldCup.State;
+        if (currentMatches.some((m) => m.state === "pre")) return currentMatches;
+        if (!state.scheduleLoaded && typeof window.loadSchedule === "function") {
+          try {
+            await window.loadSchedule();
+          } catch (_) {
+          }
+        }
+        const now = Date.now();
+        const upcoming = (state.scheduleCache || []).filter((m) => {
+          if (m.state !== "pre") return false;
+          const kickoff = Date.parse(m.date || "");
+          return !Number.isFinite(kickoff) || kickoff >= now;
+        }).sort((a, b) => Date.parse(a.date || "") - Date.parse(b.date || ""));
+        if (!upcoming.length) return currentMatches;
+        const nextDate = String(upcoming[0].dateBJT || "").split(" ")[0];
+        const nextMatchday = upcoming.filter(
+          (m) => String(m.dateBJT || "").split(" ")[0] === nextDate
+        );
+        const seen = new Set(currentMatches.map((m) => String(m.id)));
+        return currentMatches.concat(nextMatchday.filter((m) => !seen.has(String(m.id))));
       }
       function liveCard(m) {
         const { esc, attr, tx, displayMaybeTeamName } = window.WorldCup.Utils;
@@ -3054,7 +3079,7 @@ var require_standings = __commonJS({
             scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx("\u52A0\u8F7D\u5C04\u624B\u699C...", "Loading scorers...")}</div>`;
             window.WorldCup.ApiClient.get("/api/tournament-stats").then((res) => {
               if (res.ok && res.data?.topScorers) {
-                scorersContent.innerHTML = renderTopScorers(res.data.topScorers);
+                scorersContent.innerHTML = renderTopScorers(res.data.topScorers, res.data.topScorersSource);
               } else {
                 scorersContent.innerHTML = `<div class="text-center py-10 text-gray-500">${window.WorldCup.Utils.tx("\u5C04\u624B\u699C\u6570\u636E\u6682\u65E0", "No scorer data available")}</div>`;
               }
@@ -3064,13 +3089,13 @@ var require_standings = __commonJS({
           }
         }
       }
-      function renderTopScorers(scorers) {
+      function renderTopScorers(scorers, sourceMeta) {
         const { esc, tx, attr } = window.WorldCup.Utils;
         const playerZh = (name) => (window.WorldCup.I18n?.translatePlayerName || ((n) => n))(name);
         if (!scorers.length) return `<div class="text-center py-10 text-gray-500">${tx("\u6682\u65E0\u5C04\u624B\u6570\u636E", "No scorer data")}</div>`;
         let html = "";
-        scorers.slice(0, 20).forEach((p, i) => {
-          const rank = i + 1;
+        scorers.slice(0, 50).forEach((p, i) => {
+          const rank = p.rank || i + 1;
           const nameZh = playerZh(p.name);
           const rankColor = rank <= 3 ? "#34d399" : "rgba(248,250,252,.3)";
           const clickable = p.athleteId || p.teamEspnId ? ` data-action="open-player-detail" data-player-id="${attr(p.athleteId || "")}" data-team-id="${attr(p.teamEspnId || "")}" data-player-name="${attr(p.name)}" style="cursor:pointer"` : "";
@@ -3084,10 +3109,12 @@ var require_standings = __commonJS({
                 <div style="text-align:right;flex-shrink:0">
                     <div style="font:700 18px/1 'JetBrains Mono', monospace;color:#34d399">${p.goals}</div>
                     <div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.2);margin-top:2px">${tx("\u7403", " goals")}</div>
+                    ${p.assists != null || p.minutes != null ? `<div style="font:400 9px/1 'JetBrains Mono', monospace;color:rgba(248,250,252,.35);margin-top:3px">${tx("\u52A9", "A")} ${p.assists ?? "\u2014"} \xB7 ${p.minutes ?? "\u2014"} ${tx("\u5206\u949F", "min")}</div>` : ""}
                 </div>
             </div>`;
         });
-        return html;
+        const sourceLine = sourceMeta?.source ? `<div class="text-center text-[9px] text-gray-600 mt-3">${tx("\u6765\u6E90", "Source")}: ${esc(sourceMeta.source)}${sourceMeta.retrievedAt ? ` \xB7 ${esc(new Date(sourceMeta.retrievedAt).toLocaleString())}` : ""}</div>` : "";
+        return html + sourceLine;
       }
       async function loadStandings2() {
         const { esc, tx, displayGroupName, displayMaybeTeamName, attr } = window.WorldCup.Utils;
@@ -3838,8 +3865,10 @@ var require_match_detail = __commonJS({
       }
       function renderKnockoutScenariosBlock(pred) {
         if (!window.WorldCup.TacticalScenarios) return "";
-        const homeTags = pred.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
-        const awayTags = pred.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
+        const style = pred.knockoutIntel?.sections?.styleMatchup;
+        if (style && style.ruleEligible !== true) return "";
+        const homeTags = style?.homeTags || [];
+        const awayTags = style?.awayTags || [];
         const penaltySkill = pred.knockoutIntel?.sections?.penalty || {};
         const scenarios = window.WorldCup.TacticalScenarios.getRelevantScenarios({
           homeTags,
@@ -5065,6 +5094,38 @@ var require_match_review = __commonJS({
       const { tx } = window.WorldCup.Utils;
       const i18nText = (...a) => (window.WorldCup.I18n?.i18nText || ((o, f) => f))(...a);
       const displayMaybeTeamName = (...a) => (window.WorldCup.I18n?.displayMaybeTeamName || ((x) => x))(...a);
+      function renderFrozenKnockoutComparison(review) {
+        const snapshot = review.predictionSnapshot;
+        const intel = snapshot?.payload?.knockoutIntel;
+        const sections = intel?.sections;
+        const actualEvents = [
+          ...Array.isArray(review.keyEvents) ? review.keyEvents : [],
+          ...Array.isArray(review.evidence?.events) ? review.evidence.events : []
+        ];
+        const eventText = (event) => typeof event === "string" ? event : event?.text || event?.summary || event?.description || "";
+        const factRows = actualEvents.filter((event) => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventText(event)) || /goal|card|substitution/i.test(String(event?.type || ""))).slice(0, 12).map((event) => `${event?.minute || ""} ${eventText(event)}`.trim());
+        const actual = review.match || {};
+        const lineups = review.postMatchFacts || {};
+        const style = sections?.styleMatchup;
+        const sourceNote = style && (style.usedInModel === false || style.source === "tactical-style-matrix") ? tx("\u4E8B\u5B9E\u89C2\u6D4B\u4EC5\u4F9B\u53C2\u8003\uFF0Cinfo only\uFF0C\u4E0D\u8FDB\u5165\u80DC\u7387\u6A21\u578B\uFF1B\u672A\u5B8C\u6210 OOS \u6821\u9A8C\u524D\u4E0D\u89E6\u53D1\u5BF9\u4F4D\u89C4\u5219\u3002", "Observed facts are info only and stay out of win probabilities; no matchup rule runs before OOS validation.") : "";
+        let left = "";
+        if (!sections) {
+          left = `<div class="text-[11px] text-gray-500">${tx("\u7F3A\u5C11\u8D5B\u524D\u5FEB\u7167\uFF0C\u4E0D\u80FD\u5728\u8D5B\u540E\u8865\u7B97\u6210\u8D5B\u524D\u60C5\u62A5\u3002\u4EC5\u63A5\u53D7\u53D1\u5E03\u65F6\u95F4\u65E9\u4E8E\u5F00\u7403\u4E14\u5E26\u539F\u59CB\u94FE\u63A5\u7684\u5916\u90E8\u5B58\u6863\u8865\u5145\u3002", "No pre-match snapshot: do not reconstruct pre-match intelligence after the result. Only externally archived, linked material published before kickoff may be added.")}</div>`;
+        } else {
+          const tags = (value) => (value || []).map((tag) => ({ possession: "\u63A7\u7403\u4E3B\u5BFC", counter_fast: "\u5FEB\u901F\u53CD\u51FB", high_press: "\u9AD8\u4F4D\u903C\u62A2", low_block: "\u4F4E\u4F4D\u9632\u5B88", crossing: "\u4F20\u4E2D/\u5B9A\u4F4D\u7403", observed_possession_high: "\u89C2\u6D4B\u5230\u7684\u9AD8\u63A7\u7403", observed_possession_low: "\u89C2\u6D4B\u5230\u7684\u4F4E\u63A7\u7403" })[tag] || tag).join(" \xB7 ") || tx("\u8986\u76D6\u4E0D\u8DB3", "Insufficient coverage");
+          left += `<div class="space-y-2 text-[11px]">`;
+          if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u98CE\u683C\u5BF9\u5792", "Style matchup")} <span class="text-[9px] text-gray-600">${esc(style.confidence || "low")}</span></div><div class="text-gray-400 mt-1">${tx("\u4E3B\u961F", "Home")}: ${esc(tags(style.homeTags))}<br>${tx("\u5BA2\u961F", "Away")}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
+          if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u66FF\u8865\u5F71\u54CD\u9884\u89C8", "Bench preview")}</div><div class="text-gray-500 mt-1">${esc(sections.superSubs.comparison?.reason || tx("\u65E0\u53EF\u6BD4\u8F83\u7ED3\u8BBA", "No comparable conclusion"))}</div></div>`;
+          if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u70B9\u7403\u60C5\u62A5", "Penalty context")}</div><div class="text-gray-500 mt-1">${esc(sections.penalty.comparison?.reason || tx("\u65E0\u53EF\u6BD4\u8F83\u7ED3\u8BBA", "No comparable conclusion"))}</div></div>`;
+          if (sections.experience) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u6DD8\u6C70\u8D5B\u7ECF\u5386", "Knockout experience")}</div><div class="text-gray-500 mt-1">${esc(i18nText(sections.experience.note, ""))}</div></div>`;
+          left += `<div class="text-[9px] text-gray-600">${tx("\u4EE5\u4E0A\u5185\u5BB9\u8BFB\u53D6\u7684\u662F\u5F00\u7403\u524D\u51BB\u7ED3\u5FEB\u7167\uFF0C\u8D5B\u540E\u4E0D\u91CD\u7B97\u3002", "This column reads the kickoff-frozen snapshot and is never recomputed after the match.")}</div></div>`;
+        }
+        const score = `${actual.homeScore ?? actual.home?.score ?? "\u2014"} : ${actual.awayScore ?? actual.away?.score ?? "\u2014"}`;
+        const xi = (team) => (team || []).map((player) => player.nameZh || player.name).join("\u3001");
+        const subs = (lineups.substitutions || []).map((sub) => `${sub.minute || "?"} ${sub.offNameZh || sub.offName} \u2192 ${sub.onNameZh || sub.onName}`).join("<br>");
+        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u6700\u7EC8\u6BD4\u5206", "Final score")}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u9996\u53D1", "Starting XI")}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u9996\u53D1\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified starting XI returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u6362\u4EBA", "Substitutions")}</div><div class="text-gray-500 mt-1">${subs || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u6362\u4EBA\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified substitutions returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u7EA2\u9EC4\u724C\u3001\u52A0\u65F6\u4E0E\u70B9\u7403", "Cards, extra time & penalties")}</div><div class="text-gray-500 mt-1">${factRows.filter((row) => /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(row)).map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5173\u952E\u4E8B\u4EF6", "Key events")}</div><div class="text-gray-500 mt-1">${factRows.filter((row) => /goal|进球/i.test(row)).map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div></div>`;
+        return `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-300 mb-2">\u{1F9CA} ${tx("\u8D5B\u524D\u6DD8\u6C70\u8D5B\u60C5\u62A5\u4E0E\u8D5B\u540E\u4E8B\u5B9E\u5BF9\u7167", "Frozen pre-match intelligence vs post-match facts")}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><div class="text-[10px] font-bold text-cyan-300 mb-1.5">${tx("\u8D5B\u524D\u6DD8\u6C70\u8D5B\u60C5\u62A5\uFF08\u51BB\u7ED3\u5FEB\u7167\uFF09", "Pre-match knockout intelligence (frozen snapshot)")}</div>${left}</div><div><div class="text-[10px] font-bold text-amber-300 mb-1.5">${tx("\u8D5B\u540E\u4E8B\u5B9E\u4E0E\u9A8C\u8BC1", "Post-match facts & verification")}</div>${right}</div></div></div>`;
+      }
       function renderMatchReview(review) {
         if (!review || review.error) return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u6BD4\u8D5B\u56DE\u987E\u52A0\u8F7D\u5931\u8D25", "Match review failed to load")}</div>`;
         const match = review.match || {}, ai = review.aiPrediction || {}, bias = review.biasAnalysis || {};
@@ -5115,6 +5176,7 @@ var require_match_review = __commonJS({
         if (isRetrospective && predictionSnapshotNote) {
           html += `<div class="glass rounded-xl p-3 mb-2.5 border border-yellow-500/20 bg-yellow-500/5"><div class="flex items-start gap-2"><span class="text-sm mt-0.5">\u26A0\uFE0F</span><div class="text-[11px] text-yellow-300 leading-relaxed">${esc(i18nText(predictionSnapshotNote, predictionSnapshotNote.en || ""))}</div></div></div>`;
         }
+        html += renderFrozenKnockoutComparison(review);
         html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">\u{1F916} ${tx("AI \u9884\u6D4B vs \u771F\u5B9E\u7ED3\u679C", "AI Forecast vs Actual Result")}${isRetrospective ? ` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx("\u8D5B\u540E\u53C2\u8003", "retro")}</span>` : ""}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("AI \u9884\u6D4B", "AI Forecast")}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore || tx("\u7F3A\u5FEB\u7167", "No snapshot")}</div><div class="text-[11px] text-gray-500 mt-1">${tx("\u4E3B", "Home")} ${displayPct(ai.homeWin)} \xB7 ${tx("\u5E73", "Draw")} ${displayPct(ai.draw)} \xB7 ${tx("\u5BA2", "Away")} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals, "-")} - ${displayValue(ai.awayExpectedGoals, "-")}</div>${review.predictionSourceNote ? `<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>` : ""}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("\u771F\u5B9E\u7ED3\u679C", "Actual Result")}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div><div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n || match.home || "")} vs ${displayMaybeTeamName(match.awayNameI18n || match.away || "")}</div><div class="text-[11px] text-gray-600">${match.date || ""}</div></div></div>`;
         const accCls = bias.accuracy === "highly_accurate" || bias.accuracy === "exact_score" ? "text-green-400 bg-green-500/10" : bias.accuracy === "result_correct_score_wrong" ? "text-yellow-400 bg-yellow-500/10" : "text-red-400 bg-red-500/10";
         const accLabel = bias.accuracy === "highly_accurate" || bias.accuracy === "exact_score" ? `\u{1F7E2} ${tx("\u7CBE\u51C6\u547D\u4E2D", "Accurate")}` : bias.accuracy === "result_correct_score_wrong" ? `\u{1F7E1} ${tx("\u6BD4\u5206\u504F\u5DEE", "Score off")}` : bias.accuracy === "wrong_result" ? `\u{1F534} ${tx("\u7ED3\u679C\u9519\u8BEF", "Wrong result")}` : `\u26AA ${tx("\u672A\u77E5", "Unknown")}`;
@@ -5362,7 +5424,7 @@ var require_player_detail = __commonJS({
                     ${d.clubStats.assists != null ? `<div><div class="text-gray-500">${tx("\u52A9\u653B", "Assists")}</div><div class="font-bold text-yellow-400">${d.clubStats.assists}</div></div>` : ""}
                 </div>
             </div>
-            ` : ""}
+            ` : `<div class="glass-light rounded-lg p-3 text-[11px] text-gray-500">\u{1F3DF}\uFE0F ${tx("\u4FF1\u4E50\u90E8\u8D5B\u5B63\u6570\u636E\u6682\u4E0D\u53EF\u7528\uFF1A\u6570\u636E\u6E90\u6CA1\u6709\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u7684\u51FA\u573A\u8BB0\u5F55\uFF0C\u56E0\u6B64\u4E0D\u663E\u793A 0\u3002", "Club season stats unavailable: the source did not return a verifiable appearance record, so zeros are not shown.")}</div>`}
             <!-- Traits -->
             ${d.traits?.length > 0 ? `
             <div class="glass-light rounded-lg p-2">
@@ -5378,7 +5440,7 @@ var require_player_detail = __commonJS({
             </div>
             ` : ""}
             <!-- Recent Form -->
-            ${d.recentForm ? `
+            ${d.recentForm?.dataQuality === "live" ? `
             <div class="glass-light rounded-lg p-2">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-gray-400">\u{1F4CA} ${tx("\u8FD1\u671F\u8868\u73B0", "Recent Form")}</span>
@@ -5405,31 +5467,21 @@ var require_player_detail = __commonJS({
                     </div>
                 </div>
             </div>
-            ` : ""}
-            <!-- Club Stats -->
-            ${d.clubStats && d.clubStats.dataQuality !== "unavailable" ? `
-            <div class="glass-light rounded-lg p-2">
-                <div class="text-xs font-bold text-gray-400 mb-2">\u{1F3DF}\uFE0F \u4FF1\u4E50\u90E8\u6570\u636E</div>
-                ${d.clubStats.season ? `<div class="text-[11px] text-gray-500 mb-1">${d.clubStats.season}</div>` : ""}
-                <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    ${d.clubStats.appearances != null ? `<div><span class="text-gray-500">\u51FA\u573A</span><span class="font-bold ml-1">${d.clubStats.appearances}</span></div>` : ""}
-                    ${d.clubStats.goals != null ? `<div><span class="text-gray-500">\u8FDB\u7403</span><span class="font-bold ml-1 text-green-400">${d.clubStats.goals}</span></div>` : ""}
-                    ${d.clubStats.assists != null ? `<div><span class="text-gray-500">\u52A9\u653B</span><span class="font-bold ml-1 text-blue-400">${d.clubStats.assists}</span></div>` : ""}
-                    ${d.clubStats.shots != null ? `<div><span class="text-gray-500">\u5C04\u95E8</span><span class="font-bold ml-1">${d.clubStats.shots}</span></div>` : ""}
-                </div>
-            </div>
-            ` : ""}
+            ` : `<div class="glass-light rounded-lg p-3 text-[11px] text-gray-500">\u{1F4CA} ${tx("\u8FD1\u671F\u8868\u73B0\u6682\u4E0D\u53EF\u7528\uFF1A\u6570\u636E\u6E90\u6CA1\u6709\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u7684\u51FA\u573A\u5206\u949F\uFF0C\u4E0D\u80FD\u628A\u8D5B\u7A0B\u6761\u76EE\u5F53\u4F5C\u201C\u8FD110\u573A\u201D\u3002", "Recent form unavailable: the source did not return verified minutes played, so fixture shells are not presented as \u201Clast 10\u201D.")}</div>`}
             <!-- National Stats -->
-            ${d.nationalStats && d.nationalStats.dataQuality === "live" ? `
+            ${d.nationalStats && ["live", "tournament-live"].includes(d.nationalStats.dataQuality) ? `
             <div class="glass-light rounded-lg p-2">
-                <div class="text-xs font-bold text-gray-400 mb-2">\u{1F30D} \u56FD\u5BB6\u961F\u6570\u636E</div>
+                <div class="text-xs font-bold text-gray-400 mb-2">\u{1F30D} ${tx("\u56FD\u5BB6\u961F\u4E0E\u672C\u5C4A\u6570\u636E", "National team & tournament stats")}</div>
                 ${d.nationalStats.teamCode ? `<div class="text-[11px] text-gray-500 mb-1">${d.nationalStats.teamCode}</div>` : ""}
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
                     <div><span class="text-gray-500">\u56FD\u5BB6\u961F\u5E3D</span><span class="font-bold ml-1">${d.nationalStats.caps ?? "-"}</span></div>
                     <div><span class="text-gray-500">\u56FD\u5BB6\u961F\u8FDB\u7403</span><span class="font-bold ml-1 text-green-400">${d.nationalStats.goals ?? "-"}</span></div>
                     <div><span class="text-gray-500">\u672C\u5C4A\u51FA\u573A</span><span class="font-bold ml-1">${d.nationalStats.tournamentApps ?? "-"}</span></div>
                     <div><span class="text-gray-500">\u672C\u5C4A\u8FDB\u7403</span><span class="font-bold ml-1 text-yellow-400">${d.nationalStats.tournamentGoals ?? "-"}</span></div>
+                    ${d.nationalStats.tournamentAssists != null ? `<div><span class="text-gray-500">\u672C\u5C4A\u52A9\u653B</span><span class="font-bold ml-1 text-blue-400">${d.nationalStats.tournamentAssists}</span></div>` : ""}
+                    ${d.nationalStats.tournamentMinutes != null ? `<div><span class="text-gray-500">\u672C\u5C4A\u5206\u949F</span><span class="font-bold ml-1">${d.nationalStats.tournamentMinutes}</span></div>` : ""}
                 </div>
+                ${d.nationalStats.sourceUrl ? `<div class="text-[9px] text-gray-600 mt-2">${tx("\u5B98\u65B9\u6765\u6E90\u5FEB\u7167", "Official source snapshot")} \xB7 ${d.nationalStats.sourceRetrievedAt ? esc(new Date(d.nationalStats.sourceRetrievedAt).toLocaleString()) : ""}</div>` : ""}
             </div>
             ` : ""}
             <!-- Injury History -->
@@ -6903,8 +6955,9 @@ var require_match_renderers = __commonJS({
           }
           const name = coach.name || "?";
           const style = coach.style || tx("\u672A\u77E5", "Unknown");
-          const winRate = coach.winRate || "?";
           const tenure = coach.tenure || "?";
+          const formations = Array.isArray(coach.formation) ? coach.formation.join(" / ") : coach.formation || "";
+          const tournament = coach.bigTournament || "";
           const nationality = coach.nationality || "";
           const flag = coach.flag || "";
           const sideColor = side === "home" ? "border-l-blue-500" : "border-l-red-500";
@@ -6920,10 +6973,11 @@ var require_match_renderers = __commonJS({
                         ${nationality ? `<span class="text-[10px] text-gray-500 truncate" title="${esc(nationality)}">${esc(nationality)}</span>` : ""}
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
+                <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
                     <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u98CE\u683C", "Style")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(style)}">${esc(style)}</span></div>
-                    <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u80DC\u7387", "Win %")}</span><span class="text-gray-300 font-mono font-semibold">${esc(winRate)}</span></div>
                     <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u6267\u6559", "Tenure")}</span><span class="text-gray-300 font-mono font-semibold truncate" title="${esc(tenure)}">${esc(tenure)}</span></div>
+                    ${formations ? `<div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u9635\u578B", "Formation")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(formations)}">${esc(formations)}</span></div>` : ""}
+                    ${tournament ? `<div class="flex flex-col col-span-2"><span class="text-gray-500 mb-0.5">${tx("\u8D5B\u4F1A\u5C65\u5386", "Tournament record")}</span><span class="text-gray-300 leading-tight">${esc(tournament)}</span></div>` : ""}
                 </div>
             </div>`;
         };
@@ -6931,61 +6985,14 @@ var require_match_renderers = __commonJS({
         html += renderCoachCard(coachA, "home");
         html += renderCoachCard(coachB, "away");
         html += "</div>";
-        if (comp) {
+        if (comp?.observations?.length) {
           html += `<div class="glass-light rounded-lg p-4 mt-3">
                 <div class="text-xs font-bold text-gray-400 mb-3 flex items-center gap-2">
-                    <span>\u2694\uFE0F</span> ${tx("\u6218\u672F\u4E0E\u6267\u6559\u5BF9\u4F4D", "Tactical & Coaching Matchup")}
+                    <span>\u{1F4DA}</span> ${tx("\u6218\u672F\u89C2\u5BDF\u4E0E\u8D44\u6599\u5BF9\u7167", "Tactical observations & records")}
                 </div>
-                <div class="space-y-2">`;
-          const renderMatchupItem = (icon, titleZh, titleEn, valueI18n, valueFallback) => {
-            const text = valueI18n ? i18nText(valueI18n) : valueFallback || "\u2014";
-            if (text === "\u2014") return "";
-            return `
-                <div class="flex items-start gap-3 bg-white/5 rounded-lg p-2.5">
-                    <div class="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center shrink-0 text-lg">${icon}</div>
-                    <div class="flex flex-col justify-center">
-                        <span class="text-[10px] text-gray-500 font-bold mb-0.5">${tx(titleZh, titleEn)}</span>
-                        <span class="text-[11px] text-gray-300 leading-tight">${esc(text)}</span>
-                    </div>
-                </div>`;
-          };
-          html += renderMatchupItem("\u{1F4CB}", "\u98CE\u683C\u5BF9\u5792", "Style Matchup", comp.styleMatchupI18n, comp.styleMatchup);
-          html += renderMatchupItem("\u23F3", "\u7ECF\u9A8C\u5DEE\u8DDD", "Experience Gap", comp.experienceGapI18n, comp.experienceGap);
-          html += renderMatchupItem("\u{1F3AF}", "\u4E34\u573A\u8C03\u6574", "Adjustment Edge", comp.adjustmentEdgeI18n, comp.adjustmentEdge);
-          if (comp.overallScore) {
-            const names = Object.keys(comp.overallScore);
-            if (names.length >= 2) {
-              const scoreA = Number(comp.overallScore[names[0]]) || 0;
-              const scoreB = Number(comp.overallScore[names[1]]) || 0;
-              const totalScore = scoreA + scoreB || 1;
-              const pctA = scoreA / totalScore * 100;
-              const pctB = scoreB / totalScore * 100;
-              html += `
-                    <div class="mt-4 pt-3 border-t border-white/10">
-                        <div class="text-[10px] text-gray-500 mb-2 flex justify-between">
-                            <span>${esc(names[0])}</span>
-                            <span>${tx("\u7EFC\u5408\u8BC4\u5206\u5BF9\u6BD4", "Overall Rating Comparison")}</span>
-                            <span>${esc(names[1])}</span>
-                        </div>
-                        <div class="flex h-3 rounded-full overflow-hidden mb-1 bg-white/5 shadow-inner">
-                            <div class="bg-blue-500/80 transition-all duration-700" style="width: ${pctA}%"></div>
-                            <div class="bg-red-500/80 transition-all duration-700" style="width: ${pctB}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[11px] font-mono font-bold">
-                            <span class="text-blue-300">${scoreA}</span>
-                            <span class="text-red-300">${scoreB}</span>
-                        </div>
-                    </div>`;
-            } else {
-              html += `<div class="flex items-center gap-3 mt-3 pt-3 border-t border-white/5">
-                        <span class="text-gray-500 text-[11px]">${tx("\u7EFC\u5408\u8BC4\u5206", "Overall")}</span>`;
-              for (const [name, score] of Object.entries(comp.overallScore)) {
-                html += `<span class="text-[11px] font-mono font-bold text-gray-200">${esc(name)}: ${esc(String(score))}</span>`;
-              }
-              html += `</div>`;
-            }
-          }
-          html += `</div></div>`;
+                <div class="space-y-2">${comp.observations.map((item) => `<div class="bg-white/5 rounded-lg p-2.5"><div class="text-[10px] text-gray-500 font-bold mb-1">${esc(i18nText(item.label, ""))}</div><div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300"><span>${esc(item.home || "\u2014")}</span><span class="text-right">${esc(item.away || "\u2014")}</span></div></div>`).join("")}</div>
+                <div class="text-[9px] text-gray-600 mt-3">${tx("\u4EC5\u5C55\u793A\u5DF2\u8BB0\u5F55\u8D44\u6599\uFF1B\u4E0D\u63D0\u4F9B\u603B\u4F53\u8BC4\u5206\u6216\u201C\u4E34\u573A\u8C03\u6574\u4F18\u52BF\u201D\u7ED3\u8BBA\u3002", "Recorded information only; no overall score or in-game-adjustment edge is asserted.")}</div>
+            </div>`;
         } else if (coachA && coachB && !coachData._fallback) {
           html += `<div class="glass-light rounded-lg p-4 text-center mt-3">
                 <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u5BF9\u9635\u5206\u6790\u6682\u672A\u751F\u6210", "Coach matchup analysis not yet generated")}</div>
@@ -7408,7 +7415,7 @@ var require_match_renderers = __commonJS({
           if (!sec || !sec.note) return "";
           return `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">\u2022 ${L(sec.note)}</div>`;
         };
-        const SECTION_ORDER = ["suspensions", "fatigue", "penalty", "referee", "superSubs", "starForm", "familiarity", "gameState", "experience", "lessons"];
+        const SECTION_ORDER = ["suspensions", "fatigue", "styleMatchup", "penalty", "referee", "superSubs", "starForm", "familiarity", "gameState", "experience", "lessons"];
         const orderedKeys = [...SECTION_ORDER.filter((k) => intel.sections[k]), ...sectionKeys.filter((k) => !SECTION_ORDER.includes(k))];
         let cardsHtml = "";
         orderedKeys.forEach((key) => {
@@ -7519,6 +7526,37 @@ var require_match_renderers = __commonJS({
                     ${renderForm(tx("\u4E3B\u961F", "Home"), sec.home)}
                     ${renderForm(tx("\u5BA2\u961F", "Away"), sec.away)}
                 </div>`;
+            cardContent += renderNote(sec);
+          } else if (key === "styleMatchup") {
+            const tagLabel = (tag) => ({
+              observed_possession_high: tx("\u89C2\u6D4B\u5230\u7684\u9AD8\u63A7\u7403", "Observed high possession"),
+              observed_possession_low: tx("\u89C2\u6D4B\u5230\u7684\u4F4E\u63A7\u7403", "Observed low possession")
+            })[tag] || tag;
+            const renderFacts = (sideLabel, data) => {
+              if (!data) return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] text-gray-500">${sideLabel}: ${tx("\u672A\u627E\u5230\u53EF\u8FFD\u6EAF\u4E8B\u5B9E", "No traceable facts found")}</div>`;
+              const facts = data.facts || {};
+              const formations = Object.entries(facts.formations || {}).map(([name, count]) => `${name} \xD7${count}`).join(" \xB7 ") || tx("\u672A\u8986\u76D6", "Not covered");
+              const possession = facts.possession?.status === "covered" ? `${facts.possession.average}% (${facts.possession.sampleMatches} ${tx("\u573A", "matches")})` : tx("\u672A\u8986\u76D6", "Not covered");
+              const corners = facts.setPieces?.status === "covered" ? `${facts.setPieces.cornersFor ?? "\u2014"} / ${facts.setPieces.cornersAgainst ?? "\u2014"}` : tx("\u672A\u8986\u76D6", "Not covered");
+              const subs = facts.substitutions?.total != null ? `${facts.substitutions.total} (${(facts.substitutions.minutes || []).join(", ") || "\u2014"}')` : tx("\u672A\u8986\u76D6", "Not covered");
+              const discipline = facts.discipline ? `${facts.discipline.yellow || 0} ${tx("\u9EC4", "Y")} \xB7 ${facts.discipline.red || 0} ${tx("\u7EA2", "R")}` : tx("\u672A\u8986\u76D6", "Not covered");
+              const tags = (data.derivedTags || []).map(tagLabel).join(" \xB7 ") || tx("\u65E0\u6700\u7EC8\u6807\u7B7E", "No final tag");
+              const unsupported = Object.entries(facts.unsupported || {}).map(([key2, value]) => `${key2}: ${value.status === "not_covered" ? tx("\u672A\u8986\u76D6", "Not covered") : value.status}`).join(" \xB7 ");
+              return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
+                        <div class="font-semibold text-gray-400">${sideLabel}</div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9635\u578B/\u573A\u6B21", "Formations / matches")}</span><span class="text-gray-300 text-right">${esc(formations)} \xB7 ${data.sampleMatches || 0}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9996\u53D1\u53D8\u5316", "XI changes")}</span><span class="font-mono text-gray-300">${data.facts.startingXIChanges ?? "\u2014"}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u6362\u4EBA\u5206\u949F", "Substitution minutes")}</span><span class="text-gray-300 text-right">${esc(subs)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u5E73\u5747\u63A7\u7403", "Avg possession")}</span><span class="font-mono text-gray-300">${esc(possession)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u89D2\u7403 (\u5F97/\u5931)", "Corners (for/against)")}</span><span class="font-mono text-gray-300">${esc(corners)}</span></div>
+                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u7EAA\u5F8B", "Discipline")}</span><span class="font-mono text-gray-300">${esc(discipline)}</span></div>
+                        <div><span class="text-gray-500">${tx("\u6700\u7EC8\u6807\u7B7E", "Final tags")}:</span> <span class="text-cyan-300">${esc(tags)}</span></div>
+                        <div class="text-gray-600">${tx("\u538B\u8FEB/\u53CD\u51FB/\u63A8\u8FDB", "Pressing/counterplay/progression")}: ${esc(unsupported || tx("\u672A\u8986\u76D6", "Not covered"))}</div>
+                    </div>`;
+            };
+            cardContent += renderSectionHeader(tx("\u6218\u672F\u89C2\u5BDF\u4E0E\u8D44\u6599\u5BF9\u7167", "Tactical observation & evidence"), sec);
+            cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">${renderFacts(tx("\u4E3B\u961F", "Home"), sec.homeFacts)}${renderFacts(tx("\u5BA2\u961F", "Away"), sec.awayFacts)}</div>`;
+            cardContent += `<div class="text-[10px] text-amber-300/80 mt-1 leading-snug">${tx("\u4EC5\u5C55\u793A\u53EF\u8FFD\u6EAF\u4E8B\u5B9E\uFF1B\u89C4\u5219\u8D44\u683C = \u5426\uFF0COOS \u6821\u9A8C = \u672A\u8FD0\u884C\uFF0C\u6C38\u8FDC info only\u3002", "Traceable facts only; rule eligibility = no, OOS validation = not run, always info only.")}</div>`;
             cardContent += renderNote(sec);
           } else if (key === "familiarity") {
             cardContent += renderSectionHeader(tx("\u4FF1\u4E50\u90E8\u8054\u7CFB\u4E0E\u719F\u4EBA", "Club Familiarity"), sec);

@@ -689,8 +689,12 @@
     }
     function renderKnockoutScenariosBlock(pred) {
         if (!window.WorldCup.TacticalScenarios) return '';
-        const homeTags = pred.knockoutIntel?.sections?.styleMatchup?.homeTags || [];
-        const awayTags = pred.knockoutIntel?.sections?.styleMatchup?.awayTags || [];
+        const style = pred.knockoutIntel?.sections?.styleMatchup;
+        // Observed facts are deliberately not enough to trigger tactical rules.
+        // The backend keeps ruleEligible=false until coverage + OOS validation exist.
+        if (style && style.ruleEligible !== true) return '';
+        const homeTags = style?.homeTags || [];
+        const awayTags = style?.awayTags || [];
         const penaltySkill = pred.knockoutIntel?.sections?.penalty || {};
         const scenarios = window.WorldCup.TacticalScenarios.getRelevantScenarios({
             homeTags,

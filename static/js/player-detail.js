@@ -153,7 +153,7 @@
                     ${d.clubStats.assists != null ? `<div><div class="text-gray-500">${tx('助攻','Assists')}</div><div class="font-bold text-yellow-400">${d.clubStats.assists}</div></div>` : ''}
                 </div>
             </div>
-            ` : ''}
+            ` : `<div class="glass-light rounded-lg p-3 text-[11px] text-gray-500">🏟️ ${tx('俱乐部赛季数据暂不可用：数据源没有返回可验证的出场记录，因此不显示 0。','Club season stats unavailable: the source did not return a verifiable appearance record, so zeros are not shown.')}</div>`}
             <!-- Traits -->
             ${d.traits?.length > 0 ? `
             <div class="glass-light rounded-lg p-2">
@@ -169,7 +169,7 @@
             </div>
             ` : ''}
             <!-- Recent Form -->
-            ${d.recentForm ? `
+            ${d.recentForm?.dataQuality === 'live' ? `
             <div class="glass-light rounded-lg p-2">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-gray-400">📊 ${tx('近期表现', 'Recent Form')}</span>
@@ -196,31 +196,21 @@
                     </div>
                 </div>
             </div>
-            ` : ''}
-            <!-- Club Stats -->
-            ${d.clubStats && d.clubStats.dataQuality !== 'unavailable' ? `
-            <div class="glass-light rounded-lg p-2">
-                <div class="text-xs font-bold text-gray-400 mb-2">🏟️ 俱乐部数据</div>
-                ${d.clubStats.season ? `<div class="text-[11px] text-gray-500 mb-1">${d.clubStats.season}</div>` : ''}
-                <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    ${d.clubStats.appearances != null ? `<div><span class="text-gray-500">出场</span><span class="font-bold ml-1">${d.clubStats.appearances}</span></div>` : ''}
-                    ${d.clubStats.goals != null ? `<div><span class="text-gray-500">进球</span><span class="font-bold ml-1 text-green-400">${d.clubStats.goals}</span></div>` : ''}
-                    ${d.clubStats.assists != null ? `<div><span class="text-gray-500">助攻</span><span class="font-bold ml-1 text-blue-400">${d.clubStats.assists}</span></div>` : ''}
-                    ${d.clubStats.shots != null ? `<div><span class="text-gray-500">射门</span><span class="font-bold ml-1">${d.clubStats.shots}</span></div>` : ''}
-                </div>
-            </div>
-            ` : ''}
+            ` : `<div class="glass-light rounded-lg p-3 text-[11px] text-gray-500">📊 ${tx('近期表现暂不可用：数据源没有返回可验证的出场分钟，不能把赛程条目当作“近10场”。','Recent form unavailable: the source did not return verified minutes played, so fixture shells are not presented as “last 10”.')}</div>`}
             <!-- National Stats -->
-            ${d.nationalStats && d.nationalStats.dataQuality === 'live' ? `
+            ${d.nationalStats && ['live', 'tournament-live'].includes(d.nationalStats.dataQuality) ? `
             <div class="glass-light rounded-lg p-2">
-                <div class="text-xs font-bold text-gray-400 mb-2">🌍 国家队数据</div>
+                <div class="text-xs font-bold text-gray-400 mb-2">🌍 ${tx('国家队与本届数据', 'National team & tournament stats')}</div>
                 ${d.nationalStats.teamCode ? `<div class="text-[11px] text-gray-500 mb-1">${d.nationalStats.teamCode}</div>` : ''}
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
                     <div><span class="text-gray-500">国家队帽</span><span class="font-bold ml-1">${d.nationalStats.caps ?? '-'}</span></div>
                     <div><span class="text-gray-500">国家队进球</span><span class="font-bold ml-1 text-green-400">${d.nationalStats.goals ?? '-'}</span></div>
                     <div><span class="text-gray-500">本届出场</span><span class="font-bold ml-1">${d.nationalStats.tournamentApps ?? '-'}</span></div>
                     <div><span class="text-gray-500">本届进球</span><span class="font-bold ml-1 text-yellow-400">${d.nationalStats.tournamentGoals ?? '-'}</span></div>
+                    ${d.nationalStats.tournamentAssists != null ? `<div><span class="text-gray-500">本届助攻</span><span class="font-bold ml-1 text-blue-400">${d.nationalStats.tournamentAssists}</span></div>` : ''}
+                    ${d.nationalStats.tournamentMinutes != null ? `<div><span class="text-gray-500">本届分钟</span><span class="font-bold ml-1">${d.nationalStats.tournamentMinutes}</span></div>` : ''}
                 </div>
+                ${d.nationalStats.sourceUrl ? `<div class="text-[9px] text-gray-600 mt-2">${tx('官方来源快照', 'Official source snapshot')} · ${d.nationalStats.sourceRetrievedAt ? esc(new Date(d.nationalStats.sourceRetrievedAt).toLocaleString()) : ''}</div>` : ''}
             </div>
             ` : ''}
             <!-- Injury History -->

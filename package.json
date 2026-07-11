@@ -12,6 +12,7 @@
     "build:css": "npx tailwindcss -i static/css/tailwind-input.css -o static/css/tailwind-output.css --minify",
     "build:js": "node scripts/build-js.js",
     "live:monitor": "node scripts/live-match-monitor.js --once",
+    "data:team-style-facts": "node scripts/build-team-style-facts.js",
     "healthcheck": "node scripts/runtime-healthcheck.js",
     "healthcheck:native": "node scripts/runtime-healthcheck.js --native-only",
     "check:env": "node scripts/check-env.js",
