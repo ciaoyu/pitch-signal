@@ -48,6 +48,8 @@ const TEST_FILES = [
   'test-output-rules.js',
   'test-parse-event-stage.js',
   'test-pf3-key-events-i18n.js',
+  'test-i18n-dictionary.js',
+    // T6 — i18n name-dictionary externalization regression
   'test-pf4-lineup-evidence.js',
   'test-pf9-worldcup-odds-ui.js',
   'test-pf10-official-bracket-graph.js',
