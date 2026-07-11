@@ -1,18 +1,47 @@
 <!-- Note: update README.zh.md when this file changes -->
 # ⚽ PitchSignal
 
-**PitchSignal** is a comprehensive analytics dashboard for the 2026 FIFA World Cup, featuring real-time standings, match predictions using Poisson and Elo models, spatial matchups, and interactive bracket visualizations.
+**PitchSignal** is a World Cup intelligence system for fixtures, standings, team context, market comparison, live match interpretation, post-match review, and reproducible football forecasting.
+
+The project is intentionally more than a prediction widget. Its research stance is that public probabilities should be auditable, versioned, and evaluated, while richer product signals such as odds, lineups, formations, news, pressure, coach context, venue context, and AI review should be visible without silently contaminating the probability model before they earn out-of-sample evidence.
 
 👉 [Try the public beta now!](https://pitch-signal-production.up.railway.app) Some features are currently gated in Beta.
 
 README in [中文](README.zh.md)
 
-## 🌟 Key Features
-- **Live Match Integration**: Fetches real-time fixtures, scores, and standings from the ESPN API.
-- **Advanced Predictive Analytics**: Uses a custom Dixon-Coles adjusted Poisson model + Elo ratings to calculate win/draw/loss probabilities for upcoming matches.
-- **Interactive Knockout Bracket**: Visualizes the 32-team knockout stage based on official 2026 format rules.
-- **Spatial Matchups**: Simulates team formations and head-to-head positional clashes.
-- **Real-time Team Stats**: Extracts squad data to provide real-time average age, coach info, and form.
+## 🌟 Core Capabilities
+- **Fixtures, scores, and standings**: Live match lists, date-based schedules, match detail, group tables, computed standings, and qualification context.
+- **Forecasting core**: Elo + Poisson/Dixon-Coles pre-match probabilities with model versioning, `configHash`, expected goals, likely scores, calibration reports, and backtesting tools.
+- **Public market comparison**: Odds are shown openly as a market benchmark and divergence layer, so the model can be compared against external consensus rather than judged in isolation.
+- **Live match interpretation**: In-play repricing from hard facts such as score, time, added time, red cards, and knockout state; soft pressure signals are displayed separately.
+- **Tournament structure**: 2026 group logic, qualification scenarios, third-place resolution, and an interactive knockout bracket.
+- **Team and player intelligence**: Team pages, player/roster enrichment, coach facts, recent form, lineup data, substitutions, suspensions, and player-name localization.
+- **Formation and spatial matchup analysis**: Formation parsing, pitch layouts, positional pairings, and tactical mismatch visualization.
+- **Match moments and post-match review**: Key events, swing moments, immutable pre-match snapshots, review evidence, and structured error attribution after the final whistle.
+- **AI and knowledge layer**: AI Q&A and post-match analysis use the project knowledge base and evidence records as an explanation layer, not as an unverified probability override.
+- **Production data pipeline**: Scheduled jobs for lineups, odds, match moments, prediction snapshots, score writeback, xG collection, and AI postmortem processing.
+
+## 📊 Current Public Dashboard Metrics
+
+The Railway public dashboard currently reports:
+
+| Metric | Value |
+|--------|-------|
+| Brier | `0.5132` |
+| Directional accuracy | `61.4%` |
+| ECE | `16.3%` |
+
+These are live dashboard metrics. For manuscript use, they should be tied to immutable per-match prediction artifacts: `modelVersion`, `configHash`, `predictedAt < kickoff`, data source, final result source, and a reproducible export.
+
+## 🔬 Research Discipline
+
+PitchSignal separates feature visibility from model authority:
+
+- **Probability-forming signals** must be reproducible and evaluated.
+- **Candidate signals** may be collected, displayed, and compared, but are kept behind evidence gates until they show stable out-of-sample value.
+- **Market odds** are a public comparator and benchmark layer; direct odds fusion is a separate research claim that requires its own paired tests and calibration evidence.
+- **AI review** can explain, summarize, and help generate research hypotheses, but does not silently rewrite public probabilities.
+- **Negative results are retained** when a plausible signal fails to improve Brier, LogLoss, accuracy, or calibration.
 
 ## 🚀 Getting Started
 
@@ -151,7 +180,7 @@ docker run -p 5099:5099 -v $(pwd)/data:/usr/src/app/data pitch-signal
 
 ## 📖 API Reference
 
-Full endpoint documentation: **[docs/API.md](docs/API.md)**
+Full endpoint documentation: **[docs/knowledge/API.md](docs/knowledge/API.md)**
 
 Quick overview:
 
@@ -173,10 +202,13 @@ Quick overview:
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture overview
 - **[ENVIRONMENT.md](ENVIRONMENT.md)** - Environment variables and key hygiene
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history
-- **[docs/API.md](docs/API.md)** - Full API reference
+- **[docs/knowledge/API.md](docs/knowledge/API.md)** - Full API reference
 - **[docs/VERSIONING.md](docs/VERSIONING.md)** - Static asset / cache versioning strategy
-- **[docs/prediction_model_explanation.md](docs/prediction_model_explanation.md)** - How the prediction model works
+- **[docs/knowledge/prediction_model_explanation.md](docs/knowledge/prediction_model_explanation.md)** - How the prediction model works
 - **[docs/prediction-model-methodology.md](docs/prediction-model-methodology.md)** ([中文](docs/prediction-model-methodology.zh.md)) - Full methodology paper: architecture, evaluation protocol, 964-match backtest results, and honest limitations
+- **[docs/research-publication-roadmap.md](docs/research-publication-roadmap.md)** - Academic publication route, venue requirements, and submission checklist for the methodology paper
+- **[docs/research-pre-submission-review.md](docs/research-pre-submission-review.md)** - Mock pre-submission review of the methodology paper's journal readiness gaps
+- **[docs/research-publication-execution-plan.md](docs/research-publication-execution-plan.md)** - Workstream plan for abstract, artifacts, calibration, paired tests, references, and manuscript worktrees
 - **[docs/deployment-guide-railway.md](docs/deployment-guide-railway.md)** - Railway deployment guide
 - **[docs/operations/public-beta-safety-manual.md](docs/operations/public-beta-safety-manual.md)** - Public beta safety & gates
 
