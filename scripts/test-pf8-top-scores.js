@@ -1,5 +1,6 @@
 const assert = require('assert');
 const PredictionEngine = require('../lib/prediction');
+const PoissonModel = require('../lib/poisson');
 
 function test(name, fn) {
   try {
@@ -63,6 +64,12 @@ async function runTests() {
       assert.match(item.score, /^\d+-\d+$/, `score format should be X-Y, got ${item.score}`);
       assert.ok(typeof item.prob === 'number' && item.prob >= 0 && item.prob <= 1, `prob should be in [0, 1], got ${item.prob}`);
     }
+  });
+
+  test('4. close scoreline probabilities retain precision', async () => {
+    const res = new PoissonModel().predictMatchWithLambda(1.187808, 1.43246016);
+    const values = res.topScores.slice(1, 4).map(item => item.prob);
+    assert.ok(new Set(values).size >= 2, `close probabilities should not collapse: ${values.join(', ')}`);
   });
 
   console.log('All PF-8 tests passed!');

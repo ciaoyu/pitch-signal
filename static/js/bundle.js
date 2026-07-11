@@ -4577,7 +4577,7 @@ var require_elo_prediction = __commonJS({
               venue: tx("\u573A\u9986", "Venue")
             };
             const renderedWeights = Object.entries(weights).filter(([, value]) => Number.isFinite(value)).map(([signal, value]) => `${weightLabels[signal] || signal} ${(value * 100).toFixed(0)}%`).join(" \xB7 ");
-            const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0 ? p.topScores.slice(0, 4).map((s) => `${s.score} (${Fmt2().pct(s.prob)})`).join(" \xB7 ") : `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
+            const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0 ? p.topScores.slice(0, 4).map((s) => `${s.score} (${Number(s.prob * 100).toFixed(2)}%)`).join(" \xB7 ") : `${score}${p.likelyScoreProb != null ? ` ${Fmt2().pct(p.likelyScoreProb)}` : ""}`;
             const confLabel = conf > 70 ? tx("\u9AD8", "High") : conf > 50 ? tx("\u4E2D", "Medium") : tx("\u4F4E", "Low");
             let headerText = "";
             if (m.group && m.matchday !== void 0) headerText = `${m.group} \xB7 ${tx("\u7B2C", "MD")} ${m.matchday}`;
@@ -7154,7 +7154,7 @@ var require_match_renderers = __commonJS({
                 <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u53EF\u80FD\u6BD4\u5206\u77E9\u9635", "TOP PREDICTED SCORES")}</div>
                 <div style="display:flex;flex-direction:column;gap:5px">`;
           pred.topScores.slice(0, 4).forEach((item, idx) => {
-            const probPct = item.prob != null ? `${Math.round(item.prob * 1e3) / 10}%` : "";
+            const probPct = item.prob != null ? `${(Number(item.prob) * 100).toFixed(2)}%` : "";
             html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
                     <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? "rgba(52,211,153,.85)" : "rgba(248,250,252,.65)"}">${esc(item.score)}</span>
                     ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ""}

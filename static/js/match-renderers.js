@@ -1437,7 +1437,7 @@ window.WorldCup.MatchRenderers = (() => {
                 <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx('可能比分矩阵', 'TOP PREDICTED SCORES')}</div>
                 <div style="display:flex;flex-direction:column;gap:5px">`;
             pred.topScores.slice(0, 4).forEach((item, idx) => {
-                const probPct = item.prob != null ? `${Math.round(item.prob * 1000) / 10}%` : '';
+                const probPct = item.prob != null ? `${(Number(item.prob) * 100).toFixed(2)}%` : '';
                 html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
                     <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? 'rgba(52,211,153,.85)' : 'rgba(248,250,252,.65)'}">${esc(item.score)}</span>
                     ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ''}

@@ -248,7 +248,7 @@
                     .map(([signal, value]) => `${weightLabels[signal] || signal} ${(value * 100).toFixed(0)}%`)
                     .join(' · ');
                 const topScoresList = Array.isArray(p.topScores) && p.topScores.length > 0
-                    ? p.topScores.slice(0, 4).map(s => `${s.score} (${Fmt().pct(s.prob)})`).join(' · ')
+                    ? p.topScores.slice(0, 4).map(s => `${s.score} (${Number(s.prob * 100).toFixed(2)}%)`).join(' · ')
                     : `${score}${p.likelyScoreProb != null ? ` ${Fmt().pct(p.likelyScoreProb)}` : ''}`;
                 const confLabel = conf > 70 ? tx('高', 'High') : conf > 50 ? tx('中', 'Medium') : tx('低', 'Low');
 
