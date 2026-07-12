@@ -3,7 +3,7 @@
  * PF-2: recent-stats sample window regression test
  *
  * Verifies the `?n=` window clamp on GET /api/team/:id/recent-stats:
- *   - default (no n)         -> 5
+ *   - default (no n)         -> all tournament matches, capped at 10
  *   - floor                  -> 2
  *   - cap                     -> 10
  *   - matches actually used   == min(pastMatches, sampleSize)
@@ -68,7 +68,7 @@ const deps = {
       return { events: [liveKnockoutEvent] };
     }
     if (path.includes('/scoreboard')) {
-      return { events: matchIds.map((id) => ({ id })) };
+      return { events: [...matchIds.map((id) => ({ id })), liveKnockoutEvent] };
     }
     if (path.includes('/summary')) {
       // Two-team boxscore so the route assembles teamStats.
@@ -90,11 +90,14 @@ const recentStats = routes['GET /api/team/:id/recent-stats'];
 const recentMatches = routes['GET /api/team/:id/recent-matches'];
 
 async function run() {
-  // Default (no n) -> 5, and 5 matches consumed.
+  // Default (no n) -> complete tournament record, capped at 10, including
+  // the dynamically resolved knockout fixture absent from the snapshot.
   {
     const r = await recentStats({ id: TEAM_ID });
-    assert(r.sampleSize === 5, `no n -> sampleSize=5 (got ${r.sampleSize})`);
-    assert(r.matches === 5, `no n -> 5 matches consumed (got ${r.matches})`);
+    assert(r.sampleSize === 10, `no n -> sampleSize cap=10 (got ${r.sampleSize})`);
+    assert(r.window === 'tournament', `no n -> tournament window (got ${r.window})`);
+    assert(r.matches === 10, `no n -> all available matches up to cap (got ${r.matches})`);
+    assert(r.matchIds.includes('live-r16'), 'no n -> dynamically resolved knockout fixture included');
     assert(r.stats !== null, 'no n -> aggregated stats produced');
   }
 
@@ -129,6 +132,7 @@ async function run() {
   // Never exceeds the number of past matches available.
   {
     const r = await recentStats({ id: TEAM_ID, n: '5' });
+    assert(r.window === 'recent', `explicit n -> recent window (got ${r.window})`);
     assert(r.matches <= TOTAL_PAST, `matches consumed (${r.matches}) <= available past (${TOTAL_PAST})`);
   }
 

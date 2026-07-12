@@ -75,4 +75,20 @@ test('6. extractKeyEvents filters and translates commentary list properly', () =
   assert.ok(!penEvent.textI18n.zh.startsWith('赛场动态：'), `penalty event zh should not start with 赛场动态：, got: ${penEvent.textI18n.zh}`);
 });
 
+test('7. common ESPN goal and shot prose becomes concise Chinese', () => {
+  const goal = translateEventToBilingual({
+    text: 'Goal! Argentina 1, Switzerland 0. Alexis Mac Allister (Argentina) header from the left side of the six yard box.',
+  });
+  const shot = translateEventToBilingual({
+    text: 'Attempt saved. Lionel Messi (Argentina) left footed shot from outside the box is saved.',
+  });
+  assert.ok(goal.zh.startsWith('进球：'), `goal zh=${goal.zh}`);
+  assert.ok(goal.zh.includes('1-0'), `goal score retained: ${goal.zh}`);
+  assert.ok(goal.zh.includes('Alexis Mac Allister'), `full scorer name retained: ${goal.zh}`);
+  assert.ok(goal.zh.includes('阿根廷') && goal.zh.includes('瑞士'), `team names localized: ${goal.zh}`);
+  assert.ok(!goal.zh.includes('Goal!'), `goal English sentence removed: ${goal.zh}`);
+  assert.ok(shot.zh.startsWith('射门被扑出：'), `shot zh=${shot.zh}`);
+  assert.ok(!shot.zh.includes('Attempt saved'), `shot English sentence removed: ${shot.zh}`);
+});
+
 console.log('All PF-3 Key Events tests passed!');

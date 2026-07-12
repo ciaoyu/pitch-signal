@@ -396,7 +396,7 @@
                     statsEl.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx('赛前暂无可用统计', 'No pre-match stats')}</div>`;
                     return;
                 }
-                statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('近期场均', 'RECENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
+                statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx('本届赛事场均', 'TOURNAMENT AVG')}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
             }).catch((err) => {
                 console.error('match-detail: recent-stats load failed:', err);
                 if (myReqId !== _openMatchReqId) return;

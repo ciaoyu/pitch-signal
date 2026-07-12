@@ -145,6 +145,15 @@ test('momentum buckets: goals counted in bucket', () => {
   assert.strictEqual(b0.goals, 1);
 });
 
+test('keyEvents preserve bilingual text for the Chinese and English UI', () => {
+  const r = filterMatchEvents([
+    { type: 'goal', text: 'Goal! Argentina 1, Switzerland 0. Alexis Mac Allister (Argentina) header from the box.', minute: '10', homeAway: 'home' },
+  ], {});
+  assert.strictEqual(r.keyEvents.length, 1);
+  assert.ok(r.keyEvents[0].textI18n?.zh.startsWith('进球：'));
+  assert.ok(r.keyEvents[0].textI18n?.en.startsWith('Goal!'));
+});
+
 test('momentum buckets: non-shot events still create buckets (but with zero shots)', () => {
   const r = filterMatchEvents([
     { type: 'card', text: 'Yellow', minute: '10', homeAway: 'home' },

@@ -3556,7 +3556,7 @@ var require_match_detail = __commonJS({
               statsEl.innerHTML = `<div style="padding:16px 18px;text-align:center;color:rgba(248,250,252,.3);font-size:11px">${tx("\u8D5B\u524D\u6682\u65E0\u53EF\u7528\u7EDF\u8BA1", "No pre-match stats")}</div>`;
               return;
             }
-            statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx("\u8FD1\u671F\u573A\u5747", "RECENT AVG")}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
+            statsEl.innerHTML = `<div style="padding:16px 18px"><div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;margin-bottom:12px">${tx("\u672C\u5C4A\u8D5B\u4E8B\u573A\u5747", "TOURNAMENT AVG")}</div>${window.WorldCup.MatchStats.renderRecentAvgComparison(hs, as2, homeName, awayName)}</div>`;
           }).catch((err) => {
             console.error("match-detail: recent-stats load failed:", err);
             if (myReqId !== _openMatchReqId) return;
@@ -5122,8 +5122,9 @@ var require_match_review = __commonJS({
           ...Array.isArray(review.keyEvents) ? review.keyEvents : [],
           ...Array.isArray(review.evidence?.events) ? review.evidence.events : []
         ];
-        const eventText = (event) => typeof event === "string" ? event : event?.text || event?.summary || event?.description || "";
-        const factRows = actualEvents.filter((event) => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventText(event)) || /goal|card|substitution/i.test(String(event?.type || ""))).slice(0, 12).map((event) => `${event?.minute || ""} ${eventText(event)}`.trim());
+        const eventText = (event) => typeof event === "string" ? event : i18nText(event?.textI18n, event?.text || event?.summary || event?.description || "");
+        const eventSearchText = (event) => typeof event === "string" ? event : [event?.textI18n?.zh, event?.textI18n?.en, event?.text, event?.summary, event?.description].filter(Boolean).join(" ");
+        const factRows = actualEvents.filter((event) => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventSearchText(event)) || /goal|card|substitution/i.test(String(event?.type || ""))).slice(0, 12).map((event) => `${event?.minute || ""} ${eventText(event)}`.trim());
         const actual = review.match || {};
         const lineups = review.postMatchFacts || {};
         const style = sections?.styleMatchup;
@@ -5144,8 +5145,23 @@ var require_match_review = __commonJS({
           const confidence = (value) => ({ low: tx("\u4F4E", "Low"), medium: tx("\u4E2D", "Medium"), high: tx("\u9AD8", "High") })[value] || value || tx("\u4F4E", "Low");
           left += `<div class="space-y-2 text-[11px]">`;
           if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u98CE\u683C\u5BF9\u5792", "Style matchup")} <span class="text-[9px] text-gray-600">${esc(confidence(style.confidence))}</span></div><div class="text-gray-400 mt-1">${tx("\u4E3B\u961F", "Home")}: ${esc(tags(style.homeTags))}<br>${tx("\u5BA2\u961F", "Away")}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
-          if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u66FF\u8865\u5F71\u54CD\u9884\u89C8", "Bench preview")}</div><div class="text-gray-500 mt-1">${esc(sections.superSubs.comparison?.reason || tx("\u65E0\u53EF\u6BD4\u8F83\u7ED3\u8BBA", "No comparable conclusion"))}</div></div>`;
-          if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u70B9\u7403\u60C5\u62A5", "Penalty context")}</div><div class="text-gray-500 mt-1">${esc(sections.penalty.comparison?.reason || tx("\u65E0\u53EF\u6BD4\u8F83\u7ED3\u8BBA", "No comparable conclusion"))}</div></div>`;
+          const frozenReason = (comparison) => {
+            if (comparison?.reasonI18n) return i18nText(comparison.reasonI18n, comparison.reason || "");
+            const legacy = {
+              "Bench outcomes roughly level": { zh: "\u53CC\u65B9\u66FF\u8865\u767B\u573A\u540E\u7684\u6BD4\u8D5B\u5F71\u54CD\u5927\u81F4\u76F8\u5F53", en: "Bench outcomes roughly level" },
+              "Bench strength roughly level": { zh: "\u53CC\u65B9\u66FF\u8865\u5E2D\u5B9E\u529B\u5927\u81F4\u76F8\u5F53", en: "Bench strength roughly level" },
+              "Home bench produced the stronger post-substitution goal balance": { zh: "\u4E3B\u961F\u66FF\u8865\u767B\u573A\u540E\u7684\u8FDB\u7403\u51C0\u5F71\u54CD\u66F4\u5F3A", en: "Home bench produced the stronger post-substitution goal balance" },
+              "Away bench produced the stronger post-substitution goal balance": { zh: "\u5BA2\u961F\u66FF\u8865\u767B\u573A\u540E\u7684\u8FDB\u7403\u51C0\u5F71\u54CD\u66F4\u5F3A", en: "Away bench produced the stronger post-substitution goal balance" },
+              "Elo and experience roughly level": { zh: "\u53CC\u65B9 Elo \u4E0E\u70B9\u7403\u7ECF\u9A8C\u5927\u81F4\u76F8\u5F53", en: "Elo and experience roughly level" },
+              "Home side shows clear advantage in Elo/defence/shootout experience": { zh: "\u4E3B\u961F\u5728 Elo\u3001\u9632\u5B88\u4E0E\u70B9\u7403\u5927\u6218\u7ECF\u9A8C\u4E0A\u4F18\u52BF\u660E\u663E", en: "Home side shows clear advantage in Elo/defence/shootout experience" },
+              "Home side shows slight advantage in Elo/defence/shootout experience": { zh: "\u4E3B\u961F\u5728 Elo\u3001\u9632\u5B88\u4E0E\u70B9\u7403\u5927\u6218\u7ECF\u9A8C\u4E0A\u7565\u5360\u4F18\u52BF", en: "Home side shows slight advantage in Elo/defence/shootout experience" },
+              "Away side shows clear advantage in Elo/defence/shootout experience": { zh: "\u5BA2\u961F\u5728 Elo\u3001\u9632\u5B88\u4E0E\u70B9\u7403\u5927\u6218\u7ECF\u9A8C\u4E0A\u4F18\u52BF\u660E\u663E", en: "Away side shows clear advantage in Elo/defence/shootout experience" },
+              "Away side shows slight advantage in Elo/defence/shootout experience": { zh: "\u5BA2\u961F\u5728 Elo\u3001\u9632\u5B88\u4E0E\u70B9\u7403\u5927\u6218\u7ECF\u9A8C\u4E0A\u7565\u5360\u4F18\u52BF", en: "Away side shows slight advantage in Elo/defence/shootout experience" }
+            };
+            return i18nText(legacy[comparison?.reason], comparison?.reason || tx("\u65E0\u53EF\u6BD4\u8F83\u7ED3\u8BBA", "No comparable conclusion"));
+          };
+          if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u66FF\u8865\u5F71\u54CD\u9884\u89C8", "Bench preview")}</div><div class="text-gray-500 mt-1">${esc(frozenReason(sections.superSubs.comparison))}</div></div>`;
+          if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u70B9\u7403\u60C5\u62A5", "Penalty context")}</div><div class="text-gray-500 mt-1">${esc(frozenReason(sections.penalty.comparison))}</div></div>`;
           if (sections.experience) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u6DD8\u6C70\u8D5B\u7ECF\u5386", "Knockout experience")}</div><div class="text-gray-500 mt-1">${esc(i18nText(sections.experience.note, ""))}</div></div>`;
           left += `<div class="text-[9px] text-gray-600">${tx("\u4EE5\u4E0A\u5185\u5BB9\u8BFB\u53D6\u7684\u662F\u5F00\u7403\u524D\u51BB\u7ED3\u5FEB\u7167\uFF0C\u8D5B\u540E\u4E0D\u91CD\u7B97\u3002", "This column reads the kickoff-frozen snapshot and is never recomputed after the match.")}</div></div>`;
         }
@@ -5187,11 +5203,14 @@ var require_match_review = __commonJS({
         };
         const scoreHome = firstValue(match.home?.score, match.homeScore);
         const scoreAway = firstValue(match.away?.score, match.awayScore);
+        const regulationHome = firstValue(match.regulationScore?.home, scoreHome);
+        const regulationAway = firstValue(match.regulationScore?.away, scoreAway);
+        const wentToExtraTime = Boolean(match.wentToExtraTime);
         const matchTypeText = i18nText(summary.matchTypeI18n, summary.matchType || tx("\u5DF2\u7ED3\u675F", "Finished"));
         const overviewText = i18nText(summary.overviewI18n, summary.overview || "");
         const upsetText = i18nText(summary.upsetTextI18n, summary.upsetText || "");
         const biasSummary = i18nText(bias.summaryI18n, bias.summary || "");
-        const sHN = Number(scoreHome), sAN = Number(scoreAway);
+        const sHN = Number(regulationHome), sAN = Number(regulationAway);
         const scoreColor = Number.isFinite(sHN) && Number.isFinite(sAN) ? sHN > sAN ? "green" : sHN < sAN ? "red" : "yellow" : "yellow";
         const rawKE = Array.isArray(review.keyEvents) ? review.keyEvents : [];
         const rawEE = Array.isArray(evidence.events) ? evidence.events : [];
@@ -5207,7 +5226,7 @@ var require_match_review = __commonJS({
           html += `<div class="glass rounded-xl p-3 mb-2.5 border border-yellow-500/20 bg-yellow-500/5"><div class="flex items-start gap-2"><span class="text-sm mt-0.5">\u26A0\uFE0F</span><div class="text-[11px] text-yellow-300 leading-relaxed">${esc(i18nText(predictionSnapshotNote, predictionSnapshotNote.en || ""))}</div></div></div>`;
         }
         html += renderFrozenKnockoutComparison(review);
-        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">\u{1F916} ${tx("AI \u9884\u6D4B vs \u771F\u5B9E\u7ED3\u679C", "AI Forecast vs Actual Result")}${isRetrospective ? ` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx("\u8D5B\u540E\u53C2\u8003", "retro")}</span>` : ""}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("AI \u9884\u6D4B", "AI Forecast")}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore || tx("\u7F3A\u5FEB\u7167", "No snapshot")}</div><div class="text-[11px] text-gray-500 mt-1">${tx("\u4E3B", "Home")} ${displayPct(ai.homeWin)} \xB7 ${tx("\u5E73", "Draw")} ${displayPct(ai.draw)} \xB7 ${tx("\u5BA2", "Away")} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals, "-")} - ${displayValue(ai.awayExpectedGoals, "-")}</div>${review.predictionSourceNote ? `<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>` : ""}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("\u771F\u5B9E\u7ED3\u679C", "Actual Result")}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div><div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n || match.home || "")} vs ${displayMaybeTeamName(match.awayNameI18n || match.away || "")}</div><div class="text-[11px] text-gray-600">${match.date || ""}</div></div></div>`;
+        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">\u{1F916} ${tx("AI \u9884\u6D4B vs \u771F\u5B9E\u7ED3\u679C", "AI Forecast vs Actual Result")}${isRetrospective ? ` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx("\u8D5B\u540E\u53C2\u8003", "retro")}</span>` : ""}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("AI \u9884\u6D4B\uFF0890\u5206\u949F\uFF09", "AI Forecast (90 min)")}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore || tx("\u7F3A\u5FEB\u7167", "No snapshot")}</div><div class="text-[11px] text-gray-500 mt-1">${tx("\u4E3B", "Home")} ${displayPct(ai.homeWin)} \xB7 ${tx("\u5E73", "Draw")} ${displayPct(ai.draw)} \xB7 ${tx("\u5BA2", "Away")} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals, "-")} - ${displayValue(ai.awayExpectedGoals, "-")}</div>${review.predictionSourceNote ? `<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>` : ""}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx("\u5E38\u89C4\u65F6\u95F4\u7ED3\u679C", "Regulation Result")}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(regulationHome)} : ${displayValue(regulationAway)}</div>${wentToExtraTime ? `<div class="text-[10px] text-amber-300 mt-1">${tx("\u52A0\u65F6\u540E\u6700\u7EC8\u6BD4\u5206", "Final after extra time")} ${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div>` : ""}<div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n || match.home || "")} vs ${displayMaybeTeamName(match.awayNameI18n || match.away || "")}</div><div class="text-[11px] text-gray-600">${match.date || ""}</div></div></div>`;
         const accCls = bias.accuracy === "highly_accurate" || bias.accuracy === "exact_score" ? "text-green-400 bg-green-500/10" : bias.accuracy === "result_correct_score_wrong" ? "text-yellow-400 bg-yellow-500/10" : "text-red-400 bg-red-500/10";
         const accLabel = bias.accuracy === "highly_accurate" || bias.accuracy === "exact_score" ? `\u{1F7E2} ${tx("\u7CBE\u51C6\u547D\u4E2D", "Accurate")}` : bias.accuracy === "result_correct_score_wrong" ? `\u{1F7E1} ${tx("\u6BD4\u5206\u504F\u5DEE", "Score off")}` : bias.accuracy === "wrong_result" ? `\u{1F534} ${tx("\u7ED3\u679C\u9519\u8BEF", "Wrong result")}` : `\u26AA ${tx("\u672A\u77E5", "Unknown")}`;
         html += `<div class="mt-2.5 pt-2.5 border-t border-white/5"><div class="flex items-center justify-between"><span class="text-[11px] font-bold ${accCls} px-2 py-0.5 rounded-md">${accLabel}</span><span class="text-[11px] text-gray-500">${tx("\u9884\u6D4B\u7F6E\u4FE1", "Forecast Confidence")} ${bias.predictedConfidence || 0}%</span></div><div class="text-[11px] text-gray-400 mt-1">${biasSummary}</div><div class="text-[9px] text-gray-600 mt-1">${tx('"\u7CBE\u51C6\u547D\u4E2D / \u6BD4\u5206\u504F\u5DEE / \u7ED3\u679C\u9519\u8BEF"\u4EC5\u4E3A\u672C\u573A\u9884\u6D4B\u4E0E\u7ED3\u679C\u7684\u5BF9\u6BD4\uFF0C\u4E0D\u4EE3\u8868\u6A21\u578B\u6574\u4F53\u51C6\u786E\u7387\u3002', '"Accurate / Score off / Wrong result" compares this match only and does not represent overall model accuracy.')}</div></div></div>`;
@@ -5604,8 +5623,8 @@ var require_pre_match = __commonJS({
           }
           const hName = homeName || (hs?.teamId || "");
           const aName = awayName || (as?.teamId || "");
-          let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">\u{1F4CA} ${tx("\u8FD1\u671F\u573A\u5747\u7EDF\u8BA1", "Recent Avg Stats")}</h4>`;
-          statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx("\u57FA\u4E8E\u8FD1\u671F\u5B8C\u8D5B\u8BB0\u5F55\u751F\u6210\uFF0C\u975E\u9884\u6D4B\u3002", "Based on recent completed matches, not predictions.")}</p>`;
+          let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">\u{1F4CA} ${tx("\u672C\u5C4A\u8D5B\u4E8B\u573A\u5747\u7EDF\u8BA1", "Tournament Avg Stats")}</h4>`;
+          statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx("\u57FA\u4E8E\u672C\u5C4A\u8D5B\u4E8B\u5168\u90E8\u5DF2\u5B8C\u8D5B\u8BB0\u5F55\u81EA\u52A8\u66F4\u65B0\uFF0C\u975E\u9884\u6D4B\u3002", "Automatically updated from all completed tournament matches; not a prediction.")}</p>`;
           statsHtml += renderRecentAvgComparison(hs, as, hName, aName);
           el.innerHTML = statsHtml;
         }).catch(() => {

@@ -424,6 +424,39 @@ async function testEvidenceEventsRendering() {
   db.prepare('DELETE FROM prediction_snapshots WHERE match_id = ?').run(matchId);
 }
 
+// ===== 8. Regulation-time grading for AET matches =====
+async function testRegulationTimeGrading() {
+  console.log('\n📋 Test 8: AET match is graded against the 90-minute score');
+  const { buildPostMatchReview, REVIEW_SCHEMA_VERSION } = require('../lib/postMatchReview');
+  const ReviewService = require('../lib/services/ReviewService');
+  const score = ReviewService.extractScoreBreakdown(
+    { score: '3', linescores: [{ displayValue: '1' }, { displayValue: '0' }, { displayValue: '0' }, { displayValue: '2' }] },
+    { score: '1', linescores: [{ displayValue: '0' }, { displayValue: '1' }, { displayValue: '0' }, { displayValue: '0' }] },
+    { name: 'STATUS_FINAL_AET', detail: 'AET' },
+  );
+  const review = buildPostMatchReview({
+    matchId: 'aet_scope_test',
+    match: {
+      homeId: '202', awayId: '475', homeName: '阿根廷 Argentina', awayName: '瑞士 Switzerland',
+      homeScore: score.finalHomeScore, awayScore: score.finalAwayScore,
+      regulationHomeScore: score.regulationHomeScore, regulationAwayScore: score.regulationAwayScore,
+      wentToExtraTime: score.wentToExtraTime, completed: true, status: 'STATUS_FINAL_AET',
+    },
+    snapshot: {
+      predictedScore: '2-1', homeWin: 0.519, draw: 0.271, awayWin: 0.21,
+      homeExpectedGoals: 1.5, awayExpectedGoals: 1.1,
+    },
+  });
+  assert(REVIEW_SCHEMA_VERSION === 'post_match_review_v2', `schema=${REVIEW_SCHEMA_VERSION}`);
+  assert(review.match.homeScore === 3 && review.match.awayScore === 1, 'final AET score preserved');
+  assert(review.match.regulationScore.home === 1 && review.match.regulationScore.away === 1, '90-minute score extracted');
+  assert(review.biasAnalysis.actualResult === 'draw', `actual regulation result=${review.biasAnalysis.actualResult}`);
+  assert(review.biasAnalysis.resultCorrect === false, 'home-win prediction is not marked correct against a 90-minute draw');
+  assert(review.biasAnalysis.accuracy === 'wrong_result', `accuracy=${review.biasAnalysis.accuracy}`);
+  assert(review.aiPromptContext.match.predictionScope === '90-minute regulation time', 'AI prompt declares prediction scope');
+  assert(review.aiPromptContext.match.finalScore.home === 3, 'AI prompt also retains final AET score');
+}
+
 // ===== Run all tests =====
 async function cleanup() {
   if (serverProcess) {
@@ -464,13 +497,14 @@ async function main() {
     try { await testExactScore(); } catch (e) { console.error('  💥 Test 5 crashed:', e.message); failed++; }
     try { await testZeroZeroScore(); } catch (e) { console.error('  💥 Test 6 crashed:', e.message); failed++; }
     try { await testEvidenceEventsRendering(); } catch (e) { console.error('  💥 Test 7 crashed:', e.message); failed++; }
+    try { await testRegulationTimeGrading(); } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
 
-    // Test 8: Authorization gate
+    // Test 9: Authorization gate
     try {
-      console.log('\n📋 Test 8: Anonymous request authorization gate');
+      console.log('\n📋 Test 9: Anonymous request authorization gate');
       const { status, data } = await request('POST', '/api/post-match-review', {}, { 'X-Admin-Token': 'wrong-token' });
       assert(status === 401, `HTTP ${status} (expected 401)`);
-    } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
+    } catch (e) { console.error('  💥 Test 9 crashed:', e.message); failed++; }
   } finally {
     await cleanup();
   }

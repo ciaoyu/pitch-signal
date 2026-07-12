@@ -58,8 +58,8 @@
             }
             const hName = homeName || (hs?.teamId || '');
             const aName = awayName || (as?.teamId || '');
-            let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">📊 ${tx('近期场均统计', 'Recent Avg Stats')}</h4>`;
-            statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx('基于近期完赛记录生成，非预测。', 'Based on recent completed matches, not predictions.')}</p>`;
+            let statsHtml = `<h4 class="text-xs font-bold text-gray-500 mb-2">📊 ${tx('本届赛事场均统计', 'Tournament Avg Stats')}</h4>`;
+            statsHtml += `<p class="text-[10px] text-gray-500 mb-3">${tx('基于本届赛事全部已完赛记录自动更新，非预测。', 'Automatically updated from all completed tournament matches; not a prediction.')}</p>`;
             statsHtml += renderRecentAvgComparison(hs, as, hName, aName);
             el.innerHTML = statsHtml;
         }).catch(() => {

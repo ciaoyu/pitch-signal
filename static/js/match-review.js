@@ -18,9 +18,12 @@
             ...(Array.isArray(review.keyEvents) ? review.keyEvents : []),
             ...(Array.isArray(review.evidence?.events) ? review.evidence.events : []),
         ];
-        const eventText = event => typeof event === 'string' ? event : (event?.text || event?.summary || event?.description || '');
+        const eventText = event => typeof event === 'string' ? event : i18nText(event?.textI18n, event?.text || event?.summary || event?.description || '');
+        const eventSearchText = event => typeof event === 'string'
+            ? event
+            : [event?.textI18n?.zh, event?.textI18n?.en, event?.text, event?.summary, event?.description].filter(Boolean).join(' ');
         const factRows = actualEvents
-            .filter(event => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventText(event)) || /goal|card|substitution/i.test(String(event?.type || '')))
+            .filter(event => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventSearchText(event)) || /goal|card|substitution/i.test(String(event?.type || '')))
             .slice(0, 12)
             .map(event => `${event?.minute || ''} ${eventText(event)}`.trim());
         const actual = review.match || {};
@@ -46,8 +49,23 @@
             const confidence = value => ({ low: tx('低', 'Low'), medium: tx('中', 'Medium'), high: tx('高', 'High') }[value] || value || tx('低', 'Low'));
             left += `<div class="space-y-2 text-[11px]">`;
             if (style) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('风格对垒', 'Style matchup')} <span class="text-[9px] text-gray-600">${esc(confidence(style.confidence))}</span></div><div class="text-gray-400 mt-1">${tx('主队', 'Home')}: ${esc(tags(style.homeTags))}<br>${tx('客队', 'Away')}: ${esc(tags(style.awayTags))}</div><div class="text-[9px] text-gray-600 mt-1">${sourceNote}</div></div>`;
-            if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('替补影响预览', 'Bench preview')}</div><div class="text-gray-500 mt-1">${esc(sections.superSubs.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
-            if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('点球情报', 'Penalty context')}</div><div class="text-gray-500 mt-1">${esc(sections.penalty.comparison?.reason || tx('无可比较结论', 'No comparable conclusion'))}</div></div>`;
+            const frozenReason = comparison => {
+                if (comparison?.reasonI18n) return i18nText(comparison.reasonI18n, comparison.reason || '');
+                const legacy = {
+                    'Bench outcomes roughly level': {zh:'双方替补登场后的比赛影响大致相当',en:'Bench outcomes roughly level'},
+                    'Bench strength roughly level': {zh:'双方替补席实力大致相当',en:'Bench strength roughly level'},
+                    'Home bench produced the stronger post-substitution goal balance': {zh:'主队替补登场后的进球净影响更强',en:'Home bench produced the stronger post-substitution goal balance'},
+                    'Away bench produced the stronger post-substitution goal balance': {zh:'客队替补登场后的进球净影响更强',en:'Away bench produced the stronger post-substitution goal balance'},
+                    'Elo and experience roughly level': {zh:'双方 Elo 与点球经验大致相当',en:'Elo and experience roughly level'},
+                    'Home side shows clear advantage in Elo/defence/shootout experience': {zh:'主队在 Elo、防守与点球大战经验上优势明显',en:'Home side shows clear advantage in Elo/defence/shootout experience'},
+                    'Home side shows slight advantage in Elo/defence/shootout experience': {zh:'主队在 Elo、防守与点球大战经验上略占优势',en:'Home side shows slight advantage in Elo/defence/shootout experience'},
+                    'Away side shows clear advantage in Elo/defence/shootout experience': {zh:'客队在 Elo、防守与点球大战经验上优势明显',en:'Away side shows clear advantage in Elo/defence/shootout experience'},
+                    'Away side shows slight advantage in Elo/defence/shootout experience': {zh:'客队在 Elo、防守与点球大战经验上略占优势',en:'Away side shows slight advantage in Elo/defence/shootout experience'},
+                };
+                return i18nText(legacy[comparison?.reason], comparison?.reason || tx('无可比较结论', 'No comparable conclusion'));
+            };
+            if (sections.superSubs) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('替补影响预览', 'Bench preview')}</div><div class="text-gray-500 mt-1">${esc(frozenReason(sections.superSubs.comparison))}</div></div>`;
+            if (sections.penalty) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('点球情报', 'Penalty context')}</div><div class="text-gray-500 mt-1">${esc(frozenReason(sections.penalty.comparison))}</div></div>`;
             if (sections.experience) left += `<div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('淘汰赛经历', 'Knockout experience')}</div><div class="text-gray-500 mt-1">${esc(i18nText(sections.experience.note, ''))}</div></div>`;
             left += `<div class="text-[9px] text-gray-600">${tx('以上内容读取的是开球前冻结快照，赛后不重算。', 'This column reads the kickoff-frozen snapshot and is never recomputed after the match.')}</div></div>`;
         }
@@ -90,11 +108,14 @@
         const firstValue = (...vs) => { const f = vs.find(hasValue); return f === undefined ? undefined : f; };
         const scoreHome = firstValue(match.home?.score, match.homeScore);
         const scoreAway = firstValue(match.away?.score, match.awayScore);
+        const regulationHome = firstValue(match.regulationScore?.home, scoreHome);
+        const regulationAway = firstValue(match.regulationScore?.away, scoreAway);
+        const wentToExtraTime = Boolean(match.wentToExtraTime);
         const matchTypeText = i18nText(summary.matchTypeI18n, summary.matchType || tx('已结束', 'Finished'));
         const overviewText = i18nText(summary.overviewI18n, summary.overview || '');
         const upsetText = i18nText(summary.upsetTextI18n, summary.upsetText || '');
         const biasSummary = i18nText(bias.summaryI18n, bias.summary || '');
-        const sHN = Number(scoreHome), sAN = Number(scoreAway);
+        const sHN = Number(regulationHome), sAN = Number(regulationAway);
         const scoreColor = Number.isFinite(sHN) && Number.isFinite(sAN) ? (sHN > sAN ? 'green' : sHN < sAN ? 'red' : 'yellow') : 'yellow';
         const rawKE = Array.isArray(review.keyEvents) ? review.keyEvents : [];
         const rawEE = Array.isArray(evidence.events) ? evidence.events : [];
@@ -109,7 +130,7 @@
 
         html += renderFrozenKnockoutComparison(review);
 
-        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">🤖 ${tx('AI 预测 vs 真实结果','AI Forecast vs Actual Result')}${isRetrospective?` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx('赛后参考','retro')}</span>`:''}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('AI 预测','AI Forecast')}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore||tx('缺快照','No snapshot')}</div><div class="text-[11px] text-gray-500 mt-1">${tx('主','Home')} ${displayPct(ai.homeWin)} · ${tx('平','Draw')} ${displayPct(ai.draw)} · ${tx('客','Away')} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals,'-')} - ${displayValue(ai.awayExpectedGoals,'-')}</div>${review.predictionSourceNote?`<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>`:''}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('真实结果','Actual Result')}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div><div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n||match.home||'')} vs ${displayMaybeTeamName(match.awayNameI18n||match.away||'')}</div><div class="text-[11px] text-gray-600">${match.date||''}</div></div></div>`;
+        html += `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-400 mb-2">🤖 ${tx('AI 预测 vs 真实结果','AI Forecast vs Actual Result')}${isRetrospective?` <span class="text-[9px] px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-400 align-middle">${tx('赛后参考','retro')}</span>`:''}</div><div class="grid grid-cols-2 gap-2"><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('AI 预测（90分钟）','AI Forecast (90 min)')}</div><div class="text-xl font-bold text-blue-400">${ai.predictedScore||tx('缺快照','No snapshot')}</div><div class="text-[11px] text-gray-500 mt-1">${tx('主','Home')} ${displayPct(ai.homeWin)} · ${tx('平','Draw')} ${displayPct(ai.draw)} · ${tx('客','Away')} ${displayPct(ai.awayWin)}</div><div class="text-[11px] text-gray-600">xG ${displayValue(ai.homeExpectedGoals,'-')} - ${displayValue(ai.awayExpectedGoals,'-')}</div>${review.predictionSourceNote?`<div class="text-[10px] text-amber-300 mt-1">${esc(review.predictionSourceNote)}</div>`:''}</div><div class="bg-white/5 rounded-lg p-2.5 text-center"><div class="text-[11px] text-gray-500 mb-1">${tx('常规时间结果','Regulation Result')}</div><div class="text-xl font-bold text-${scoreColor}-400">${displayValue(regulationHome)} : ${displayValue(regulationAway)}</div>${wentToExtraTime?`<div class="text-[10px] text-amber-300 mt-1">${tx('加时后最终比分','Final after extra time')} ${displayValue(scoreHome)} : ${displayValue(scoreAway)}</div>`:''}<div class="text-[11px] text-gray-500 mt-1">${displayMaybeTeamName(match.homeNameI18n||match.home||'')} vs ${displayMaybeTeamName(match.awayNameI18n||match.away||'')}</div><div class="text-[11px] text-gray-600">${match.date||''}</div></div></div>`;
         const accCls = bias.accuracy==='highly_accurate'||bias.accuracy==='exact_score'?'text-green-400 bg-green-500/10':bias.accuracy==='result_correct_score_wrong'?'text-yellow-400 bg-yellow-500/10':'text-red-400 bg-red-500/10';
         const accLabel = bias.accuracy==='highly_accurate'||bias.accuracy==='exact_score'?`🟢 ${tx('精准命中','Accurate')}`:bias.accuracy==='result_correct_score_wrong'?`🟡 ${tx('比分偏差','Score off')}`:bias.accuracy==='wrong_result'?`🔴 ${tx('结果错误','Wrong result')}`:`⚪ ${tx('未知','Unknown')}`;
         html += `<div class="mt-2.5 pt-2.5 border-t border-white/5"><div class="flex items-center justify-between"><span class="text-[11px] font-bold ${accCls} px-2 py-0.5 rounded-md">${accLabel}</span><span class="text-[11px] text-gray-500">${tx('预测置信','Forecast Confidence')} ${bias.predictedConfidence||0}%</span></div><div class="text-[11px] text-gray-400 mt-1">${biasSummary}</div><div class="text-[9px] text-gray-600 mt-1">${tx('"精准命中 / 比分偏差 / 结果错误"仅为本场预测与结果的对比，不代表模型整体准确率。','"Accurate / Score off / Wrong result" compares this match only and does not represent overall model accuracy.')}</div></div></div>`;
