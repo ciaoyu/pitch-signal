@@ -266,8 +266,8 @@ function renderKnockoutIntel(intel) {
         } else if (key === 'lessons') {
             const renderLessons = (sideLabel, list) => {
                 const rows = (list || []).map(item => {
-                    const legacyUnavailable = getLang() === 'en' && item?.legacySingleLanguage === 'zh';
-                    const text = legacyUnavailable ? tx('历史复盘仅提供中文', 'English version unavailable for this historical review') : L(item);
+                    const legacyUnavailable = item?.legacySingleLanguage && item.legacySingleLanguage !== getLang();
+                    const text = legacyUnavailable ? tx('该场历史复盘暂无中文版本', 'English version unavailable for this historical review') : L(item);
                     return `<div class="text-[10px] text-gray-300 leading-snug">• ${text}</div>`;
                 }).join('');
                 return `<div class="p-1.5 rounded bg-white/[0.02]">

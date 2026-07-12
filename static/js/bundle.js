@@ -7790,8 +7790,8 @@ var require_mr_knockout = __commonJS({
           } else if (key === "lessons") {
             const renderLessons = (sideLabel, list) => {
               const rows = (list || []).map((item) => {
-                const legacyUnavailable = getLang() === "en" && item?.legacySingleLanguage === "zh";
-                const text = legacyUnavailable ? tx("\u5386\u53F2\u590D\u76D8\u4EC5\u63D0\u4F9B\u4E2D\u6587", "English version unavailable for this historical review") : L(item);
+                const legacyUnavailable = item?.legacySingleLanguage && item.legacySingleLanguage !== getLang();
+                const text = legacyUnavailable ? tx("\u8BE5\u573A\u5386\u53F2\u590D\u76D8\u6682\u65E0\u4E2D\u6587\u7248\u672C", "English version unavailable for this historical review") : L(item);
                 return `<div class="text-[10px] text-gray-300 leading-snug">\u2022 ${text}</div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
