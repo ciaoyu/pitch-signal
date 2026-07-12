@@ -5975,11 +5975,12 @@ var require_tactical_scenarios = __commonJS({
   }
 });
 
-// static/js/match-renderers.js
-var require_match_renderers = __commonJS({
-  "static/js/match-renderers.js"() {
+// static/js/mr-shared.js
+var require_mr_shared = __commonJS({
+  "static/js/mr-shared.js"() {
     window.WorldCup = window.WorldCup || {};
-    window.WorldCup.MatchRenderers = (() => {
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
       const { Formatters, ApiClient, State, Utils } = window.WorldCup;
       const getLang = () => State.uiLang || "zh";
       const tx = (zh, en) => Utils.tx(zh, en);
@@ -5992,7 +5993,71 @@ var require_match_renderers = __commonJS({
         return value || fallback;
       };
       const FORMATION_POSITIONS = {};
-      function formationTemplate(formation, side, opponentFormation = "") {
+      const teamLabel = (teamObj) => {
+        if (!teamObj) return tx("\u672A\u77E5\u7403\u961F", "Unknown Team");
+        const i18n = teamObj.nameI18n;
+        if (i18n && (i18n.zh || i18n.en)) {
+          return getLang() === "en" ? i18n.en || i18n.zh || "" : i18n.zh || i18n.en || "";
+        }
+        const raw = teamObj.team || teamObj.name || teamObj.shortName || teamObj.teamName || "";
+        if (raw) {
+          const bilingual = raw.match(/^([\u3400-\u9fff（）()·\s]+)\s+(.+)$/u);
+          if (bilingual) return getLang() === "en" ? bilingual[2].trim() : bilingual[1].trim();
+          return raw;
+        }
+        const alt = teamObj.fullName || teamObj.displayName || teamObj.label || teamObj.id || "";
+        if (alt) return alt;
+        return tx("\u672A\u77E5\u7403\u961F", "Unknown Team");
+      };
+      const teamFlagHtml = (teamObj, bgClass) => {
+        const flag = teamObj && teamObj.flag;
+        if (flag && flag !== "\u{1F3F3}\uFE0F" && flag !== "") {
+          return `<span class="text-lg shrink-0">${esc(flag)}</span>`;
+        }
+        const name = teamLabel(teamObj);
+        const initial = name ? name.charAt(0).toUpperCase() : "?";
+        return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${bgClass} text-white text-xs font-bold shrink-0">${esc(initial)}</span>`;
+      };
+      const playerCoords = (p) => ({
+        x: p.x ?? p.coords?.x ?? 50,
+        y: p.y ?? p.coords?.y ?? 50
+      });
+      const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : nameZh || name;
+      window.WorldCup.MatchRenderers._shared = {
+        getLang,
+        tx,
+        esc,
+        attr,
+        i18nText,
+        FORMATION_POSITIONS,
+        teamLabel,
+        teamFlagHtml,
+        playerCoords,
+        translatePlayerName
+      };
+    })();
+  }
+});
+
+// static/js/mr-tactical.js
+var require_mr_tactical = __commonJS({
+  "static/js/mr-tactical.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const { Formatters, ApiClient, State, Utils } = window.WorldCup;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
+      function formationTemplate2(formation, side, opponentFormation = "") {
         const isHome = side === "home";
         const parts = String(formation || "4-3-3").split("-").map(Number);
         let defCount = parts[0] || 4;
@@ -6086,35 +6151,6 @@ var require_match_renderers = __commonJS({
         if (parts.length === 4) return { def: parts[0], midDM: parts[1], midAM: parts[2], fwd: parts[3], mid: parts[1] + parts[2] };
         return { def: 4, mid: 3, fwd: 3 };
       }
-      const teamLabel = (teamObj) => {
-        if (!teamObj) return tx("\u672A\u77E5\u7403\u961F", "Unknown Team");
-        const i18n = teamObj.nameI18n;
-        if (i18n && (i18n.zh || i18n.en)) {
-          return getLang() === "en" ? i18n.en || i18n.zh || "" : i18n.zh || i18n.en || "";
-        }
-        const raw = teamObj.team || teamObj.name || teamObj.shortName || teamObj.teamName || "";
-        if (raw) {
-          const bilingual = raw.match(/^([\u3400-\u9fff（）()·\s]+)\s+(.+)$/u);
-          if (bilingual) return getLang() === "en" ? bilingual[2].trim() : bilingual[1].trim();
-          return raw;
-        }
-        const alt = teamObj.fullName || teamObj.displayName || teamObj.label || teamObj.id || "";
-        if (alt) return alt;
-        return tx("\u672A\u77E5\u7403\u961F", "Unknown Team");
-      };
-      const teamFlagHtml = (teamObj, bgClass) => {
-        const flag = teamObj && teamObj.flag;
-        if (flag && flag !== "\u{1F3F3}\uFE0F" && flag !== "") {
-          return `<span class="text-lg shrink-0">${esc(flag)}</span>`;
-        }
-        const name = teamLabel(teamObj);
-        const initial = name ? name.charAt(0).toUpperCase() : "?";
-        return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${bgClass} text-white text-xs font-bold shrink-0">${esc(initial)}</span>`;
-      };
-      const playerCoords = (p) => ({
-        x: p.x ?? p.coords?.x ?? 50,
-        y: p.y ?? p.coords?.y ?? 50
-      });
       function getMockMatchupData() {
         return {
           home: {
@@ -6166,7 +6202,166 @@ var require_match_renderers = __commonJS({
           components: { elo: { home: 1850, away: 1720 } }
         };
       }
-      function renderTacticalBoard(matchupData, matchData2) {
+      function renderFormation(matchupData, isFinishedMatch = false) {
+        if ((!matchupData || !matchupData.home || !matchupData.away) && !isFinishedMatch) {
+          matchupData = getMockMatchupData();
+        }
+        if (!matchupData || !matchupData.home || !matchupData.away) {
+          return `<div class="text-gray-500 text-xs text-center py-8">${isFinishedMatch ? tx("\u5B98\u65B9\u5386\u53F2\u9996\u53D1\u5C1A\u672A\u540C\u6B65\uFF1B\u4E0D\u4EE5\u63A8\u6D4B\u9635\u5BB9\u66FF\u4EE3\u5B9E\u9645\u9996\u53D1\u3002", "Official historical lineups are not synced; estimates are not shown as actual starters.") : tx("\u6682\u65E0\u5B98\u65B9\u9996\u53D1\uFF0C\u4EE5\u4E0B\u4E3A\u6839\u636E\u5386\u53F2\u9996\u53D1\u751F\u6210\u7684\u63A8\u6D4B\u9635\u5BB9", "No official lineups; showing projected lineups based on history")}</div>`;
+        }
+        const home = matchupData.home;
+        const away = matchupData.away;
+        const pairs = matchupData.pairs || [];
+        const matchups = matchupData.matchups || [];
+        const summary = matchupData.summary || {};
+        const homeAdv = summary.homeAdvantages ?? summary.homeAdvantagePairs ?? 0;
+        const awayAdv = summary.awayAdvantages ?? summary.awayAdvantagePairs ?? 0;
+        const totalPairs = homeAdv + (summary.evenPairs || 0) + awayAdv;
+        const homePct = totalPairs ? homeAdv / totalPairs * 100 : 0;
+        const evenPct = totalPairs ? (summary.evenPairs || 0) / totalPairs * 100 : totalPairs === 0 ? 100 : 0;
+        const awayPct = totalPairs ? awayAdv / totalPairs * 100 : 0;
+        let html = `
+    <div class="flex items-center justify-between mb-2">
+        <div class="text-xs font-bold text-blue-300 flex items-center gap-1.5">\u{1F535} ${teamFlagHtml(home, "bg-blue-600")} ${teamLabel(home)} (${home.formation || "4-3-3"})</div>
+        <div class="flex gap-1">
+            <button data-action="set-pitch-view" data-view="both" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/10 text-white font-bold">${tx("\u5168\u90E8", "All")}</button>
+            <button data-action="set-pitch-view" data-view="home" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u4E3B\u961F", "Home")}</button>
+            <button data-action="set-pitch-view" data-view="away" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u5BA2\u961F", "Away")}</button>
+        </div>
+        <div class="text-xs font-bold text-red-300 flex items-center gap-1.5 justify-end">${teamLabel(away)} (${away.formation || "4-3-3"}) ${teamFlagHtml(away, "bg-red-600")} \u{1F534}</div>
+    </div>
+
+    <!-- Segmented Score Bar -->
+    <div class="glass-light rounded-lg p-3 mb-2">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-blue-400">${teamLabel(home)}</span>
+            <span class="text-xs text-gray-500">${tx("\u5BF9\u4F4D\u4F18\u52BF\u5206\u5E03", "Matchup Edge")}</span>
+            <span class="text-xs font-bold text-red-400">${teamLabel(away)}</span>
+        </div>
+        <div class="flex h-4 rounded-full overflow-hidden mb-2 shadow-inner bg-white/5">
+            <div class="flex items-center justify-center bg-blue-500/80 transition-all duration-700" style="width:${homePct}%">
+                ${homeAdv ? `<span class="text-[10px] font-bold text-white">${homeAdv}</span>` : ""}
+            </div>
+            <div class="flex items-center justify-center bg-gray-500/50 transition-all duration-700" style="width:${evenPct}%">
+                ${summary.evenPairs ? `<span class="text-[10px] font-bold text-gray-300">${summary.evenPairs}</span>` : ""}
+            </div>
+            <div class="flex items-center justify-center bg-red-500/80 transition-all duration-700" style="width:${awayPct}%">
+                ${awayAdv ? `<span class="text-[10px] font-bold text-white">${awayAdv}</span>` : ""}
+            </div>
+        </div>
+        <div class="flex items-center justify-between text-[10px] text-gray-400 px-1">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500/80"></span>${tx("\u4E3B\u961F\u5360\u4F18", "Home Edge")}</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gray-500/50"></span>${tx("\u5747\u52BF", "Even")}</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500/80"></span>${tx("\u5BA2\u961F\u5360\u4F18", "Away Edge")}</span>
+        </div>
+    </div>
+
+    <!-- SVG Tactical Board -->
+    <div class="w-full" id="pitch-canvas">
+        ${renderTacticalBoard(matchupData, matchData)}
+    </div>`;
+        const shortName = (name, nameZh) => {
+          const d = Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : nameZh || name;
+          return d.includes("\xB7") ? d.split("\xB7").pop() : d.split(" ").pop();
+        };
+        if (matchups.length > 0) {
+          html += '<div class="mt-2 space-y-0.5">';
+          html += `<div class="text-[10px] text-gray-500 mb-1">\u2694\uFE0F ${tx("\u5173\u952E\u5BF9\u4F4D", "Key Matchups")}</div>`;
+          for (const m of matchups.slice(0, 4)) {
+            const cls = m.type === "critical" ? "text-yellow-400" : "text-gray-400";
+            const hName = m.homeInfo?.nameZh || m.homePlayer;
+            const aName = m.awayInfo?.nameZh || m.awayPlayer;
+            html += `<div class="text-[11px] ${cls} flex items-center gap-1">
+                <span>${m.type === "critical" ? "\u2B50" : "\u2022"}</span>
+                ${esc(hName)} \u2194 ${esc(aName)}
+                ${m.type === "critical" ? `<span class="text-[10px] font-bold text-amber-400">${tx("\u5173\u952E", "Critical")}</span>` : ""}
+            </div>`;
+          }
+          html += "</div>";
+        } else if (pairs.length > 0) {
+          const _pDiff = (p) => p.diff ?? p.gap ?? 0;
+          const keyPairs = pairs.filter((p) => Math.abs(_pDiff(p)) >= 8).slice(0, 4);
+          if (keyPairs.length) {
+            html += '<div class="mt-2 space-y-0.5">';
+            for (const p of keyPairs) {
+              const diff = _pDiff(p);
+              const cls = p.advantage === "home" ? "text-green-400" : p.advantage === "away" ? "text-red-400" : "text-gray-400";
+              const hShort = shortName(p.home.name, p.home.nameZh);
+              const aShort = shortName(p.away.name, p.away.nameZh);
+              html += `<div class="text-[11px] ${cls} flex items-center gap-1">
+                    ${p.advantage === "home" ? "\u{1F7E2}" : "\u{1F534}"}
+                    ${esc(hShort)} (${(p.home.rating / 10).toFixed(1)}) vs ${esc(aShort)} (${(p.away.rating / 10).toFixed(1)})
+                    <span class="font-bold">${diff > 0 ? "+" : ""}${(diff / 10).toFixed(1)}</span>
+                </div>`;
+            }
+            html += "</div>";
+          }
+        }
+        return html;
+      }
+      function applySubstitutionsToFormation(realSubstitutions) {
+        if (!realSubstitutions || !realSubstitutions.length) return;
+        const svg = document.querySelector("#pitch-canvas svg");
+        if (!svg) return;
+        const circles = svg.querySelectorAll("circle");
+        const texts = svg.querySelectorAll("text");
+        realSubstitutions.forEach((sub) => {
+          const outName = (sub.playerOut || "").toLowerCase();
+          if (!outName) return;
+          circles.forEach((c) => {
+            const name = c.getAttribute("data-player-name");
+            if (name && name.toLowerCase().includes(outName)) {
+              c.setAttribute("opacity", "0.35");
+              const cx = parseFloat(c.getAttribute("cx") || "0");
+              const cy = parseFloat(c.getAttribute("cy") || "0");
+              const marker = document.createElementNS("http://www.w3.org/2000/svg", "text");
+              marker.setAttribute("x", cx);
+              marker.setAttribute("y", cy - 3.5);
+              marker.setAttribute("text-anchor", "middle");
+              marker.setAttribute("font-size", "2");
+              marker.setAttribute("font-weight", "bold");
+              marker.setAttribute("fill", "#ef4444");
+              marker.textContent = `\u{1F53D}${sub.minute}'`;
+              c.parentNode.appendChild(marker);
+            }
+          });
+          texts.forEach((t) => {
+            const textContent = (t.textContent || "").trim();
+            if (textContent === String(sub.playerOut) || textContent === `${sub.playerOut}'`) {
+              t.setAttribute("opacity", "0.3");
+            }
+          });
+        });
+      }
+      MR.formationTemplate = formationTemplate2;
+      MR.parseFormationStr = parseFormationStr;
+      MR.getMockMatchupData = getMockMatchupData;
+      MR.getMockPrediction = getMockPrediction;
+      MR.renderFormation = renderFormation;
+      MR.applySubstitutionsToFormation = applySubstitutionsToFormation;
+    })();
+  }
+});
+
+// static/js/mr-tactical-board.js
+var require_mr_tactical_board = __commonJS({
+  "static/js/mr-tactical-board.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const { Formatters, ApiClient, State, Utils } = window.WorldCup;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
+      function renderTacticalBoard2(matchupData, matchData2) {
         if (matchupData) {
           ["home", "away"].forEach((side) => {
             const s = matchupData[side];
@@ -6178,60 +6373,60 @@ var require_match_renderers = __commonJS({
         const hasData = matchupData && matchupData.home?.players?.length >= 1 && matchupData.away?.players?.length >= 1;
         let svg = `<svg viewBox="0 0 100 160" class="w-full rounded-xl border-2 border-white/10" style="display:block;max-width:420px;margin:0 auto">`;
         svg += `<defs>
-            <linearGradient id="tb-pitch" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#1e5631"/>
-                <stop offset="49%" stop-color="#1a472a"/>
-                <stop offset="50%" stop-color="#1a472a"/>
-                <stop offset="100%" stop-color="#1e5631"/>
-            </linearGradient>
-            <linearGradient id="tb-m-critical-home" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9"/>
-                <stop offset="100%" stop-color="#9ca3af" stop-opacity="0.3"/>
-            </linearGradient>
-            <linearGradient id="tb-m-critical-away" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#9ca3af" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#ef4444" stop-opacity="0.9"/>
-            </linearGradient>
-            <linearGradient id="tb-m-even" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#9ca3af" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#9ca3af" stop-opacity="0.4"/>
-            </linearGradient>
-            <linearGradient id="tb-m-key" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.2"/>
-                <stop offset="100%" stop-color="#f87171" stop-opacity="0.2"/>
-            </linearGradient>
-            <clipPath id="tb-avatar-clip"><circle r="2.8" cx="0" cy="0"/></clipPath>
-            <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
-                <feGaussianBlur stdDeviation="1.2"/>
-            </filter>
-            <radialGradient id="halo-glow-home" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#3b82f6" stop-opacity="1.0"/>
-                <stop offset="35%" stop-color="#3b82f6" stop-opacity="0.85"/>
-                <stop offset="70%" stop-color="#3b82f6" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
-            </radialGradient>
-            <radialGradient id="halo-glow-away" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#ef4444" stop-opacity="1.0"/>
-                <stop offset="35%" stop-color="#ef4444" stop-opacity="0.85"/>
-                <stop offset="70%" stop-color="#ef4444" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
-            </radialGradient>
-        </defs>
-        <style>
-            .pitch-player-group {
-                cursor: pointer;
-            }
-            .ability-halo {
-                transition: opacity 0.2s ease;
-            }
-            .pitch-player-group:hover .ability-halo {
-                opacity: 1.0 !important;
-            }
-            .pitch-player-group:hover .player-core {
-                stroke-width: 0.7px !important;
-                filter: drop-shadow(0 0.8px 1.5px rgba(0,0,0,0.5)) !important;
-            }
-        </style>`;
+        <linearGradient id="tb-pitch" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1e5631"/>
+            <stop offset="49%" stop-color="#1a472a"/>
+            <stop offset="50%" stop-color="#1a472a"/>
+            <stop offset="100%" stop-color="#1e5631"/>
+        </linearGradient>
+        <linearGradient id="tb-m-critical-home" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#9ca3af" stop-opacity="0.3"/>
+        </linearGradient>
+        <linearGradient id="tb-m-critical-away" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9ca3af" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#ef4444" stop-opacity="0.9"/>
+        </linearGradient>
+        <linearGradient id="tb-m-even" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9ca3af" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#9ca3af" stop-opacity="0.4"/>
+        </linearGradient>
+        <linearGradient id="tb-m-key" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#f87171" stop-opacity="0.2"/>
+        </linearGradient>
+        <clipPath id="tb-avatar-clip"><circle r="2.8" cx="0" cy="0"/></clipPath>
+        <filter id="tb-ability-blur" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="1.2"/>
+        </filter>
+        <radialGradient id="halo-glow-home" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="1.0"/>
+            <stop offset="35%" stop-color="#3b82f6" stop-opacity="0.85"/>
+            <stop offset="70%" stop-color="#3b82f6" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="halo-glow-away" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ef4444" stop-opacity="1.0"/>
+            <stop offset="35%" stop-color="#ef4444" stop-opacity="0.85"/>
+            <stop offset="70%" stop-color="#ef4444" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+    <style>
+        .pitch-player-group {
+            cursor: pointer;
+        }
+        .ability-halo {
+            transition: opacity 0.2s ease;
+        }
+        .pitch-player-group:hover .ability-halo {
+            opacity: 1.0 !important;
+        }
+        .pitch-player-group:hover .player-core {
+            stroke-width: 0.7px !important;
+            filter: drop-shadow(0 0.8px 1.5px rgba(0,0,0,0.5)) !important;
+        }
+    </style>`;
         svg += `<rect width="100" height="160" fill="url(#tb-pitch)"/>`;
         for (let i = 0; i < 20; i += 2) svg += `<rect x="0" y="${i * 8}" width="100" height="8" fill="rgba(255,255,255,0.03)"/>`;
         svg += `<line x1="0" y1="80" x2="100" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="0.3"/>`;
@@ -6258,9 +6453,9 @@ var require_match_renderers = __commonJS({
           const text = getLang() === "en" ? textEn : textZh;
           const w = isOfficial ? 44 : 52;
           return `<g transform="translate(${x - w / 2},${y})">
-                <rect x="0" y="0" width="${w}" height="4.5" rx="2" fill="${bg}" opacity="0.95"/>
-                <text x="${w / 2}" y="3.1" text-anchor="middle" font-size="2.2" font-weight="600" fill="white" dominant-baseline="middle">${esc(text)}</text>
-            </g>`;
+            <rect x="0" y="0" width="${w}" height="4.5" rx="2" fill="${bg}" opacity="0.95"/>
+            <text x="${w / 2}" y="3.1" text-anchor="middle" font-size="2.2" font-weight="600" fill="white" dominant-baseline="middle">${esc(text)}</text>
+        </g>`;
         };
         const globalSource = matchupData.source || matchupData.lineupSource || null;
         const globalTime = matchupData.announceTime || matchupData.publishedAt || null;
@@ -6393,9 +6588,9 @@ var require_match_renderers = __commonJS({
           const w = displayStr.length * 1.3 + 1.8;
           const bg = isSubOn ? "rgba(16,185,129,0.85)" : "rgba(0,0,0,0.65)";
           return `<g transform="translate(${x},${y})">
-                <rect x="-${w / 2}" y="-2.3" width="${w}" height="3.2" rx="0.8" fill="${bg}" stroke="rgba(255,255,255,0.15)" stroke-width="0.2"/>
-                <text x="0" y="-0.7" text-anchor="middle" dominant-baseline="middle" font-size="1.8" fill="white" font-weight="800">${esc(displayStr)}</text>
-            </g>`;
+            <rect x="-${w / 2}" y="-2.3" width="${w}" height="3.2" rx="0.8" fill="${bg}" stroke="rgba(255,255,255,0.15)" stroke-width="0.2"/>
+            <text x="0" y="-0.7" text-anchor="middle" dominant-baseline="middle" font-size="1.8" fill="white" font-weight="800">${esc(displayStr)}</text>
+        </g>`;
         };
         const renderPlayerNode = (p, side, idx) => {
           if (!p) return "";
@@ -6475,6 +6670,28 @@ var require_match_renderers = __commonJS({
         svg += `</svg>`;
         return svg;
       }
+      MR.renderTacticalBoard = renderTacticalBoard2;
+    })();
+  }
+});
+
+// static/js/mr-prediction.js
+var require_mr_prediction = __commonJS({
+  "static/js/mr-prediction.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
       function renderPredictionLayers(pred) {
         if (!pred || pred.homeWin === void 0 && pred.draw === void 0 && pred.awayWin === void 0) {
           return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u9884\u6D4B\u6570\u636E\u52A0\u8F7D\u5931\u8D25", "Prediction data unavailable")}</div>`;
@@ -6502,67 +6719,67 @@ var require_match_renderers = __commonJS({
         const pmHome = pm.home ?? "-";
         const pmAway = pm.away ?? "-";
         return `
-        <div class="glass rounded-xl p-4 space-y-3">
-            <!-- Layer 1: Win/Draw/Loss Probability Bar -->
-            <div>
-                <div class="text-xs font-bold text-gray-400 mb-2">
-                    <span class="inline-flex items-center gap-1">
-                        <span class="w-5 h-5 rounded-md bg-blue-500/20 flex items-center justify-center text-[10px]">\u{1F3AF}</span>
-                        ${tx("\u80DC\u5E73\u8D1F\u6982\u7387", "Win/Draw/Loss")}
-                    </span>
-                </div>
-                <div class="prob-bar mb-2">
-                    <div class="prob-bar-home" style="width:${hw}%">${hwNum > 12 ? hw + "%" : ""}</div>
-                    <div class="prob-bar-draw" style="width:${dw}%">${dwNum > 10 ? dw + "%" : ""}</div>
-                    <div class="prob-bar-away" style="width:${aw}%">${awNum > 12 ? aw + "%" : ""}</div>
-                </div>
-                <div class="flex justify-between text-[11px]">
-                    <span class="text-green-400 font-bold">${tx("\u4E3B\u80DC", "Home")} ${hw}%</span>
-                    <span class="text-yellow-400 font-bold">${tx("\u5E73\u5C40", "Draw")} ${dw}%</span>
-                    <span class="text-red-400 font-bold">${tx("\u5BA2\u80DC", "Away")} ${aw}%</span>
-                </div>
+    <div class="glass rounded-xl p-4 space-y-3">
+        <!-- Layer 1: Win/Draw/Loss Probability Bar -->
+        <div>
+            <div class="text-xs font-bold text-gray-400 mb-2">
+                <span class="inline-flex items-center gap-1">
+                    <span class="w-5 h-5 rounded-md bg-blue-500/20 flex items-center justify-center text-[10px]">\u{1F3AF}</span>
+                    ${tx("\u80DC\u5E73\u8D1F\u6982\u7387", "Win/Draw/Loss")}
+                </span>
             </div>
-
-            <div class="border-t border-white/5"></div>
-
-            <!-- Layer 2: Expected Score (\u03BB-based) -->
-            <div class="text-center">
-                <div class="text-xs font-bold text-emerald-400 mb-1">
-                    <span class="inline-flex items-center gap-1">
-                        <span class="w-5 h-5 rounded-md bg-emerald-500/20 flex items-center justify-center text-[10px]">\u{1F4CA}</span>
-                        ${tx("\u671F\u671B\u6BD4\u5206", "Expected Score")}
-                    </span>
-                </div>
-                <div class="text-xl font-black font-mono tracking-tight">
-                    <span class="text-blue-400">${esc(escHome)}</span>
-                    <span class="text-gray-500 mx-1.5">\u2014</span>
-                    <span class="text-red-400">${esc(escAway)}</span>
-                </div>
-                <div class="text-[10px] text-gray-500 mt-1">
-                    ${getLang() === "en" ? "Based on expected goals \u03BB" : "\u57FA\u4E8E\u8FDB\u7403\u671F\u671B\u503C \u03BB"}
-                </div>
+            <div class="prob-bar mb-2">
+                <div class="prob-bar-home" style="width:${hw}%">${hwNum > 12 ? hw + "%" : ""}</div>
+                <div class="prob-bar-draw" style="width:${dw}%">${dwNum > 10 ? dw + "%" : ""}</div>
+                <div class="prob-bar-away" style="width:${aw}%">${awNum > 12 ? aw + "%" : ""}</div>
             </div>
-
-            <div class="border-t border-white/5"></div>
-
-            <!-- Layer 3: Poisson Mode Score -->
-            <div class="text-center">
-                <div class="text-xs font-bold text-amber-400 mb-1">
-                    <span class="inline-flex items-center gap-1">
-                        <span class="w-5 h-5 rounded-md bg-amber-400/10 flex items-center justify-center text-[10px]">\u{1F52E}</span>
-                        ${tx("\u6700\u53EF\u80FD\u6BD4\u5206", "Most Likely Score")}
-                    </span>
-                </div>
-                <div class="text-xl font-black font-mono tracking-tight">
-                    <span class="text-blue-400">${esc(String(pmHome))}</span>
-                    <span class="text-gray-500 mx-1.5">\u2014</span>
-                    <span class="text-red-400">${esc(String(pmAway))}</span>
-                </div>
-                <div class="text-[10px] text-gray-500 mt-1">
-                    ${getLang() === "en" ? "Poisson mode: the single most probable exact scoreline" : "\u6CCA\u677E\u4F17\u6570\uFF1A\u6240\u6709\u53EF\u80FD\u6BD4\u5206\u4E2D\u6982\u7387\u6700\u9AD8\u7684\u4E00\u7EC4"}
-                </div>
+            <div class="flex justify-between text-[11px]">
+                <span class="text-green-400 font-bold">${tx("\u4E3B\u80DC", "Home")} ${hw}%</span>
+                <span class="text-yellow-400 font-bold">${tx("\u5E73\u5C40", "Draw")} ${dw}%</span>
+                <span class="text-red-400 font-bold">${tx("\u5BA2\u80DC", "Away")} ${aw}%</span>
             </div>
-            ${(() => {
+        </div>
+
+        <div class="border-t border-white/5"></div>
+
+        <!-- Layer 2: Expected Score (\u03BB-based) -->
+        <div class="text-center">
+            <div class="text-xs font-bold text-emerald-400 mb-1">
+                <span class="inline-flex items-center gap-1">
+                    <span class="w-5 h-5 rounded-md bg-emerald-500/20 flex items-center justify-center text-[10px]">\u{1F4CA}</span>
+                    ${tx("\u671F\u671B\u6BD4\u5206", "Expected Score")}
+                </span>
+            </div>
+            <div class="text-xl font-black font-mono tracking-tight">
+                <span class="text-blue-400">${esc(escHome)}</span>
+                <span class="text-gray-500 mx-1.5">\u2014</span>
+                <span class="text-red-400">${esc(escAway)}</span>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-1">
+                ${getLang() === "en" ? "Based on expected goals \u03BB" : "\u57FA\u4E8E\u8FDB\u7403\u671F\u671B\u503C \u03BB"}
+            </div>
+        </div>
+
+        <div class="border-t border-white/5"></div>
+
+        <!-- Layer 3: Poisson Mode Score -->
+        <div class="text-center">
+            <div class="text-xs font-bold text-amber-400 mb-1">
+                <span class="inline-flex items-center gap-1">
+                    <span class="w-5 h-5 rounded-md bg-amber-400/10 flex items-center justify-center text-[10px]">\u{1F52E}</span>
+                    ${tx("\u6700\u53EF\u80FD\u6BD4\u5206", "Most Likely Score")}
+                </span>
+            </div>
+            <div class="text-xl font-black font-mono tracking-tight">
+                <span class="text-blue-400">${esc(String(pmHome))}</span>
+                <span class="text-gray-500 mx-1.5">\u2014</span>
+                <span class="text-red-400">${esc(String(pmAway))}</span>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-1">
+                ${getLang() === "en" ? "Poisson mode: the single most probable exact scoreline" : "\u6CCA\u677E\u4F17\u6570\uFF1A\u6240\u6709\u53EF\u80FD\u6BD4\u5206\u4E2D\u6982\u7387\u6700\u9AD8\u7684\u4E00\u7EC4"}
+            </div>
+        </div>
+        ${(() => {
           const vf = pred.venueFactor;
           if (!vf || !vf.applied) return "";
           const fmtBeta = (b) => b != null ? Number(b).toFixed(2) : "-";
@@ -6574,129 +6791,31 @@ var require_match_renderers = __commonJS({
             if (dh != null && dh > 0) bits.push(tx("\u6D77\u62D4\u5DEE", "Alt \u0394") + " " + dh + "m");
             if (t != null) bits.push(tx("\u6C14\u6E29", "Temp") + " " + t + "\xB0C");
             return `<div class="flex items-center justify-between text-[11px]">
-                        <span class="text-gray-400">${label}</span>
-                        <span class="font-mono font-bold ${side === "home" ? "text-blue-400" : "text-red-400"}">\u03B2 ${fmtBeta(f.beta)}</span>
-                        <span class="text-gray-500 text-[10px]">${bits.join(" \xB7 ") || tx("\u65E0\u4FEE\u6B63", "no effect")}</span>
-                    </div>`;
+                    <span class="text-gray-400">${label}</span>
+                    <span class="font-mono font-bold ${side === "home" ? "text-blue-400" : "text-red-400"}">\u03B2 ${fmtBeta(f.beta)}</span>
+                    <span class="text-gray-500 text-[10px]">${bits.join(" \xB7 ") || tx("\u65E0\u4FEE\u6B63", "no effect")}</span>
+                </div>`;
           };
           return `
-                <div class="border-t border-white/5"></div>
-                <div>
-                    <div class="text-xs font-bold text-cyan-400 mb-1.5">
-                        <span class="inline-flex items-center gap-1">
-                            <span class="w-5 h-5 rounded-md bg-cyan-500/15 flex items-center justify-center text-[10px]">\u{1F3D4}\uFE0F</span>
-                            ${tx("\u73AF\u5883\u4FEE\u6B63", "Venue Adjustment")}
-                        </span>
-                    </div>
-                    <div class="space-y-1">
-                        ${row("home", tx("\u4E3B\u961F", "Home"))}
-                        ${row("away", tx("\u5BA2\u961F", "Away"))}
-                    </div>
-                    <div class="text-[10px] text-gray-500 mt-1.5">
-                        ${getLang() === "en" ? "High altitude / heat scale down expected goals \u03BB (\u03B2<1)" : "\u9AD8\u6D77\u62D4 / \u9AD8\u6E29\u4F1A\u6309 \u03B2 \u7CFB\u6570\u4E0B\u8C03\u8FDB\u7403\u671F\u671B \u03BB\uFF08\u03B2<1\uFF09"}
-                    </div>
-                </div>`;
+            <div class="border-t border-white/5"></div>
+            <div>
+                <div class="text-xs font-bold text-cyan-400 mb-1.5">
+                    <span class="inline-flex items-center gap-1">
+                        <span class="w-5 h-5 rounded-md bg-cyan-500/15 flex items-center justify-center text-[10px]">\u{1F3D4}\uFE0F</span>
+                        ${tx("\u73AF\u5883\u4FEE\u6B63", "Venue Adjustment")}
+                    </span>
+                </div>
+                <div class="space-y-1">
+                    ${row("home", tx("\u4E3B\u961F", "Home"))}
+                    ${row("away", tx("\u5BA2\u961F", "Away"))}
+                </div>
+                <div class="text-[10px] text-gray-500 mt-1.5">
+                    ${getLang() === "en" ? "High altitude / heat scale down expected goals \u03BB (\u03B2<1)" : "\u9AD8\u6D77\u62D4 / \u9AD8\u6E29\u4F1A\u6309 \u03B2 \u7CFB\u6570\u4E0B\u8C03\u8FDB\u7403\u671F\u671B \u03BB\uFF08\u03B2<1\uFF09"}
+                </div>
+            </div>`;
         })()}
-        </div>`;
+    </div>`;
       }
-      function renderFormation(matchupData, isFinishedMatch = false) {
-        if ((!matchupData || !matchupData.home || !matchupData.away) && !isFinishedMatch) {
-          matchupData = getMockMatchupData();
-        }
-        if (!matchupData || !matchupData.home || !matchupData.away) {
-          return `<div class="text-gray-500 text-xs text-center py-8">${isFinishedMatch ? tx("\u5B98\u65B9\u5386\u53F2\u9996\u53D1\u5C1A\u672A\u540C\u6B65\uFF1B\u4E0D\u4EE5\u63A8\u6D4B\u9635\u5BB9\u66FF\u4EE3\u5B9E\u9645\u9996\u53D1\u3002", "Official historical lineups are not synced; estimates are not shown as actual starters.") : tx("\u6682\u65E0\u5B98\u65B9\u9996\u53D1\uFF0C\u4EE5\u4E0B\u4E3A\u6839\u636E\u5386\u53F2\u9996\u53D1\u751F\u6210\u7684\u63A8\u6D4B\u9635\u5BB9", "No official lineups; showing projected lineups based on history")}</div>`;
-        }
-        const home = matchupData.home;
-        const away = matchupData.away;
-        const pairs = matchupData.pairs || [];
-        const matchups = matchupData.matchups || [];
-        const summary = matchupData.summary || {};
-        const homeAdv = summary.homeAdvantages ?? summary.homeAdvantagePairs ?? 0;
-        const awayAdv = summary.awayAdvantages ?? summary.awayAdvantagePairs ?? 0;
-        const totalPairs = homeAdv + (summary.evenPairs || 0) + awayAdv;
-        const homePct = totalPairs ? homeAdv / totalPairs * 100 : 0;
-        const evenPct = totalPairs ? (summary.evenPairs || 0) / totalPairs * 100 : totalPairs === 0 ? 100 : 0;
-        const awayPct = totalPairs ? awayAdv / totalPairs * 100 : 0;
-        let html = `
-        <div class="flex items-center justify-between mb-2">
-            <div class="text-xs font-bold text-blue-300 flex items-center gap-1.5">\u{1F535} ${teamFlagHtml(home, "bg-blue-600")} ${teamLabel(home)} (${home.formation || "4-3-3"})</div>
-            <div class="flex gap-1">
-                <button data-action="set-pitch-view" data-view="both" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/10 text-white font-bold">${tx("\u5168\u90E8", "All")}</button>
-                <button data-action="set-pitch-view" data-view="home" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u4E3B\u961F", "Home")}</button>
-                <button data-action="set-pitch-view" data-view="away" class="pitch-view-btn text-[11px] px-2 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u5BA2\u961F", "Away")}</button>
-            </div>
-            <div class="text-xs font-bold text-red-300 flex items-center gap-1.5 justify-end">${teamLabel(away)} (${away.formation || "4-3-3"}) ${teamFlagHtml(away, "bg-red-600")} \u{1F534}</div>
-        </div>
-
-        <!-- Segmented Score Bar -->
-        <div class="glass-light rounded-lg p-3 mb-2">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-blue-400">${teamLabel(home)}</span>
-                <span class="text-xs text-gray-500">${tx("\u5BF9\u4F4D\u4F18\u52BF\u5206\u5E03", "Matchup Edge")}</span>
-                <span class="text-xs font-bold text-red-400">${teamLabel(away)}</span>
-            </div>
-            <div class="flex h-4 rounded-full overflow-hidden mb-2 shadow-inner bg-white/5">
-                <div class="flex items-center justify-center bg-blue-500/80 transition-all duration-700" style="width:${homePct}%">
-                    ${homeAdv ? `<span class="text-[10px] font-bold text-white">${homeAdv}</span>` : ""}
-                </div>
-                <div class="flex items-center justify-center bg-gray-500/50 transition-all duration-700" style="width:${evenPct}%">
-                    ${summary.evenPairs ? `<span class="text-[10px] font-bold text-gray-300">${summary.evenPairs}</span>` : ""}
-                </div>
-                <div class="flex items-center justify-center bg-red-500/80 transition-all duration-700" style="width:${awayPct}%">
-                    ${awayAdv ? `<span class="text-[10px] font-bold text-white">${awayAdv}</span>` : ""}
-                </div>
-            </div>
-            <div class="flex items-center justify-between text-[10px] text-gray-400 px-1">
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500/80"></span>${tx("\u4E3B\u961F\u5360\u4F18", "Home Edge")}</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gray-500/50"></span>${tx("\u5747\u52BF", "Even")}</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500/80"></span>${tx("\u5BA2\u961F\u5360\u4F18", "Away Edge")}</span>
-            </div>
-        </div>
-
-        <!-- SVG Tactical Board -->
-        <div class="w-full" id="pitch-canvas">
-            ${renderTacticalBoard(matchupData, matchData)}
-        </div>`;
-        const shortName = (name, nameZh) => {
-          const d = Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : nameZh || name;
-          return d.includes("\xB7") ? d.split("\xB7").pop() : d.split(" ").pop();
-        };
-        if (matchups.length > 0) {
-          html += '<div class="mt-2 space-y-0.5">';
-          html += `<div class="text-[10px] text-gray-500 mb-1">\u2694\uFE0F ${tx("\u5173\u952E\u5BF9\u4F4D", "Key Matchups")}</div>`;
-          for (const m of matchups.slice(0, 4)) {
-            const cls = m.type === "critical" ? "text-yellow-400" : "text-gray-400";
-            const hName = m.homeInfo?.nameZh || m.homePlayer;
-            const aName = m.awayInfo?.nameZh || m.awayPlayer;
-            html += `<div class="text-[11px] ${cls} flex items-center gap-1">
-                    <span>${m.type === "critical" ? "\u2B50" : "\u2022"}</span>
-                    ${esc(hName)} \u2194 ${esc(aName)}
-                    ${m.type === "critical" ? `<span class="text-[10px] font-bold text-amber-400">${tx("\u5173\u952E", "Critical")}</span>` : ""}
-                </div>`;
-          }
-          html += "</div>";
-        } else if (pairs.length > 0) {
-          const _pDiff = (p) => p.diff ?? p.gap ?? 0;
-          const keyPairs = pairs.filter((p) => Math.abs(_pDiff(p)) >= 8).slice(0, 4);
-          if (keyPairs.length) {
-            html += '<div class="mt-2 space-y-0.5">';
-            for (const p of keyPairs) {
-              const diff = _pDiff(p);
-              const cls = p.advantage === "home" ? "text-green-400" : p.advantage === "away" ? "text-red-400" : "text-gray-400";
-              const hShort = shortName(p.home.name, p.home.nameZh);
-              const aShort = shortName(p.away.name, p.away.nameZh);
-              html += `<div class="text-[11px] ${cls} flex items-center gap-1">
-                        ${p.advantage === "home" ? "\u{1F7E2}" : "\u{1F534}"}
-                        ${esc(hShort)} (${(p.home.rating / 10).toFixed(1)}) vs ${esc(aShort)} (${(p.away.rating / 10).toFixed(1)})
-                        <span class="font-bold">${diff > 0 ? "+" : ""}${(diff / 10).toFixed(1)}</span>
-                    </div>`;
-            }
-            html += "</div>";
-          }
-        }
-        return html;
-      }
-      const translatePlayerName = (name, nameZh) => Utils.translatePlayerName ? Utils.translatePlayerName(name, nameZh) : nameZh || name;
       function renderBenchAnalysis(data, isFinishedMatch) {
         if (!data) return `<div class="text-gray-500 text-xs py-4 text-center">${tx("\u6570\u636E\u6682\u65E0", "No data")}</div>`;
         const home = data.homeTeam;
@@ -6739,12 +6858,12 @@ var require_match_renderers = __commonJS({
             signal = `<span class="${color} font-bold">${icon} ${label} ${delta >= 0 ? "+" : ""}${delta.toFixed(2)}/min</span>`;
           }
           return `<div class="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0">
-                <div class="min-w-0">
-                    <div class="text-xs text-gray-200 truncate">${playerLabel}</div>
-                    <div class="text-[10px] text-gray-500">${esc(item.minute)}\u2032 \xB7 ${item.side === "home" ? esc(teamLabel(home)) : item.side === "away" ? esc(teamLabel(away)) : tx("\u7403\u961F\u5F85\u786E\u8BA4", "Team unknown")}</div>
-                </div>
-                <div class="text-[11px] text-right shrink-0">${signal}</div>
-            </div>`;
+            <div class="min-w-0">
+                <div class="text-xs text-gray-200 truncate">${playerLabel}</div>
+                <div class="text-[10px] text-gray-500">${esc(item.minute)}\u2032 \xB7 ${item.side === "home" ? esc(teamLabel(home)) : item.side === "away" ? esc(teamLabel(away)) : tx("\u7403\u961F\u5F85\u786E\u8BA4", "Team unknown")}</div>
+            </div>
+            <div class="text-[11px] text-right shrink-0">${signal}</div>
+        </div>`;
         };
         const renderBenchPlayer = (player, teamColor, teamNameStr) => {
           const playerNameZh = translatePlayerName(player.name, player.nameZh);
@@ -6762,206 +6881,195 @@ var require_match_renderers = __commonJS({
             }
           }
           return `
-            <div class="glass-light rounded-lg p-2 mb-2 cursor-pointer hover:bg-white/10 transition-colors"
-                 data-action="open-player-detail"
-                 data-player-id="${attr(player.id || "")}"
-                 data-player-name="${attr(player.name || "")}">
-                <div class="flex items-center justify-between mb-1">
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-bold ${teamColor}">${player.jersey || "?"}</span>
-                        <span class="text-xs font-bold">${esc(playerNameZh)}</span>
-                        <span class="text-[11px] text-gray-500">${esc(player.pos) || "?"}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <span class="text-[11px] text-gray-500">${getImpactIcon(player.impactType)}</span>
-                        <span class="text-xs font-bold ${getStrengthColor(player.rating)}">${esc(player.rating) || "-"}</span>
-                    </div>
+        <div class="glass-light rounded-lg p-2 mb-2 cursor-pointer hover:bg-white/10 transition-colors"
+             data-action="open-player-detail"
+             data-player-id="${attr(player.id || "")}"
+             data-player-name="${attr(player.name || "")}">
+            <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold ${teamColor}">${player.jersey || "?"}</span>
+                    <span class="text-xs font-bold">${esc(playerNameZh)}</span>
+                    <span class="text-[11px] text-gray-500">${esc(player.pos) || "?"}</span>
                 </div>
-
-                <div class="flex items-center gap-2 text-[11px] mb-1">
-                    <span class="text-gray-500">${tx("\u7279\u8272:", "Traits:")}</span>
-                    ${player.traits?.map((t) => `<span class="bg-white/5 px-1.5 py-0.5 rounded">${esc(t)}</span>`).join("") || '<span class="text-gray-600">-</span>'}
-                </div>
-
-                <div class="flex items-center justify-between text-[11px]">
-                    <div>
-                        <span class="text-gray-500">${tx("\u66FF\u4EE3:", "Sub for:")}</span>
-                        <span class="ml-1">${esc(player.substituteFor?.join(", ")) || "-"}</span>
-                    </div>
-                    <div>
-                        ${playedStr ? `
-                            <span class="text-gray-500">${tx("\u72B6\u6001:", "Status:")}</span>
-                            ${playedStr}
-                        ` : `
-                            <span class="text-gray-500">${tx("\u51FA\u573A\u6982\u7387:", "Sub Prob:")}</span>
-                            <span class="font-bold ml-1 ${getProbColor(player.appearanceProb)}">${Math.round(player.appearanceProb * 100)}%</span>
-                        `}
-                    </div>
-                </div>
-            </div>
-            `;
-        };
-        return `
-        <div class="space-y-3">
-            <!-- Comparison Overview -->
-            <div class="glass-light rounded-lg p-3">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-gray-400">\u{1F504} \u66FF\u8865\u5E2D\u5BF9\u6BD4</span>
-                    <span class="text-[11px] text-gray-500">\u677F\u51F3\u6DF1\u5EA6</span>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <div class="flex-1">
-                        <div class="text-sm font-bold ${getStrengthColor(comparison.homeStrength)}">\u{1F535} ${teamLabel(home)}</div>
-                        <div class="text-lg font-bold ${getStrengthColor(comparison.homeStrength)}">${comparison.homeStrength || "-"}</div>
-                    </div>
-
-                    <div class="text-center">
-                        <div class="text-xs text-gray-500">VS</div>
-                        <div class="text-[11px] font-bold ${comparison.advantage === "home" ? "text-blue-400" : comparison.advantage === "away" ? "text-red-400" : "text-gray-400"}">${comparison.advantage === "home" ? "\u{1F535} \u4F18\u52BF" : comparison.advantage === "away" ? "\u{1F534} \u4F18\u52BF" : "\u2696\uFE0F \u5747\u52BF"}</div>
-                    </div>
-
-                    <div class="flex-1 text-right">
-                        <div class="text-sm font-bold ${getStrengthColor(comparison.awayStrength)}">${teamLabel(away)} \u{1F534}</div>
-                        <div class="text-lg font-bold ${getStrengthColor(comparison.awayStrength)}">${comparison.awayStrength || "-"}</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 text-[11px] mt-2">
-                    <div>
-                        <span class="text-gray-500">\u8D85\u7EA7\u66FF\u8865:</span>
-                        <span class="font-bold ml-1">${home.superSubCount || 0}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-gray-500">\u8D85\u7EA7\u66FF\u8865:</span>
-                        <span class="font-bold ml-1">${away.superSubCount || 0}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">\u9632\u5B88\u9009\u9879:</span>
-                        <span class="font-bold ml-1">${home.defensiveOptions || 0}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-gray-500">\u9632\u5B88\u9009\u9879:</span>
-                        <span class="font-bold ml-1">${away.defensiveOptions || 0}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500">\u8FDB\u653B\u9009\u9879:</span>
-                        <span class="font-bold ml-1">${home.attackingOptions || 0}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-gray-500">\u8FDB\u653B\u9009\u9879:</span>
-                        <span class="font-bold ml-1">${away.attackingOptions || 0}</span>
-                    </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-[11px] text-gray-500">${getImpactIcon(player.impactType)}</span>
+                    <span class="text-xs font-bold ${getStrengthColor(player.rating)}">${esc(player.rating) || "-"}</span>
                 </div>
             </div>
 
-            ${Array.isArray(data.substitutionImpacts) && data.substitutionImpacts.length ? `
-            <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-gray-300 mb-1">${tx("\u6362\u4EBA\u5F71\u54CD", "Substitution Impact")}</div>
-                <div class="text-[10px] text-gray-500 mb-2">${tx("\u6362\u4EBA\u524D\u540E 10 \u5206\u949F Pressure Index \u659C\u7387", "Pressure Index slope, 10 minutes before and after")}</div>
-                ${data.substitutionImpacts.map(renderSubstitutionImpact).join("")}
-            </div>
-            ` : ""}
-
-            <div class="grid grid-cols-2 gap-2">
-                <div class="glass-light rounded-lg p-2 min-w-0">
-                    <div class="text-xs font-bold text-blue-400 mb-2">\u{1F535} ${esc(teamLabel(home))}</div>
-                    ${home.bench?.map((p) => renderBenchPlayer(p, "text-blue-400", teamLabel(home))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
-                </div>
-                <div class="glass-light rounded-lg p-2 min-w-0">
-                    <div class="text-xs font-bold text-red-400 mb-2 text-right">${esc(teamLabel(away))} \u{1F534}</div>
-                    ${away.bench?.map((p) => renderBenchPlayer(p, "text-red-400", teamLabel(away))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
-                </div>
+            <div class="flex items-center gap-2 text-[11px] mb-1">
+                <span class="text-gray-500">${tx("\u7279\u8272:", "Traits:")}</span>
+                ${player.traits?.map((t) => `<span class="bg-white/5 px-1.5 py-0.5 rounded">${esc(t)}</span>`).join("") || '<span class="text-gray-600">-</span>'}
             </div>
 
-            <!-- Substitution Matrix -->
-            ${home.substitutionMatrix && Object.keys(home.substitutionMatrix).length > 0 ? `
-            <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-blue-400 mb-3 flex items-center gap-1">
-                    <span>\u{1F504}</span> ${teamLabel(home)} ${tx("\u6838\u5FC3\u8F6E\u6362\u7F51\u7EDC", "Substitution Heatmap")}
+            <div class="flex items-center justify-between text-[11px]">
+                <div>
+                    <span class="text-gray-500">${tx("\u66FF\u4EE3:", "Sub for:")}</span>
+                    <span class="ml-1">${esc(player.substituteFor?.join(", ")) || "-"}</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    ${Object.entries(home.substitutionMatrix).map(([starter, subs]) => `
-                    <div class="bg-white/5 rounded-lg p-2 flex flex-col justify-center border border-white/5 shadow-sm">
-                        <div class="text-[11px] font-bold text-gray-300 text-center mb-1">${esc(starter)}</div>
-                        <div class="flex items-center justify-center">
-                            <span class="text-gray-500 text-[10px]">\u25BC</span>
-                        </div>
-                        <div class="text-center mt-1 flex flex-col items-center gap-1">
-                            <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded font-medium">${esc(subs.primary) || "\u2014"}</span>
-                            ${subs.secondary ? `<span class="inline-block bg-white/5 text-gray-400 text-[9px] px-2 py-0.5 rounded">${esc(subs.secondary)}</span>` : ""}
-                        </div>
-                    </div>
-                    `).join("")}
+                <div>
+                    ${playedStr ? `
+                        <span class="text-gray-500">${tx("\u72B6\u6001:", "Status:")}</span>
+                        ${playedStr}
+                    ` : `
+                        <span class="text-gray-500">${tx("\u51FA\u573A\u6982\u7387:", "Sub Prob:")}</span>
+                        <span class="font-bold ml-1 ${getProbColor(player.appearanceProb)}">${Math.round(player.appearanceProb * 100)}%</span>
+                    `}
                 </div>
             </div>
-            ` : ""}
-
-            ${away.substitutionMatrix && Object.keys(away.substitutionMatrix).length > 0 ? `
-            <div class="glass-light rounded-lg p-3">
-                <div class="text-xs font-bold text-red-400 mb-3 flex items-center gap-1">
-                    <span>\u{1F504}</span> ${teamLabel(away)} ${tx("\u6838\u5FC3\u8F6E\u6362\u7F51\u7EDC", "Substitution Heatmap")}
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    ${Object.entries(away.substitutionMatrix).map(([starter, subs]) => `
-                    <div class="bg-white/5 rounded-lg p-2 flex flex-col justify-center border border-white/5 shadow-sm">
-                        <div class="text-[11px] font-bold text-gray-300 text-center mb-1">${esc(starter)}</div>
-                        <div class="flex items-center justify-center">
-                            <span class="text-gray-500 text-[10px]">\u25BC</span>
-                        </div>
-                        <div class="text-center mt-1 flex flex-col items-center gap-1">
-                            <span class="inline-block bg-red-500/20 text-red-300 text-[10px] px-2 py-0.5 rounded font-medium">${esc(subs.primary) || "\u2014"}</span>
-                            ${subs.secondary ? `<span class="inline-block bg-white/5 text-gray-400 text-[9px] px-2 py-0.5 rounded">${esc(subs.secondary)}</span>` : ""}
-                        </div>
-                    </div>
-                    `).join("")}
-                </div>
-            </div>
-            ` : ""}
         </div>
         `;
+        };
+        return `
+    <div class="space-y-3">
+        <!-- Comparison Overview -->
+        <div class="glass-light rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-gray-400">\u{1F504} \u66FF\u8865\u5E2D\u5BF9\u6BD4</span>
+                <span class="text-[11px] text-gray-500">\u677F\u51F3\u6DF1\u5EA6</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex-1">
+                    <div class="text-sm font-bold ${getStrengthColor(comparison.homeStrength)}">\u{1F535} ${teamLabel(home)}</div>
+                    <div class="text-lg font-bold ${getStrengthColor(comparison.homeStrength)}">${comparison.homeStrength || "-"}</div>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-xs text-gray-500">VS</div>
+                    <div class="text-[11px] font-bold ${comparison.advantage === "home" ? "text-blue-400" : comparison.advantage === "away" ? "text-red-400" : "text-gray-400"}">${comparison.advantage === "home" ? "\u{1F535} \u4F18\u52BF" : comparison.advantage === "away" ? "\u{1F534} \u4F18\u52BF" : "\u2696\uFE0F \u5747\u52BF"}</div>
+                </div>
+
+                <div class="flex-1 text-right">
+                    <div class="text-sm font-bold ${getStrengthColor(comparison.awayStrength)}">${teamLabel(away)} \u{1F534}</div>
+                    <div class="text-lg font-bold ${getStrengthColor(comparison.awayStrength)}">${comparison.awayStrength || "-"}</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[11px] mt-2">
+                <div>
+                    <span class="text-gray-500">\u8D85\u7EA7\u66FF\u8865:</span>
+                    <span class="font-bold ml-1">${home.superSubCount || 0}</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-500">\u8D85\u7EA7\u66FF\u8865:</span>
+                    <span class="font-bold ml-1">${away.superSubCount || 0}</span>
+                </div>
+                <div>
+                    <span class="text-gray-500">\u9632\u5B88\u9009\u9879:</span>
+                    <span class="font-bold ml-1">${home.defensiveOptions || 0}</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-500">\u9632\u5B88\u9009\u9879:</span>
+                    <span class="font-bold ml-1">${away.defensiveOptions || 0}</span>
+                </div>
+                <div>
+                    <span class="text-gray-500">\u8FDB\u653B\u9009\u9879:</span>
+                    <span class="font-bold ml-1">${home.attackingOptions || 0}</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-500">\u8FDB\u653B\u9009\u9879:</span>
+                    <span class="font-bold ml-1">${away.attackingOptions || 0}</span>
+                </div>
+            </div>
+        </div>
+
+        ${Array.isArray(data.substitutionImpacts) && data.substitutionImpacts.length ? `
+        <div class="glass-light rounded-lg p-3">
+            <div class="text-xs font-bold text-gray-300 mb-1">${tx("\u6362\u4EBA\u5F71\u54CD", "Substitution Impact")}</div>
+            <div class="text-[10px] text-gray-500 mb-2">${tx("\u6362\u4EBA\u524D\u540E 10 \u5206\u949F Pressure Index \u659C\u7387", "Pressure Index slope, 10 minutes before and after")}</div>
+            ${data.substitutionImpacts.map(renderSubstitutionImpact).join("")}
+        </div>
+        ` : ""}
+
+        <div class="grid grid-cols-2 gap-2">
+            <div class="glass-light rounded-lg p-2 min-w-0">
+                <div class="text-xs font-bold text-blue-400 mb-2">\u{1F535} ${esc(teamLabel(home))}</div>
+                ${home.bench?.map((p) => renderBenchPlayer(p, "text-blue-400", teamLabel(home))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
+            </div>
+            <div class="glass-light rounded-lg p-2 min-w-0">
+                <div class="text-xs font-bold text-red-400 mb-2 text-right">${esc(teamLabel(away))} \u{1F534}</div>
+                ${away.bench?.map((p) => renderBenchPlayer(p, "text-red-400", teamLabel(away))).join("") || `<div class="text-gray-500 text-xs">${tx("\u6682\u65E0\u66FF\u8865\u6570\u636E", "No bench data")}</div>`}
+            </div>
+        </div>
+
+        <!-- Substitution Matrix -->
+        ${home.substitutionMatrix && Object.keys(home.substitutionMatrix).length > 0 ? `
+        <div class="glass-light rounded-lg p-3">
+            <div class="text-xs font-bold text-blue-400 mb-3 flex items-center gap-1">
+                <span>\u{1F504}</span> ${teamLabel(home)} ${tx("\u6838\u5FC3\u8F6E\u6362\u7F51\u7EDC", "Substitution Heatmap")}
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                ${Object.entries(home.substitutionMatrix).map(([starter, subs]) => `
+                <div class="bg-white/5 rounded-lg p-2 flex flex-col justify-center border border-white/5 shadow-sm">
+                    <div class="text-[11px] font-bold text-gray-300 text-center mb-1">${esc(starter)}</div>
+                    <div class="flex items-center justify-center">
+                        <span class="text-gray-500 text-[10px]">\u25BC</span>
+                    </div>
+                    <div class="text-center mt-1 flex flex-col items-center gap-1">
+                        <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded font-medium">${esc(subs.primary) || "\u2014"}</span>
+                        ${subs.secondary ? `<span class="inline-block bg-white/5 text-gray-400 text-[9px] px-2 py-0.5 rounded">${esc(subs.secondary)}</span>` : ""}
+                    </div>
+                </div>
+                `).join("")}
+            </div>
+        </div>
+        ` : ""}
+
+        ${away.substitutionMatrix && Object.keys(away.substitutionMatrix).length > 0 ? `
+        <div class="glass-light rounded-lg p-3">
+            <div class="text-xs font-bold text-red-400 mb-3 flex items-center gap-1">
+                <span>\u{1F504}</span> ${teamLabel(away)} ${tx("\u6838\u5FC3\u8F6E\u6362\u7F51\u7EDC", "Substitution Heatmap")}
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                ${Object.entries(away.substitutionMatrix).map(([starter, subs]) => `
+                <div class="bg-white/5 rounded-lg p-2 flex flex-col justify-center border border-white/5 shadow-sm">
+                    <div class="text-[11px] font-bold text-gray-300 text-center mb-1">${esc(starter)}</div>
+                    <div class="flex items-center justify-center">
+                        <span class="text-gray-500 text-[10px]">\u25BC</span>
+                    </div>
+                    <div class="text-center mt-1 flex flex-col items-center gap-1">
+                        <span class="inline-block bg-red-500/20 text-red-300 text-[10px] px-2 py-0.5 rounded font-medium">${esc(subs.primary) || "\u2014"}</span>
+                        ${subs.secondary ? `<span class="inline-block bg-white/5 text-gray-400 text-[9px] px-2 py-0.5 rounded">${esc(subs.secondary)}</span>` : ""}
+                    </div>
+                </div>
+                `).join("")}
+            </div>
+        </div>
+        ` : ""}
+    </div>
+    `;
       }
-      function applySubstitutionsToFormation(realSubstitutions) {
-        if (!realSubstitutions || !realSubstitutions.length) return;
-        const svg = document.querySelector("#pitch-canvas svg");
-        if (!svg) return;
-        const circles = svg.querySelectorAll("circle");
-        const texts = svg.querySelectorAll("text");
-        realSubstitutions.forEach((sub) => {
-          const outName = (sub.playerOut || "").toLowerCase();
-          if (!outName) return;
-          circles.forEach((c) => {
-            const name = c.getAttribute("data-player-name");
-            if (name && name.toLowerCase().includes(outName)) {
-              c.setAttribute("opacity", "0.35");
-              const cx = parseFloat(c.getAttribute("cx") || "0");
-              const cy = parseFloat(c.getAttribute("cy") || "0");
-              const marker = document.createElementNS("http://www.w3.org/2000/svg", "text");
-              marker.setAttribute("x", cx);
-              marker.setAttribute("y", cy - 3.5);
-              marker.setAttribute("text-anchor", "middle");
-              marker.setAttribute("font-size", "2");
-              marker.setAttribute("font-weight", "bold");
-              marker.setAttribute("fill", "#ef4444");
-              marker.textContent = `\u{1F53D}${sub.minute}'`;
-              c.parentNode.appendChild(marker);
-            }
-          });
-          texts.forEach((t) => {
-            const textContent = (t.textContent || "").trim();
-            if (textContent === String(sub.playerOut) || textContent === `${sub.playerOut}'`) {
-              t.setAttribute("opacity", "0.3");
-            }
-          });
-        });
-      }
+      MR.renderPredictionLayers = renderPredictionLayers;
+      MR.renderBenchAnalysis = renderBenchAnalysis;
+    })();
+  }
+});
+
+// static/js/mr-coach.js
+var require_mr_coach = __commonJS({
+  "static/js/mr-coach.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
       function renderCoachPanel(coachData, isFinishedMatch) {
         if (!coachData || !coachData.coachA && !coachData.coachB) {
           return `<div class="glass-light rounded-lg p-6 text-center">
-                <div class="text-4xl mb-3">\u{1F9E0}</div>
-                <div class="text-sm font-bold text-gray-300 mb-2">${tx("\u6559\u7EC3\u6570\u636E", "Coach Data")}</div>
-                <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u6570\u636E\u5C06\u5728\u540E\u7EED\u7248\u672C\u4E2D\u5F00\u653E\uFF0C\u656C\u8BF7\u671F\u5F85\u3002", "Coach data will be available in a future release. Stay tuned.")}</div>
-            </div>`;
+            <div class="text-4xl mb-3">\u{1F9E0}</div>
+            <div class="text-sm font-bold text-gray-300 mb-2">${tx("\u6559\u7EC3\u6570\u636E", "Coach Data")}</div>
+            <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u6570\u636E\u5C06\u5728\u540E\u7EED\u7248\u672C\u4E2D\u5F00\u653E\uFF0C\u656C\u8BF7\u671F\u5F85\u3002", "Coach data will be available in a future release. Stay tuned.")}</div>
+        </div>`;
         }
         const coachA = coachData.coachA;
         const coachB = coachData.coachB;
@@ -6969,9 +7077,9 @@ var require_match_renderers = __commonJS({
         const renderCoachCard = (coach, side) => {
           if (!coach || coach.error) {
             return `<div class="glass-light rounded-lg p-4 text-center">
-                    <div class="text-2xl mb-1">\u{1F937}</div>
-                    <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u6570\u636E\u6682\u672A\u540C\u6B65", "Coach data not synced")}</div>
-                </div>`;
+                <div class="text-2xl mb-1">\u{1F937}</div>
+                <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u6570\u636E\u6682\u672A\u540C\u6B65", "Coach data not synced")}</div>
+            </div>`;
           }
           const name = coach.name || "?";
           const style = coach.style || tx("\u672A\u77E5", "Unknown");
@@ -6983,23 +7091,23 @@ var require_match_renderers = __commonJS({
           const sideColor = side === "home" ? "border-l-blue-500" : "border-l-red-500";
           const initial = name !== "?" ? name.charAt(0).toUpperCase() : "?";
           return `<div class="glass-light rounded-lg p-4 border-l-2 ${sideColor}">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold shadow-inner shrink-0">
-                        ${initial}
-                        ${flag ? `<div class="absolute -bottom-1 -right-1 text-[10px] bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center border border-gray-700">${esc(flag)}</div>` : ""}
-                    </div>
-                    <div class="flex flex-col overflow-hidden">
-                        <span class="text-sm font-bold text-gray-200 truncate" title="${esc(name)}">${esc(name)}</span>
-                        ${nationality ? `<span class="text-[10px] text-gray-500 truncate" title="${esc(nationality)}">${esc(nationality)}</span>` : ""}
-                    </div>
+            <div class="flex items-center gap-3 mb-3">
+                <div class="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold shadow-inner shrink-0">
+                    ${initial}
+                    ${flag ? `<div class="absolute -bottom-1 -right-1 text-[10px] bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center border border-gray-700">${esc(flag)}</div>` : ""}
                 </div>
-                <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
-                    <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u98CE\u683C", "Style")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(style)}">${esc(style)}</span></div>
-                    <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u6267\u6559", "Tenure")}</span><span class="text-gray-300 font-mono font-semibold truncate" title="${esc(tenure)}">${esc(tenure)}</span></div>
-                    ${formations ? `<div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u9635\u578B", "Formation")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(formations)}">${esc(formations)}</span></div>` : ""}
-                    ${tournament ? `<div class="flex flex-col col-span-2"><span class="text-gray-500 mb-0.5">${tx("\u8D5B\u4F1A\u5C65\u5386", "Tournament record")}</span><span class="text-gray-300 leading-tight">${esc(tournament)}</span></div>` : ""}
+                <div class="flex flex-col overflow-hidden">
+                    <span class="text-sm font-bold text-gray-200 truncate" title="${esc(name)}">${esc(name)}</span>
+                    ${nationality ? `<span class="text-[10px] text-gray-500 truncate" title="${esc(nationality)}">${esc(nationality)}</span>` : ""}
                 </div>
-            </div>`;
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/5 rounded-lg p-2">
+                <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u98CE\u683C", "Style")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(style)}">${esc(style)}</span></div>
+                <div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u6267\u6559", "Tenure")}</span><span class="text-gray-300 font-mono font-semibold truncate" title="${esc(tenure)}">${esc(tenure)}</span></div>
+                ${formations ? `<div class="flex flex-col"><span class="text-gray-500 mb-0.5">${tx("\u9635\u578B", "Formation")}</span><span class="text-gray-300 font-semibold truncate" title="${esc(formations)}">${esc(formations)}</span></div>` : ""}
+                ${tournament ? `<div class="flex flex-col col-span-2"><span class="text-gray-500 mb-0.5">${tx("\u8D5B\u4F1A\u5C65\u5386", "Tournament record")}</span><span class="text-gray-300 leading-tight">${esc(tournament)}</span></div>` : ""}
+            </div>
+        </div>`;
         };
         let html = '<div class="grid grid-cols-2 gap-3 mb-3">';
         html += renderCoachCard(coachA, "home");
@@ -7007,19 +7115,41 @@ var require_match_renderers = __commonJS({
         html += "</div>";
         if (comp?.observations?.length) {
           html += `<div class="glass-light rounded-lg p-4 mt-3">
-                <div class="text-xs font-bold text-gray-400 mb-3 flex items-center gap-2">
-                    <span>\u{1F4DA}</span> ${tx("\u6218\u672F\u89C2\u5BDF\u4E0E\u8D44\u6599\u5BF9\u7167", "Tactical observations & records")}
-                </div>
-                <div class="space-y-2">${comp.observations.map((item) => `<div class="bg-white/5 rounded-lg p-2.5"><div class="text-[10px] text-gray-500 font-bold mb-1">${esc(i18nText(item.label, ""))}</div><div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300"><span>${esc(item.home || "\u2014")}</span><span class="text-right">${esc(item.away || "\u2014")}</span></div></div>`).join("")}</div>
-                <div class="text-[9px] text-gray-600 mt-3">${tx("\u4EC5\u5C55\u793A\u5DF2\u8BB0\u5F55\u8D44\u6599\uFF1B\u4E0D\u63D0\u4F9B\u603B\u4F53\u8BC4\u5206\u6216\u201C\u4E34\u573A\u8C03\u6574\u4F18\u52BF\u201D\u7ED3\u8BBA\u3002", "Recorded information only; no overall score or in-game-adjustment edge is asserted.")}</div>
-            </div>`;
+            <div class="text-xs font-bold text-gray-400 mb-3 flex items-center gap-2">
+                <span>\u{1F4DA}</span> ${tx("\u6218\u672F\u89C2\u5BDF\u4E0E\u8D44\u6599\u5BF9\u7167", "Tactical observations & records")}
+            </div>
+            <div class="space-y-2">${comp.observations.map((item) => `<div class="bg-white/5 rounded-lg p-2.5"><div class="text-[10px] text-gray-500 font-bold mb-1">${esc(i18nText(item.label, ""))}</div><div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300"><span>${esc(item.home || "\u2014")}</span><span class="text-right">${esc(item.away || "\u2014")}</span></div></div>`).join("")}</div>
+            <div class="text-[9px] text-gray-600 mt-3">${tx("\u4EC5\u5C55\u793A\u5DF2\u8BB0\u5F55\u8D44\u6599\uFF1B\u4E0D\u63D0\u4F9B\u603B\u4F53\u8BC4\u5206\u6216\u201C\u4E34\u573A\u8C03\u6574\u4F18\u52BF\u201D\u7ED3\u8BBA\u3002", "Recorded information only; no overall score or in-game-adjustment edge is asserted.")}</div>
+        </div>`;
         } else if (coachA && coachB && !coachData._fallback) {
           html += `<div class="glass-light rounded-lg p-4 text-center mt-3">
-                <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u5BF9\u9635\u5206\u6790\u6682\u672A\u751F\u6210", "Coach matchup analysis not yet generated")}</div>
-            </div>`;
+            <div class="text-xs text-gray-500">${tx("\u6559\u7EC3\u5BF9\u9635\u5206\u6790\u6682\u672A\u751F\u6210", "Coach matchup analysis not yet generated")}</div>
+        </div>`;
         }
         return html;
       }
+      MR.renderCoachPanel = renderCoachPanel;
+    })();
+  }
+});
+
+// static/js/mr-hud.js
+var require_mr_hud = __commonJS({
+  "static/js/mr-hud.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
       function renderHudStatsPanel(matchData2, pred) {
         const stats = matchData2?.teamStats;
         if (!stats || stats.length === 0) {
@@ -7069,29 +7199,29 @@ var require_match_renderers = __commonJS({
           const total = hNum + aNum || 1;
           const hPct = Math.round(hNum / total * 100);
           html += `<div>
-                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
-                    <span style="font:500 16px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(hVal)}</span>
-                    <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">${esc(row.label)}</span>
-                    <span style="font:500 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.45)">${esc(aVal)}</span>
-                </div>
-                <div style="display:flex;height:4px;gap:2px;border-radius:2px;overflow:hidden">
-                    <div style="width:${hPct}%;background:linear-gradient(90deg,rgba(59,130,246,.5),rgba(59,130,246,.25));border-radius:2px"></div>
-                    <div style="width:${100 - hPct}%;background:rgba(248,113,113,.15);border-radius:2px"></div>
-                </div>
-            </div>`;
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+                <span style="font:500 16px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(hVal)}</span>
+                <span style="font:400 9px/1 'Inter';color:rgba(248,250,252,.3)">${esc(row.label)}</span>
+                <span style="font:500 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.45)">${esc(aVal)}</span>
+            </div>
+            <div style="display:flex;height:4px;gap:2px;border-radius:2px;overflow:hidden">
+                <div style="width:${hPct}%;background:linear-gradient(90deg,rgba(59,130,246,.5),rgba(59,130,246,.25));border-radius:2px"></div>
+                <div style="width:${100 - hPct}%;background:rgba(248,113,113,.15);border-radius:2px"></div>
+            </div>
+        </div>`;
         }
         html += `</div>`;
         if (pred && pred.goals) {
           const hxG = pred.goals.homeExpected != null ? Number(pred.goals.homeExpected).toFixed(1) : "-";
           const axG = pred.goals.awayExpected != null ? Number(pred.goals.awayExpected).toFixed(1) : "-";
           html += `<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.04)">
-                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">${tx("\u6CCA\u677E\u671F\u671B\u8FDB\u7403", "POISSON EXPECTED SCORE")}</div>
-                <div style="display:flex;align-items:center;justify-content:center;gap:16px">
-                    <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${hxG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx("\u4E3B", "H")}</div></div>
-                    <div style="font:300 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">\u2014</div>
-                    <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${axG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx("\u5BA2", "A")}</div></div>
-                </div>
-            </div>`;
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">${tx("\u6CCA\u677E\u671F\u671B\u8FDB\u7403", "POISSON EXPECTED SCORE")}</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+                <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${hxG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx("\u4E3B", "H")}</div></div>
+                <div style="font:300 16px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">\u2014</div>
+                <div style="text-align:center"><div style="font:300 32px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${axG}</div><div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-top:3px">xG ${tx("\u5BA2", "A")}</div></div>
+            </div>
+        </div>`;
         }
         html += `</div>`;
         return html;
@@ -7122,54 +7252,54 @@ var require_match_renderers = __commonJS({
         let html = `<div style="background:rgba(15,23,42,.45);backdrop-filter:blur(var(--glass-blur-sm));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px;box-shadow:0 4px 30px rgba(0,0,0,.4)">`;
         html += `<div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">${tx("\u80DC\u7387\u9884\u6D4B", "WIN PROBABILITY")}</div>`;
         html += `<div style="text-align:center;margin-bottom:4px">
-            <svg width="180" height="88" viewBox="0 0 180 88">
-                <path d="M${p0.x} ${p0.y} A${r} ${r} 0 0 1 ${p3.x} ${p3.y}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="butt"/>
-                ${hw > 1 ? seg(p0, p1, "rgba(59,130,246,.6)") : ""}
-                ${dr > 1 ? seg(p1, p2, "rgba(251,191,36,.5)") : ""}
-                ${aw > 1 ? seg(p2, p3, "rgba(248,113,113,.5)") : ""}
-                <circle cx="${p0.x}" cy="${p0.y}" r="${SW / 2}" fill="${hw > 1 ? "rgba(59,130,246,.6)" : "rgba(255,255,255,.05)"}"/>
-                <circle cx="${p3.x}" cy="${p3.y}" r="${SW / 2}" fill="${aw > 1 ? "rgba(248,113,113,.5)" : "rgba(255,255,255,.05)"}"/>
-                ${hw > 2 && dr > 2 ? `<circle cx="${p1.x}" cy="${p1.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
-                ${dr > 2 && aw > 2 ? `<circle cx="${p2.x}" cy="${p2.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
-                <text x="${cx}" y="44" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="13" fill="rgba(248,250,252,.3)">%</tspan></text>
-                <text x="${cx}" y="60" text-anchor="middle" fill="rgba(59,130,246,.45)" font-family="JetBrains Mono" font-size="7" font-weight="400" letter-spacing="1.5">${esc((homeName || "HOME").toUpperCase())} WIN</text>
-            </svg>
-        </div>`;
+        <svg width="180" height="88" viewBox="0 0 180 88">
+            <path d="M${p0.x} ${p0.y} A${r} ${r} 0 0 1 ${p3.x} ${p3.y}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="butt"/>
+            ${hw > 1 ? seg(p0, p1, "rgba(59,130,246,.6)") : ""}
+            ${dr > 1 ? seg(p1, p2, "rgba(251,191,36,.5)") : ""}
+            ${aw > 1 ? seg(p2, p3, "rgba(248,113,113,.5)") : ""}
+            <circle cx="${p0.x}" cy="${p0.y}" r="${SW / 2}" fill="${hw > 1 ? "rgba(59,130,246,.6)" : "rgba(255,255,255,.05)"}"/>
+            <circle cx="${p3.x}" cy="${p3.y}" r="${SW / 2}" fill="${aw > 1 ? "rgba(248,113,113,.5)" : "rgba(255,255,255,.05)"}"/>
+            ${hw > 2 && dr > 2 ? `<circle cx="${p1.x}" cy="${p1.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
+            ${dr > 2 && aw > 2 ? `<circle cx="${p2.x}" cy="${p2.y}" r="${SW / 2 + 1.5}" fill="rgba(10,18,36,.96)"/>` : ""}
+            <text x="${cx}" y="44" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono" font-size="26" font-weight="300">${hw}<tspan font-size="13" fill="rgba(248,250,252,.3)">%</tspan></text>
+            <text x="${cx}" y="60" text-anchor="middle" fill="rgba(59,130,246,.45)" font-family="JetBrains Mono" font-size="7" font-weight="400" letter-spacing="1.5">${esc((homeName || "HOME").toUpperCase())} WIN</text>
+        </svg>
+    </div>`;
         html += `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0 2px;margin-bottom:12px">
-            <div style="text-align:left">
-                <div style="font:600 15px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.8)">${hw}<span style="font-size:9px;font-weight:400;color:rgba(59,130,246,.35)">%</span></div>
-                <div style="font:400 7px/1 'Inter';color:rgba(59,130,246,.3);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(homeName || "HOME")}</div>
-            </div>
-            <div style="text-align:center">
-                <div style="font:400 12px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.55)">${dr}<span style="font-size:9px;color:rgba(251,191,36,.25)">%</span></div>
-                <div style="font:400 7px/1 'Inter';color:rgba(251,191,36,.25);margin-top:3px">${tx("\u5E73", "DRAW")}</div>
-            </div>
-            <div style="text-align:right">
-                <div style="font:500 13px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${aw}<span style="font-size:9px;font-weight:400;color:rgba(248,113,113,.25)">%</span></div>
-                <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || "AWAY")}</div>
-            </div>
-        </div>`;
+        <div style="text-align:left">
+            <div style="font:600 15px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.8)">${hw}<span style="font-size:9px;font-weight:400;color:rgba(59,130,246,.35)">%</span></div>
+            <div style="font:400 7px/1 'Inter';color:rgba(59,130,246,.3);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(homeName || "HOME")}</div>
+        </div>
+        <div style="text-align:center">
+            <div style="font:400 12px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.55)">${dr}<span style="font-size:9px;color:rgba(251,191,36,.25)">%</span></div>
+            <div style="font:400 7px/1 'Inter';color:rgba(251,191,36,.25);margin-top:3px">${tx("\u5E73", "DRAW")}</div>
+        </div>
+        <div style="text-align:right">
+            <div style="font:500 13px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${aw}<span style="font-size:9px;font-weight:400;color:rgba(248,113,113,.25)">%</span></div>
+            <div style="font:400 7px/1 'Inter';color:rgba(248,113,113,.25);margin-top:3px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl">${esc(awayName || "AWAY")}</div>
+        </div>
+    </div>`;
         if (Array.isArray(pred.topScores) && pred.topScores.length > 0) {
           html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
-                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u53EF\u80FD\u6BD4\u5206\u77E9\u9635", "TOP PREDICTED SCORES")}</div>
-                <div style="display:flex;flex-direction:column;gap:5px">`;
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u53EF\u80FD\u6BD4\u5206\u77E9\u9635", "TOP PREDICTED SCORES")}</div>
+            <div style="display:flex;flex-direction:column;gap:5px">`;
           pred.topScores.slice(0, 4).forEach((item, idx) => {
             const probPct = item.prob != null ? `${(Number(item.prob) * 100).toFixed(2)}%` : "";
             html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
-                    <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? "rgba(52,211,153,.85)" : "rgba(248,250,252,.65)"}">${esc(item.score)}</span>
-                    ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ""}
-                </div>`;
+                <span style="font:500 12px/1 'JetBrains Mono',monospace;color:${idx === 0 ? "rgba(52,211,153,.85)" : "rgba(248,250,252,.65)"}">${esc(item.score)}</span>
+                ${probPct ? `<span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.4)">${probPct}</span>` : ""}
+            </div>`;
           });
           html += `</div></div>`;
         } else {
           html += `<div style="padding-top:12px;border-top:1px solid rgba(255,255,255,.04)">
-                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u9884\u6D4B\u6BD4\u5206", "PREDICTED SCORE")}</div>
-                <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-                    <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
-                    <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
-                    <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
-                </div>
-            </div>`;
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.35);letter-spacing:1.5px;margin-bottom:8px">${tx("\u9884\u6D4B\u6BD4\u5206", "PREDICTED SCORE")}</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+                <div style="padding:6px 16px;border-radius:8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.12)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${esc(sH)}</span></div>
+                <span style="font:300 12px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1)">:</span>
+                <div style="padding:6px 16px;border-radius:8px;background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.08)"><span style="font:300 20px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.45)">${esc(sA)}</span></div>
+            </div>
+        </div>`;
         }
         html += `</div>`;
         return html;
@@ -7198,31 +7328,31 @@ var require_match_renderers = __commonJS({
           const last = curve[curve.length - 1];
           const midY = toY(50);
           html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:10px;overflow:visible">
-                <line x1="4" y1="${midY}" x2="${W - 4}" y2="${midY}" stroke="rgba(255,255,255,.05)" stroke-width="1" stroke-dasharray="2,4"/>
-                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.55)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.45)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_home)}" r="2.5" fill="rgba(59,130,246,.8)"/>
-                <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_away)}" r="2.5" fill="rgba(248,113,113,.7)"/>
-            </svg>`;
+            <line x1="4" y1="${midY}" x2="${W - 4}" y2="${midY}" stroke="rgba(255,255,255,.05)" stroke-width="1" stroke-dasharray="2,4"/>
+            <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.55)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.45)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_home)}" r="2.5" fill="rgba(59,130,246,.8)"/>
+            <circle cx="${toX(last.minute)}" cy="${toY(last.pressure_away)}" r="2.5" fill="rgba(248,113,113,.7)"/>
+        </svg>`;
         }
         html += `<div style="display:flex;height:22px;border-radius:6px;overflow:hidden;gap:1px;margin-bottom:6px">
-            <div style="width:${homePct}%;background:rgba(59,130,246,.18);display:flex;align-items:center;justify-content:center;min-width:28px">
-                <span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.75)">${homePI.toFixed(0)}</span>
-            </div>
-            <div style="width:${awayPct}%;background:rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;min-width:28px">
-                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.55)">${awayPI.toFixed(0)}</span>
-            </div>
-        </div>`;
+        <div style="width:${homePct}%;background:rgba(59,130,246,.18);display:flex;align-items:center;justify-content:center;min-width:28px">
+            <span style="font:500 9px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.75)">${homePI.toFixed(0)}</span>
+        </div>
+        <div style="width:${awayPct}%;background:rgba(248,113,113,.12);display:flex;align-items:center;justify-content:center;min-width:28px">
+            <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.55)">${awayPI.toFixed(0)}</span>
+        </div>
+    </div>`;
         html += `<div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || "H")}</span>
-            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${domLabel} ${tx("\u4E3B\u5BFC", "dominant")}${minute != null ? ` \xB7 ${minute}'` : ""}</span>
-            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || "A")}</span>
-        </div>`;
+        <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.35)">${esc(homeName || "H")}</span>
+        <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${domLabel} ${tx("\u4E3B\u5BFC", "dominant")}${minute != null ? ` \xB7 ${minute}'` : ""}</span>
+        <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.3)">${esc(awayName || "A")}</span>
+    </div>`;
         html += `<div style="display:flex;align-items:center;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
-            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(59,130,246,.55)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
-            <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(248,113,113,.45)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
-            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">${tx("\u538B\u529B\u6307\u6570", "PI 0\u2013100")}</span>
-        </div>`;
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(59,130,246,.55)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:1.5px;background:rgba(248,113,113,.45)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
+        <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">${tx("\u538B\u529B\u6307\u6570", "PI 0\u2013100")}</span>
+    </div>`;
         return html;
       }
       function renderLiveProbPanel(data, homeName, awayName) {
@@ -7249,18 +7379,18 @@ var require_match_renderers = __commonJS({
         const badgeStyle = stStyles[st] || stStyles.pre;
         const pulseCircle = st === "match" ? `<div style="width:5px;height:5px;border-radius:50%;background:#34d399;animation:pulse-live 1.8s ease-in-out infinite"></div>` : "";
         html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);margin-bottom:12px">
-            <div style="display:flex;align-items:center;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(homeName || "")}">${esc(homeName || "H")}</span>
-                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(hSc))}</span>
-            </div>
-            <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:0.5px;flex-shrink:0;${badgeStyle}">
-                ${pulseCircle}<span>${esc(stLabel)}</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-                <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(aSc))}</span>
-                <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(awayName || "")}">${esc(awayName || "A")}</span>
-            </div>
-        </div>`;
+        <div style="display:flex;align-items:center;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(homeName || "")}">${esc(homeName || "H")}</span>
+            <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(hSc))}</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:0.5px;flex-shrink:0;${badgeStyle}">
+            ${pulseCircle}<span>${esc(stLabel)}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            <span style="font:700 14px/1 'JetBrains Mono',monospace;color:#f8fafc">${esc(String(aSc))}</span>
+            <span style="font:500 11px/1 'Inter';color:#f8fafc" title="${esc(awayName || "")}">${esc(awayName || "A")}</span>
+        </div>
+    </div>`;
         if (curve.length > 1) {
           const maxMin = Math.max(...curve.map((r) => r.minute || 0), 90);
           const toX = (m) => (Math.min(m || 0, maxMin) / maxMin * (W - 8) + 4).toFixed(1);
@@ -7271,63 +7401,63 @@ var require_match_renderers = __commonJS({
           const pmHY = toY(preMatch.homeWin || 0);
           const goals = curve.filter((r) => r.type === "goal");
           html += `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;margin-bottom:8px;overflow:visible">
-                <line x1="4" y1="${pmHY}" x2="${W - 4}" y2="${pmHY}" stroke="rgba(59,130,246,.12)" stroke-width="1" stroke-dasharray="3,5"/>
-                <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.5)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-                <polyline points="${dPts}" fill="none" stroke="rgba(251,191,36,.4)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
-                <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.75)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                ${goals.map((g) => `<circle cx="${toX(g.minute)}" cy="${toY(g.prob_home_win)}" r="2.5" fill="rgba(52,211,153,.85)"/>`).join("")}
-            </svg>`;
+            <line x1="4" y1="${pmHY}" x2="${W - 4}" y2="${pmHY}" stroke="rgba(59,130,246,.12)" stroke-width="1" stroke-dasharray="3,5"/>
+            <polyline points="${aPts}" fill="none" stroke="rgba(248,113,113,.5)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="${dPts}" fill="none" stroke="rgba(251,191,36,.4)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="${hPts}" fill="none" stroke="rgba(59,130,246,.75)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            ${goals.map((g) => `<circle cx="${toX(g.minute)}" cy="${toY(g.prob_home_win)}" r="2.5" fill="rgba(52,211,153,.85)"/>`).join("")}
+        </svg>`;
         }
         const pmH = pct(preMatch.homeWin), pmD = pct(preMatch.draw), pmA = pct(preMatch.awayWin);
         html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);margin-bottom:5px">
-            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${tx("\u8D5B\u524D", "PRE")}</span>
-            <div style="display:flex;gap:8px">
-                <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${pmH}%</span>
-                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4)">${pmD}%</span>
-                <span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${pmA}%</span>
-            </div>
-        </div>`;
+        <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.18)">${tx("\u8D5B\u524D", "PRE")}</span>
+        <div style="display:flex;gap:8px">
+            <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.6)">${pmH}%</span>
+            <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.4)">${pmD}%</span>
+            <span style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.5)">${pmA}%</span>
+        </div>
+    </div>`;
         if (current && !current.error && (current.minuteElapsed > 0 || current.homeScore > 0 || current.awayScore > 0)) {
           const lH = pct(current.homeWin), lD = pct(current.draw), lA = pct(current.awayWin);
           const delta = (current.homeWin || 0) - (preMatch.homeWin || 0);
           const deltaStr = delta > 5e-3 ? `+${Math.round(delta * 100)}%` : delta < -5e-3 ? `${Math.round(delta * 100)}%` : "";
           const deltaColor = delta > 5e-3 ? "rgba(52,211,153,.7)" : delta < -5e-3 ? "rgba(248,113,113,.6)" : "rgba(248,250,252,.2)";
           html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.13)">
-                <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.5)">${tx("\u5F53\u524D", "NOW")}</span>
-                <div style="display:flex;gap:8px;align-items:center">
-                    <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.85)">${lH}%</span>
-                    <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.45)">${lD}%</span>
-                    <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${lA}%</span>
-                    ${deltaStr ? `<span style="font:500 8px/1 'JetBrains Mono',monospace;color:${deltaColor}">${esc(deltaStr)}</span>` : ""}
-                </div>
-            </div>`;
+            <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(52,211,153,.5)">${tx("\u5F53\u524D", "NOW")}</span>
+            <div style="display:flex;gap:8px;align-items:center">
+                <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(59,130,246,.85)">${lH}%</span>
+                <span style="font:400 9px/1 'JetBrains Mono',monospace;color:rgba(251,191,36,.45)">${lD}%</span>
+                <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(248,113,113,.6)">${lA}%</span>
+                ${deltaStr ? `<span style="font:500 8px/1 'JetBrains Mono',monospace;color:${deltaColor}">${esc(deltaStr)}</span>` : ""}
+            </div>
+        </div>`;
         }
         html += `<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)">
-            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:rgba(59,130,246,.75)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
-            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(251,191,36,.4)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${tx("\u5E73", "D")}</span></div>
-            <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(248,113,113,.5)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
-            <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
-        </div>`;
+        <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:2px;background:rgba(59,130,246,.75)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(homeName || "H")}</span></div>
+        <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(251,191,36,.4)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${tx("\u5E73", "D")}</span></div>
+        <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:1.5px;background:rgba(248,113,113,.5)"></div><span style="font:400 7px/1 'Inter';color:rgba(248,250,252,.2)">${esc(awayName || "A")}</span></div>
+        <span style="font:300 7px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.1);margin-left:auto">Track A</span>
+    </div>`;
         if (data.isKnockout && data.advance) {
           const adv = data.advance;
           const aH = pct(adv.homeWin), aA = pct(adv.awayWin);
           html += `<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.13)">
-                <div style="display:flex;align-items:center;justify-content:space-between">
-                    <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.5)">\u{1F3C6} ${tx("\u664B\u7EA7", "ADVANCE")}</span>
-                    <div style="display:flex;gap:8px;align-items:center">
-                        <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.85)">${aH}%</span>
-                        <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.6)">${aA}%</span>
-                    </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.5)">\u{1F3C6} ${tx("\u664B\u7EA7", "ADVANCE")}</span>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.85)">${aH}%</span>
+                    <span style="font:500 10px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.6)">${aA}%</span>
                 </div>
-                ${adv.homeWinAfterET > 0 || adv.awayWinAfterET > 0 ? `
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;padding-top:3px;border-top:1px solid rgba(168,85,247,.08)">
-                    <span style="font:300 6px/1 'Inter';color:rgba(248,250,252,.12)">${tx("\u52A0\u65F6", "ET")} \xB7 ${tx("\u70B9\u7403", "PEN")}</span>
-                    <div style="display:flex;gap:6px">
-                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.4)">${pct(adv.penaltyHomeWin)}%</span>
-                        <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.3)">${pct(adv.penaltyAwayWin)}%</span>
-                    </div>
-                </div>` : ""}
-            </div>`;
+            </div>
+            ${adv.homeWinAfterET > 0 || adv.awayWinAfterET > 0 ? `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;padding-top:3px;border-top:1px solid rgba(168,85,247,.08)">
+                <span style="font:300 6px/1 'Inter';color:rgba(248,250,252,.12)">${tx("\u52A0\u65F6", "ET")} \xB7 ${tx("\u70B9\u7403", "PEN")}</span>
+                <div style="display:flex;gap:6px">
+                    <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(168,85,247,.4)">${pct(adv.penaltyHomeWin)}%</span>
+                    <span style="font:400 8px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,.3)">${pct(adv.penaltyAwayWin)}%</span>
+                </div>
+            </div>` : ""}
+        </div>`;
         }
         return html;
       }
@@ -7356,9 +7486,9 @@ var require_match_renderers = __commonJS({
           html += `<div style="padding:0 18px;margin-bottom:14px;display:grid;grid-template-columns:${"1fr ".repeat(cols).trim()};gap:8px">`;
           for (const c of metaCards) {
             html += `<div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
-                    <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${c.label}</div>
-                    <div style="font:500 12px/1.2 'JetBrains Mono',monospace;color:${c.color}">${esc(c.value)}</div>
-                </div>`;
+                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${c.label}</div>
+                <div style="font:500 12px/1.2 'JetBrains Mono',monospace;color:${c.color}">${esc(c.value)}</div>
+            </div>`;
           }
           html += `</div>`;
         }
@@ -7368,38 +7498,64 @@ var require_match_renderers = __commonJS({
         const hum = w?.humidity || "--";
         const grass = meta?.surface || v.grass || tx("\u5929\u7136\u8349", "Natural");
         html += `<div style="padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
-                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6D77\u62D4", "Altitude")}</div>
-                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.6)">${alt.toLocaleString()}<span style="font-size:9px;color:rgba(251,146,60,.3)">m</span></div>
-                ${altWarn ? `<div style="font:400 7px/1 'Inter';color:rgba(251,146,60,.35);margin-top:3px">\u26A0 ${tx("\u9AD8\u6D77\u62D4", "High altitude")}</div>` : ""}
-            </div>
-            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
-                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6E29\u5EA6", "Temp")}</div>
-                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(temp))}<span style="font-size:9px;color:rgba(248,250,252,.2)">\xB0C</span></div>
-            </div>
-            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
-                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u8349\u76AE", "Surface")}</div>
-                <div style="font:500 11px/1 'Inter';color:rgba(52,211,153,.5);margin-top:2px">${esc(grass)}</div>
-            </div>
-            <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
-                <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6E7F\u5EA6", "Humidity")}</div>
-                <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(hum))}<span style="font-size:9px;color:rgba(248,250,252,.2)">%</span></div>
-            </div>
-        </div>`;
+        <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+            <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6D77\u62D4", "Altitude")}</div>
+            <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.6)">${alt.toLocaleString()}<span style="font-size:9px;color:rgba(251,146,60,.3)">m</span></div>
+            ${altWarn ? `<div style="font:400 7px/1 'Inter';color:rgba(251,146,60,.35);margin-top:3px">\u26A0 ${tx("\u9AD8\u6D77\u62D4", "High altitude")}</div>` : ""}
+        </div>
+        <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+            <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6E29\u5EA6", "Temp")}</div>
+            <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(temp))}<span style="font-size:9px;color:rgba(248,250,252,.2)">\xB0C</span></div>
+        </div>
+        <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+            <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u8349\u76AE", "Surface")}</div>
+            <div style="font:500 11px/1 'Inter';color:rgba(52,211,153,.5);margin-top:2px">${esc(grass)}</div>
+        </div>
+        <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">
+            <div style="font:400 8px/1 'Inter';color:rgba(248,250,252,.2);margin-bottom:4px">${tx("\u6E7F\u5EA6", "Humidity")}</div>
+            <div style="font:400 18px/1 'JetBrains Mono',monospace;color:rgba(248,250,252,.5)">${esc(String(hum))}<span style="font-size:9px;color:rgba(248,250,252,.2)">%</span></div>
+        </div>
+    </div>`;
         if (impact && impact.overall != null) {
           const pct = Math.min(100, Math.max(0, Math.round(impact.overall + 50)));
           const color = impact.overall > 5 ? "rgba(52,211,153,.5)" : impact.overall < -5 ? "rgba(248,113,113,.5)" : "rgba(251,146,60,.5)";
           html += `<div style="margin-top:12px;padding:10px;border-radius:8px;background:rgba(251,146,60,.04);border:1px solid rgba(251,146,60,.08)">
-                <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.4);letter-spacing:1px;margin-bottom:6px">${tx("\u573A\u5730\u56E0\u5B50", "VENUE FACTOR")}</div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <div style="flex:1;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${color},${color.replace(".5", ".15")});border-radius:2px"></div></div>
-                    <span style="font:400 10px/1 'JetBrains Mono',monospace;color:${color}">${impact.overall > 0 ? "+" : ""}${impact.overall.toFixed(0)}</span>
-                </div>
-            </div>`;
+            <div style="font:500 8px/1 'JetBrains Mono',monospace;color:rgba(251,146,60,.4);letter-spacing:1px;margin-bottom:6px">${tx("\u573A\u5730\u56E0\u5B50", "VENUE FACTOR")}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+                <div style="flex:1;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,${color},${color.replace(".5", ".15")});border-radius:2px"></div></div>
+                <span style="font:400 10px/1 'JetBrains Mono',monospace;color:${color}">${impact.overall > 0 ? "+" : ""}${impact.overall.toFixed(0)}</span>
+            </div>
+        </div>`;
         }
         html += `</div>`;
         return html;
       }
+      MR.renderHudStatsPanel = renderHudStatsPanel;
+      MR.renderHudWinProbPanel = renderHudWinProbPanel;
+      MR.renderPressurePanel = renderPressurePanel;
+      MR.renderLiveProbPanel = renderLiveProbPanel;
+      MR.renderHudVenuePanel = renderHudVenuePanel;
+    })();
+  }
+});
+
+// static/js/mr-knockout.js
+var require_mr_knockout = __commonJS({
+  "static/js/mr-knockout.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      const getLang = MR._shared.getLang;
+      const tx = MR._shared.tx;
+      const esc = MR._shared.esc;
+      const attr = MR._shared.attr;
+      const i18nText = MR._shared.i18nText;
+      const FORMATION_POSITIONS = MR._shared.FORMATION_POSITIONS;
+      const teamLabel = MR._shared.teamLabel;
+      const teamFlagHtml = MR._shared.teamFlagHtml;
+      const playerCoords = MR._shared.playerCoords;
+      const translatePlayerName = MR._shared.translatePlayerName;
       function renderKnockoutIntel2(intel) {
         if (!intel || !intel.meta || !intel.meta.isKnockout || !intel.sections || typeof intel.sections !== "object") {
           return "";
@@ -7436,13 +7592,13 @@ var require_match_renderers = __commonJS({
           const sourceBadge = sourceLabel ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400 font-mono">${esc(sourceLabel)}</span>` : "";
           const modelBadge = sec.usedInModel ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">${tx("\u5DF2\u5165\u91CF\u5316\u6A21\u578B", "MODEL SIGNAL")}</span>` : `<span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500">${tx("\u4EC5\u6218\u672F\u53C2\u8003", "INFO ONLY")}</span>`;
           return `<div class="flex items-center justify-between mb-1.5 gap-1.5 flex-wrap border-b border-white/5 pb-1">
-                <span class="text-xs font-bold text-gray-200">${title}</span>
-                <div class="flex items-center gap-1">
-                    <span class="text-[9px] px-1.5 py-0.5 rounded ${confColor}">${confLabel}</span>
-                    ${sourceBadge}
-                    ${modelBadge}
-                </div>
-            </div>`;
+            <span class="text-xs font-bold text-gray-200">${title}</span>
+            <div class="flex items-center gap-1">
+                <span class="text-[9px] px-1.5 py-0.5 rounded ${confColor}">${confLabel}</span>
+                ${sourceBadge}
+                ${modelBadge}
+            </div>
+        </div>`;
         };
         const renderNote = (sec) => {
           if (!sec || !sec.note) return "";
@@ -7468,33 +7624,33 @@ var require_match_renderers = __commonJS({
                 return `<div class="text-[10px] text-amber-300">\u26A0\uFE0F ${name} (${p.yellows || 1} ${tx("\u9EC4", "Y")})</div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
-                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
-                        ${outList || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u505C\u8D5B", "No suspensions")}</div>`}
-                        ${riskList}
-                    </div>`;
+                    <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                    ${outList || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u505C\u8D5B", "No suspensions")}</div>`}
+                    ${riskList}
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u505C\u8D5B\u4E0E\u4F24\u505C\u98CE\u9669", "Suspensions & Risk"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "fatigue") {
             const renderSide = (sideLabel, data) => {
               if (!data) return "";
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
-                        <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u4F11\u606F\u5929\u6570", "Rest Days")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.restDays, 0)}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u52A0\u65F6\u8D1F\u8377", "Extra Time")}:</span> <span class="font-mono ${data.prevWentToEt ? "text-amber-400" : "text-gray-300"}">${Fmt.safeNum(data.cumEtMinutes, 0)} ${tx("\u5206\u949F", "min")}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u884C\u7A0B\u8DDD\u79BB", "Travel")}:</span> <span class="font-mono text-gray-300">${Fmt.safeNum(data.travelKm, 0)} km</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u75B2\u52B3\u6307\u6570", "Fatigue Score")}:</span> <span class="font-mono font-bold text-blue-300">${Fmt.safeNum(data.score, 0).toFixed(2)}</span></div>
-                    </div>`;
+                    <div class="font-semibold text-gray-400">${sideLabel}</div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u4F11\u606F\u5929\u6570", "Rest Days")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(data.restDays, 0)}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u52A0\u65F6\u8D1F\u8377", "Extra Time")}:</span> <span class="font-mono ${data.prevWentToEt ? "text-amber-400" : "text-gray-300"}">${Fmt.safeNum(data.cumEtMinutes, 0)} ${tx("\u5206\u949F", "min")}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u884C\u7A0B\u8DDD\u79BB", "Travel")}:</span> <span class="font-mono text-gray-300">${Fmt.safeNum(data.travelKm, 0)} km</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u75B2\u52B3\u6307\u6570", "Fatigue Score")}:</span> <span class="font-mono font-bold text-blue-300">${Fmt.safeNum(data.score, 0).toFixed(2)}</span></div>
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u4F53\u80FD\u4E0E\u8D5B\u7A0B\u8D1F\u8377", "Fatigue & Travel"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             if (sec.differential != null) {
               cardContent += `<div class="text-[10px] text-gray-400 mt-1.5">${tx("\u75B2\u52B3\u6307\u6570\u5DEE\u503C", "Differential")}: <span class="font-mono font-bold text-gray-200">${Fmt.safeNum(sec.differential, 0).toFixed(2)}</span></div>`;
             }
@@ -7504,27 +7660,27 @@ var require_match_renderers = __commonJS({
               if (!data) return "";
               const skillPct = Math.round(Fmt.safeNum(data.winRate, 0) * 100);
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
-                        <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
-                        <div class="flex justify-between text-gray-500"><span>${tx("\u4E16\u754C\u676F\u7D2F\u8BA1", "World Cup total")}:</span> <span>${Fmt.safeNum(data.shootoutsWon, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
-                        <div class="flex justify-between text-gray-500"><span>${tx("\u672C\u5C4A", "Current")}:</span> <span>${Fmt.safeNum(data.currentTournament?.shootoutsWon, 0)}/${Fmt.safeNum(data.currentTournament?.shootouts, 0)}</span></div>
-                    </div>`;
+                    <div class="flex justify-between font-semibold"><span class="text-gray-400">${sideLabel}</span><span class="font-mono text-emerald-400">${skillPct}%</span></div>
+                    <div class="flex justify-between text-gray-500"><span>${tx("\u4E16\u754C\u676F\u7D2F\u8BA1", "World Cup total")}:</span> <span>${Fmt.safeNum(data.shootoutsWon, 0)}/${Fmt.safeNum(data.shootouts, 0)}</span></div>
+                    <div class="flex justify-between text-gray-500"><span>${tx("\u672C\u5C4A", "Current")}:</span> <span>${Fmt.safeNum(data.currentTournament?.shootoutsWon, 0)}/${Fmt.safeNum(data.currentTournament?.shootouts, 0)}</span></div>
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u70B9\u7403\u5927\u6218\u80FD\u529B", "Penalty Shootout Skill"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderSide(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderSide(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "referee") {
             cardContent += renderSectionHeader(tx("\u6267\u6CD5\u4E3B\u88C1\u5224\u6863\u6848", "Referee Profile"), sec);
             cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
-                    <div class="flex justify-between"><span class="text-gray-400">${tx("\u4E3B\u88C1\u5224", "Referee")}:</span> <span class="font-semibold text-gray-200">${esc(sec.name || tx("\u672A\u6307\u6D3E", "Unassigned"))}</span></div>
-                    <div class="grid grid-cols-3 gap-1 text-center mt-1">
-                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u573A\u5747\u9EC4\u724C", "Yellows/M")}</div><div class="font-mono text-amber-400">${Fmt.safeNum(sec.yellowsPerMatch, 0)}</div></div>
-                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u51FA\u793A\u7EA2\u724C", "Reds Total")}</div><div class="font-mono text-red-400">${Fmt.safeNum(sec.redsTotal, 0)}</div></div>
-                        <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u5224\u7F5A\u70B9\u7403", "Pens Total")}</div><div class="font-mono text-purple-400">${Fmt.safeNum(sec.pensTotal, 0)}</div></div>
-                    </div>
-                </div>`;
+                <div class="flex justify-between"><span class="text-gray-400">${tx("\u4E3B\u88C1\u5224", "Referee")}:</span> <span class="font-semibold text-gray-200">${esc(sec.name || tx("\u672A\u6307\u6D3E", "Unassigned"))}</span></div>
+                <div class="grid grid-cols-3 gap-1 text-center mt-1">
+                    <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u573A\u5747\u9EC4\u724C", "Yellows/M")}</div><div class="font-mono text-amber-400">${Fmt.safeNum(sec.yellowsPerMatch, 0)}</div></div>
+                    <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u51FA\u793A\u7EA2\u724C", "Reds Total")}</div><div class="font-mono text-red-400">${Fmt.safeNum(sec.redsTotal, 0)}</div></div>
+                    <div class="p-1 rounded bg-white/5"><div class="text-[9px] text-gray-500">${tx("\u5224\u7F5A\u70B9\u7403", "Pens Total")}</div><div class="font-mono text-purple-400">${Fmt.safeNum(sec.pensTotal, 0)}</div></div>
+                </div>
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "superSubs") {
             const renderSubs = (sideLabel, data) => {
@@ -7535,15 +7691,15 @@ var require_match_renderers = __commonJS({
                 return `<div class="text-[10px]"><div class="flex justify-between"><span class="text-gray-300">${esc(name)}</span><span class="font-mono text-emerald-400">${balance}</span></div><div class="text-[9px] text-gray-500">${Fmt.safeNum(s.appearances, 0)} ${tx("\u6B21\u767B\u573A", "apps")} \xB7 ${Fmt.safeNum(s.goalsAfterSub, 0)}G ${Fmt.safeNum(s.assistsAfterSub, 0)}A</div></div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
-                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
-                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6570\u636E", "None")}</div>`}
-                    </div>`;
+                    <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                    ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6570\u636E", "None")}</div>`}
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u8D85\u7EA7\u66FF\u8865\u5A01\u80C1", "Super Sub Impact"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderSubs(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderSubs(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderSubs(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderSubs(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "starForm") {
             const renderForm = (sideLabel, list) => {
@@ -7552,15 +7708,15 @@ var require_match_renderers = __commonJS({
                 return `<div class="flex justify-between text-[10px]"><span class="text-gray-300">${trendIcon} ${esc(s.player)}</span><span class="font-mono text-gray-400">${Fmt.safeNum(s.last3GA, 0)} GA</span></div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
-                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
-                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6CE2\u52A8", "Stable")}</div>`}
-                    </div>`;
+                    <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                    ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u663E\u8457\u6CE2\u52A8", "Stable")}</div>`}
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u6838\u5FC3\u7403\u661F\u8FD1\u51B5", "Star Form Index"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderForm(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderForm(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderForm(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderForm(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "styleMatchup") {
             const tagLabel = (tag) => ({
@@ -7578,16 +7734,16 @@ var require_match_renderers = __commonJS({
               const tags = (data.derivedTags || []).map(tagLabel).join(" \xB7 ") || tx("\u65E0\u6700\u7EC8\u6807\u7B7E", "No final tag");
               const unsupported = Object.entries(facts.unsupported || {}).map(([key2, value]) => `${key2}: ${value.status === "not_covered" ? tx("\u672A\u8986\u76D6", "Not covered") : value.status}`).join(" \xB7 ");
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1">
-                        <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9635\u578B/\u573A\u6B21", "Formations / matches")}</span><span class="text-gray-300 text-right">${esc(formations)} \xB7 ${data.sampleMatches || 0}</span></div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9996\u53D1\u53D8\u5316", "XI changes")}</span><span class="font-mono text-gray-300">${data.facts.startingXIChanges ?? "\u2014"}</span></div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u6362\u4EBA\u5206\u949F", "Substitution minutes")}</span><span class="text-gray-300 text-right">${esc(subs)}</span></div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u5E73\u5747\u63A7\u7403", "Avg possession")}</span><span class="font-mono text-gray-300">${esc(possession)}</span></div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u89D2\u7403 (\u5F97/\u5931)", "Corners (for/against)")}</span><span class="font-mono text-gray-300">${esc(corners)}</span></div>
-                        <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u7EAA\u5F8B", "Discipline")}</span><span class="font-mono text-gray-300">${esc(discipline)}</span></div>
-                        <div><span class="text-gray-500">${tx("\u6700\u7EC8\u6807\u7B7E", "Final tags")}:</span> <span class="text-cyan-300">${esc(tags)}</span></div>
-                        <div class="text-gray-600">${tx("\u538B\u8FEB/\u53CD\u51FB/\u63A8\u8FDB", "Pressing/counterplay/progression")}: ${esc(unsupported || tx("\u672A\u8986\u76D6", "Not covered"))}</div>
-                    </div>`;
+                    <div class="font-semibold text-gray-400">${sideLabel}</div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9635\u578B/\u573A\u6B21", "Formations / matches")}</span><span class="text-gray-300 text-right">${esc(formations)} \xB7 ${data.sampleMatches || 0}</span></div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u9996\u53D1\u53D8\u5316", "XI changes")}</span><span class="font-mono text-gray-300">${data.facts.startingXIChanges ?? "\u2014"}</span></div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u6362\u4EBA\u5206\u949F", "Substitution minutes")}</span><span class="text-gray-300 text-right">${esc(subs)}</span></div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u5E73\u5747\u63A7\u7403", "Avg possession")}</span><span class="font-mono text-gray-300">${esc(possession)}</span></div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u89D2\u7403 (\u5F97/\u5931)", "Corners (for/against)")}</span><span class="font-mono text-gray-300">${esc(corners)}</span></div>
+                    <div class="flex justify-between gap-2"><span class="text-gray-500">${tx("\u7EAA\u5F8B", "Discipline")}</span><span class="font-mono text-gray-300">${esc(discipline)}</span></div>
+                    <div><span class="text-gray-500">${tx("\u6700\u7EC8\u6807\u7B7E", "Final tags")}:</span> <span class="text-cyan-300">${esc(tags)}</span></div>
+                    <div class="text-gray-600">${tx("\u538B\u8FEB/\u53CD\u51FB/\u63A8\u8FDB", "Pressing/counterplay/progression")}: ${esc(unsupported || tx("\u672A\u8986\u76D6", "Not covered"))}</div>
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u6218\u672F\u89C2\u5BDF\u4E0E\u8D44\u6599\u5BF9\u7167", "Tactical observation & evidence"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">${renderFacts(tx("\u4E3B\u961F", "Home"), sec.homeFacts)}${renderFacts(tx("\u5BA2\u961F", "Away"), sec.awayFacts)}</div>`;
@@ -7596,40 +7752,40 @@ var require_match_renderers = __commonJS({
           } else if (key === "familiarity") {
             cardContent += renderSectionHeader(tx("\u4FF1\u4E50\u90E8\u8054\u7CFB\u4E0E\u719F\u4EBA", "Club Familiarity"), sec);
             cardContent += `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-1 mt-1">
-                    <div class="flex justify-between"><span class="text-gray-400">${tx("\u8DE8\u961F\u961F\u53CB\u5173\u7CFB", "Cross-team Pairs")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(sec.crossTeamPairs, 0)}</span></div>
-                </div>`;
+                <div class="flex justify-between"><span class="text-gray-400">${tx("\u8DE8\u961F\u961F\u53CB\u5173\u7CFB", "Cross-team Pairs")}:</span> <span class="font-mono text-gray-200">${Fmt.safeNum(sec.crossTeamPairs, 0)}</span></div>
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "gameState") {
             const renderGS = (sideLabel, data) => {
               if (!data) return "";
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
-                        <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u9006\u98CE\u8FFD\u5206\u7387", "Comeback Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.comebackRate, 0) * 100)}%</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">${tx("\u9886\u5148\u5B88\u6210\u7387", "Lead Hold Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.leadHoldRate, 0) * 100)}%</span></div>
-                    </div>`;
+                    <div class="font-semibold text-gray-400">${sideLabel}</div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u9006\u98CE\u8FFD\u5206\u7387", "Comeback Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.comebackRate, 0) * 100)}%</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">${tx("\u9886\u5148\u5B88\u6210\u7387", "Lead Hold Rate")}:</span> <span class="font-mono text-gray-200">${Math.round(Fmt.safeNum(data.leadHoldRate, 0) * 100)}%</span></div>
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u987A\u9006\u98CE\u6218\u529B\u753B\u50CF", "Game State Resilience"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderGS(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderGS(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderGS(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderGS(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "experience") {
             const renderExp = (sideLabel, data) => {
               if (!data) return "";
               const all = data.allTime || null;
               return `<div class="p-1.5 rounded bg-white/[0.02] text-[10px] space-y-0.5">
-                        <div class="font-semibold text-gray-400">${sideLabel}</div>
-                        <div class="text-gray-500">${tx("\u672C\u5C4A", "Current")}: <span class="font-mono text-gray-200">${Fmt.safeNum(data.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(data.goals, 0)}G \xB7 ${Fmt.safeNum(data.assists, 0)}A</span></div>
-                        ${all ? `<div class="text-gray-500">${tx("\u4E16\u754C\u676F\u5386\u53F2\u7D2F\u8BA1", "World Cup all-time")}: <span class="font-mono text-gray-200">${Fmt.safeNum(all.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(all.goals, 0)}G</span></div>
-                        <div class="text-gray-500">${tx("\u52A0\u65F6/\u70B9\u7403\uFF08\u4E0B\u9650\uFF09", "ET/pens (lower bound)")}: <span class="font-mono text-gray-200">${all.wentToEt ? tx("\u662F", "yes") : tx("\u672A\u786E\u8BA4", "unconfirmed")} / ${all.decidedByPens ? tx("\u662F", "yes") : tx("\u5426", "no")}</span></div>` : ""}
-                    </div>`;
+                    <div class="font-semibold text-gray-400">${sideLabel}</div>
+                    <div class="text-gray-500">${tx("\u672C\u5C4A", "Current")}: <span class="font-mono text-gray-200">${Fmt.safeNum(data.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(data.goals, 0)}G \xB7 ${Fmt.safeNum(data.assists, 0)}A</span></div>
+                    ${all ? `<div class="text-gray-500">${tx("\u4E16\u754C\u676F\u5386\u53F2\u7D2F\u8BA1", "World Cup all-time")}: <span class="font-mono text-gray-200">${Fmt.safeNum(all.matchesPlayed, 0)}M \xB7 ${Fmt.safeNum(all.goals, 0)}G</span></div>
+                    <div class="text-gray-500">${tx("\u52A0\u65F6/\u70B9\u7403\uFF08\u4E0B\u9650\uFF09", "ET/pens (lower bound)")}: <span class="font-mono text-gray-200">${all.wentToEt ? tx("\u662F", "yes") : tx("\u672A\u786E\u8BA4", "unconfirmed")} / ${all.decidedByPens ? tx("\u662F", "yes") : tx("\u5426", "no")}</span></div>` : ""}
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u5927\u8D5B\u6DD8\u6C70\u8D5B\u5E95\u8574", "Tournament Experience"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderExp(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderExp(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderExp(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderExp(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else if (key === "lessons") {
             const renderLessons = (sideLabel, list) => {
@@ -7639,15 +7795,15 @@ var require_match_renderers = __commonJS({
                 return `<div class="text-[10px] text-gray-300 leading-snug">\u2022 ${text}</div>`;
               }).join("");
               return `<div class="p-1.5 rounded bg-white/[0.02]">
-                        <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
-                        ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u5386\u53F2\u6559\u8BAD\u8BB0\u5F55", "No records")}</div>`}
-                    </div>`;
+                    <div class="text-[10px] font-semibold text-gray-400 mb-1">${sideLabel}</div>
+                    ${rows || `<div class="text-[10px] text-gray-500">${tx("\u65E0\u5386\u53F2\u6559\u8BAD\u8BB0\u5F55", "No records")}</div>`}
+                </div>`;
             };
             cardContent += renderSectionHeader(tx("\u65E2\u5F80\u6DD8\u6C70\u8D5B\u590D\u76D8\u6559\u8BAD", "Lessons Learned"), sec);
             cardContent += `<div class="grid grid-cols-2 gap-2 mt-1">
-                    ${renderLessons(tx("\u4E3B\u961F", "Home"), sec.home)}
-                    ${renderLessons(tx("\u5BA2\u961F", "Away"), sec.away)}
-                </div>`;
+                ${renderLessons(tx("\u4E3B\u961F", "Home"), sec.home)}
+                ${renderLessons(tx("\u5BA2\u961F", "Away"), sec.away)}
+            </div>`;
             cardContent += renderNote(sec);
           } else {
             cardContent += renderSectionHeader(esc(key), sec);
@@ -7656,39 +7812,32 @@ var require_match_renderers = __commonJS({
           cardsHtml += `<div class="elo-card">${cardContent}</div>`;
         });
         return `<div class="pred-section">
-            <div class="pred-section-title text-purple-400">
-                <span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">\u26A1</span>
-                ${tx("\u6DD8\u6C70\u8D5B\u8D5B\u524D\u60C5\u62A5", "Knockout Intelligence")}
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 ml-2 font-mono">${roundText}</span>
-            </div>
-            <div class="space-y-2 mt-1">
-                ${cardsHtml}
-            </div>
-        </div>`;
+        <div class="pred-section-title text-purple-400">
+            <span class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs">\u26A1</span>
+            ${tx("\u6DD8\u6C70\u8D5B\u8D5B\u524D\u60C5\u62A5", "Knockout Intelligence")}
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 ml-2 font-mono">${roundText}</span>
+        </div>
+        <div class="space-y-2 mt-1">
+            ${cardsHtml}
+        </div>
+    </div>`;
       }
-      return {
-        renderFormation,
-        renderTacticalBoard,
-        renderPredictionLayers,
-        renderBenchAnalysis,
-        applySubstitutionsToFormation,
-        renderCoachPanel,
-        renderKnockoutIntel: renderKnockoutIntel2,
-        getMockMatchupData,
-        getMockPrediction,
-        formationTemplate,
-        parseFormationStr,
-        // HUD renderers
-        renderHudStatsPanel,
-        renderHudWinProbPanel,
-        renderHudVenuePanel,
-        renderPressurePanel,
-        renderLiveProbPanel
-      };
+      MR.renderKnockoutIntel = renderKnockoutIntel2;
     })();
-    if (typeof window !== "undefined" && window.WorldCup && window.WorldCup.MatchRenderers) {
-      window.renderKnockoutIntel = window.WorldCup.MatchRenderers.renderKnockoutIntel;
-    }
+  }
+});
+
+// static/js/match-renderers.js
+var require_match_renderers = __commonJS({
+  "static/js/match-renderers.js"() {
+    window.WorldCup = window.WorldCup || {};
+    window.WorldCup.MatchRenderers = window.WorldCup.MatchRenderers || {};
+    (() => {
+      const MR = window.WorldCup.MatchRenderers;
+      if (typeof window !== "undefined") {
+        window.renderKnockoutIntel = MR.renderKnockoutIntel;
+      }
+    })();
   }
 });
 
@@ -8210,6 +8359,13 @@ var require_entry = __commonJS({
     var import_odds_card = __toESM(require_odds_card());
     var import_ui_helpers = __toESM(require_ui_helpers());
     var import_tactical_scenarios = __toESM(require_tactical_scenarios());
+    var import_mr_shared = __toESM(require_mr_shared());
+    var import_mr_tactical = __toESM(require_mr_tactical());
+    var import_mr_tactical_board = __toESM(require_mr_tactical_board());
+    var import_mr_prediction = __toESM(require_mr_prediction());
+    var import_mr_coach = __toESM(require_mr_coach());
+    var import_mr_hud = __toESM(require_mr_hud());
+    var import_mr_knockout = __toESM(require_mr_knockout());
     var import_match_renderers = __toESM(require_match_renderers());
     var import_push_notifications = __toESM(require_push_notifications());
     var import_app = __toESM(require_app());

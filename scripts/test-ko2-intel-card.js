@@ -31,12 +31,24 @@ global.window = {
   }
 };
 
-// Evaluate match-renderers.js
-const renderersCode = fs.readFileSync(
-  path.join(__dirname, '../static/js/match-renderers.js'),
-  'utf8'
-);
-eval(renderersCode);
+// Evaluate all mr-*.js modules + match-renderers.js (T7 split)
+const mrFiles = [
+  'mr-shared.js',
+  'mr-tactical.js',
+  'mr-tactical-board.js',
+  'mr-prediction.js',
+  'mr-coach.js',
+  'mr-hud.js',
+  'mr-knockout.js',
+  'match-renderers.js',
+];
+for (const f of mrFiles) {
+  const code = fs.readFileSync(
+    path.join(__dirname, '../static/js', f),
+    'utf8'
+  );
+  eval(code);
+}
 
 function test(name, fn) {
   try {
@@ -105,7 +117,7 @@ test('4. every real section builder\'s source string has a sourceLabel translati
   // silently falls back to rendering the raw internal string if nobody remembers
   // to update this list by hand — this test catches that automatically instead of
   // relying on someone noticing an untranslated badge in the UI.
-  const rendererSrc = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'match-renderers.js'), 'utf8');
+  const rendererSrc = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'mr-knockout.js'), 'utf8');
   const mapMatch = rendererSrc.match(/const sourceLabel = \(\{([\s\S]*?)\}\[sec\.source\]/);
   assert.ok(mapMatch, 'sourceLabel map block found in match-renderers.js');
   const mapBlock = mapMatch[1];
