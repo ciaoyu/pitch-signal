@@ -75,8 +75,8 @@ const deps = {
       return {
         boxscore: {
           teams: [
-            { statistics: [{ name: 'Possession', displayValue: '55' }, { name: 'Shots', displayValue: '12' }] },
-            { statistics: [{ name: 'Possession', displayValue: '45' }, { name: 'Shots', displayValue: '8' }] },
+            { statistics: [{ name: 'Possession', displayValue: '55' }, { name: 'Shots', displayValue: '12' }, { name: 'wonCorners', displayValue: '7' }] },
+            { statistics: [{ name: 'Possession', displayValue: '45' }, { name: 'Shots', displayValue: '8' }, { name: 'wonCorners', displayValue: '3' }] },
           ],
         },
       };
@@ -99,6 +99,8 @@ async function run() {
     assert(r.matches === 10, `no n -> all available matches up to cap (got ${r.matches})`);
     assert(r.matchIds.includes('live-r16'), 'no n -> dynamically resolved knockout fixture included');
     assert(r.stats !== null, 'no n -> aggregated stats produced');
+    assert(r.stats.wonCorners.avg === 7, `won corners aggregated (got ${r.stats.wonCorners.avg})`);
+    assert(r.stats.cornersAgainst.avg === 3, `opponent corners derived (got ${r.stats.cornersAgainst.avg})`);
   }
 
   // Floor: n=1 -> 2

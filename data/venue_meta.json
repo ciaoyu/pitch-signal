@@ -12,10 +12,13 @@
     "surface": "Grass (temporary for WC2026)"
   },
   "3": {
-    "yearBuilt": 2002,
-    "architect": "Ellerbe Becket",
-    "cost": "$430M",
-    "surface": "Grass (temporary for WC2026)"
+    "yearBuilt": 2009,
+    "architect": "HKS",
+    "surface": "Hybrid-reinforced natural grass (temporary for WC2026)",
+    "surfaceI18n": {
+      "zh": "混合增强天然草（世界杯临时铺设）",
+      "en": "Hybrid-reinforced natural grass (temporary for WC2026)"
+    }
   },
   "4": {
     "yearBuilt": 1966,

@@ -10,7 +10,7 @@
 const assert = require('assert');
 const createMatchupRoutes = require('../lib/routes/matchup');
 
-const MATCH_ID = '760999';
+const MATCH_ID = '760514';
 const HOME_ID = '478';
 const AWAY_ID = '605';
 
@@ -31,7 +31,7 @@ const deps = {
                 { id: HOME_ID, homeAway: 'home' },
                 { id: AWAY_ID, homeAway: 'away' },
               ],
-              status: { displayClock: '0' },
+              status: { displayClock: "45'+2'" },
             },
           ],
         },
@@ -52,8 +52,12 @@ const deps = {
       teamId: id,
       stats: {
         wonCorners: {
-          avg: id === HOME_ID ? 6.7 : 2.4,
-          count: 5,
+          avg: id === HOME_ID ? 6.8 : 7.3,
+          count: 6,
+        },
+        cornersAgainst: {
+          avg: id === HOME_ID ? 3.0 : 1.2,
+          count: 6,
         },
       },
       source: 'mock',
@@ -70,10 +74,17 @@ async function run() {
   const routes = createMatchupRoutes(deps);
   const result = await routes['GET /api/corner-analysis/:id']({ id: MATCH_ID });
 
-  assert.strictEqual(result.historical.homeAvg, 6.7);
-  assert.strictEqual(result.historical.awayAvg, 2.4);
-  assert.notStrictEqual(result.historical.homeAvg, 4.5);
-  assert.notStrictEqual(result.historical.awayAvg, 3.8);
+  assert.strictEqual(result.historical.homeAvg, 6.8);
+  assert.strictEqual(result.historical.awayAvg, 7.3);
+  assert.strictEqual(result.historical.homeAgainstAvg, 3.0);
+  assert.strictEqual(result.historical.awayAgainstAvg, 1.2);
+  assert.strictEqual(result.predicted.total, 9.2);
+  assert.notStrictEqual(result.predicted.total, 20.9);
+  assert.strictEqual(result.odds.line, 8.5);
+  assert.strictEqual(result.odds.kind, 'reference');
+  assert.strictEqual(result.odds.source, 'manual_reference');
+  assert.notStrictEqual(result.verdict.confidence, 'high');
+  assert.strictEqual(result.minute, 47);
 }
 
 run()

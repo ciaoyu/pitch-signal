@@ -456,7 +456,9 @@ function renderHudVenuePanel(venueData) {
     const altWarn = alt > 1500;
     const temp = w?.temp || '--';
     const hum = w?.humidity || '--';
-    const grass = meta?.surface || v.grass || tx('天然草', 'Natural');
+    const grass = v.grass || (meta?.surfaceI18n
+        ? window.WorldCup.I18n.i18nText(meta.surfaceI18n, meta.surface || '')
+        : meta?.surface) || tx('未知', 'N/A');
 
     html += `<div style="padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div style="padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)">

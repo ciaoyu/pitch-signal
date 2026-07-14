@@ -76,6 +76,7 @@ const TEST_FILES = [
   'test-third-place.js',
   'test-tournament-stats-sync.js',
   'test-venue-factor.js',
+  'test-venue-facts-integrity.js',
   'test-venueFactors.js',
     // P2 dedicated tests
   'test-bot-kb.js',
