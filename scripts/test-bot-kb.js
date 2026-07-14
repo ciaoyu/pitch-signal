@@ -13,6 +13,8 @@ console.log('━━━ test-bot-kb ━━━');
 
 // ── Module mock ──
 const Module = require('module');
+const fs = require('fs');
+const path = require('path');
 const origRequire = Module.prototype.require;
 
 function mockDb(dbImpl) {
@@ -158,6 +160,8 @@ const baseRoutes = {
   assert(zh.includes('赛事数据'), 'B1a zh has 赛事数据');
   assert(zh.includes('出线概率'), 'B1b zh has qualification');
   assert(zh.includes('France'), 'B1c zh has team');
+  assert(zh.includes('只用中文回答'), 'B1d zh prompt requires Chinese only');
+  assert(!zh.includes('先中文，后英文'), 'B1e zh prompt no longer requires bilingual output');
 }
 
 // B2: buildSystemPrompt en with global
@@ -165,6 +169,8 @@ const baseRoutes = {
   const bsp = freshBot({ routes: baseRoutes, getCached: () => null, setCache: () => {} }).buildSystemPrompt;
   const en = bsp('en', '', '', '## Qualification\n[{"team":"France"}]');
   assert(en.includes('Tournament Data'), 'B2a en has Tournament Data');
+  assert(en.includes('Answer only in English'), 'B2b en prompt requires English only');
+  assert(!en.includes('Chinese first'), 'B2c en prompt no longer requires bilingual output');
 }
 
 // B3: buildSystemPrompt without global (regression)
@@ -175,6 +181,49 @@ const baseRoutes = {
   assert(zh.includes('内部知识库'), 'B3b zh has KB');
   const en = bsp('en', '', '', '');
   assert(!en.includes('Tournament Data'), 'B3c en no Tournament Data when empty');
+}
+
+// C1: question language overrides UI language and fallback stays single-language
+{
+  const api = freshBot({ routes: baseRoutes, getCached: () => null, setCache: () => {} });
+  assert(api.detectLanguage('法国对西班牙有什么看点？', { uiLang: 'en' }) === 'zh', 'C1a Chinese question overrides English UI');
+  assert(api.detectLanguage('What are the key points for France vs Spain?', { uiLang: 'zh' }) === 'en', 'C1b English question overrides Chinese UI');
+  assert(!/[\u3400-\u9fff]/.test(api.localFallback('prediction model', 'en')), 'C1c English fallback has no Chinese');
+  assert(!/The forecast|I am PitchSignal/.test(api.localFallback('预测概率', 'zh')), 'C1d Chinese fallback has no English paragraph');
+  assert(api.shouldLoadGlobalContext('法国对西班牙有什么看点？', '760514') === false, 'C1e knockout preview skips group-table context');
+  assert(api.shouldLoadGlobalContext('法国小组积分榜', '760514') === true, 'C1f explicit standings question keeps global context');
+}
+
+// C2: match modal publishes and clears the current match id for global chat
+{
+  const source = fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'match-detail.js'), 'utf8');
+  assert(source.includes("modal.dataset.currentMatchId = String(id)"), 'C2a opening modal exposes match id');
+  assert(source.includes('delete modal.dataset.currentMatchId'), 'C2b closing modal clears match id');
+}
+
+// D1: live match context contains the knockout stage and complete tournament journeys
+{
+  const journey = (teamId) => ({ matches: [
+    { matchId: `${teamId}-g1`, date: '2026-06-15T00:00:00Z', stage: 'Group Stage', state: 'post', homeTeam: { name: teamId }, awayTeam: { name: 'Opponent' }, score: { home: '3', away: '0' }, result: 'W' },
+    { matchId: teamId === '478' ? '760510' : '760511', date: '2026-07-11T00:00:00Z', stage: 'QF', state: 'post', homeTeam: { name: teamId }, awayTeam: { name: 'Quarter-final opponent' }, score: { home: '2', away: '0' }, result: 'W' },
+    { matchId: '760514', date: '2026-07-15T00:00:00Z', stage: 'SF', state: 'pre', homeTeam: { name: 'France' }, awayTeam: { name: 'Spain' }, score: { home: '0', away: '0' }, result: null },
+  ] });
+  const routes = {
+    'GET /api/match/:id': async () => ({ id: '760514', date: '2026-07-15T00:00:00Z', state: 'pre', venue: 'AT&T Stadium', home: { id: '478', name: 'France', score: '0' }, away: { id: '164', name: 'Spain', score: '0' } }),
+    'GET /api/matchup-spatial/:home/:away': async () => ({ summary: 'France transition vs Spain possession', pairs: [] }),
+    'GET /api/predict/:matchId': async () => ({ homeWin: 0.4, draw: 0.3, awayWin: 0.3, knockoutIntel: { meta: { isKnockout: true }, sections: { styleMatchup: { matchSources: Array(50).fill({ noisy: true }), homeTags: ['counter_fast'], awayTags: ['possession'] } } } }),
+    'GET /api/team/:id/recent-matches': async ({ id }) => journey(String(id)),
+    'GET /api/team/:id/recent-stats': async ({ id }) => ({ matches: 6, matchIds: [`${id}-g1`, id === '478' ? '760510' : '760511'], stats: { possessionPct: { avg: id === '478' ? 48 : 66 }, shots: { avg: 14 }, unrelatedNoise: { avg: 99 } }, source: 'ESPN' }),
+    'GET /api/match/:id/lineups': async () => ({ homeFormation: '4-3-3', awayFormation: '4-3-3', homeXI: [{ name: 'Mbappe' }], awayXI: [{ name: 'Yamal' }], source: 'FIFA' }),
+  };
+  const bot = freshBot({ routes, getCached: () => null, setCache: () => {} });
+  const ctx = await bot.fetchMatchContext('760514', { getCached: () => null, setCache: () => {} });
+  assert(ctx.match.stage === 'SF', 'D1a current stage is injected as SF');
+  assert(ctx.tournamentJourney.home.some(m => m.matchId === '760510' && m.stage === 'QF'), 'D1b France QF path is present');
+  assert(ctx.tournamentJourney.away.some(m => m.matchId === '760511' && m.stage === 'QF'), 'D1c Spain QF path is present');
+  assert(ctx.tournamentStats.home.completedMatches === 6, 'D1d full tournament stats are present');
+  assert(ctx.currentLineups.homeXI[0] === 'Mbappe', 'D1e current lineup context is compacted');
+  assert(!JSON.stringify(ctx.knockoutIntel).includes('matchSources'), 'D1f bulky raw match sources are omitted');
 }
 
 })()

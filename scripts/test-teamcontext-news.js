@@ -15,6 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { JSDOM } = require('jsdom');
 
 let passed = 0, failed = 0;
 function assert(cond, label) { cond ? (console.log('  ✅', label), passed++) : (console.error('  ❌', label), failed++); }
@@ -265,6 +266,85 @@ await run(async () => {
   const count = tm.updateTeamNews('Germany', ['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10']);
   assert(count === 8, 'C3 updateTeamNews slices to 8');
 }
+
+// ═══ Part D: match news route — no fabricated fallback, source URLs preserved ═══
+
+const makeEspn = async () => ({
+  header: {
+    competitions: [{
+      date: '2026-07-15T01:00:00Z',
+      status: { type: { name: 'STATUS_SCHEDULED' } },
+      competitors: [
+        { homeAway: 'home', team: { id: '478', displayName: 'France' } },
+        { homeAway: 'away', team: { id: '164', displayName: 'Spain' } },
+      ],
+    }],
+  },
+});
+const makeNewsRoute = () => require('../lib/routes/news')({
+  espn: makeEspn,
+  getTeamNameI18n: (id, name) => ({ zh: id === '478' ? '法国' : '西班牙', en: name }),
+  teamNamesZh: {},
+});
+
+await run(async () => {
+  delete process.env.TAVILY_API_KEY;
+  fetchCalls = [];
+  const result = await makeNewsRoute()['GET /api/match/:id/news']({ id: '760514' });
+  assert(result.source === 'empty', 'D1 missing Tavily key → source=empty');
+  assert(result.news.length === 0, 'D1 missing Tavily key → no generated headlines');
+  assert(result.emptyReason === 'missing_tavily_key', 'D1 empty reason remains observable');
+}, 'D1');
+
+await run(async () => {
+  process.env.TAVILY_API_KEY = 'test-key';
+  setFetch(() => ({
+    ok: true,
+    json: async () => ({ results: [{
+      title: 'France vs Spain semi-final preview',
+      content: 'A sourced preview of the World Cup semi-final.',
+      url: 'https://example.org/france-spain-preview',
+      published_date: '2026-07-14T12:00:00Z',
+    }] }),
+  }));
+  const result = await makeNewsRoute()['GET /api/match/:id/news']({ id: '760514' });
+  assert(result.source === 'tavily', 'D2 sourced result → source=tavily');
+  assert(result.news.length === 1, 'D2 duplicate search result URLs are deduplicated');
+  assert(result.news[0].url === 'https://example.org/france-spain-preview', 'D2 original source URL is preserved');
+  assert(result.news[0].source === 'example.org', 'D2 source hostname is preserved');
+}, 'D2');
+
+await run(async () => {
+  const dom = new JSDOM('<div id="match-modal"></div>', { runScripts: 'dangerously', url: 'http://localhost/' });
+  const { window } = dom;
+  window.WorldCup = {
+    Utils: {
+      tx: (zh) => zh,
+      esc: value => String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])),
+      displayMaybeTeamName: value => typeof value === 'object' ? value.zh || value.en || '' : value,
+      attr: value => String(value || ''),
+      api: async () => null,
+    },
+    State: { uiLang: 'zh', scheduleCache: [] },
+    I18n: { i18nText: (value, fallback) => typeof value === 'object' ? value.zh || value.en || fallback : value || fallback },
+    MatchRenderers: {},
+  };
+  window.t = {};
+  window.safeUrl = url => /^https?:\/\//.test(String(url || '')) ? String(url) : '';
+  window.eval(fs.readFileSync(path.join(__dirname, '..', 'static', 'js', 'match-detail.js'), 'utf8'));
+
+  const render = window.WorldCup.MatchDetail.renderNewsList;
+  const linkedHtml = render({
+    source: 'tavily', homeTeam: 'France', awayTeam: 'Spain', lastUpdated: '2026-07-14T12:00:00Z',
+    news: [{ title: 'Sourced preview', summary: 'Summary', source: 'example.org', url: 'https://example.org/article', publishedAt: '2026-07-14T11:00:00Z', type: 'preview', importance: 'yellow' }],
+  });
+  assert(linkedHtml.includes('href="https://example.org/article"'), 'D3 sourced headline renders its original link');
+  assert(linkedHtml.includes('查看原文'), 'D3 sourced item renders an open-source action');
+
+  const emptyHtml = render({ source: 'empty', emptyReason: 'missing_tavily_key', homeTeam: 'France', awayTeam: 'Spain', news: [], lastUpdated: '2026-07-14T12:00:00Z' });
+  assert(emptyHtml.includes('未展示模拟内容'), 'D3 empty state explicitly rejects generated news');
+  dom.window.close();
+}, 'D3');
 
 })().then(() => {
   globalThis.fetch = origFetch;

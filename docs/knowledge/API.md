@@ -363,9 +363,9 @@ Elo 排名列表(优先 DB → 内存计算 fallback → 回写 DB)。
 ## 6. News
 
 ### `GET /api/match/:id/news`
-比赛相关新闻(Tavily 搜索 → fallback 生成 → 翻译)。
+比赛相关新闻（Tavily 搜索 → 翻译）。未获得带原文来源的结果时返回空列表，不生成模拟新闻。
 
-**返回**: `{ matchId, homeTeam, awayTeam, news: [...], total, lastUpdated, source: "tavily"|"mock" }`
+**返回**: `{ matchId, homeTeam, awayTeam, news: [...], total, lastUpdated, source: "tavily"|"empty", emptyReason }`
 
 **缓存**: 无(每次拉取最新)
 

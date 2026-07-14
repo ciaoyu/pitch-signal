@@ -12,6 +12,7 @@
         const myReqId = ++_openMatchReqId;
         const modal = document.getElementById('match-modal');
         const content = document.getElementById('modal-content');
+        modal.dataset.currentMatchId = String(id);
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // lock body scroll
         content.innerHTML = `<div class="py-10 text-center text-gray-500">${tx('加载中...', 'Loading...')}</div>`;
@@ -522,7 +523,9 @@
     }
 
     function closeModal() {
-        document.getElementById('match-modal').classList.add('hidden');
+        const modal = document.getElementById('match-modal');
+        modal.classList.add('hidden');
+        delete modal.dataset.currentMatchId;
         document.body.style.overflow = '';
     }
 
@@ -533,8 +536,41 @@
         const getImportanceIcon = (i) => ({red:'🔴',yellow:'🟡',green:'🟢'}[i]||'⚪');
         const getImportanceColor = (i) => ({red:'border-red-500/30',yellow:'border-yellow-500/30',green:'border-green-500/30'}[i]||'border-white/10');
         const getTypeIcon = (t) => ({injury:'🏥',lineup:'📋',tactical:'🧠',coach:'👔',transfer:'💰',history:'📊'}[t]||'📰');
-        const formatTime = (dateStr) => { const d=new Date(dateStr),now=new Date(),dh=Math.floor((now-d)/(36e5)); if(dh<1)return tx('刚刚','Just now'); if(dh<24)return state.uiLang==='en'?`${dh}h ago`:`${dh}小时前`; const dd=Math.floor(dh/24); if(dd<7)return state.uiLang==='en'?`${dd}d ago`:`${dd}天前`; return d.toLocaleDateString(state.uiLang==='en'?'en-US':'zh-CN',{month:'short',day:'numeric'}); };
-        return `<div class="space-y-3"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="text-lg">📰</span><div><div class="text-sm font-bold">${tx('比赛相关新闻','Match News')}</div><div class="text-[11px] text-gray-500">${esc(displayMaybeTeamName(data.homeNameI18n||data.homeTeam||''))} ${tx('对阵','vs')} ${esc(displayMaybeTeamName(data.awayNameI18n||data.awayTeam||''))}</div></div></div><div class="text-[11px] text-gray-600">${tx('来源','Source')}: ${source==='tavily'?'Tavily AI':tx('暂无同步','Not synced')}</div></div>${news.length>0?news.map(item=>`<div class="glass-light rounded-lg p-3 border-l-2 ${getImportanceColor(item.importance)}"><div class="flex items-start gap-2"><span class="text-sm mt-0.5">${getImportanceIcon(item.importance)}</span><div class="flex-1"><div class="flex items-center gap-1 mb-1"><span class="text-[11px] text-gray-500">${getTypeIcon(item.type)} ${esc(item.type)||'general'}</span><span class="text-[11px] text-gray-600 ml-auto">${formatTime(item.publishedAt)}</span></div><div class="font-bold text-xs mb-1">${esc(window.WorldCup.I18n.i18nText(item.titleI18n,item.title||''))}</div><div class="text-[11px] text-gray-400 mb-2">${esc(window.WorldCup.I18n.i18nText(item.summaryI18n,item.summary||''))}</div><div class="flex items-center justify-between"><div class="text-[11px] text-gray-600">${tx('来源','Source')}: ${esc(window.WorldCup.I18n.i18nText(item.sourceI18n,item.source||tx('未知','Unknown')))}</div>${item.url?`<a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-blue-400 hover:underline">${tx('阅读全文','Read full article')} →</a>`:''}</div>${item.tags?.length>0?`<div class="flex flex-wrap gap-1 mt-2">${item.tags.map(tag=>`<span class="bg-white/5 px-1.5 py-0.5 rounded text-[11px] text-gray-500">${esc(tag)}</span>`).join('')}</div>`:''}</div></div></div>`).join(''):`<div class="glass-light rounded-lg p-4 text-center"><div class="text-gray-500 text-xs">${tx('暂无新闻同步','No synced news yet')}</div></div>`}<div class="text-[11px] text-gray-600 text-center">${tx('共','Total')} ${news.length} ${tx('条新闻','news items')} · ${tx('更新时间','Updated')}: ${new Date(data.lastUpdated).toLocaleString(state.uiLang==='en'?'en-US':'zh-CN')}</div></div>`;
+        const formatTime = (dateStr) => {
+            const d = new Date(dateStr);
+            if (!Number.isFinite(d.getTime())) return '';
+            const dh = Math.max(0, Math.floor((Date.now() - d.getTime()) / 36e5));
+            if (dh < 1) return tx('刚刚', 'Just now');
+            if (dh < 24) return state.uiLang === 'en' ? `${dh}h ago` : `${dh}小时前`;
+            const dd = Math.floor(dh / 24);
+            if (dd < 7) return state.uiLang === 'en' ? `${dd}d ago` : `${dd}天前`;
+            return d.toLocaleDateString(state.uiLang === 'en' ? 'en-US' : 'zh-CN', { month: 'short', day: 'numeric' });
+        };
+        const sourceLabel = source === 'tavily' ? tx('已同步原文来源', 'Source links available') : tx('暂无同步', 'Not synced');
+        const emptyMessage = data.emptyReason === 'missing_tavily_key'
+            ? tx('新闻源尚未配置，未展示模拟内容', 'The news source is not configured; generated stories are not shown')
+            : tx('暂未找到带原文链接的可信新闻', 'No trustworthy articles with source links were found');
+        const renderItem = (item) => {
+            const url = safeUrl(item.url);
+            const title = esc(window.WorldCup.I18n.i18nText(item.titleI18n, item.title || ''));
+            const titleHtml = url
+                ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="font-bold text-xs mb-1 block text-blue-100 hover:text-blue-300 hover:underline">${title}</a>`
+                : `<div class="font-bold text-xs mb-1">${title}</div>`;
+            const summary = esc(window.WorldCup.I18n.i18nText(item.summaryI18n, item.summary || ''));
+            const itemSource = esc(window.WorldCup.I18n.i18nText(item.sourceI18n, item.source || tx('未知', 'Unknown')));
+            const tags = item.tags?.length > 0
+                ? `<div class="flex flex-wrap gap-1 mt-2">${item.tags.map(tag => `<span class="bg-white/5 px-1.5 py-0.5 rounded text-[11px] text-gray-500">${esc(tag)}</span>`).join('')}</div>`
+                : '';
+            return `<div class="glass-light rounded-lg p-3 border-l-2 ${getImportanceColor(item.importance)}"><div class="flex items-start gap-2"><span class="text-sm mt-0.5">${getImportanceIcon(item.importance)}</span><div class="flex-1"><div class="flex items-center gap-1 mb-1"><span class="text-[11px] text-gray-500">${getTypeIcon(item.type)} ${esc(item.type) || 'general'}</span><span class="text-[11px] text-gray-600 ml-auto">${formatTime(item.publishedAt)}</span></div>${titleHtml}<div class="text-[11px] text-gray-400 mb-2">${summary}</div><div class="flex items-center justify-between gap-3"><div class="text-[11px] text-gray-600">${tx('来源', 'Source')}: ${itemSource}</div>${url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-blue-400 hover:underline whitespace-nowrap">${tx('查看原文', 'Open source')} →</a>` : ''}</div>${tags}</div></div></div>`;
+        };
+        const updatedAt = new Date(data.lastUpdated);
+        const updatedLabel = Number.isFinite(updatedAt.getTime())
+            ? updatedAt.toLocaleString(state.uiLang === 'en' ? 'en-US' : 'zh-CN')
+            : tx('未知', 'Unknown');
+        const body = news.length > 0
+            ? news.map(renderItem).join('')
+            : `<div class="glass-light rounded-lg p-4 text-center"><div class="text-gray-500 text-xs">${emptyMessage}</div></div>`;
+        return `<div class="space-y-3"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="text-lg">📰</span><div><div class="text-sm font-bold">${tx('比赛相关新闻', 'Match News')}</div><div class="text-[11px] text-gray-500">${esc(displayMaybeTeamName(data.homeNameI18n || data.homeTeam || ''))} ${tx('对阵', 'vs')} ${esc(displayMaybeTeamName(data.awayNameI18n || data.awayTeam || ''))}</div></div></div><div class="text-[11px] text-gray-600">${tx('来源', 'Source')}: ${sourceLabel}</div></div>${body}<div class="text-[11px] text-gray-600 text-center">${tx('共', 'Total')} ${news.length} ${tx('条新闻', 'news items')} · ${tx('更新时间', 'Updated')}: ${updatedLabel}</div></div>`;
     }
 
     function renderHeadToHead(data) {
