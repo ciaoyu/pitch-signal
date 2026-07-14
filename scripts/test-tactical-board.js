@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
 /**
   * Tactical board staggered-layout self-test
  *
@@ -21,6 +25,55 @@ function assert(cond, msg) {
 function assertApprox(actual, expected, msg, eps = 1e-4) {
     const ok = Math.abs(actual - expected) <= eps;
     assert(ok, `${msg} (expected ${expected}, got ${actual})`);
+}
+
+function renderWithActualModules() {
+    const root = path.join(__dirname, '..');
+    const matchRenderers = {
+        _shared: {
+            getLang: () => 'zh',
+            tx: (zh) => zh,
+            esc: (value) => String(value ?? ''),
+            attr: (value) => String(value ?? ''),
+            i18nText: (value) => String(value ?? ''),
+            FORMATION_POSITIONS: {},
+            teamLabel: (team) => team?.name || team?.team || '',
+            teamFlagHtml: () => '',
+            playerCoords: (player) => ({ x: player?.x ?? 50, y: player?.y ?? 50 }),
+            translatePlayerName: (name, nameZh) => nameZh || name || '',
+        },
+    };
+    const context = vm.createContext({
+        console,
+        window: {
+            WorldCup: {
+                MatchRenderers: matchRenderers,
+                Formatters: {},
+                ApiClient: {},
+                State: {},
+                Utils: { translatePlayerName: (name, nameZh) => nameZh || name || '' },
+            },
+        },
+    });
+
+    for (const file of ['mr-tactical.js', 'mr-tactical-board.js']) {
+        const source = fs.readFileSync(path.join(root, 'static', 'js', file), 'utf8');
+        vm.runInContext(source, context, { filename: file });
+    }
+
+    const players = (side) => Array.from({ length: 11 }, (_, index) => ({
+        id: `${side}-${index}`,
+        name: `${side} player ${index}`,
+        jersey: index + 1,
+        rating: 70,
+        pos: index === 0 ? 'GK' : 'P',
+    }));
+    return matchRenderers.renderTacticalBoard({
+        home: { team: 'France', formation: '4-2-3-1', players: players('home') },
+        away: { team: 'Spain', formation: '4-2-3-1', players: players('away') },
+        matchups: [],
+        substitutions: [],
+    }, { goals: [] });
 }
 
 // ── implementation fully identical to match-renderers.js (replica) ──
@@ -185,6 +238,13 @@ printBoard('4-2-3-1', '3-5-2');
 
 // ── summary ──
 console.log('\n=== Summary ===');
+try {
+    const actualSvg = renderWithActualModules();
+    assert(actualSvg.includes('<svg'), 'actual tactical modules render a populated formation without scope errors');
+    assert((actualSvg.match(/class="pitch-player-group/g) || []).length === 22, 'actual tactical modules render all 22 players');
+} catch (error) {
+    assert(false, `actual tactical module integration threw: ${error.message}`);
+}
 console.log(`  Passed: ${pass}`);
 console.log(`  Failed: ${fail}`);
 if (fail > 0) {

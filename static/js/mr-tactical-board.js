@@ -231,8 +231,8 @@ function renderTacticalBoard(matchupData, matchData) {
     // 覆盖后端传来的 x/y（后端 player 顺序已是 GK→DEF→MID→FWD，按 index 映射）。
     // 后端 y 已是交错序，两队都直接用，从上到下自然呈现
     //   蓝GK→蓝后卫→红前锋→蓝中场→红中场→蓝前锋→红后卫→红GK
-    const homeTemplate = formationTemplate(home.formation || '4-3-3', 'home', away.formation || '4-3-3');
-    const awayTemplate = formationTemplate(away.formation || '4-3-3', 'away', home.formation || '4-3-3');
+    const homeTemplate = MR.formationTemplate(home.formation || '4-3-3', 'home', away.formation || '4-3-3');
+    const awayTemplate = MR.formationTemplate(away.formation || '4-3-3', 'away', home.formation || '4-3-3');
 
     // Resolve overlaps between home and away players
     const MIN_DIST = 9.0;

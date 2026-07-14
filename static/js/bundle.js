@@ -6091,7 +6091,7 @@ var require_mr_tactical = __commonJS({
       const teamFlagHtml = MR._shared.teamFlagHtml;
       const playerCoords = MR._shared.playerCoords;
       const translatePlayerName = MR._shared.translatePlayerName;
-      function formationTemplate2(formation, side, opponentFormation = "") {
+      function formationTemplate(formation, side, opponentFormation = "") {
         const isHome = side === "home";
         const parts = String(formation || "4-3-3").split("-").map(Number);
         let defCount = parts[0] || 4;
@@ -6367,7 +6367,7 @@ var require_mr_tactical = __commonJS({
           });
         });
       }
-      MR.formationTemplate = formationTemplate2;
+      MR.formationTemplate = formationTemplate;
       MR.parseFormationStr = parseFormationStr;
       MR.getMockMatchupData = getMockMatchupData;
       MR.getMockPrediction = getMockPrediction;
@@ -6562,8 +6562,8 @@ var require_mr_tactical_board = __commonJS({
           if (onId) onMap.set(String(onId).toLowerCase(), subData);
           if (onName) onMap.set(normalizeName(onName), subData);
         }
-        const homeTemplate = formationTemplate(home.formation || "4-3-3", "home", away.formation || "4-3-3");
-        const awayTemplate = formationTemplate(away.formation || "4-3-3", "away", home.formation || "4-3-3");
+        const homeTemplate = MR.formationTemplate(home.formation || "4-3-3", "home", away.formation || "4-3-3");
+        const awayTemplate = MR.formationTemplate(away.formation || "4-3-3", "away", home.formation || "4-3-3");
         const MIN_DIST = 9;
         for (let iter = 0; iter < 10; iter++) {
           let adjusted = false;
