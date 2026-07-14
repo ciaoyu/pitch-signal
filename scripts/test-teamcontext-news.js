@@ -47,7 +47,7 @@ function setFetch(fn) {
   globalThis.fetch = async (...args) => {
     const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
     const body = args[1]?.body ? JSON.parse(args[1].body) : {};
-    fetchCalls.push({ url, query: body.query });
+    fetchCalls.push({ url, query: body.query, apiKey: body.api_key });
     return fn(url, body);
   };
 }
@@ -58,7 +58,7 @@ async function run(fn, label) {
 
 // ── TAVILY_API_KEY — set globally, B9 deletes/restores locally ──
 const ORIG_KEY = process.env.TAVILY_API_KEY;
-process.env.TAVILY_API_KEY = 'test-key';
+process.env.TAVILY_API_KEY = ' test-key \n';
 
 (async () => {
 
@@ -125,6 +125,7 @@ await run(async () => {
 
   const headlines = await tm.requestTeamNews('Germany');
   assert(fetchCalls.length > 0, 'B1 fetch was called');
+  assert(fetchCalls[0].apiKey === 'test-key', 'B1 API key whitespace is trimmed');
   assert(headlines.length > 0, 'B1 non-empty headlines');
   assert(headlines.length <= 8, 'B1 headlines ≤ 8');
   assert(headlines[0].includes('Germany'), 'B1 headline contains team name');
@@ -269,7 +270,7 @@ await run(async () => {
 
 // ═══ Part D: match news route — no fabricated fallback, source URLs preserved ═══
 
-const makeEspn = async () => ({
+const makeEspn = ({ withNews = false } = {}) => async () => ({
   header: {
     competitions: [{
       date: '2026-07-15T01:00:00Z',
@@ -280,9 +281,25 @@ const makeEspn = async () => ({
       ],
     }],
   },
+  news: withNews ? { articles: [
+    {
+      id: 101,
+      headline: 'France take on Spain in the World Cup semifinal',
+      description: 'ESPN previews the semifinal between France and Spain.',
+      published: '2026-07-14T10:00:00Z',
+      links: { web: { href: 'https://www.espn.com/soccer/story/_/id/101/france-spain-semifinal' } },
+    },
+    {
+      id: 102,
+      headline: 'Argentina prepare for England',
+      description: 'Unrelated semifinal news.',
+      published: '2026-07-14T11:00:00Z',
+      links: { web: { href: 'https://www.espn.com/soccer/story/_/id/102/argentina-england' } },
+    },
+  ] } : { articles: [] },
 });
-const makeNewsRoute = () => require('../lib/routes/news')({
-  espn: makeEspn,
+const makeNewsRoute = (espn = makeEspn()) => require('../lib/routes/news')({
+  espn,
   getTeamNameI18n: (id, name) => ({ zh: id === '478' ? '法国' : '西班牙', en: name }),
   teamNamesZh: {},
 });
@@ -297,22 +314,31 @@ await run(async () => {
 }, 'D1');
 
 await run(async () => {
-  process.env.TAVILY_API_KEY = 'test-key';
+  delete process.env.TAVILY_API_KEY;
+  const result = await makeNewsRoute(makeEspn({ withNews: true }))['GET /api/match/:id/news']({ id: '760514' });
+  assert(result.source === 'espn', 'D2 ESPN match news works without Tavily');
+  assert(result.news.length === 1, 'D2 unrelated ESPN league news is filtered out');
+  assert(result.news[0].url.includes('espn.com'), 'D2 ESPN original URL is preserved');
+}, 'D2');
+
+await run(async () => {
+  process.env.TAVILY_API_KEY = ' test-key \n';
   setFetch(() => ({
     ok: true,
     json: async () => ({ results: [{
       title: 'France vs Spain semi-final preview',
       content: 'A sourced preview of the World Cup semi-final.',
-      url: 'https://example.org/france-spain-preview',
+      url: 'https://www.espn.com/france-spain-preview',
       published_date: '2026-07-14T12:00:00Z',
     }] }),
   }));
   const result = await makeNewsRoute()['GET /api/match/:id/news']({ id: '760514' });
-  assert(result.source === 'tavily', 'D2 sourced result → source=tavily');
-  assert(result.news.length === 1, 'D2 duplicate search result URLs are deduplicated');
-  assert(result.news[0].url === 'https://example.org/france-spain-preview', 'D2 original source URL is preserved');
-  assert(result.news[0].source === 'example.org', 'D2 source hostname is preserved');
-}, 'D2');
+  assert(result.source === 'tavily', 'D3 sourced result → source=tavily');
+  assert(fetchCalls[0].apiKey === 'test-key', 'D3 route trims API key whitespace');
+  assert(result.news.length === 1, 'D3 duplicate search result URLs are deduplicated');
+  assert(result.news[0].url === 'https://www.espn.com/france-spain-preview', 'D3 original source URL is preserved');
+  assert(result.news[0].source === 'espn.com', 'D3 source hostname is preserved');
+}, 'D3');
 
 await run(async () => {
   const dom = new JSDOM('<div id="match-modal"></div>', { runScripts: 'dangerously', url: 'http://localhost/' });
@@ -338,13 +364,13 @@ await run(async () => {
     source: 'tavily', homeTeam: 'France', awayTeam: 'Spain', lastUpdated: '2026-07-14T12:00:00Z',
     news: [{ title: 'Sourced preview', summary: 'Summary', source: 'example.org', url: 'https://example.org/article', publishedAt: '2026-07-14T11:00:00Z', type: 'preview', importance: 'yellow' }],
   });
-  assert(linkedHtml.includes('href="https://example.org/article"'), 'D3 sourced headline renders its original link');
-  assert(linkedHtml.includes('查看原文'), 'D3 sourced item renders an open-source action');
+  assert(linkedHtml.includes('href="https://example.org/article"'), 'D4 sourced headline renders its original link');
+  assert(linkedHtml.includes('查看原文'), 'D4 sourced item renders an open-source action');
 
   const emptyHtml = render({ source: 'empty', emptyReason: 'missing_tavily_key', homeTeam: 'France', awayTeam: 'Spain', news: [], lastUpdated: '2026-07-14T12:00:00Z' });
-  assert(emptyHtml.includes('未展示模拟内容'), 'D3 empty state explicitly rejects generated news');
+  assert(emptyHtml.includes('未展示模拟内容'), 'D4 empty state explicitly rejects generated news');
   dom.window.close();
-}, 'D3');
+}, 'D4');
 
 })().then(() => {
   globalThis.fetch = origFetch;

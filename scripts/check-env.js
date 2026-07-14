@@ -83,7 +83,7 @@ for (const group of groups) {
 }
 
 if (!present('TAVILY_API_KEY')) {
-  console.log('\ninfo TAVILY_API_KEY missing: news routes will return an empty list (no generated news).');
+  console.log('\ninfo TAVILY_API_KEY missing: match news will use ESPN only, or return an empty list (no generated news).');
 }
 if (!present('TRANSLATE_API_URL') || !present('TRANSLATE_API_KEY')) {
   console.log('info translation LLM not fully configured: rule-based template translation will be used.');

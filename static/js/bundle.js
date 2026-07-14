@@ -3721,7 +3721,7 @@ var require_match_detail = __commonJS({
           if (dd < 7) return state.uiLang === "en" ? `${dd}d ago` : `${dd}\u5929\u524D`;
           return d.toLocaleDateString(state.uiLang === "en" ? "en-US" : "zh-CN", { month: "short", day: "numeric" });
         };
-        const sourceLabel = source === "tavily" ? tx("\u5DF2\u540C\u6B65\u539F\u6587\u6765\u6E90", "Source links available") : tx("\u6682\u65E0\u540C\u6B65", "Not synced");
+        const sourceLabel = source === "espn+tavily" ? tx("ESPN + \u591A\u6765\u6E90\u641C\u7D22", "ESPN + multi-source search") : source === "espn" ? "ESPN" : source === "tavily" ? tx("\u591A\u6765\u6E90\u641C\u7D22", "Multi-source search") : tx("\u6682\u65E0\u540C\u6B65", "Not synced");
         const emptyMessage = data.emptyReason === "missing_tavily_key" ? tx("\u65B0\u95FB\u6E90\u5C1A\u672A\u914D\u7F6E\uFF0C\u672A\u5C55\u793A\u6A21\u62DF\u5185\u5BB9", "The news source is not configured; generated stories are not shown") : tx("\u6682\u672A\u627E\u5230\u5E26\u539F\u6587\u94FE\u63A5\u7684\u53EF\u4FE1\u65B0\u95FB", "No trustworthy articles with source links were found");
         const renderItem = (item) => {
           const url = safeUrl(item.url);

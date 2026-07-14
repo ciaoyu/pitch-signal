@@ -546,7 +546,13 @@
             if (dd < 7) return state.uiLang === 'en' ? `${dd}d ago` : `${dd}天前`;
             return d.toLocaleDateString(state.uiLang === 'en' ? 'en-US' : 'zh-CN', { month: 'short', day: 'numeric' });
         };
-        const sourceLabel = source === 'tavily' ? tx('已同步原文来源', 'Source links available') : tx('暂无同步', 'Not synced');
+        const sourceLabel = source === 'espn+tavily'
+            ? tx('ESPN + 多来源搜索', 'ESPN + multi-source search')
+            : source === 'espn'
+                ? 'ESPN'
+                : source === 'tavily'
+                    ? tx('多来源搜索', 'Multi-source search')
+                    : tx('暂无同步', 'Not synced');
         const emptyMessage = data.emptyReason === 'missing_tavily_key'
             ? tx('新闻源尚未配置，未展示模拟内容', 'The news source is not configured; generated stories are not shown')
             : tx('暂未找到带原文链接的可信新闻', 'No trustworthy articles with source links were found');
