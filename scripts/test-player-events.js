@@ -35,6 +35,18 @@ check(classifyPlayerEventType('Red Card', 'Second Yellow Card') === 'secondyello
 check(classifyPlayerEventType('Substitution', 'Substitution') === null, 'Substitution -> null (skip)');
 check(classifyPlayerEventType('Shot On Target', 'x') === null, 'irrelevant event -> null');
 
+// Regression: ESPN goal events whose type.text merely CONTAINS "red"/"yellow" as
+// a substring must NOT be tagged as cards. "Penalty - Scored" (sco-RED) once
+// fabricated Oyarzabal's straight-red suspension in the France 0-2 Spain SF.
+check(classifyPlayerEventType('Penalty - Scored', 'Goal! France 0, Spain 1. Mikel Oyarzabal converts the penalty.') === null,
+  'Penalty - Scored -> null (NOT red — contains substring "red")');
+check(classifyPlayerEventType('Own Goal - Scored', 'Own Goal by ...') === null,
+  'Own Goal - Scored -> null (NOT red, and not credited as scorer goal)');
+check(classifyPlayerEventType('Penalty - Missed', 'Penalty missed') === null,
+  'Penalty - Missed -> null');
+check(classifyPlayerEventType('Penalty - Scored', 'Penalty Shootout') === null,
+  'shootout Penalty - Scored -> null (NOT red/goal)');
+
 // ---- clock ----
 console.log('\n📊 parseClock');
 {
@@ -86,6 +98,27 @@ console.log('\n📊 extractPlayerEvents');
   check(!events.some(e => e.player_name === 'Sub Player'), 'substitution skipped');
   check(events.every(e => e.match_id === '760415' && e.stage === 'group' && e.round === 'Group'),
     'all events carry match_id/stage/round metadata');
+}
+
+// Regression (France 0-2 Spain SF, ESPN 760514): a converted penalty must never
+// land in player_match_events as a card. Before the fix, Oyarzabal's 22' penalty
+// was written as event_type='red' and surfaced as a bogus final suspension.
+{
+  const keyEvents = [
+    { type: { text: 'Penalty - Scored' }, clock: { displayValue: "22'" }, team: { id: '164' },
+      participants: [{ athlete: { displayName: 'Mikel Oyarzabal', id: '160' } }],
+      text: 'Goal! France 0, Spain 1. Mikel Oyarzabal (Spain) converts the penalty.' },
+    { type: { text: 'Yellow Card' }, clock: { displayValue: "86'" }, team: { id: '478' },
+      participants: [{ athlete: { displayName: 'Kylian Mbappé', id: '155' } }], text: 'shown the yellow card' },
+    { type: { text: 'Own Goal - Scored' }, clock: { displayValue: "70'" }, team: { id: '478' },
+      participants: [{ athlete: { displayName: 'Some Defender', id: '900' } }], text: 'Own Goal' },
+  ];
+  const events = extractPlayerEvents('760514', keyEvents, { homeTeamId: '478', awayTeamId: '164', round: 'Semi-finals' });
+  check(!events.some(e => e.event_type === 'red'), '760514: no red rows from penalty/own-goal events');
+  check(!events.some(e => e.player_name === 'Mikel Oyarzabal'),
+    '760514: Oyarzabal penalty not recorded as a card (no suspension fabricated)');
+  check(events.length === 1 && events[0].player_name === 'Kylian Mbappé' && events[0].event_type === 'yellow',
+    '760514: only Mbappé yellow is extracted');
 }
 
 console.log(`\n============================`);
