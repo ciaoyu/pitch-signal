@@ -60,6 +60,7 @@ const TEST_FILES = [
   'test-poisson.js',
   'test-post-match-review.js',
   'test-pre-match-snapshot-guard.js',
+  'test-snapshot-team-consistency.js',
   'test-prediction.js',
   'test-prediction-p0-quarantine-v3.js',
   'test-prediction-model-ledger.js',
