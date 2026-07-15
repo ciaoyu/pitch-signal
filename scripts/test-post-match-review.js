@@ -451,10 +451,95 @@ async function testRegulationTimeGrading() {
   assert(review.match.homeScore === 3 && review.match.awayScore === 1, 'final AET score preserved');
   assert(review.match.regulationScore.home === 1 && review.match.regulationScore.away === 1, '90-minute score extracted');
   assert(review.biasAnalysis.actualResult === 'draw', `actual regulation result=${review.biasAnalysis.actualResult}`);
+  // Regulation 1X2 calibration truth is preserved: a home-win lean is still a
+  // miss against a 90-minute draw (correct for Brier scoring).
   assert(review.biasAnalysis.resultCorrect === false, 'home-win prediction is not marked correct against a 90-minute draw');
-  assert(review.biasAnalysis.accuracy === 'wrong_result', `accuracy=${review.biasAnalysis.accuracy}`);
+  // But the model leaned home and home advanced (3-1 AET) — this is the advancer
+  // dimension, not a "wrong result / forecast miss".
+  assert(review.biasAnalysis.advancer === 'home', `advancer=${review.biasAnalysis.advancer}`);
+  assert(review.biasAnalysis.advancerCorrect === true, 'home-lean that advanced should be advancerCorrect');
+  assert(review.biasAnalysis.accuracy === 'regulation_draw_advancer_correct', `accuracy=${review.biasAnalysis.accuracy}`);
+  assert(review.matchSummary.matchTypeKey === 'knockout_regulation_split', `matchTypeKey=${review.matchSummary.matchTypeKey}`);
+  assert(review.matchSummary.matchTypeI18n.en === 'Advancer hit', `matchType=${review.matchSummary.matchTypeI18n.en}`);
   assert(review.aiPromptContext.match.predictionScope === '90-minute regulation time', 'AI prompt declares prediction scope');
   assert(review.aiPromptContext.match.finalScore.home === 3, 'AI prompt also retains final AET score');
+}
+
+// ===== 8b. Extra-time reversal where the away lean advanced (Norway 1-2 England QF) =====
+async function testKnockoutAdvancerAwayET() {
+  console.log('\n📋 Test 8b: AET reversal — away lean advanced is graded as advancer hit, not a miss');
+  const { buildPostMatchReview } = require('../lib/postMatchReview');
+  const review = buildPostMatchReview({
+    matchId: 'aet_away_advancer_test',
+    match: {
+      homeId: '2007', awayId: '448', homeName: '挪威 Norway', awayName: '英格兰 England',
+      homeScore: 1, awayScore: 2, // final after ET
+      regulationHomeScore: 1, regulationAwayScore: 1, // 90-minute draw
+      wentToExtraTime: true, completed: true, status: 'STATUS_FINAL_AET',
+    },
+    snapshot: {
+      predictedScore: '1-2', homeWin: 0.26, draw: 0.203, awayWin: 0.537,
+      homeExpectedGoals: 1.0, awayExpectedGoals: 1.4,
+    },
+  });
+  assert(review.biasAnalysis.actualResult === 'draw', `regulation result=${review.biasAnalysis.actualResult}`);
+  assert(review.biasAnalysis.resultCorrect === false, 'away lean is still a miss against a 90-minute draw (Brier truth)');
+  assert(review.biasAnalysis.advancer === 'away', `advancer=${review.biasAnalysis.advancer}`);
+  assert(review.biasAnalysis.advancerCorrect === true, 'away lean that advanced should be advancerCorrect');
+  assert(review.biasAnalysis.accuracy === 'regulation_draw_advancer_correct', `accuracy=${review.biasAnalysis.accuracy}`);
+  assert(review.matchSummary.matchTypeKey === 'knockout_regulation_split', `matchTypeKey=${review.matchSummary.matchTypeKey}`);
+  const advancerFactor = review.biasAnalysis.factors.find(f => f.key === 'knockout_regulation_split');
+  assert(advancerFactor && advancerFactor.impact === 'low', 'advancer factor exists and is low-impact');
+  assert(!review.biasAnalysis.factors.some(f => f.key === 'result_direction_miss'), 'no high-impact direction-miss factor when advancer was called');
+}
+
+// ===== 8c. Penalty shootout — the leaned side wins the shootout =====
+async function testPenaltyShootoutAdvancer() {
+  console.log('\n📋 Test 8c: Penalty shootout — leaned side wins on penalties is an advancer hit');
+  const { buildPostMatchReview } = require('../lib/postMatchReview');
+  const review = buildPostMatchReview({
+    matchId: 'pens_advancer_test',
+    match: {
+      homeId: '478', awayId: '205', homeName: '巴西 Brazil', awayName: '荷兰 Netherlands',
+      homeScore: 1, awayScore: 1, // level after 90 + ET
+      regulationHomeScore: 1, regulationAwayScore: 1,
+      wentToExtraTime: true, decidedByPenalties: true,
+      shootoutHomeScore: 4, shootoutAwayScore: 2, // Brazil (home) advances
+      completed: true, status: 'STATUS_FINAL_PEN',
+    },
+    snapshot: {
+      predictedScore: '2-1', homeWin: 0.48, draw: 0.27, awayWin: 0.25,
+      homeExpectedGoals: 1.3, awayExpectedGoals: 1.0,
+    },
+  });
+  assert(review.biasAnalysis.actualResult === 'draw', `regulation result=${review.biasAnalysis.actualResult}`);
+  assert(review.biasAnalysis.resultCorrect === false, 'home lean is still a miss against a level shootout tie');
+  assert(review.biasAnalysis.advancer === 'home', `advancer=${review.biasAnalysis.advancer}`);
+  assert(review.biasAnalysis.advancerCorrect === true, 'home lean that won the shootout should be advancerCorrect');
+  assert(review.biasAnalysis.accuracy === 'regulation_draw_advancer_correct', `accuracy=${review.biasAnalysis.accuracy}`);
+  assert(review.match.decidedByPenalties === true && review.match.shootoutScore.home === 4, 'shootout score preserved');
+
+  // Negative control: if the model had leaned to the side that LOST the shootout,
+  // it stays a genuine wrong_result — the advancer dimension must not launder that.
+  const wrongLean = buildPostMatchReview({
+    matchId: 'pens_wrong_lean_test',
+    match: {
+      homeId: '478', awayId: '205', homeName: '巴西 Brazil', awayName: '荷兰 Netherlands',
+      homeScore: 1, awayScore: 1,
+      regulationHomeScore: 1, regulationAwayScore: 1,
+      wentToExtraTime: true, decidedByPenalties: true,
+      shootoutHomeScore: 2, shootoutAwayScore: 4, // Netherlands (away) advances
+      completed: true, status: 'STATUS_FINAL_PEN',
+    },
+    snapshot: {
+      predictedScore: '2-1', homeWin: 0.48, draw: 0.27, awayWin: 0.25, // leaned home, home lost
+      homeExpectedGoals: 1.3, awayExpectedGoals: 1.0,
+    },
+  });
+  assert(wrongLean.biasAnalysis.advancer === 'away', `advancer=${wrongLean.biasAnalysis.advancer}`);
+  assert(wrongLean.biasAnalysis.advancerCorrect === false, 'home lean that lost the shootout is NOT advancerCorrect');
+  assert(wrongLean.biasAnalysis.accuracy === 'wrong_result', `accuracy=${wrongLean.biasAnalysis.accuracy}`);
+  assert(wrongLean.matchSummary.matchTypeKey === 'forecast_miss', `matchTypeKey=${wrongLean.matchSummary.matchTypeKey}`);
 }
 
 // ===== Run all tests =====
@@ -498,6 +583,8 @@ async function main() {
     try { await testZeroZeroScore(); } catch (e) { console.error('  💥 Test 6 crashed:', e.message); failed++; }
     try { await testEvidenceEventsRendering(); } catch (e) { console.error('  💥 Test 7 crashed:', e.message); failed++; }
     try { await testRegulationTimeGrading(); } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
+    try { await testKnockoutAdvancerAwayET(); } catch (e) { console.error('  💥 Test 8b crashed:', e.message); failed++; }
+    try { await testPenaltyShootoutAdvancer(); } catch (e) { console.error('  💥 Test 8c crashed:', e.message); failed++; }
 
     // Test 9: Authorization gate
     try {
