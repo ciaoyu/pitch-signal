@@ -542,6 +542,81 @@ async function testPenaltyShootoutAdvancer() {
   assert(wrongLean.matchSummary.matchTypeKey === 'forecast_miss', `matchTypeKey=${wrongLean.matchSummary.matchTypeKey}`);
 }
 
+// ===== 10. evidence.news is populated from the news aggregation route =====
+// Regression: reviewService received its own empty `routes: {}` object that the
+// route registrar never back-populated, so routes['GET /api/match/:id/news'] was
+// undefined and evidence.news was always []. See lib/app.js routeRegistry wiring.
+async function testNewsEvidenceAggregation() {
+  console.log('\n📋 Test 10: evidence.news is aggregated into the review');
+  const ReviewService = require('../lib/services/ReviewService');
+
+  const matchData = {
+    header: {
+      competitions: [{
+        date: '2026-07-15',
+        venue: { fullName: 'Test Stadium' },
+        status: { type: { name: 'STATUS_FINAL', completed: true, state: 'post' } },
+        competitors: [
+          { homeAway: 'home', team: { id: 'NEWS_H', displayName: 'Home FC' }, score: '2', linescores: [{ displayValue: '1' }, { displayValue: '1' }] },
+          { homeAway: 'away', team: { id: 'NEWS_A', displayName: 'Away FC' }, score: '1', linescores: [{ displayValue: '0' }, { displayValue: '1' }] },
+        ],
+      }],
+    },
+    commentary: [],
+  };
+
+  const newsItems = [
+    { title: 'Home FC edge Away FC in five-goal thriller', summary: 'Match report from a trusted outlet.', source: 'espn.com', url: 'https://espn.com/report', importance: 'yellow', type: 'general' },
+    { title: 'Away FC coach rues missed chances', summary: 'Post-match reaction.', source: 'reuters.com', url: 'https://reuters.com/reaction', importance: 'green', type: 'coach' },
+  ];
+
+  let newsRouteCalled = false;
+  const deps = {
+    espn: async () => matchData,
+    getTeamNameZh: (id) => (id === 'NEWS_H' ? '主队 Home FC' : '客队 Away FC'),
+    getTeamNameI18n: (id, dn) => ({ zh: id === 'NEWS_H' ? '主队' : '客队', en: dn || id }),
+    routes: {
+      'GET /api/match/:id/news': async ({ id }) => {
+        newsRouteCalled = true;
+        return { matchId: id, news: newsItems, total: newsItems.length, source: 'espn' };
+      },
+    },
+  };
+
+  const svc = new ReviewService(deps);
+  const review = await svc.reviewMatch('news_evidence_regression_001');
+
+  assert(newsRouteCalled, 'reviewMatch invoked the news aggregation route');
+  assert(Array.isArray(review.evidence?.news), 'evidence.news is an array');
+  assert(review.evidence.news.length === 2, `evidence.news is non-empty (count=${review.evidence?.news?.length})`);
+  assert(!!review.evidence.news[0]?.title, `evidence.news[0] carries a title (${review.evidence.news[0]?.title || 'MISSING'})`);
+  assert(review.evidence.hasExternalOpinion === true, 'hasExternalOpinion reflects the aggregated news');
+
+  // Degrade path: when the news route is missing, fetchNewsEvidence returns [] (not a throw)
+  const svcNoRoute = new ReviewService({ ...deps, routes: {} });
+  const emptyNews = await svcNoRoute.fetchNewsEvidence('news_evidence_regression_001');
+  assert(Array.isArray(emptyNews) && emptyNews.length === 0, 'missing news route degrades to empty array without throwing');
+}
+
+// ===== 11. Real app wiring: reviewService can reach the news route =====
+// The original bug lived in lib/app.js: reviewService was constructed with its own
+// empty `routes: {}` while registerRoutes back-populated a *different* {}. This
+// asserts the actual assembled config shares one registry, so reviewService's
+// news-evidence lookup resolves a real handler rather than undefined.
+function testAppWiringNewsRouteReachable() {
+  console.log('\n📋 Test 11: reviewService reaches the news route in the assembled app');
+  const { createAppConfig } = require('../lib/app');
+  const config = createAppConfig();
+
+  const reviewService = config.services?.reviewService;
+  assert(!!reviewService, 'reviewService is initialized in app config');
+  assert(typeof reviewService?.deps?.routes?.['GET /api/match/:id/news'] === 'function',
+    'reviewService.deps.routes resolves the news aggregation handler (shared registry)');
+  // The registrar-returned routes and the service registry must expose the same handler.
+  assert(typeof config.routes?.['GET /api/match/:id/news'] === 'function',
+    'assembled routes also expose the news route');
+}
+
 // ===== Run all tests =====
 async function cleanup() {
   if (serverProcess) {
@@ -585,6 +660,8 @@ async function main() {
     try { await testRegulationTimeGrading(); } catch (e) { console.error('  💥 Test 8 crashed:', e.message); failed++; }
     try { await testKnockoutAdvancerAwayET(); } catch (e) { console.error('  💥 Test 8b crashed:', e.message); failed++; }
     try { await testPenaltyShootoutAdvancer(); } catch (e) { console.error('  💥 Test 8c crashed:', e.message); failed++; }
+    try { await testNewsEvidenceAggregation(); } catch (e) { console.error('  💥 Test 10 crashed:', e.message); failed++; }
+    try { testAppWiringNewsRouteReachable(); } catch (e) { console.error('  💥 Test 11 crashed:', e.message); failed++; }
 
     // Test 9: Authorization gate
     try {
