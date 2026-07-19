@@ -5974,15 +5974,90 @@
       "group": null,
       "date": "2026-07-10T19:00:00Z",
       "venueId": "400017978",
-      "status": "scheduled",
-      "time": null,
-      "home": null,
-      "away": null,
+      "status": "finished",
+      "time": "98'",
+      "home": {
+        "code": "ESP",
+        "score": 2,
+        "pen": null
+      },
+      "away": {
+        "code": "BEL",
+        "score": 1,
+        "pen": null
+      },
       "phA": "W93",
       "phB": "W94",
-      "winner": null,
-      "attendance": null,
-      "officials": []
+      "winner": "ESP",
+      "attendance": 70492,
+      "officials": [
+        {
+          "id": "347710",
+          "country": "ENG",
+          "role": "referee",
+          "name": {
+            "en": "Michael OLIVER",
+            "fr": "Michael OLIVER",
+            "zh": "Michael OLIVER",
+            "ar": "Michael OLIVER",
+            "es": "Michael OLIVER",
+            "de": "Michael OLIVER",
+            "pt": "Michael OLIVER",
+            "it": "Michael OLIVER",
+            "ja": "Michael OLIVER",
+            "ko": "Michael OLIVER",
+            "id": "Michael OLIVER",
+            "ru": "Michael OLIVER"
+          },
+          "typeName": {
+            "en": "Referee",
+            "fr": "Arbitre",
+            "zh": "裁判员",
+            "ar": "الحَكم",
+            "es": "Árbitro/a",
+            "de": "Schiedsrichter",
+            "pt": "Árbitro",
+            "it": "Arbitro",
+            "ja": "主審",
+            "ko": "주심",
+            "id": "Wasit",
+            "ru": "Главный судья"
+          }
+        },
+        {
+          "id": "446932",
+          "country": "BRA",
+          "role": "fourth",
+          "name": {
+            "en": "Ramon ABATTI",
+            "fr": "Ramon ABATTI",
+            "zh": "Ramon ABATTI",
+            "ar": "Ramon ABATTI",
+            "es": "Ramon ABATTI",
+            "de": "Ramon ABATTI",
+            "pt": "Ramon ABATTI",
+            "it": "Ramon ABATTI",
+            "ja": "Ramon ABATTI",
+            "ko": "Ramon ABATTI",
+            "id": "Ramon ABATTI",
+            "ru": "Ramon ABATTI"
+          },
+          "typeName": {
+            "en": "Fourth official",
+            "fr": "Quatrième arbitre",
+            "zh": "第四官员",
+            "ar": "الحَكَم الرابع",
+            "es": "Cuarto/a árbitro/a",
+            "de": "Vierter Offizieller",
+            "pt": "Quarto árbitro",
+            "it": "Quarto arbitro",
+            "ja": "第 4 審判員",
+            "ko": "대기심",
+            "id": "Ofisial keempat",
+            "ru": "Четвертый судья"
+          }
+        }
+      ]
     },
     {
       "id": "400021539",
