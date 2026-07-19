@@ -5147,7 +5147,41 @@ var require_match_review = __commonJS({
         ];
         const eventText = (event) => typeof event === "string" ? event : i18nText(event?.textI18n, event?.text || event?.summary || event?.description || "");
         const eventSearchText = (event) => typeof event === "string" ? event : [event?.textI18n?.zh, event?.textI18n?.en, event?.text, event?.summary, event?.description].filter(Boolean).join(" ");
-        const factRows = actualEvents.filter((event) => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventSearchText(event)) || /goal|card|substitution/i.test(String(event?.type || ""))).slice(0, 12).map((event) => `${event?.minute || ""} ${eventText(event)}`.trim());
+        const formatEventRow = (event) => `${event?.minute || ""} ${eventText(event)}`.trim();
+        const seenRows = /* @__PURE__ */ new Set();
+        const uniqueEvents = [];
+        for (const event of actualEvents) {
+          if (!event) continue;
+          const rowText = formatEventRow(event);
+          if (!rowText || seenRows.has(rowText)) continue;
+          seenRows.add(rowText);
+          uniqueEvents.push(event);
+        }
+        const isGoalEvent = (event) => {
+          if (event && (event.type === "goal" || event.isGoal === true || String(event.type).toLowerCase() === "goal")) {
+            return true;
+          }
+          const text = eventSearchText(event);
+          if (!text) return false;
+          if (/^Goal!|^GOAL|^进球|^\[进球\]|进球！|点球破门|乌龙球|乌龙进球/i.test(text)) {
+            return true;
+          }
+          if (/attempt saved|missed|blocked|offside|saved by|foul|corner kick|centre of the goal|wide of the goal|over the goal/i.test(text)) {
+            return false;
+          }
+          return /\bscored\b/i.test(text);
+        };
+        const isCardOrBonusEvent = (event) => {
+          if (isGoalEvent(event)) return false;
+          if (event && /card|yellow|red|penalty|extra_time/i.test(String(event.type || ""))) {
+            return true;
+          }
+          const text = eventSearchText(event);
+          return /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(text);
+        };
+        const cardAndBonusRows = uniqueEvents.filter(isCardOrBonusEvent).map(formatEventRow).slice(0, 15);
+        const goalRows = uniqueEvents.filter(isGoalEvent).map(formatEventRow).slice(0, 20);
+        const factRows = [...cardAndBonusRows, ...goalRows];
         const actual = review.match || {};
         const lineups = review.postMatchFacts || {};
         const style = sections?.styleMatchup;
@@ -5192,7 +5226,7 @@ var require_match_review = __commonJS({
         const playerName = (player) => uiLang2 === "en" ? player.name || player.nameZh || "" : player.nameZh || player.name || "";
         const xi = (team) => (team || []).map(playerName).join(uiLang2 === "en" ? ", " : "\u3001");
         const subs = (lineups.substitutions || []).map((sub) => `${sub.minute || "?"} ${uiLang2 === "en" ? sub.offName || sub.offNameZh : sub.offNameZh || sub.offName} \u2192 ${uiLang2 === "en" ? sub.onName || sub.onNameZh : sub.onNameZh || sub.onName}`).join("<br>");
-        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u6700\u7EC8\u6BD4\u5206", "Final score")}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u9996\u53D1", "Starting XI")}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u9996\u53D1\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified starting XI returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u6362\u4EBA", "Substitutions")}</div><div class="text-gray-500 mt-1">${subs || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u6362\u4EBA\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified substitutions returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u7EA2\u9EC4\u724C\u3001\u52A0\u65F6\u4E0E\u70B9\u7403", "Cards, extra time & penalties")}</div><div class="text-gray-500 mt-1">${factRows.filter((row) => /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(row)).map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5173\u952E\u4E8B\u4EF6", "Key events")}</div><div class="text-gray-500 mt-1">${factRows.filter((row) => /goal|进球/i.test(row)).map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div></div>`;
+        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u6700\u7EC8\u6BD4\u5206", "Final score")}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u9996\u53D1", "Starting XI")}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u9996\u53D1\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified starting XI returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5B9E\u9645\u6362\u4EBA", "Substitutions")}</div><div class="text-gray-500 mt-1">${subs || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u6362\u4EBA\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verified substitutions returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u7EA2\u9EC4\u724C\u3001\u52A0\u65F6\u4E0E\u70B9\u7403", "Cards, extra time & penalties")}</div><div class="text-gray-500 mt-1">${cardAndBonusRows.map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx("\u5173\u952E\u4E8B\u4EF6", "Key events")}</div><div class="text-gray-500 mt-1">${goalRows.map(esc).join("<br>") || tx("\u672C\u63A5\u53E3\u672A\u8FD4\u56DE\u53EF\u9A8C\u8BC1\u8BB0\u5F55\uFF1A\u672C\u573A\u65E0\u6CD5\u9A8C\u8BC1\u3002", "No verifiable record was returned: cannot verify this match.")}</div></div></div>`;
         return `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-300 mb-2">\u{1F9CA} ${tx("\u8D5B\u524D\u6DD8\u6C70\u8D5B\u60C5\u62A5\u4E0E\u8D5B\u540E\u4E8B\u5B9E\u5BF9\u7167", "Frozen pre-match intelligence vs post-match facts")}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><div class="text-[10px] font-bold text-cyan-300 mb-1.5">${tx("\u8D5B\u524D\u6DD8\u6C70\u8D5B\u60C5\u62A5\uFF08\u51BB\u7ED3\u5FEB\u7167\uFF09", "Pre-match knockout intelligence (frozen snapshot)")}</div>${left}</div><div><div class="text-[10px] font-bold text-amber-300 mb-1.5">${tx("\u8D5B\u540E\u4E8B\u5B9E\u4E0E\u9A8C\u8BC1", "Post-match facts & verification")}</div>${right}</div></div></div>`;
       }
       function renderMatchReview(review) {
@@ -5313,8 +5347,8 @@ var require_match_review = __commonJS({
         html += `<div class="text-center text-[9px] text-gray-700 mt-2">${tx("\u5B9E\u9A8C\u6027\u8D5B\u540E\u590D\u76D8\uFF1AAI \u81EA\u52A8\u751F\u6210\u5185\u5BB9\u53EF\u80FD\u4E0D\u5B8C\u6574\u6216\u5B58\u5728\u8BEF\u5DEE\uFF0C\u4EC5\u4F9B\u53C2\u8003\u3002", "Experimental post-match review: AI-generated content may be incomplete or inaccurate and is for reference only.")}</div>`;
         return html;
       }
-      window.WorldCup.MatchReview = { renderMatchReview };
-      Object.assign(window, { renderMatchReview });
+      window.WorldCup.MatchReview = { renderMatchReview, renderFrozenKnockoutComparison };
+      Object.assign(window, { renderMatchReview, renderFrozenKnockoutComparison });
     })();
   }
 });

@@ -22,10 +22,51 @@
         const eventSearchText = event => typeof event === 'string'
             ? event
             : [event?.textI18n?.zh, event?.textI18n?.en, event?.text, event?.summary, event?.description].filter(Boolean).join(' ');
-        const factRows = actualEvents
-            .filter(event => /goal|yellow|red|card|substitution|penalty|extra time|加时|点球|进球|黄牌|红牌|换人/i.test(eventSearchText(event)) || /goal|card|substitution/i.test(String(event?.type || '')))
-            .slice(0, 12)
-            .map(event => `${event?.minute || ''} ${eventText(event)}`.trim());
+        const formatEventRow = event => `${event?.minute || ''} ${eventText(event)}`.trim();
+
+        const seenRows = new Set();
+        const uniqueEvents = [];
+        for (const event of actualEvents) {
+            if (!event) continue;
+            const rowText = formatEventRow(event);
+            if (!rowText || seenRows.has(rowText)) continue;
+            seenRows.add(rowText);
+            uniqueEvents.push(event);
+        }
+
+        const isGoalEvent = event => {
+            if (event && (event.type === 'goal' || event.isGoal === true || String(event.type).toLowerCase() === 'goal')) {
+                return true;
+            }
+            const text = eventSearchText(event);
+            if (!text) return false;
+            if (/^Goal!|^GOAL|^进球|^\[进球\]|进球！|点球破门|乌龙球|乌龙进球/i.test(text)) {
+                return true;
+            }
+            if (/attempt saved|missed|blocked|offside|saved by|foul|corner kick|centre of the goal|wide of the goal|over the goal/i.test(text)) {
+                return false;
+            }
+            return /\bscored\b/i.test(text);
+        };
+
+        const isCardOrBonusEvent = event => {
+            if (isGoalEvent(event)) return false;
+            if (event && /card|yellow|red|penalty|extra_time/i.test(String(event.type || ''))) {
+                return true;
+            }
+            const text = eventSearchText(event);
+            return /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(text);
+        };
+
+        const cardAndBonusRows = uniqueEvents
+            .filter(isCardOrBonusEvent)
+            .map(formatEventRow)
+            .slice(0, 15);
+        const goalRows = uniqueEvents
+            .filter(isGoalEvent)
+            .map(formatEventRow)
+            .slice(0, 20);
+        const factRows = [...cardAndBonusRows, ...goalRows];
         const actual = review.match || {};
         const lineups = review.postMatchFacts || {};
         const style = sections?.styleMatchup;
@@ -74,7 +115,7 @@
         const playerName = player => uiLang === 'en' ? (player.name || player.nameZh || '') : (player.nameZh || player.name || '');
         const xi = team => (team || []).map(playerName).join(uiLang === 'en' ? ', ' : '、');
         const subs = (lineups.substitutions || []).map(sub => `${sub.minute || '?'} ${uiLang === 'en' ? (sub.offName || sub.offNameZh) : (sub.offNameZh || sub.offName)} → ${uiLang === 'en' ? (sub.onName || sub.onNameZh) : (sub.onNameZh || sub.onName)}`).join('<br>');
-        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('最终比分', 'Final score')}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际首发', 'Starting XI')}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx('本接口未返回可验证首发：本场无法验证。', 'No verified starting XI returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际换人', 'Substitutions')}</div><div class="text-gray-500 mt-1">${subs || tx('本接口未返回可验证换人：本场无法验证。', 'No verified substitutions returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('红黄牌、加时与点球', 'Cards, extra time & penalties')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /yellow|red|card|penalty|extra time|加时|点球|黄牌|红牌/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('关键事件', 'Key events')}</div><div class="text-gray-500 mt-1">${factRows.filter(row => /goal|进球/i.test(row)).map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div></div>`;
+        const right = `<div class="space-y-2 text-[11px]"><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('最终比分', 'Final score')}</div><div class="text-gray-400 mt-1">${esc(score)}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际首发', 'Starting XI')}</div><div class="text-gray-500 mt-1">${lineups.hasRealLineups ? `${esc(xi(lineups.homeXI))}<br>${esc(xi(lineups.awayXI))}` : tx('本接口未返回可验证首发：本场无法验证。', 'No verified starting XI returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('实际换人', 'Substitutions')}</div><div class="text-gray-500 mt-1">${subs || tx('本接口未返回可验证换人：本场无法验证。', 'No verified substitutions returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('红黄牌、加时与点球', 'Cards, extra time & penalties')}</div><div class="text-gray-500 mt-1">${cardAndBonusRows.map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div><div class="bg-white/5 rounded-lg p-2"><div class="font-bold text-gray-300">${tx('关键事件', 'Key events')}</div><div class="text-gray-500 mt-1">${goalRows.map(esc).join('<br>') || tx('本接口未返回可验证记录：本场无法验证。', 'No verifiable record was returned: cannot verify this match.')}</div></div></div>`;
         return `<div class="glass rounded-xl p-3 mb-2.5"><div class="text-xs font-bold text-gray-300 mb-2">🧊 ${tx('赛前淘汰赛情报与赛后事实对照', 'Frozen pre-match intelligence vs post-match facts')}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><div class="text-[10px] font-bold text-cyan-300 mb-1.5">${tx('赛前淘汰赛情报（冻结快照）', 'Pre-match knockout intelligence (frozen snapshot)')}</div>${left}</div><div><div class="text-[10px] font-bold text-amber-300 mb-1.5">${tx('赛后事实与验证', 'Post-match facts & verification')}</div>${right}</div></div></div>`;
     }
 
@@ -201,6 +242,6 @@
         return html;
     }
 
-    window.WorldCup.MatchReview = { renderMatchReview };
-    Object.assign(window, { renderMatchReview });
+    window.WorldCup.MatchReview = { renderMatchReview, renderFrozenKnockoutComparison };
+    Object.assign(window, { renderMatchReview, renderFrozenKnockoutComparison });
 })();

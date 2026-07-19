@@ -128,6 +128,7 @@ const TEST_FILES = [
   'test-team-style-facts.js',
   'test-teams-elimination-status.js',
   'test-dockerignore-data-safety.js',
+  'test-scheduler-team-sync.js',
 ];
 
 const filter = process.argv.includes('--match')
@@ -167,9 +168,9 @@ for (const file of TEST_FILES) {
       timeout: 60000,
     }).toString();
 
-    // Parse assertion counts from output (lines containing "passed" and "failed")
-    const passMatch = output.match(/(\d+)\s+passed/);
-    const failMatch = output.match(/(\d+)\s+failed/);
+    // Parse assertion counts from output (prioritizing summary lines like Results/Tests/Asserts)
+    const passMatch = output.match(/(?:Results|Tests|Asserts|Assertions|Summary):\s*(\d+)\s+passed/i) || output.match(/(\d+)\s+passed/);
+    const failMatch = output.match(/(?:Results|Tests|Asserts|Assertions|Summary):.*?(\d+)\s+failed/i) || output.match(/(\d+)\s+failed/);
     if (passMatch) totalAssertions += parseInt(passMatch[1]);
     if (failMatch) totalFailedAssertions += parseInt(failMatch[1]);
 
@@ -185,8 +186,8 @@ for (const file of TEST_FILES) {
     const stdout = e.stdout?.toString() || '';
 
     // Try to extract assertion counts from partial output
-    const passMatch = stdout.match(/(\d+)\s+passed/);
-    const failMatch = stdout.match(/(\d+)\s+failed/);
+    const passMatch = stdout.match(/(?:Results|Tests|Asserts|Assertions|Summary):\s*(\d+)\s+passed/i) || stdout.match(/(\d+)\s+passed/);
+    const failMatch = stdout.match(/(?:Results|Tests|Asserts|Assertions|Summary):.*?(\d+)\s+failed/i) || stdout.match(/(\d+)\s+failed/);
     if (passMatch) totalAssertions += parseInt(passMatch[1]);
     if (failMatch) totalFailedAssertions += parseInt(failMatch[1]);
 
